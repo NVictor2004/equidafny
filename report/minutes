@@ -1,0 +1,13 @@
+Notes from meeting 13.11.2025
+present: Nathan and Sophia
+
+TODO Sophia
+1. try to install Visual Studio Code & Dafny
+2. Look at the two interlesting examples (max-left and max-right, and also the conseqience of Parscal's lemma)
+
+TODO Nathan
+1. Decide wether he wants to collab with Justin and Donald
+2. Make a summary of the examples he has so far. in parcular characterize whether they can be proven by Dafny as is, by Dragana's work, or neither
+3. Make imperative versions of the examples; can Dafny prove them?
+4. Read SymDiff and Tim Wood's work and write in the report
+5. Read about Boogie, and see what Boogie code is vreated by Dafny
