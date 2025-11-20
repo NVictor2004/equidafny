@@ -7,6 +7,13 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
+\usepackage[backend=biber,style=ext-authoryear,uniquename=false]{biblatex}
+\let\cite\parencite
+\DeclareOuterCiteDelims{parencite}{\bibopenbracket}{\bibclosebracket}
+\DeclareInnerCiteDelims{textcite}{\bibopenbracket}{\bibclosebracket}
+
+\addbibresource{references.bib}
+
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \lstdefinestyle{codestyle}{
@@ -34,11 +41,15 @@ Using induction on the recursive structure of the functions
 
 \section{Dafny Examples}
 
+Examples from \textcite{milovancevicProvingDisprovingEquivalence2023}.
+
 \begin{lstlisting}
 // Creating a list data structure
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
+
+\printbibliography
 \end{document}
 
 
