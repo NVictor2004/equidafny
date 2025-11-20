@@ -4,8 +4,17 @@
 % Layout stuff, 1in is standard margin
 \usepackage[margin=1in]{geometry}
 
-\usepackage{minted}
-\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{backcolour},   
+    basicstyle=\ttfamily\footnotesize
+}
+
+\lstset{style=codestyle}
 
 \title{Interim Report}
 \author{Nathaniel Victor}
@@ -22,6 +31,13 @@ Needs to provide counter examples for functions that do not work
 Needs to be efficient to be able to handle large inputs and large numbers of inputs (Clustering)
 How to match equivalent helper functions, how to find which functions are meant to be equivalent (Function Call Matching), this is done by finding functions with the same signature; with multiple functions with same signature, use tests to narrow down the search space, these test cases come from the counterexamples from candidate submissions, may need to reorder function arguments 
 Using induction on the recursive structure of the functions
+
+\section{Dafny Examples}
+
+\begin{lstlisting}
+// Creating a list data structure
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+\end{lstlisting}
 
 \end{document}
 
