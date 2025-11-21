@@ -42,13 +42,21 @@
 
 \maketitle
 
-\section{Project Overview}
+% Using induction on the recursive structure of the functions
+% when functions are not recursive, we directly encode equivalence lemmas into SMT solver formulas. 
 
-A quick summary of the project aims:
-Needs to provide counter examples for functions that do not work
-Needs to be efficient to be able to handle large inputs and large numbers of inputs (Clustering)
-How to match equivalent helper functions, how to find which functions are meant to be equivalent (Function Call Matching), this is done by finding functions with the same signature; with multiple functions with same signature, use tests to narrow down the search space, these test cases come from the counterexamples from candidate submissions, may need to reorder function arguments 
-Using induction on the recursive structure of the functions
+% \section{Review of Existing Equivalence Proving Tools}
+% \subsection{Dafny}
+% \subsection{Stainless}
+
+% Stainless is a verification 
+
+% Internally, Stainless operates on abstract syntax trees, that are transformed throughout several
+% pipeline phases. This series of transformations results in verification conditions that are then sent
+% to an SMT solver. To implement equivalence proof generation, we add a new phase to the Stainless
+% verification pipeline. Our phase is responsible for generating equivalence lemmas and all the as-
+% sociated transformations. The entire process, including defining and proving equivalence lemmas,
+% is fully automatic, following the techniques presented in Section 3.
 
 \section{Dafny Demonstration}
 
@@ -58,7 +66,6 @@ In this section, I will provide examples of Dafny functions that attempt to chec
 
 I will require the following definition of a list data structure:
 \begin{lstlisting}
-// Creating a list data structure
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
@@ -200,6 +207,14 @@ lemma isSortedEquivalence(l: List<int>)
 \subsection{Summary of findings from Demonstration}
 This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with \hyperlink{egb}{Student B's solution}. However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
 
+\subsection{Possible solutions}
+\subsubsection{Proving Equivalence of Auxiliary Lemmas}
+
+\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+
+\subsubsection{Generating Simpler Counterexamples}
+
+TODO
 
 \printbibliography
 \end{document}
