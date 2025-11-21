@@ -4,24 +4,35 @@
 % Layout stuff, 1in is standard margin
 \usepackage[margin=1in]{geometry}
 
-\usepackage{listings}
-\usepackage{xcolor}
-
+% Bibliography settings
 \usepackage[backend=biber,style=ext-authoryear,uniquename=false]{biblatex}
 \let\cite\parencite
 \DeclareOuterCiteDelims{parencite}{\bibopenbracket}{\bibclosebracket}
 \DeclareInnerCiteDelims{textcite}{\bibopenbracket}{\bibclosebracket}
-
 \addbibresource{references.bib}
 
+% Code listing settings
+\usepackage{listings}
+\usepackage{xcolor}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
 \lstdefinestyle{codestyle}{
     backgroundcolor=\color{backcolour},   
     basicstyle=\ttfamily\footnotesize
 }
-
 \lstset{style=codestyle}
+
+% Hyperlink settings
+\usepackage{hyperref}
+% Define colours
+\definecolor[named]{ACMPurple}{cmyk}{0.55,1,0,0.15}
+\definecolor[named]{ACMDarkBlue}{cmyk}{1,0.58,0,0.21}
+\hypersetup{colorlinks,
+    % This colours internal (document) links as purple
+    % and external links as blue 
+    linkcolor=ACMPurple,
+    citecolor=ACMPurple,
+    urlcolor=ACMDarkBlue,
+    filecolor=ACMDarkBlue}
 
 \title{Interim Report}
 \author{Nathaniel Victor}
@@ -53,7 +64,9 @@ This example will rely heavily on the following definition of a list data struct
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
+\hypertarget{eg1r}{
 \subsubsection{Reference Solution}
+}
 
 The reference solution for this example is detailed below, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|. 
 \begin{lstlisting}
@@ -73,7 +86,9 @@ function isSortedR(l: List<int>): bool
 }
 \end{lstlisting}
 
+\hypertarget{eg1a}{
 \subsubsection{Student A's Solution}
+}
 
 The first student solution is as follows:
 \begin{lstlisting}
@@ -125,7 +140,9 @@ lemma isSortedEquivalence(l: List<int>)
 %
 Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
 
+\hypertarget{eg1b}{
 \subsubsection{Student B's Solution}
+}
 
 The second student solution is as follows:
 \begin{lstlisting}
@@ -145,7 +162,9 @@ lemma isSortedEquivalence(l: List<int>)
 {}
 \end{lstlisting}
 
+\hypertarget{eg1c}{
 \subsubsection{Student C's Solution}
+}
 
 The third student solution is as follows:
 \begin{lstlisting}
@@ -181,7 +200,7 @@ lemma isSortedEquivalence(l: List<int>)
 \end{lstlisting}
 
 \subsubsection{Summary of findings from Example 1}
-This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with Student B's solution. However, as with Student C's solution, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with Student A's solution, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
+This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with \hyperlink{eg1b}{Student B's solution}. However, as with \hyperlink{eg1c}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with \hyperlink{eg1a}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
 
 
 \printbibliography
