@@ -50,22 +50,20 @@ Needs to be efficient to be able to handle large inputs and large numbers of inp
 How to match equivalent helper functions, how to find which functions are meant to be equivalent (Function Call Matching), this is done by finding functions with the same signature; with multiple functions with same signature, use tests to narrow down the search space, these test cases come from the counterexamples from candidate submissions, may need to reorder function arguments 
 Using induction on the recursive structure of the functions
 
-\section{Dafny Examples}
+\section{Dafny Demonstration}
 
-In this section, I will provide some examples of Dafny functions where the tool requires help to prove their equivalence. I have converted these examples into the Dafny programming language from the original Scala examples provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. For each example, they provide a reference solution and a series of student solutions that are either equivalent or non-equivalent to the reference solution.
+In this section, I will provide examples of Dafny functions that attempt to check whether a list is sorted. I have converted these examples into Dafny from the original Scala examples provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. There will be one reference solution and a series of student solutions where Dafny must prove or disprove their equivalence to the reference solution. The goal of this demonstration is to show Dafny's capabilities and limitations in this field.
 
-\subsection{Checking for sorted lists}
+\subsection{Necessary Datastructures}
 
-\subsubsection{Necessary Datastructures}
-
-This example will rely heavily on the following definition of a list data structure:
+I will require the following definition of a list data structure:
 \begin{lstlisting}
 // Creating a list data structure
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
-\hypertarget{eg1r}{
-\subsubsection{Reference Solution}
+\hypertarget{egr}{
+\subsection{Reference Solution}
 }
 
 The reference solution for this example is detailed below, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|. 
@@ -86,8 +84,8 @@ function isSortedR(l: List<int>): bool
 }
 \end{lstlisting}
 
-\hypertarget{eg1a}{
-\subsubsection{Student A's Solution}
+\hypertarget{ega}{
+\subsection{Student A's Solution}
 }
 
 The first student solution is as follows:
@@ -140,8 +138,8 @@ lemma isSortedEquivalence(l: List<int>)
 %
 Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
 
-\hypertarget{eg1b}{
-\subsubsection{Student B's Solution}
+\hypertarget{egb}{
+\subsection{Student B's Solution}
 }
 
 The second student solution is as follows:
@@ -162,8 +160,8 @@ lemma isSortedEquivalence(l: List<int>)
 {}
 \end{lstlisting}
 
-\hypertarget{eg1c}{
-\subsubsection{Student C's Solution}
+\hypertarget{egc}{
+\subsection{Student C's Solution}
 }
 
 The third student solution is as follows:
@@ -199,8 +197,8 @@ lemma isSortedEquivalence(l: List<int>)
 }
 \end{lstlisting}
 
-\subsubsection{Summary of findings from Example 1}
-This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with \hyperlink{eg1b}{Student B's solution}. However, as with \hyperlink{eg1c}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with \hyperlink{eg1a}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
+\subsection{Summary of findings from Demonstration}
+This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with \hyperlink{egb}{Student B's solution}. However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
 
 
 \printbibliography
