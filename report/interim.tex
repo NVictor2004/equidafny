@@ -41,12 +41,147 @@ Using induction on the recursive structure of the functions
 
 \section{Dafny Examples}
 
-Examples from \textcite{milovancevicProvingDisprovingEquivalence2023}.
+In this section, I will provide some examples of Dafny functions where the tool requires help to prove their equivalence. I have converted these examples into the Dafny programming language from the original Scala examples provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. For each example, they provide a reference solution and a series of student solutions that are either equivalent or non-equivalent to the reference solution.
 
+\subsection{Checking for sorted lists}
+
+\subsubsection{Necessary Datastructures}
+
+This example will rely heavily on the following definition of a list data structure:
 \begin{lstlisting}
 // Creating a list data structure
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
+
+\subsubsection{Reference Solution}
+
+The reference solution for this example is detailed below, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|. 
+\begin{lstlisting}
+function loop(p: int, l: List<int>): bool
+  decreases l
+{
+  match l
+  case Nil => true
+  case Cons(x, xs) => p <= x && loop(x, xs)
+}
+
+function isSortedR(l: List<int>): bool
+{
+  match l
+  case Nil => true
+  case Cons(x, xs) => loop(x, xs)
+}
+\end{lstlisting}
+
+\subsubsection{Student A's Solution}
+
+The first student solution is as follows:
+\begin{lstlisting}
+function leq(cur: int, next: int): bool
+{
+  cur < next
+}
+
+function iter(l: List<int>): bool
+{
+  match l
+  case Nil => true
+  case Cons(x, Nil) => true
+  case Cons(x, Cons(y, ys)) => leq(x, y) && iter(Cons(y, ys))
+}
+
+function isSortedA(l: List<int>): bool
+{
+  match l
+  case Nil => true
+  case Cons(_, Nil) => true
+  case Cons(x, Cons(y, ys)) => x <= y && iter(Cons(y, ys))
+}
+\end{lstlisting}
+%
+This solution is non-equivalent to the reference solution, as it uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
+\begin{lstlisting}
+lemma isSortedEquivalence(l: List<int>)
+  ensures isSortedA(l) == isSortedR(l)
+{}
+\end{lstlisting}
+%
+However, it incorrectly provides \lstinline|Cons(-38, Cons(7681, Nil))| as a counterexample. I extended the above proof to include and use a helper lemma, as shown below:
+\begin{lstlisting}
+lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
+  decreases xs
+  ensures iter(Cons(x, xs)) == loop(x, xs)
+{}
+
+lemma isSortedEquivalence(l: List<int>)
+  ensures isSortedA(l) == isSortedR(l)
+{
+  match l
+  case Nil => {}
+  case Cons(x, Nil) => {}
+  case Cons(x, Cons(y, ys)) => isSortedEquivalenceHelper(y, ys);
+}
+\end{lstlisting}
+%
+Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
+
+\subsubsection{Student B's Solution}
+
+The second student solution is as follows:
+\begin{lstlisting}
+function isSortedB(l: List<int>): bool
+{
+  match l
+  case Nil => true
+  case Cons(x, Nil) => isSortedB(Nil)
+  case Cons(x, Cons(y, ys)) => x <= y && isSortedB(Cons(y, ys))
+}
+\end{lstlisting}
+%
+This solution is equivalent to the reference solution. Dafny is able to prove this without any additional help, through the following equivalence lemma:
+\begin{lstlisting}
+lemma isSortedEquivalence(l: List<int>)
+  ensures isSortedR(l) == isSortedB(l)
+{}
+\end{lstlisting}
+
+\subsubsection{Student C's Solution}
+
+The third student solution is as follows:
+\begin{lstlisting}
+function chk(l: List<int>, p: int, a: bool): bool
+{
+  match l
+  case Nil => a
+  case Cons(x, xs) => x >= p && chk(xs, x, a)
+}
+
+function isSortedC(l: List<int>): bool
+{
+  match l
+  case Nil => true
+  case Cons(x, xs) => chk(Cons(x, xs), x, true)
+}
+\end{lstlisting}
+%
+This example is equivalent to the reference solution, however, Dafny requires a helper lemma to prove this:
+\begin{lstlisting}
+lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
+  decreases xs
+  ensures chk(xs, x, true) == loop(x, xs)
+{}
+
+lemma isSortedEquivalence(l: List<int>)
+  ensures isSortedC(l) == isSortedR(l)
+{
+  match l
+  case Nil => {}
+  case Cons(x, xs) => isSortedEquivalenceHelper(x, xs);
+}
+\end{lstlisting}
+
+\subsubsection{Summary of findings from Example 1}
+This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with Student B's solution. However, as with Student C's solution, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with Student A's solution, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
 
 
 \printbibliography
