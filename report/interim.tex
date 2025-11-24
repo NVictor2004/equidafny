@@ -53,7 +53,7 @@
 
 As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants, to allow Dafny's program verifier to automatically prove that a given program matches its specification. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
 
-Dafny's program verification involves translating a Dafny program into a Boogie program. Then, the Boogie tool translates the program into a series of verification conditions, which are passed to the Z3 SMT solver.
+Dafny's program verification heavily relies on Boogie \parencite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \parencite{10.1007/978-3-540-78800-3_24}. 
 
 \section{Dafny Demonstration}
 
