@@ -45,18 +45,15 @@
 % Using induction on the recursive structure of the functions
 % when functions are not recursive, we directly encode equivalence lemmas into SMT solver formulas. 
 
-% \section{Review of Existing Equivalence Proving Tools}
-% \subsection{Dafny}
-% \subsection{Stainless}
-
-% Stainless is a verification 
-
 % Internally, Stainless operates on abstract syntax trees, that are transformed throughout several
 % pipeline phases. This series of transformations results in verification conditions that are then sent
-% to an SMT solver. To implement equivalence proof generation, we add a new phase to the Stainless
-% verification pipeline. Our phase is responsible for generating equivalence lemmas and all the as-
-% sociated transformations. The entire process, including defining and proving equivalence lemmas,
-% is fully automatic, following the techniques presented in Section 3.
+% to an SMT solver.
+\section{Existing Program Verifiers}
+\subsection{Dafny}
+
+As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants, to allow Dafny's program verifier to automatically prove that a given program matches its specification. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
+
+Dafny's program verification involves translating a Dafny program into a Boogie program. Then, the Boogie tool translates the program into a series of verification conditions, which are passed to the Z3 SMT solver.
 
 \section{Dafny Demonstration}
 
