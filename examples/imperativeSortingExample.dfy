@@ -6,15 +6,17 @@
 // Requires a clause to prove termination
 
 method loop(p: int, l: seq<int>) returns (res: bool)
-  ensures res ==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
-  ensures res ==> (if |l| == 0 then true else p <= l[0])
+  ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
 {
   var currentP := p;
   var currentL := l;
 
   while true
-    decreases currentL
-    invariant forall i :: 0 <= i < |l| - |currentL| ==> (if i == 0 then p <= l[i] else l[i-1] <= l[i])
+    decreases |currentL|
+    invariant currentL == l[|l| - |currentL| .. ]
+    invariant currentP == if |l| == |currentL| then p else l[|l| - |currentL| - 1]
+    invariant |l| > |currentL| ==> p <= l[0]
+    invariant forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1]
   {
     if |currentL| == 0 {
         return true;
@@ -30,6 +32,7 @@ method loop(p: int, l: seq<int>) returns (res: bool)
 }
 
 method isSortedR(l: seq<int>) returns (res: bool)
+  ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   if |l| == 0 {
     return true;
@@ -43,14 +46,14 @@ method isSortedR(l: seq<int>) returns (res: bool)
 
 // Defining isSortedB
 method isSortedB(l: seq<int>) returns (res: bool)
-  ensures res == (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
+  ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   var currentL := l;
 
   while true
     decreases |currentL|
     invariant currentL == l[|l| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |l| - |currentL| ==> if i < |l| - 1 then l[i] <= l[i+1] else true
+    invariant forall i :: 0 <= i < |l| - |currentL| ==> (i < |l| - 1 ==> l[i] <= l[i+1])
   {
     if |currentL| == 0 {
         return true;
