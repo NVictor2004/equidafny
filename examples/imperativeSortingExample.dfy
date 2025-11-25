@@ -70,49 +70,47 @@ method isSortedB(l: seq<int>) returns (res: bool)
   }
 }
 
-// // Defining isSortedC
+// Defining isSortedC
 
-// function chk(l: List<int>, p: int, a: bool): bool
-// {
-//   match l
-//   case Nil => a
-//   case Cons(x, xs) => x >= p && chk(xs, x, a)
-// }
+method chk(l: seq<int>, p: int, a: bool) returns (res: bool)
+  ensures a ==> (res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
+  ensures !a ==> (res == false)
+{
+  var currentL := l;
+  var currentP := p;
 
-// function isSortedC(l: List<int>): bool
-// {
-//   match l
-//   case Nil => true
-//   case Cons(x, xs) => chk(Cons(x, xs), x, true)
-// }
+  while true
+    decreases |currentL|
+    invariant currentL == l[|l| - |currentL| .. ]
+    invariant currentP == if |l| == |currentL| then p else l[|l| - |currentL| - 1]
+    invariant |l| > |currentL| ==> p <= l[0]
+    invariant a ==> (forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1])
+  {
+    if |currentL| == 0 {
+      return a;
+    } else {
+      var x := currentL[0];
+      var xs := currentL[1..];
+      if x < currentP {
+          return false;
+      }
+      currentL := xs;
+      currentP := x;
+    }
+  }
+}
 
-// // Proving equivalence of isSortedC with isSortedR
-// // However, here Dafny needs help
-// // We prove a helper lemma first, using a decreases clause
-// lemma isSortedEquivalence2Helper(x: int, xs: List<int>)
-//   decreases xs
-//   ensures chk(xs, x, true) == loop(x, xs)
-// {
-// }
-
-// // Then, prove the main equivalence lemma
-// lemma isSortedEquivalence2(l: List<int>)
-//   ensures isSortedC(l) == isSortedR(l)
-// {
-//   match l
-//   case Nil => {}
-//   case Cons(x, xs) =>
-//     isSortedEquivalence2Helper(x, xs);
-// }
-
-// // Prove equivalence of isSortedC with isSortedB
-// // Dafny needs help again
-// lemma isSortedEquivalence3(l: List<int>)
-//   ensures isSortedC(l) == isSortedB(l)
-// {
-//   isSortedEquivalence(l);
-//   isSortedEquivalence2(l);
-// }
+method isSortedC(l: seq<int>) returns (res: bool)
+  ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
+{
+    if |l| == 0 {
+        return true;
+    } else {
+        var x := l[0];
+        var result := chk(l, x, true);
+        return result;
+    }
+}
 
 // // Defining isSortedA
 
