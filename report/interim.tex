@@ -48,12 +48,20 @@
 % Internally, Stainless operates on abstract syntax trees, that are transformed throughout several
 % pipeline phases. This series of transformations results in verification conditions that are then sent
 % to an SMT solver.
-\section{Existing Program Verifiers}
-\subsection{Dafny}
+
+\section{Dafny}
 
 As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants, to allow Dafny's program verifier to automatically prove that a given program matches its specification. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
 
 Dafny's program verification heavily relies on Boogie \parencite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \parencite{10.1007/978-3-540-78800-3_24}. 
+
+\section{SymDiff}
+
+% add a section on Coq
+
+SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
+
+SymDiff can also be used to prove program equivalence however, as described in \textcite{lahiriAutomatedDifferentialProgramb}, it can also be used in Approximate computing, to trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focusses on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
 
 \section{Dafny Demonstration}
 
