@@ -3,7 +3,7 @@
 
 // Defining isSortedR
 
-method loop(p: int, l: seq<int>) returns (res: bool)
+method loopI(p: int, l: seq<int>) returns (res: bool)
   ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
 {
   var currentP := p;
@@ -29,7 +29,7 @@ method loop(p: int, l: seq<int>) returns (res: bool)
   }
 }
 
-method isSortedR(l: seq<int>) returns (res: bool)
+method isSortedRI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   if |l| == 0 {
@@ -37,14 +37,14 @@ method isSortedR(l: seq<int>) returns (res: bool)
   } else {
     var x := l[0];
     var xs := l[1..];
-    var result := loop(x, xs);
+    var result := loopI(x, xs);
     return result;
   }
 }
 
 // Defining isSortedB
 
-method isSortedB(l: seq<int>) returns (res: bool)
+method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   var currentL := l;
@@ -71,7 +71,7 @@ method isSortedB(l: seq<int>) returns (res: bool)
 
 // Defining isSortedC
 
-method chk(l: seq<int>, p: int, a: bool) returns (res: bool)
+method chkI(l: seq<int>, p: int, a: bool) returns (res: bool)
   ensures a ==> (res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
   ensures !a ==> (res == false)
 {
@@ -99,14 +99,14 @@ method chk(l: seq<int>, p: int, a: bool) returns (res: bool)
   }
 }
 
-method isSortedC(l: seq<int>) returns (res: bool)
+method isSortedCI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
     if |l| == 0 {
         return true;
     } else {
         var x := l[0];
-        var result := chk(l, x, true);
+        var result := chkI(l, x, true);
         return result;
     }
 }
@@ -118,7 +118,7 @@ function leq(cur: int, next: int): bool
   cur < next
 }
 
-method iter(l: seq<int>) returns (res: bool)
+method iterI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   var currentL := l;
@@ -143,7 +143,7 @@ method iter(l: seq<int>) returns (res: bool)
   }
 }
 
-method isSortedA(l: seq<int>) returns (res: bool)
+method isSortedAI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   if |l| == 0 {
@@ -153,7 +153,7 @@ method isSortedA(l: seq<int>) returns (res: bool)
   } else {
     var x := l[0];
     var y := l[1];
-    var rest := iter(l[1..]);
+    var rest := iterI(l[1..]);
     return x <= y && rest;
   }
 }
