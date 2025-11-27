@@ -1,4 +1,9 @@
-
+// **********************
+//   Booelean Formulae
+// **********************
+//
+// Demonstrates limitations of Defny wrt to termination checks
+//
 // Defining a simple boolean Formula datatype
 datatype Formula =
     True
