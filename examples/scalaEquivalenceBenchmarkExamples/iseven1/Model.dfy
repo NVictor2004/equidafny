@@ -14,4 +14,4 @@
     else if (x == 0) true
     else !isOdd(x - 1)
   }
-}
+

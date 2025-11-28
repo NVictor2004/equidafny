@@ -6,4 +6,4 @@
       case Cons(h, t) => if (h > max(t)) h else max(t)
     }
   }
-}
+

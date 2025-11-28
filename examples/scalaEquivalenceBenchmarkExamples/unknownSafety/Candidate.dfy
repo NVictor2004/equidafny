@@ -46,4 +46,4 @@
       true
     case Cons(h1, Cons(h2, t)) => h1 <= h2 && isSorted(t)
   }
-}
+

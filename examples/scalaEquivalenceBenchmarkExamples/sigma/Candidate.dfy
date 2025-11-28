@@ -17,4 +17,4 @@
     }
     if (a > b) int(0) else sigma_rec(int(0), a, b, f)
   }
-}
+

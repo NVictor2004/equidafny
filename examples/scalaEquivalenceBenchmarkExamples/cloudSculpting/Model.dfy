@@ -17,4 +17,4 @@
   }
 
   method mixmash(i1: int, i2: int, i3: int): (int, int, int) = (i2 - 1, i3 + i2, i1)
-}
+

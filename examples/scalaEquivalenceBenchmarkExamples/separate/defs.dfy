@@ -58,4 +58,4 @@
 
   final case class ::[+A](first: A, next: List[A]) extends List[A]
 
-}
+

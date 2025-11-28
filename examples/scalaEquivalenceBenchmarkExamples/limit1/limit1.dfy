@@ -15,4 +15,4 @@
     if (n <= 1) n
     else n + n-1 + limit1_2(n-2)
   }
-}
+

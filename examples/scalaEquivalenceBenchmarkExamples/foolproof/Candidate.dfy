@@ -14,4 +14,4 @@
       case (x :: xs, y :: ys) => choose(x, y) :: funnyZip(xs, ys)
     }
   }
-}
+

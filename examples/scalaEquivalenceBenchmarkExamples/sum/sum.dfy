@@ -13,4 +13,4 @@
   method sum2(n: int): int =
     if (n <= 1) n
     else n + sum2(n-1)
-}
+

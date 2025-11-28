@@ -32,4 +32,4 @@
 
   method slowReplace[T](l1: List[T], x: T, l2: List[T]): List[T] = join(split(l1, x), l2)
 
-}
+

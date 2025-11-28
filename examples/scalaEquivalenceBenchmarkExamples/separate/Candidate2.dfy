@@ -10,4 +10,4 @@
         (s2, g2) // oops, forgets g
     }
   }
-}
+

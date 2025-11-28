@@ -247,4 +247,4 @@
     val ix = y * wm.width + xx
     wm.tiles(ix)
   }
-}
+

@@ -42,4 +42,4 @@
   sealed trait ResourceImprovement
     // etc.
   }
-}
+
