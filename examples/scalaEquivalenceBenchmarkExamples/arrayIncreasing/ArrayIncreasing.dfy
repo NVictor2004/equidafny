@@ -5,7 +5,7 @@
 method validLengthIncreasingM(a:Array[Array[int]], N:int, M:int, k: int): bool =
   requires (N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
   decreases(N - k)
-  if (k == N) then
+  if (k == N) 
     true
   else
     a(k).length == M && validLengthIncreasingM(a, N, M, succM(k))

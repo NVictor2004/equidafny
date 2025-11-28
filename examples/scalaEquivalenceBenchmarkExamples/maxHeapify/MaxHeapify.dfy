@@ -10,16 +10,16 @@ method maxHeapifyM(a: Array[int], N: int, i: int): Unit =
   val l = leftM(i)
   val r = rightM(i)
   val largest =
-    if l < N && a(l) > a(i) then
+    if l < N && a(l) > a(i) 
       l
     else
       i
   val largest2 =
-    if r < N && a(r) > a(largest) then
+    if r < N && a(r) > a(largest) 
       r
     else
       largest
-  if largest2 != i then
+  if largest2 != i 
       val temp = a(i)
       a(i) = a(largest2)
       a(largest2) = temp
@@ -40,16 +40,16 @@ method maxHeapify(a: Array[int], N: int, i: int): Unit =
   val l = 2 * i + 1
   val r = 2 * i + 2
   val largest =
-    if l < N && a(l) > a(i) then
+    if l < N && a(l) > a(i) 
       l
     else
       i
   val largest2 =
-    if r < N && a(r) > a(largest) then
+    if r < N && a(r) > a(largest) 
       r
     else
       largest
-  if largest2 != i then
+  if largest2 != i 
     swap(i, largest2, a, N)
     maxHeapify(a, N, largest2)
 

@@ -7,12 +7,12 @@ val MAX = 100000
 method arrayContentM(a: Array[int], n: int) : Set[int] =
   requires (n >= 0 && n <= a.length && a.length <= MAX)
   decreases(n)
-  if n == 0 then Set.empty[int]
+  if n == 0  Set.empty[int]
   else arrayContentM(a, n-1) ++ Set(a(n-1))
 
 
 method arrayContent(a: Array[int], n: int) : Set[int] =
   requires (n >= 0 && n <= a.length && a.length <= MAX)
   decreases(n)
-  if n == 0 then Set.empty[int]
+  if n == 0  Set.empty[int]
   else Set(a(n-1)) ++ arrayContent(a, n-1)

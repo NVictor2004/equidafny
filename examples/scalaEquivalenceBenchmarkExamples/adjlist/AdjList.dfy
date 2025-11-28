@@ -5,7 +5,7 @@
 method validAdjListM(adjList: Array[List[int]], N: int, pos: int): bool =
   requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
   decreases(pos)
-  if pos == 0 then
+  if pos == 0 
     true
   else
     validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
@@ -22,9 +22,9 @@ method validListM(list: List[int], N: int): bool =
 method validAdjList(adjList: Array[List[int]], N: int, pos: int): bool =
   requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
   decreases(pos)
-  if (pos == 0) then
+  if (pos == 0) 
     true
-  else if (validAdjList(adjList, N, pos - 1)) then
+  else if (validAdjList(adjList, N, pos - 1)) 
     validList(N, adjList(pos - 1))
   else
     false

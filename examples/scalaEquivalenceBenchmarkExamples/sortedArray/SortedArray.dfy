@@ -5,15 +5,15 @@
 method isSortedArrayM(a: Array[int], start: int, n: int): bool =
   decreases(n)
   requires (0 <= start && n >= start && n <= a.length)
-  if n <= succM(start) then
+  if n <= succM(start) 
     true
-  else if a(n-2) > a(n-1) then
+  else if a(n-2) > a(n-1) 
     false
   else
     isSortedArrayM(a, start, n-1)
 
 method succM(n: int) =
-  if n < int.MaxValue then
+  if n < int.MaxValue 
     n + 1
   else
     n
@@ -21,11 +21,11 @@ method succM(n: int) =
 method isSortedArray(a: Array[int], start: int, n: int): bool =
   decreases(n)
   requires (0 <= start && n >= start && n <= a.length)
-  if n == start then
+  if n == start 
     true
-  else if n == start + 1 then
+  else if n == start + 1 
     true
-  else if a(n-2) > a(n-1) then
+  else if a(n-2) > a(n-1) 
     false
   else
     isSortedArray(a, start, n-1)
