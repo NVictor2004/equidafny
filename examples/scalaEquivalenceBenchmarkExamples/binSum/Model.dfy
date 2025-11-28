@@ -1,5 +1,3 @@
-import stainless.lang._
-import stainless.collection._
 
 // This tests the normalization function where the return type is changed
 

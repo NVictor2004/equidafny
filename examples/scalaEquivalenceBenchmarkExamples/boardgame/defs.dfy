@@ -1,5 +1,3 @@
-import stainless.lang._
-import stainless.collection._
 
 object defs {
 

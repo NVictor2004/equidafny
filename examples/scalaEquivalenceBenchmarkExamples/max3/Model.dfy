@@ -1,5 +1,3 @@
-import stainless.collection._
-import stainless.lang._
 
 // This is not expected to verify (it should timeout)
 // but here we ensure that the `choose` functions (created from the `choose((x: Int) => true)`)

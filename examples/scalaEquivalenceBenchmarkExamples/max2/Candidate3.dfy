@@ -1,5 +1,3 @@
-import stainless.collection._
-import stainless.lang._
 
 object Candidate3 {
   def max(l: List[Int]): Int = {

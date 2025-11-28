@@ -1,5 +1,3 @@
-import stainless.lang._
-import stainless.collection._
 
 // Testing subfunction matching within subfunctions
 // That is, we do not only try to match function appearing in top-level `eval` (mul and myMul)

@@ -1,6 +1,3 @@
-import stainless.collection._
-import stainless.lang._
-import stainless.annotation._
 
 object Candidate2 {
   def uniq(lst: List[Int]): List[Int] = {

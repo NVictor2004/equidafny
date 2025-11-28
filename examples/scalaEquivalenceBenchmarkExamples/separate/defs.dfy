@@ -1,4 +1,3 @@
-import stainless.lang._
 
 object defs {
   sealed trait Animal

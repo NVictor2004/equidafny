@@ -1,4 +1,3 @@
-import stainless.collection.*
 
 object FizzBuzz:
 

@@ -1,8 +1,5 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
-import stainless._
-import lang._
-import annotation._
 
 object FiniteStream:
 

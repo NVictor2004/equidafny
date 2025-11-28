@@ -1,6 +1,3 @@
-import stainless.lang._
-import stainless.collection._
-import defs._
 
 object Candidate {
 

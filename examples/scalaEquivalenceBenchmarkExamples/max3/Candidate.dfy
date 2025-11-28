@@ -1,5 +1,3 @@
-import stainless.collection._
-import stainless.lang._
 
 object Candidate {
   def fold(f: (Int, Int) => Int, l: List[Int], a: Int): Int = {

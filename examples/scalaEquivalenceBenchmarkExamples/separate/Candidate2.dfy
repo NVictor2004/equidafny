@@ -1,4 +1,3 @@
-import defs._
 
 object Candidate2 {
   def separate(xs: List[Animal]): (List[Sheep], List[Goat]) = {

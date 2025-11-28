@@ -1,7 +1,5 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
-import stainless.lang._
-import stainless.collection._
 
 object AdjList:
 

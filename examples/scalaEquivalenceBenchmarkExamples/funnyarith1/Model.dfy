@@ -1,6 +1,3 @@
-import stainless.lang._
-import stainless.collection._
-import defs._
 
 // Testing subfns matching
 // In Candidate.eval, the order of patmat over op is not the same here to ensure

@@ -1,7 +1,3 @@
-import stainless.annotation._
-import stainless.lang._
-import stainless.collection._
-import stainless.proof._ 
 
 object Uniq {
 

@@ -1,6 +1,3 @@
-import stainless.lang._
-import stainless.collection._
-import stainless.annotation._
 
 object WhacAFun {
   def andThen1[A, B, C](f: A => B, g: B => C): A => C = a => g(f(a))

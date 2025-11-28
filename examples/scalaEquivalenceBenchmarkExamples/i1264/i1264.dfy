@@ -1,6 +1,3 @@
-import stainless.collection._
-import stainless.lang._
-import stainless.annotation._
 
 object i1264 {
 

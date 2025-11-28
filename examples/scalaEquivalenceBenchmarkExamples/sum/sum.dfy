@@ -2,9 +2,6 @@
 // Regression Verification for unbalanced recursive functions
 // https://iew.technion.ac.il/~ofers/publications/fm16.pdf
 
-import stainless.collection._
-import stainless.lang._
-import stainless.annotation._
 
 object Sum {
 

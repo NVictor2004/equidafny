@@ -2,9 +2,6 @@
 // Regression verification of unbalanced recursive functions with multiple calls (long version)
 // https://arxiv.org/pdf/2207.14364.pdf
 
-import stainless.collection._
-import stainless.lang._
-import stainless.annotation._
 
 object Fibonacci {
 

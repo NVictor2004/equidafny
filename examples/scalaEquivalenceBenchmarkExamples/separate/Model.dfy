@@ -1,6 +1,3 @@
-import stainless.lang._
-import stainless.collection.{List => SList}
-import defs._
 
 object Model {
   def separate(xs: List[Animal]): (List[Sheep], List[Goat]) = {

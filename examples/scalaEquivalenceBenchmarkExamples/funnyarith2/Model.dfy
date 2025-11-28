@@ -1,6 +1,3 @@
-import stainless.lang._
-import stainless.collection._
-import defs._
 
 // As funnyarith1 but the Candidate swaps the arguments of sub
 object Model {

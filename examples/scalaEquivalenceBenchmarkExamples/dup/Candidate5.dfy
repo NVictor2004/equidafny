@@ -1,5 +1,3 @@
-import stainless.lang._
-import stainless.collection._
 
 object Candidate5 {
   def dup[S, T](n: BigInt, s: S, t: T): List[(S, T)] = {

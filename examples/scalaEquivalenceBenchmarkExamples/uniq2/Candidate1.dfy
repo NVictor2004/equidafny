@@ -1,5 +1,3 @@
-import stainless.lang._
-import stainless.collection._
 
 object Candidate1 {
   def check(element: Int, l: List[Int]): Boolean = {

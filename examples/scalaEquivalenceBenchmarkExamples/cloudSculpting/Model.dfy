@@ -1,5 +1,3 @@
-import stainless.lang._
-import stainless.collection._
 
 // This tests the auxiliary function matching when argument must be permuted to succeed equivalence checking.
 object Model {

@@ -2,9 +2,6 @@
 // Automating Regression Verification.
 // https://doi.org/10.1145/2642937.2642987
 
-import stainless.collection._
-import stainless.lang._
-import stainless.annotation._
 
 object Inlining {
 

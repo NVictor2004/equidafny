@@ -1,5 +1,3 @@
-import stainless.collection._
-import stainless.lang._
 
 object Candidate {
   def choose(x: BigInt, y: BigInt): BigInt = {
