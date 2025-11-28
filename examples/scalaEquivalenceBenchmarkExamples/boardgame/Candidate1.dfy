@@ -43,7 +43,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
+method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   noCitiesInHorizon(wm, x, y) && tileFreeForSettlement(wm, x, y)
@@ -51,14 +51,14 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
 
 /////////////////////////////////////
 
-method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
+method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
   requires (0 <= y && y < wm.height)
   var xx := (x % wm.width + wm.width) % wm.width;
   var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 
-method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
+method tileFreeForSettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   var tile := tileInWorld(wm, x, y);
   (tile.base match {
@@ -73,7 +73,7 @@ method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
   })
 }
 
-method noCitiesInHorizon(wm: WorldMap, x: int, y: int): bool = {
+method noCitiesInHorizon(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   method loop(ls: List<Tile>): bool = {
@@ -89,7 +89,7 @@ method noCitiesInHorizon(wm: WorldMap, x: int, y: int): bool = {
   loop(collectTilesWithinRadius(wm, x, y, 2))
 }
 
-method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Tile> = {
+method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) returns (res: List<Tile>)
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width)
@@ -105,7 +105,7 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List
   allRings(0)
 }
 
-method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile> = {
+method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int) returns (res: List<Tile>)
   requires (0 <= y && y < wm.height)
   requires (ring >= 0)
   requires (2 * ring < wm.width)

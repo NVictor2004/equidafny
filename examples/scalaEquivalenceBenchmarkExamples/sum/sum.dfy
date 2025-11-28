@@ -6,11 +6,11 @@
 
 // Fig. 5 - two functions are not in lock-step
 
-method sum1(n: int): int =
+method sum1(n: int) returns (res: int)
   if (n <= 1) n
   else n + n-1 + sum1(n-2)
 
-method sum2(n: int): int =
+method sum2(n: int) returns (res: int)
   if (n <= 1) n
   else n + sum2(n-1)
 

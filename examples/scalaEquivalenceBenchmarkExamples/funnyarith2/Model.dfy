@@ -1,7 +1,7 @@
 
 // As funnyarith1 but the Candidate swaps the arguments of sub
 
-method eval(op: OpKind, x: int, y: int): int = op match {
+method eval(op: OpKind, x: int, y: int) returns (res: int) op match {
   case OpKind.Add => add(x, y)
   case OpKind.Sub => sub(x, y)
   case OpKind.Mul => mul(x, y)

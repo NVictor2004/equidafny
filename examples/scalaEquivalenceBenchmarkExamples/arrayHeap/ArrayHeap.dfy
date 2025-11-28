@@ -4,7 +4,7 @@
 
 var MAX := 100000;
 
-method childrenAreHeapsM(a: seq<int>, N: int, i: int): bool =
+method childrenAreHeapsM(a: seq<int>, N: int, i: int) returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   var l := leftM(i);
   var r := rightM(i);
@@ -15,7 +15,7 @@ method childrenAreHeapsM(a: seq<int>, N: int, i: int): bool =
   else
     true
 
-method isHeapM(a: seq<int>, N: int, i: int) : bool =
+method isHeapM(a: seq<int>, N: int, i: int)  returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   decreases(N - i)
   var l := leftM(i);
@@ -34,16 +34,16 @@ method isHeapM(a: seq<int>, N: int, i: int) : bool =
     true
 
 
-method leftM(i: int) : int =
+method leftM(i: int)  returns (res: int)
   requires (0 <= i && i < MAX)
   2 * i + 1
 
-method rightM(i: int) : int =
+method rightM(i: int)  returns (res: int)
   requires (0 <= i && i < MAX)
   2 * i + 2
 
 
-method childrenAreHeaps(a: seq<int>, N: int, i: int): bool =
+method childrenAreHeaps(a: seq<int>, N: int, i: int) returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   if (2 * i + 1 < N && 2 * i + 2 < N) 
     isHeap(a, N, 2 * i + 1) && isHeap(a, N, 2 * i + 2)
@@ -52,7 +52,7 @@ method childrenAreHeaps(a: seq<int>, N: int, i: int): bool =
   else
     true
 
-method isHeap(a: seq<int>, N: int, i: int) : bool =
+method isHeap(a: seq<int>, N: int, i: int)  returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   decreases(N - i)
   var l := 2 * i + 1;

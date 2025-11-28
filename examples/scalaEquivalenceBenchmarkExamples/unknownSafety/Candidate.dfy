@@ -17,9 +17,9 @@ method add(x: int, y: int) returns (res: int) {
 
 /////////////////////////////////////
 
-method isEvenTopLvl(x: int): bool = isEven(x)
+method isEvenTopLvl(x: int) returns (res: bool) isEven(x)
 
-method isEven(x: int): bool = {
+method isEven(x: int) returns (res: bool)
   decreases(if (x <= 0) int(0) else x)
   if (x >= 0) {
     assert(zero(x) == 0) // timeout
@@ -29,7 +29,7 @@ method isEven(x: int): bool = {
   else !isOdd(x - 1)
 }
 
-method isOdd(x: int): bool = {
+method isOdd(x: int) returns (res: bool)
   decreases(if (x <= 0) int(0) else x)
   if (x <= 0) false
   else if (x == 1) true
@@ -38,7 +38,7 @@ method isOdd(x: int): bool = {
 
 /////////////////////////////////////
 
-method isSorted(xs: List<int>): bool = xs match {
+method isSorted(xs: List<int>) returns (res: bool) xs match {
   case Nil() => true
   case Cons(h, Nil()) =>
     if (h >= 0) {

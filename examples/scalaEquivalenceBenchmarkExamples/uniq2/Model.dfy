@@ -1,7 +1,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method remove_elem_1(e: int, lst: List<int>): List<int> = {
+method remove_elem_1(e: int, lst: List<int>) returns (res: List<int>)
   decreases(lst)
   lst match {
     case Nil() => Nil()
@@ -10,7 +10,7 @@ method remove_elem_1(e: int, lst: List<int>): List<int> = {
   }
 }
 
-method solution_1(lst: List<int>): List<int> = {
+method solution_1(lst: List<int>) returns (res: List<int>)
   decreases(lst)
   lst match {
     case Nil()        => Nil()
@@ -18,7 +18,7 @@ method solution_1(lst: List<int>): List<int> = {
   }
 }
 
-method drop_2(lst: List<int>, n: int): List<int> = {
+method drop_2(lst: List<int>, n: int) returns (res: List<int>)
   decreases(lst)
   lst match {
     case Nil()        => Nil()
@@ -26,10 +26,10 @@ method drop_2(lst: List<int>, n: int): List<int> = {
   }
 }
 
-method lemma_2(n: int, @induct lst: List<int>): Unit = {
+method lemma_2(n: int, @induct lst: List<int>) returns (res: Unit)
 }.ensuring(drop_2(lst, n).size <= lst.size)
 
-method solution_2(lst: List<int>): List<int> = {
+method solution_2(lst: List<int>) returns (res: List<int>)
   decreases(lst.size)
 
   method lem(n: int, @stainless.annotation.induct lst: List<int>): Unit = {
@@ -44,7 +44,7 @@ method solution_2(lst: List<int>): List<int> = {
   }
 }
 
-method is_in_3(lst: List<int>, a: int): bool = {
+method is_in_3(lst: List<int>, a: int) returns (res: bool)
   decreases(lst)
   lst match {
     case Nil()        => false
@@ -52,7 +52,7 @@ method is_in_3(lst: List<int>, a: int): bool = {
   }
 }
 
-method unique_3(lst1: List<int>, lst2: List<int>): List<int> = {
+method unique_3(lst1: List<int>, lst2: List<int>) returns (res: List<int>)
   decreases(lst1)
   lst1 match {
     case Nil() => lst2
@@ -61,9 +61,9 @@ method unique_3(lst1: List<int>, lst2: List<int>): List<int> = {
   }
 }
 
-method solution_3(lst: List<int>): List<int> = { unique_3(lst, Nil()) }
+method solution_3(lst: List<int>) returns (res: List<int>) { unique_3(lst, Nil()) }
 
-method solution_4(lst: List<int>): List<int> = {
+method solution_4(lst: List<int>) returns (res: List<int>)
 
   method isNotIn_4(tlst: List<int>, c: int): bool = {
     decreases(tlst)

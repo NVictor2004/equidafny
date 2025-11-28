@@ -11,7 +11,7 @@ sealed abstract class Stream:
 case class SCons(x: int, tailFun: () => Stream, sz: int) extends Stream
 case class SNil() extends Stream
 
-method finiteM(s: Stream): bool =
+method finiteM(s: Stream) returns (res: bool)
   decreases(s.rank)
   s match
     case SCons(_, tfun, sz) if tfun().rank >= sz =>
@@ -22,7 +22,7 @@ method finiteM(s: Stream): bool =
       true
 
 
-method finite(stream: Stream): bool =
+method finite(stream: Stream) returns (res: bool)
   decreases(stream.rank)
   stream match
     case SCons(_, tfun, sz) =>

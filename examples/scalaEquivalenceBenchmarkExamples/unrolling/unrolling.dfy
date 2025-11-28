@@ -6,14 +6,14 @@
 
 // Fig. 13
 
-method fact13_1(n: int): int =
+method fact13_1(n: int) returns (res: int)
   if (n <= 1) 1
   else if (n == 2) 2
   else if (n == 3) 6
   else if (n == 4) 24
   else n * (n-1) * (n-2) * (n-3) * fact13_1(n-4)
 
-method fact13_2(n: int): int =
+method fact13_2(n: int) returns (res: int)
   if (n <= 1) 1
   else if (n == 2) 2
   else if (n == 3) 6

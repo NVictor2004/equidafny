@@ -1,6 +1,6 @@
 
 // Top level
-method eval(op: OpKind, x: int, y: int): int = op match {
+method eval(op: OpKind, x: int, y: int) returns (res: int) op match {
   case OpKind.Sub => mySub(x, y)
   case OpKind.Mul => myMul(x, y)
   case OpKind.Add => myAdd(x, y)

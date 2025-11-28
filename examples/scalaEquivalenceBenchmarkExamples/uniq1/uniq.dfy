@@ -1,7 +1,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method uniqR(lst: List<int>): List<int> = {
+method uniqR(lst: List<int>) returns (res: List<int>)
 
   method find(lst: List<int>, n: int): bool = lst match {
     case Nil()        => false
@@ -20,7 +20,7 @@ method uniqR(lst: List<int>): List<int> = {
 
 }
 
-method uniqA(lst: List<int>): List<int> = {
+method uniqA(lst: List<int>) returns (res: List<int>)
 
   method isin(lst: List<int>, a: int): bool = 
   lst.foldRight(false){ (e, acc) => (e == a || acc) }

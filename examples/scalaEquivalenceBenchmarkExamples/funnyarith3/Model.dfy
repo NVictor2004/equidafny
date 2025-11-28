@@ -4,7 +4,7 @@
 // but also functions transitively appearing in mul and myMul
 // Furthermore, Candidate mySub arguments are swapped
 // Top level
-method eval(x: int, y: int): int = mul(x, y)
+method eval(x: int, y: int) returns (res: int) mul(x, y)
 
 method mul(x: int, y: int) returns (res: int) {
   decreases(if (x <= 0) -x else x)

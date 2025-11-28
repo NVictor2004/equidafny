@@ -1,4 +1,4 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method max(l: List<int>): int = -1
+method max(l: List<int>) returns (res: int) -1
 

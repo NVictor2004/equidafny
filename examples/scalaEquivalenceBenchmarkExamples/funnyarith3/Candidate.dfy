@@ -1,7 +1,7 @@
 
 
 // Top level
-method eval(x: int, y: int): int = myMul(x, y)
+method eval(x: int, y: int) returns (res: int) myMul(x, y)
 
 method myAdd(x: int, y: int) returns (res: int) {
   decreases(if (x <= 0) -x else x)

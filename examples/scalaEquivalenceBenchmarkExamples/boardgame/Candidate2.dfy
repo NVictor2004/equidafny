@@ -44,7 +44,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
+method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   var tile := tileInWorld(wm, x, y);
@@ -57,7 +57,7 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
 
 /////////////////////////////////////
 
-method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
+method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
   requires (0 <= y && y < wm.height)
   var xx := (x % wm.width + wm.width) % wm.width;
   var ix := y * wm.width + xx;

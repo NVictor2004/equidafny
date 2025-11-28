@@ -90,7 +90,7 @@ method adj(tile: Tile, districtKind: DistrictKind) returns (res: int) {
 // Part 2. Determining whether a placement is suitable for settling
 // -Rules: no other city in a 2-tile range
 // -The tile must be adequate for settling (flat or hill terrain, and must not have another city or district on it)
-method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
+method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   tileOkForCity(wm, x, y) && noOtherCitiesInRange(wm, x, y)
@@ -146,7 +146,7 @@ method testValidCitySettlement3: (WorldMap, int, int) = {
 
 ///////////////////////////////////////////////////////////////////////////
 
-method tileOkForCity(wm: WorldMap, x: int, y: int): bool = {
+method tileOkForCity(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   var tile := tileInWorld(wm, x, y);
   var baseOk := tile.base match {;
@@ -163,7 +163,7 @@ method tileOkForCity(wm: WorldMap, x: int, y: int): bool = {
   baseOk && ctorOk
 }
 
-method noOtherCitiesInRange(wm: WorldMap, x: int, y: int): bool = {
+method noOtherCitiesInRange(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   method loop(ls: List<Tile>): bool = {
@@ -180,7 +180,7 @@ method noOtherCitiesInRange(wm: WorldMap, x: int, y: int): bool = {
 }
 
 // Note: includes the x,y tile as well
-method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Tile> = {
+method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) returns (res: List<Tile>)
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width) // To avoid repetition of tiles due to wrapping
@@ -196,7 +196,7 @@ method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Til
   allRings(0)
 }
 
-method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile> = {
+method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int) returns (res: List<Tile>)
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width)
@@ -242,7 +242,7 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile>
 // Since we must be Scala 2-compatible, we could be tempted in having an implicit class.
 // However, the signature will be different to candidates `tileInWorld` (leading to equiv. checking resulting in unknown)
 // As such, we use a plain function...
-method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
+method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
   requires (0 <= y && y < wm.height)
   var xx := (x % wm.width + wm.width) % wm.width;
   var ix := y * wm.width + xx;

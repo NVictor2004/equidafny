@@ -1,6 +1,6 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method uniq(lst: List<int>): List<int> = {
+method uniq(lst: List<int>) returns (res: List<int>)
   decreases(lst.size)
   lst match {
     case Nil() => Nil()

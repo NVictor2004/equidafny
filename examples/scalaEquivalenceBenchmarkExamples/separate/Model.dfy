@@ -12,7 +12,7 @@ method separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {
   }
 }
 
-method test: SList<List<Animal>> = SList(
+method test returns (res: SList<List<Animal>>) SList(
   Goat(1) :: Sheep(2) :: Nil
 )
 
