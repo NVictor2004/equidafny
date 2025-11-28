@@ -1,5 +1,4 @@
 
-object Candidate1 {
 
   def unfoldingSorted[State, Elem](start: State,
                                    next: State => Option[(State, Elem)],

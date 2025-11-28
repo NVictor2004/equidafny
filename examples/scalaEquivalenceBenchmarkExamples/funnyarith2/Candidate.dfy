@@ -1,5 +1,4 @@
 
-object Candidate {
 
   def eval(op: OpKind, x: BigInt, y: BigInt): BigInt = op match {
     case OpKind.Sub => mySub(y, x)

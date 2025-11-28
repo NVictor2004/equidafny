@@ -1,5 +1,4 @@
 
-object defs {
   sealed trait Animal
   case class Sheep(id: BigInt) extends Animal
   case class Goat(id: BigInt) extends Animal
@@ -56,7 +55,6 @@ object defs {
     }
   }
 
-  case object Nil extends List[Nothing]
 
   final case class ::[+A](first: A, next: List[A]) extends List[A]
 

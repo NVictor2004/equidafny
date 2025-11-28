@@ -3,7 +3,6 @@
 // https://doi.org/10.1145/2642937.2642987
 
 
-object Limit1 {
 
   // REVE does not work -- requires manual unrolling
 

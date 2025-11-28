@@ -1,5 +1,4 @@
 
-object Candidate {
 
   // Top level
   def eval(x: BigInt, y: BigInt): BigInt = myMul(x, y)

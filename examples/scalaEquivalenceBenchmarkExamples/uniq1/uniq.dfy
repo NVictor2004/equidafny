@@ -1,5 +1,4 @@
 
-object Uniq {
 
   def uniqR(lst: List[Int]): List[Int] = {
 

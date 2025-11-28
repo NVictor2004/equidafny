@@ -3,7 +3,6 @@
 // https://iew.technion.ac.il/~ofers/publications/fm16.pdf
 
 
-object Unrolling {
 
   // Fig. 13
 

@@ -1,5 +1,4 @@
 
-object FizzBuzz:
 
   sealed trait Outcome
   case class Fizz() extends Outcome

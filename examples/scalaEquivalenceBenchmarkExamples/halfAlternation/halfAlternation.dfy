@@ -3,7 +3,6 @@
 // https://arxiv.org/pdf/2207.14364.pdf
 
 
-object HalfAlternation {
 
   // Fig. 14
 

@@ -2,7 +2,6 @@
 // This one is expected to timeout, but we want to test that permutation of arguments
 // for auxiliary functions does not go wrong when doing a "model first"
 // and "candidate first" induction strategy
-object Model {
 
   def sigma(f: BigInt => BigInt, a: BigInt, b: BigInt): BigInt = {
     def s(a: BigInt, b: BigInt, f: BigInt => BigInt, acc: BigInt): BigInt = {

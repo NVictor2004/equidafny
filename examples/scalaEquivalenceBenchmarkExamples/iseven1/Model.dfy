@@ -1,5 +1,4 @@
 
-object Model {
 
   def isEvenTopLvl(x: BigInt): Boolean = isEven(x)
 

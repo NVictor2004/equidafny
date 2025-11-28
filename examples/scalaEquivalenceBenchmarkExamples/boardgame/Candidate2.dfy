@@ -1,5 +1,4 @@
 
-object Candidate2 {
 
   def adjacencyBonus(wm: WorldMap, x: BigInt, y: BigInt, districtKind: DistrictKind): BigInt = {
     require(0 <= y && y < wm.height)

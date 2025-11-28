@@ -3,7 +3,6 @@
 // https://arxiv.org/pdf/2207.14364.pdf
 
 
-object Pascal {
 
   // Fig. 8
   // RVT times out due to KLEE timing out when trying to prove the base-case

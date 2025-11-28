@@ -1,5 +1,4 @@
 
-object Candidate {
   def fold(f: (Int, Int) => Int, l: List[Int], a: Int): Int = {
     decreases(l)
     l match {

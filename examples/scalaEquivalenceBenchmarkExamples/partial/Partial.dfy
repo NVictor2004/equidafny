@@ -2,7 +2,6 @@
 /* From ESOP 2014, Kuwahara et al */
 
 
-object Partial:
 
   def existsM[T](p: T => Boolean): Boolean =
     !forall((t: T) => !p(t))

@@ -1,5 +1,4 @@
 
-object IsSorted {
 
   def isSortedR(l: List[Int]): Boolean = {
     def loop(p: Int, l: List[Int]): Boolean = l match {

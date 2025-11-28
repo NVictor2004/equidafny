@@ -1,5 +1,4 @@
 
-object Candidate {
 
   def isEvenTopLvl(x: BigInt): Boolean = myIsEven(x)
 

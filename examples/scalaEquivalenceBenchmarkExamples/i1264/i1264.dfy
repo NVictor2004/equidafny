@@ -1,5 +1,4 @@
 
-object i1264 {
 
   def split[T](l: List[T], x: T): List[List[T]] = {
     decreases(l)

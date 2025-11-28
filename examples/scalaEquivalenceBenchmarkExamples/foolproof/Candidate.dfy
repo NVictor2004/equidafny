@@ -1,5 +1,4 @@
 
-object Candidate {
   def choose(x: BigInt, y: BigInt): BigInt = {
     decreases(if (x <= 0) BigInt(0) else x)
     if (x <= 0) y

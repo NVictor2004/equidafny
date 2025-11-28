@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object Valid2DLength:
 
   enum Direction {
       case Left

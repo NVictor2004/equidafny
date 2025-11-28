@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object ArrayHeap:
 
   val MAX = 100000
 

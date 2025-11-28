@@ -1,5 +1,4 @@
 
-object Candidate {
 
   def zero(x: BigInt): BigInt = {
     require(x >= 0)

@@ -1,5 +1,4 @@
 
-object Model {
 
   def remove_elem_1(e: Int, lst: List[Int]): List[Int] = {
     decreases(lst)

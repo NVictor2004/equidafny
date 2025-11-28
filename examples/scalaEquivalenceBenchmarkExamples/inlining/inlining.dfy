@@ -3,7 +3,6 @@
 // https://doi.org/10.1145/2642937.2642987
 
 
-object Inlining {
 
   def inlining_1(x: BigInt): BigInt = {
     if (x > 0) inlining_1(x-1) + BigInt(1)

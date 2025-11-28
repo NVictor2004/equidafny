@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object AdjList:
 
   def validAdjListM(adjList: Array[List[Int]], N: Int, pos: Int): Boolean =
     require(N >= 1 && pos >= 0 && pos <= N && N == adjList.length)

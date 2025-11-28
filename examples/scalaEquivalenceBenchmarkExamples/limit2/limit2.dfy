@@ -3,7 +3,6 @@
 // https://doi.org/10.1145/2642937.2642987
 
 
-object Limit2 {
 
   def limit2_1(n: BigInt): BigInt = {
     if (n <= 0) n

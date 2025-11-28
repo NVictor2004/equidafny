@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object SortedArray:
 
   def isSortedArrayM(a: Array[BigInt], start: Int, n: Int): Boolean =
     decreases(n)

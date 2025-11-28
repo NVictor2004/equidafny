@@ -1,5 +1,4 @@
 
-object Candidate1 {
 
   def dup[S, T](n: BigInt, s: S, t: T): List[(S, T)] = {
     decreases(if (n <= 0) BigInt(0) else n)

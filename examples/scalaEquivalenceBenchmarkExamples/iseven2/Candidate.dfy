@@ -1,5 +1,4 @@
 
-object Candidate {
 
   def isEvenTopLvl(x: BigInt): Boolean = !myIsOdd(x) && myIsEven(x) // Note: swapped order to cause "pairs" to be mismatched
 

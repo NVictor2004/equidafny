@@ -3,7 +3,6 @@
 // https://iew.technion.ac.il/~ofers/publications/fm16.pdf
 
 
-object Factorial {
 
   // Fig. 14
 

@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object ArrayIncreasing:
 
   def validLengthIncreasingM(a:Array[Array[Int]], N:Int, M:Int, k: Int): Boolean =
     require(N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)

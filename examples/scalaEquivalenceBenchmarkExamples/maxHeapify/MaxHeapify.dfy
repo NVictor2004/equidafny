@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object MayHeapify:
 
   val MAX = 100000
 

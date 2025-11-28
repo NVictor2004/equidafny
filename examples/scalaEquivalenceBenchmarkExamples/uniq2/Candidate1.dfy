@@ -1,5 +1,4 @@
 
-object Candidate1 {
   def check(element: Int, l: List[Int]): Boolean = {
     decreases(l)
     l match {

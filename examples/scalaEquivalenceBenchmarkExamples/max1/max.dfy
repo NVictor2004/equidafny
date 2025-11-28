@@ -1,5 +1,4 @@
 
-object Max {
 
   def maxR(lst: List[Int]): Int = {
     lst match {

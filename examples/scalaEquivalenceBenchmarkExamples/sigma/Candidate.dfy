@@ -1,6 +1,5 @@
 
 
-object Candidate {
 
   def sigma(f: BigInt => BigInt, a: BigInt, b: BigInt): BigInt = {
     decreases(if (b == a) BigInt(2) else if (b > a) 2 + b - a else a - b)

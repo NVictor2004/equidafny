@@ -3,7 +3,6 @@
 // https://iew.technion.ac.il/~ofers/publications/fm16.pdf
 
 
-object Sum {
 
   // Fig. 5 - two functions are not in lock-step
 

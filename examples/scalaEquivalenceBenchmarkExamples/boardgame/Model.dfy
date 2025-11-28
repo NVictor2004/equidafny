@@ -1,5 +1,4 @@
 
-object Model {
 
   // Part 1. Calculating adjacency bonus
   // Rules:

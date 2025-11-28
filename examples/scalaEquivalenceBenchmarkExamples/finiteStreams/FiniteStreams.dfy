@@ -1,7 +1,6 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-object FiniteStream:
 
   sealed abstract class Stream:
     def rank = {

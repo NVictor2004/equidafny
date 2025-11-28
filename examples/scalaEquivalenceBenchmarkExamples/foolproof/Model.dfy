@@ -1,7 +1,6 @@
 
 // Tests whether `choose` matching avoidance do not get fooled by functions named `choose`.
 // See max3 for explanation on this "choose matching avoidance"
-object Model {
   def choose(x: BigInt, y: BigInt): BigInt = {
     decreases(if (x <= 0) BigInt(0) else x)
     if (x <= 0) y

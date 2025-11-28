@@ -1,5 +1,4 @@
 
-object Model {
 
   def isEvenTopLvl(x: BigInt): Boolean = isEven(x) && !isOdd(x) // calls isEven and isOdd to force matching for both of them
 

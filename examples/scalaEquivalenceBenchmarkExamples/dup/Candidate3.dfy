@@ -1,5 +1,4 @@
 
-object Candidate3 {
 
   // Wrong signature
   def dup[S, T](n: BigInt, t: T, s: S): List[(S, T)] = {

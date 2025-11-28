@@ -1,6 +1,5 @@
 
 // As funnyarith1 but the Candidate swaps the arguments of sub
-object Model {
 
   def eval(op: OpKind, x: BigInt, y: BigInt): BigInt = op match {
     case OpKind.Add => add(x, y)

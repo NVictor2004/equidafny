@@ -1,5 +1,4 @@
 
-object Candidate:
 
   def binSum(l1: List[Boolean], l2: List[Boolean], c: Boolean): List[Boolean] =
     (l1, l2, c) match

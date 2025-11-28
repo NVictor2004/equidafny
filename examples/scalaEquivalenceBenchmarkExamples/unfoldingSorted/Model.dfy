@@ -1,5 +1,4 @@
 
-object Model {
 
   def unfoldingSorted[S, T](start: S,
                             next: S => Option[(S, T)],

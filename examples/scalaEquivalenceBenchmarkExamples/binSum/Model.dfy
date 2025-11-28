@@ -1,7 +1,6 @@
 
 // This tests the normalization function where the return type is changed
 
-object Model:
 
   def binSum(l1: List[Boolean], l2: List[Boolean], c: Boolean): List[Boolean] =
     (l1, l2) match

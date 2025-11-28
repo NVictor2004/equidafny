@@ -1,5 +1,4 @@
 
-object Model {
 
   def add(x: BigInt, y: BigInt): BigInt = x + y
 

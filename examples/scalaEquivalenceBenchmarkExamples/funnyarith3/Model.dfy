@@ -3,7 +3,6 @@
 // That is, we do not only try to match function appearing in top-level `eval` (mul and myMul)
 // but also functions transitively appearing in mul and myMul
 // Furthermore, Candidate mySub arguments are swapped
-object Model {
   // Top level
   def eval(x: BigInt, y: BigInt): BigInt = mul(x, y)
 

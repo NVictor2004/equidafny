@@ -3,7 +3,6 @@
 // https://doi.org/10.1145/2642937.2642987
 
 
-object AddHorn {
 
   def add_horn_1(i: BigInt, j: BigInt): BigInt = {
     require(i >= 0)

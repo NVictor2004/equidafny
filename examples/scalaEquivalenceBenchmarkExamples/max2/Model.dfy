@@ -1,5 +1,4 @@
 
-object Model {
 
   def max(lst: List[Int]): Int = {
     decreases(lst)

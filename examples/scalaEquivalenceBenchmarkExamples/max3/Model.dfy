@@ -3,7 +3,6 @@
 // but here we ensure that the `choose` functions (created from the `choose((x: Int) => true)`)
 // for the Model and the Candidate do not get matched because it would make the type-checker unhappy
 // (because we would create `choose` expressions when doing the replacement).
-object Model {
   def fold(f: (Int, Int) => Int, l: List[Int], a: Int): Int = {
     decreases(l)
     l match {

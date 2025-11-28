@@ -1,5 +1,4 @@
 
-object Candidate1 {
   def max(l: List[Int]): Int = {
     decreases(l)
     l match {

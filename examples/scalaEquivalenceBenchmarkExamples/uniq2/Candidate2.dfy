@@ -1,5 +1,4 @@
 
-object Candidate2 {
   def uniq(lst: List[Int]): List[Int] = {
     decreases(lst.size)
     lst match {
