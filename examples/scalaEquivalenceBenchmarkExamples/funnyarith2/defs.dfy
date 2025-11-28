@@ -1,3 +1,3 @@
-  sealed trait OpKind
-  }
+sealed trait OpKind
+}
 

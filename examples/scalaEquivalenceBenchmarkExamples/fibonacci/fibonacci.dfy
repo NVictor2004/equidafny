@@ -4,17 +4,17 @@
 
 
 
-  // Fig. 4
+// Fig. 4
 
-  method f1(n: int) returns (res: int) {
-    if (n < 1) 0
-    else if (n <= 2) 1
-    else f1(n-1) + f1(n-2)
-  }
+method f1(n: int) returns (res: int) {
+  if (n < 1) 0
+  else if (n <= 2) 1
+  else f1(n-1) + f1(n-2)
+}
 
-  method f2(n: int) returns (res: int) {
-    if (n < 1) 0
-    else if (n <= 2) 1
-    else f2(n-2) + f2(n-2) + f2(n-3)
-  }
+method f2(n: int) returns (res: int) {
+  if (n < 1) 0
+  else if (n <= 2) 1
+  else f2(n-2) + f2(n-2) + f2(n-3)
+}
 

@@ -2,37 +2,37 @@
 
 
 
-  method validAdjListM(adjList: Array[List[int]], N: int, pos: int): bool =
-    requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
-    decreases(pos)
-    if pos == 0 then
+method validAdjListM(adjList: Array[List[int]], N: int, pos: int): bool =
+  requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
+  decreases(pos)
+  if pos == 0 then
+    true
+  else
+    validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
+
+method validListM(list: List[int], N: int): bool =
+  requires (N >= 1)
+  list match
+    case Nil() =>
       true
-    else
-      validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
-
-  method validListM(list: List[int], N: int): bool =
-    requires (N >= 1)
-    list match
-      case Nil() =>
-        true
-      case Cons(h, t) =>
-        h >= 0 && h < N && validListM(t, N)
+    case Cons(h, t) =>
+      h >= 0 && h < N && validListM(t, N)
 
 
-  method validAdjList(adjList: Array[List[int]], N: int, pos: int): bool =
-    requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
-    decreases(pos)
-    if (pos == 0) then
-      true
-    else if (validAdjList(adjList, N, pos - 1)) then
-      validList(N, adjList(pos - 1))
-    else
-      false
+method validAdjList(adjList: Array[List[int]], N: int, pos: int): bool =
+  requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
+  decreases(pos)
+  if (pos == 0) then
+    true
+  else if (validAdjList(adjList, N, pos - 1)) then
+    validList(N, adjList(pos - 1))
+  else
+    false
 
-  method validList(N: int, l: List[int]): bool =
-    requires (N >= 1)
-    l match
-      case Cons(h, t) if (h >= 0 && h < N) =>
-        validList(N, t)
-      case _ =>
-        l.size == 0
+method validList(N: int, l: List[int]): bool =
+  requires (N >= 1)
+  l match
+    case Cons(h, t) if (h >= 0 && h < N) =>
+      validList(N, t)
+    case _ =>
+      l.size == 0
