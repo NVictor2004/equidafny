@@ -1,6 +1,6 @@
 
 
-  def remove_elem_1(e: Int, lst: List[Int]): List[Int] = {
+  method remove_elem_1(e: int, lst: List[int]): List[int] = {
     decreases(lst)
     lst match {
       case Nil() => Nil()
@@ -9,7 +9,7 @@
     }
   }
 
-  def solution_1(lst: List[Int]): List[Int] = {
+  method solution_1(lst: List[int]): List[int] = {
     decreases(lst)
     lst match {
       case Nil()        => Nil()
@@ -17,7 +17,7 @@
     }
   }
 
-  def drop_2(lst: List[Int], n: Int): List[Int] = {
+  method drop_2(lst: List[int], n: int): List[int] = {
     decreases(lst)
     lst match {
       case Nil()        => Nil()
@@ -25,13 +25,13 @@
     }
   }
 
-  def lemma_2(n: Int, @induct lst: List[Int]): Unit = {
+  method lemma_2(n: int, @induct lst: List[int]): Unit = {
  }.ensuring(drop_2(lst, n).size <= lst.size)
 
-  def solution_2(lst: List[Int]): List[Int] = {
+  method solution_2(lst: List[int]): List[int] = {
     decreases(lst.size)
 
-    def lem(n: Int, @stainless.annotation.induct lst: List[Int]): Unit = {
+    method lem(n: int, @stainless.annotation.induct lst: List[int]): Unit = {
       ()
    }.ensuring(drop_2(lst, n).size <= lst.size)
 
@@ -43,7 +43,7 @@
     }
   }
 
-  def is_in_3(lst: List[Int], a: Int): Boolean = {
+  method is_in_3(lst: List[int], a: int): bool = {
     decreases(lst)
     lst match {
       case Nil()        => false
@@ -51,20 +51,20 @@
     }
   }
 
-  def unique_3(lst1: List[Int], lst2: List[Int]): List[Int] = {
+  method unique_3(lst1: List[int], lst2: List[int]): List[int] = {
     decreases(lst1)
     lst1 match {
       case Nil() => lst2
       case Cons(hd, tl) =>
-        if (is_in_3(lst2, hd)) unique_3(tl, lst2) else unique_3(tl, lst2 ++ List[Int](hd))
+        if (is_in_3(lst2, hd)) unique_3(tl, lst2) else unique_3(tl, lst2 ++ List[int](hd))
     }
   }
 
-  def solution_3(lst: List[Int]): List[Int] = { unique_3(lst, Nil()) }
+  method solution_3(lst: List[int]): List[int] = { unique_3(lst, Nil()) }
 
-  def solution_4(lst: List[Int]): List[Int] = {
+  method solution_4(lst: List[int]): List[int] = {
 
-    def isNotIn_4(tlst: List[Int], c: Int): Boolean = {
+    method isNotIn_4(tlst: List[int], c: int): bool = {
       decreases(tlst)
       tlst match {
         case Nil()        => true
@@ -72,7 +72,7 @@
       }
     }
 
-    def uniqSave_4(l1: List[Int], l2: List[Int]): List[Int] = {
+    method uniqSave_4(l1: List[int], l2: List[int]): List[int] = {
       decreases(l1)
       l1 match {
         case Nil() => { l2 }

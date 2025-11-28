@@ -1,6 +1,6 @@
 
 
-  def adjacencyBonus(wm: WorldMap, x: BigInt, y: BigInt, districtKind: DistrictKind): BigInt = {
+  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
     require(0 <= y && y < wm.height)
     require(wm.width > 4)
     // No, one must still compute adjacency even for tiles on the y-border of the map
@@ -11,32 +11,32 @@
         adj(wm, x, y - 1, districtKind) +
         adj(wm, x - 1, y, districtKind) +
         adj(wm, x - 1, y + 1, districtKind)
-    } else BigInt(0)
+    } else int(0)
   }
 
-  def adj(wm: WorldMap, x: BigInt, y: BigInt, districtKind: DistrictKind): BigInt = {
+  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
     require(0 <= y && y < wm.height)
     val tile = tileInWorld(wm, x, y)
     districtKind match {
       case DistrictKind.Campus => tile.base match {
-        case TileBase.Mountain => BigInt(2)
+        case TileBase.Mountain => int(2)
         case _ => tile.construction match {
-          case Some(Construction.City(_))  => BigInt(1)
-          case Some(Construction.District(_)) => BigInt(1)
-          case _ => BigInt(0)
+          case Some(Construction.City(_))  => int(1)
+          case Some(Construction.District(_)) => int(1)
+          case _ => int(0)
         }
       }
       case DistrictKind.IndustrialZone =>
         val resAdj = tile.resource match {
-          case Some(Resource.Iron) => BigInt(2)
-          case Some(Resource.Coal) => BigInt(2)
-          case _ => BigInt(0)
+          case Some(Resource.Iron) => int(2)
+          case Some(Resource.Coal) => int(2)
+          case _ => int(0)
         }
         tile.construction match {
-          case Some(Construction.City(_)) => resAdj + BigInt(1)
-          case Some(Construction.District(_)) => resAdj + BigInt(1)
-          case Some(Construction.Exploitation(ResourceImprovement.Mine)) => resAdj + BigInt(1)
-          case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => resAdj + BigInt(2)
+          case Some(Construction.City(_)) => resAdj + int(1)
+          case Some(Construction.District(_)) => resAdj + int(1)
+          case Some(Construction.Exploitation(ResourceImprovement.Mine)) => resAdj + int(1)
+          case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => resAdj + int(2)
           case _ => resAdj
         }
     }
@@ -46,7 +46,7 @@
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
 
-  def validCitySettlement(wm: WorldMap, x: BigInt, y: BigInt): Boolean = {
+  method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
     require(0 <= y && y < wm.height)
     require(wm.width > 4)
     // Desperately trying to do that by-hand, but forgets about the second ring...
@@ -66,14 +66,14 @@
 
   /////////////////////////////////////
 
-  def tileInWorld(wm: WorldMap, x: BigInt, y: BigInt): Tile = {
+  method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
     require(0 <= y && y < wm.height)
     val xx = (x % wm.width + wm.width) % wm.width
     val ix = y * wm.width + xx
     wm.tiles(ix)
   }
 
-  def tileFreeForSettlement(wm: WorldMap, x: BigInt, y: BigInt): Boolean = {
+  method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
     require(0 <= y && y < wm.height)
     val tile = tileInWorld(wm, x, y)
     (tile.base match {
@@ -83,7 +83,7 @@
     }) && notACity(wm, x, y) && notADistrict(wm, x, y)
   }
 
-  def notACity(wm: WorldMap, x: BigInt, y: BigInt): Boolean = {
+  method notACity(wm: WorldMap, x: int, y: int): bool = {
     !(0 <= y && y < wm.height) || {
       val tile = tileInWorld(wm, x, y)
       tile.construction match {
@@ -94,7 +94,7 @@
       }
     }
   }
-  def notADistrict(wm: WorldMap, x: BigInt, y: BigInt): Boolean = {
+  method notADistrict(wm: WorldMap, x: int, y: int): bool = {
     !(0 <= y && y < wm.height) || {
       val tile = tileInWorld(wm, x, y)
       tile.construction match {

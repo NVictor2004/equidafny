@@ -1,3 +1,3 @@
 
-  def max(l: List[Int]): Int = -1
+  method max(l: List[int]): int = -1
 }

@@ -6,17 +6,17 @@
 
   // Fig. 13
 
-  def t1(n: BigInt): BigInt = {
+  method t1(n: int): int = {
     if (n < 1) 0
     else if (n == 1) 1
     else t1(n - 1) + t1(n - 2)
   }
 
-  def t2(n: BigInt): BigInt = {
+  method t2(n: int): int = {
     if (n < 1) 0
     else if (n == 1 || n == 2) 1
     else {
-      var results: BigInt = 0
+      var results: int = 0
       var r1 = t2(n-1)
       var r2 = t2(n-2)
       var r3 = t2(n-3)

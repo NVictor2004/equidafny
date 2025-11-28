@@ -4,23 +4,23 @@
 // but also functions transitively appearing in mul and myMul
 // Furthermore, Candidate mySub arguments are swapped
   // Top level
-  def eval(x: BigInt, y: BigInt): BigInt = mul(x, y)
+  method eval(x: int, y: int): int = mul(x, y)
 
-  def mul(x: BigInt, y: BigInt): BigInt = {
+  method mul(x: int, y: int): int = {
     decreases(if (x <= 0) -x else x)
-    if (x == 0) BigInt(0)
+    if (x == 0) int(0)
     else if (x > 0) add(mul(x - 1, y), y)
     else sub(mul(x + 1, y), y)
   }
 
-  def add(x: BigInt, y: BigInt): BigInt = {
+  method add(x: int, y: int): int = {
     decreases(if (x <= 0) -x else x)
     if (x == 0) y
     else if (x > 0) add(x - 1, y + 1)
     else add(x + 1, y - 1)
   }
 
-  def sub(x: BigInt, y: BigInt): BigInt = {
+  method sub(x: int, y: int): int = {
     decreases(if (x <= 0) -x else x)
     if (x == 0) -y
     else if (x > 0) sub(x - 1, y - 1)

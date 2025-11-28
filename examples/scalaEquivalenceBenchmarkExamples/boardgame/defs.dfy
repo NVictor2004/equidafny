@@ -8,7 +8,7 @@
   )
 
   // Hexagon tiles, cylinder world (i.e. wraps around x-axis)
-  case class WorldMap(tiles: List[Tile], width: BigInt, height: BigInt) {
+  case class WorldMap(tiles: List[Tile], width: int, height: int) {
     require(width > 0 && height > 0)
     require(tiles.length == width * height)
   }
@@ -30,7 +30,7 @@
   }
 
   sealed trait Construction
-    case class City(id: BigInt) extends Construction
+    case class City(id: int) extends Construction
     case class District(kind: DistrictKind) extends Construction
     case class Exploitation(kind: ResourceImprovement) extends Construction
   }

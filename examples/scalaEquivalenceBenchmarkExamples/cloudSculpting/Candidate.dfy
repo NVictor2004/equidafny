@@ -1,10 +1,10 @@
 
-  def sculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: BigInt, i1: BigInt, i2: BigInt, i3: BigInt, a2b: A => B, b2c: B => C, c2a: C => A): (BigInt, BigInt, BigInt) = {
+  method sculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A => B, b2c: B => C, c2a: C => A): (int, int, int) = {
     require(fuel >= 0)
     leVraiSculpteurDeNuage(b2c, b, c, fuel, a2b, i2, a, i3, i1, c2a)
   }
 
-  def leVraiSculpteurDeNuage[A, B, C](b2c: B => C, b: B, c: C, fuel: BigInt, a2b: A => B, i2: BigInt, a: A, i3: BigInt, i1: BigInt, c2a: C => A): (BigInt, BigInt, BigInt)= {
+  method leVraiSculpteurDeNuage[A, B, C](b2c: B => C, b: B, c: C, fuel: int, a2b: A => B, i2: int, a: A, i3: int, i1: int, c2a: C => A): (int, int, int)= {
     require(fuel >= 0)
     decreases(fuel)
     if (fuel == 0) (i1, i2, i3)
@@ -14,7 +14,7 @@
     }
   }
 
-  def mixmash(i2: BigInt, i3: BigInt, i1: BigInt): (BigInt, BigInt, BigInt) = {
+  method mixmash(i2: int, i3: int, i1: int): (int, int, int) = {
     decreases(if (i2 <= 0) -i2 else i2)
     if (i2 == 0) (-1, i3, i1)
     else if (i2 > 0) {

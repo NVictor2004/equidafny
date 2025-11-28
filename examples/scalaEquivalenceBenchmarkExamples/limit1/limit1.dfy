@@ -6,12 +6,12 @@
 
   // REVE does not work -- requires manual unrolling
 
-  def limit1_1(n: BigInt): BigInt = {
+  method limit1_1(n: int): int = {
     if (n <= 1) n
     else n + limit1_1(n-1)
   }
 
-  def limit1_2(n: BigInt): BigInt = {
+  method limit1_2(n: int): int = {
     if (n <= 1) n
     else n + n-1 + limit1_2(n-2)
   }

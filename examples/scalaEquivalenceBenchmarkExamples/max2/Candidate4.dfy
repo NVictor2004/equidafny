@@ -1,5 +1,5 @@
 
-  def max(l: List[Int]): Int = {
+  method max(l: List[int]): int = {
     decreases(l)
     l match {
       case Nil()        => 0

@@ -8,13 +8,13 @@
       case Diagonal
   }
 
-  def valid2DLengthM(a: Array[Array[BigInt]], w: Array[Array[Direction]], m: Int, n: Int, k: Int): Boolean =
+  method valid2DLengthM(a: Array[Array[int]], w: Array[Array[Direction]], m: int, n: int, k: int): bool =
     require(a.length == m && w.length == m && a.length > 0 && w.length > 0 && k >= -1 && k < m)
     decreases(k+1)
     (k == -1) || a(k).length == n && w(k).length == n && valid2DLengthM(a, w, m, n, k - 1)
 
 
-  def valid2DLength(a: Array[Array[BigInt]], w: Array[Array[Direction]], m: Int, n: Int, k: Int): Boolean =
+  method valid2DLength(a: Array[Array[int]], w: Array[Array[Direction]], m: int, n: int, k: int): bool =
     require(a.length == m && w.length == m && a.length > 0 && w.length > 0 && k >= -1 && k < m)
     decreases(k+1)
     if (k == -1) true

@@ -1,10 +1,10 @@
 
 
-  def unfoldingSorted[S, T](start: S,
+  method unfoldingSorted[S, T](start: S,
                             next: S => Option[(S, T)],
-                            leq: (T, T) => Boolean,
-                            max: BigInt): List[T] = {
-    def insert(xs: List[T], t: T): List[T] = {
+                            leq: (T, T) => bool,
+                            max: int): List[T] = {
+    method insert(xs: List[T], t: T): List[T] = {
       decreases(xs)
       xs match {
         case Nil() => Cons(t, Nil())
@@ -13,8 +13,8 @@
           else Cons(hd, insert(tl, t))
       }
     }
-    def loop(s: S, fuel: BigInt, xs: List[T]): List[T] = {
-      decreases(if (fuel <= 0) BigInt(0) else fuel)
+    method loop(s: S, fuel: int, xs: List[T]): List[T] = {
+      decreases(if (fuel <= 0) int(0) else fuel)
       if (fuel <= 0) xs
       else next(s) match {
         case Some((nxtS, t)) =>

@@ -4,12 +4,12 @@
 
 
 
-  def limit3_1(n: BigInt): BigInt = {
+  method limit3_1(n: int): int = {
     if (n <= 1) n
     else n + limit3_1(n-1)
   }
 
-  def limit3_2(n: BigInt): BigInt = {
+  method limit3_2(n: int): int = {
     if (n <= 1) n
     else {
       val r = limit3_2(n-1)

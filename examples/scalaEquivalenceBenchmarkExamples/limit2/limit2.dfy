@@ -4,12 +4,12 @@
 
 
 
-  def limit2_1(n: BigInt): BigInt = {
+  method limit2_1(n: int): int = {
     if (n <= 0) n
     else n + limit2_1(n-1)
   }
 
-  def limit2_2(n: BigInt): BigInt = {
+  method limit2_2(n: int): int = {
     if (n <= 1) n
     else n + limit2_2(n-1)
   }

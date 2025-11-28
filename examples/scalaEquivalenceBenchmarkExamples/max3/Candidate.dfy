@@ -1,5 +1,5 @@
 
-  def fold(f: (Int, Int) => Int, l: List[Int], a: Int): Int = {
+  method fold(f: (int, int) => int, l: List[int], a: int): int = {
     decreases(l)
     l match {
       case Nil()        => a
@@ -7,9 +7,9 @@
     }
   }
 
-  def max(lst: List[Int]): Int = {
+  method max(lst: List[int]): int = {
     lst match {
-      case Nil() => choose((x: Int) => true)
+      case Nil() => choose((x: int) => true)
       case Cons(hd, tl) =>
         fold(
           (x, y) => if (x > y) x else y,

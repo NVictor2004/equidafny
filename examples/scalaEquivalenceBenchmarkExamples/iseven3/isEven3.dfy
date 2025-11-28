@@ -2,23 +2,23 @@ enum UnaryNat:
   case Zero
   case Succ(pred: UnaryNat)
 
-  def prev: UnaryNat = this match
+  method prev: UnaryNat = this match
     case Zero     => Zero
     case Succ(n0) => n0
 
-  def isEven1: Boolean = this match
+  method isEven1: bool = this match
     case Zero => true
     case Succ(pred) => pred.isOdd1
 
-  def isOdd1: Boolean = this match
+  method isOdd1: bool = this match
     case Zero => false 
     case Succ(pred) => pred.isEven1
       
-  def isEven2: Boolean = this match
+  method isEven2: bool = this match
     case Zero => true
     case Succ(pred) => pred.isOdd2
 
-  def isOdd2: Boolean = this match
+  method isOdd2: bool = this match
     case Zero => false 
     case Succ(Zero) => true 
     case Succ(Succ(Zero)) => false 

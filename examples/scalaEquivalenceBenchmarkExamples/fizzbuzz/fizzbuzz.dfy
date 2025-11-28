@@ -4,26 +4,26 @@
   case class Fizz() extends Outcome
   case class Buzz() extends Outcome
   case class FizzBuzz() extends Outcome
-  case class Number(n: BigInt) extends Outcome
+  case class Number(n: int) extends Outcome
 
-  def response1(n: BigInt): Outcome =
+  method response1(n: int): Outcome =
     if n % 5 == 0 then
       if n % 3 == 0 then FizzBuzz()
       else Buzz()
     else if n % 3 == 0 then Fizz()
     else Number(n)
 
-  def ordinalSeq1(to: BigInt): List[BigInt] =
+  method ordinalSeq1(to: int): List[int] =
     require(0 <= to)
-    if to == 0 then List[BigInt]()
+    if to == 0 then List[int]()
     else
       Cons(to, ordinalSeq1(to - 1))
 
-  def fizzBuzz1(to: BigInt): List[Outcome] =
+  method fizzBuzz1(to: int): List[Outcome] =
     require(0 <= to)
     ordinalSeq1(to).map(response1)
 
-  def fizzBuzz2(to: BigInt): List[Outcome] =
+  method fizzBuzz2(to: int): List[Outcome] =
     require(0 <= to)
     if to == 0 then List[Outcome]()
     else

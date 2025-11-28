@@ -1,5 +1,5 @@
 
-  def separate(xs: List[Animal]): (List[Sheep], List[Goat]) = {
+  method separate(xs: List[Animal]): (List[Sheep], List[Goat]) = {
     xs match {
       case Nil => (Nil, Nil)
       case (s: Sheep) :: t =>

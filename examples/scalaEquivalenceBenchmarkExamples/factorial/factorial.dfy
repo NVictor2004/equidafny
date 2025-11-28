@@ -6,11 +6,11 @@
 
   // Fig. 14
 
-  def fact14_1(n: BigInt): BigInt =
+  method fact14_1(n: int): int =
     if (n <= 1) 1
     else n * fact14_1(n-1)
 
-  def fact14_2(n: BigInt): BigInt =
+  method fact14_2(n: int): int =
     if (n <= 1) 1
     else if (n == 10) 3628800
     else n * fact14_2(n-1)

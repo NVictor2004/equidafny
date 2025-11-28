@@ -4,13 +4,13 @@
 
 
 
-  def add_horn_1(i: BigInt, j: BigInt): BigInt = {
+  method add_horn_1(i: int, j: int): int = {
     require(i >= 0)
     if (i == 0) j
     else add_horn_1(i-1, j+1)
   }
 
-  def add_horn_2(i: BigInt, j: BigInt): BigInt = {
+  method add_horn_2(i: int, j: int): int = {
     require(i >= 0)
     if (i == 0) j
     else if (i == 1) j + 1

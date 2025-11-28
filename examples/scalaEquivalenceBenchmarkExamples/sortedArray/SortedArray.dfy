@@ -2,7 +2,7 @@
 
 
 
-  def isSortedArrayM(a: Array[BigInt], start: Int, n: Int): Boolean =
+  method isSortedArrayM(a: Array[int], start: int, n: int): bool =
     decreases(n)
     require(0 <= start && n >= start && n <= a.length)
     if n <= succM(start) then
@@ -12,13 +12,13 @@
     else
       isSortedArrayM(a, start, n-1)
 
-  def succM(n: Int) =
-    if n < Int.MaxValue then
+  method succM(n: int) =
+    if n < int.MaxValue then
       n + 1
     else
       n
 
-  def isSortedArray(a: Array[BigInt], start: Int, n: Int): Boolean =
+  method isSortedArray(a: Array[int], start: int, n: int): bool =
     decreases(n)
     require(0 <= start && n >= start && n <= a.length)
     if n == start then

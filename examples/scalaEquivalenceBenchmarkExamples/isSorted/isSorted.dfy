@@ -1,7 +1,7 @@
 
 
-  def isSortedR(l: List[Int]): Boolean = {
-    def loop(p: Int, l: List[Int]): Boolean = l match {
+  method isSortedR(l: List[int]): bool = {
+    method loop(p: int, l: List[int]): bool = l match {
       case Nil() => true
       case Cons(x, xs) if (p <= x) => loop(x, xs)
       case _ => false
@@ -10,9 +10,9 @@
     else loop(l.head, l.tail)
   }
 
-  def isSortedA(l: List[Int]): Boolean = {
-    def leq(cur: Int, next: Int): Boolean = cur < next
-    def iter(l: List[Int]): Boolean =
+  method isSortedA(l: List[int]): bool = {
+    method leq(cur: int, next: int): bool = cur < next
+    method iter(l: List[int]): bool =
       if (l.isEmpty) true
       else if (l.tail.isEmpty) true
       else leq(l.head, l.tail.head) && iter(l.tail)
@@ -20,7 +20,7 @@
     else l.head <= l.tail.head && iter(l.tail)
   }
 
-  def isSortedB(l: List[Int]): Boolean = {
+  method isSortedB(l: List[int]): bool = {
     if (l.isEmpty)
       true
     else if (!l.tail.isEmpty && l.head > l.tail.head)
@@ -29,8 +29,8 @@
       isSortedB(l.tail)
   }
 
-  def isSortedC(l: List[Int]): Boolean = {
-    def chk(l: List[Int], p: Int, a: Boolean): Boolean = {
+  method isSortedC(l: List[int]): bool = {
+    method chk(l: List[int], p: int, a: bool): bool = {
       if (l.isEmpty) a
       else if (l.head < p) false
       else chk(l.tail, l.head, a)

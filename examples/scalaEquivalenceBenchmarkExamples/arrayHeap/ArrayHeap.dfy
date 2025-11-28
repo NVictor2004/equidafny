@@ -4,7 +4,7 @@
 
   val MAX = 100000
 
-  def childrenAreHeapsM(a: Array[Int], N: Int, i: Int): Boolean =
+  method childrenAreHeapsM(a: Array[int], N: int, i: int): bool =
     require(i >= 0 && i < N && N <= a.length && N <= MAX)
     val l = leftM(i)
     val r = rightM(i)
@@ -15,7 +15,7 @@
     else
       true
 
-  def isHeapM(a: Array[Int], N: Int, i: Int) : Boolean =
+  method isHeapM(a: Array[int], N: int, i: int) : bool =
     require(i >= 0 && i < N && N <= a.length && N <= MAX)
     decreases(N - i)
     val l = leftM(i)
@@ -34,16 +34,16 @@
       true
 
 
-  def leftM(i: Int) : Int =
+  method leftM(i: int) : int =
     require(0 <= i && i < MAX)
     2 * i + 1
 
-  def rightM(i: Int) : Int =
+  method rightM(i: int) : int =
     require(0 <= i && i < MAX)
     2 * i + 2
 
 
-  def childrenAreHeaps(a: Array[Int], N: Int, i: Int): Boolean =
+  method childrenAreHeaps(a: Array[int], N: int, i: int): bool =
     require(i >= 0 && i < N && N <= a.length && N <= MAX)
     if (2 * i + 1 < N && 2 * i + 2 < N) then
       isHeap(a, N, 2 * i + 1) && isHeap(a, N, 2 * i + 2)
@@ -52,7 +52,7 @@
     else
       true
 
-  def isHeap(a: Array[Int], N: Int, i: Int) : Boolean =
+  method isHeap(a: Array[int], N: int, i: int) : bool =
     require(i >= 0 && i < N && N <= a.length && N <= MAX)
     decreases(N - i)
     val l = 2 * i + 1

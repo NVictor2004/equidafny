@@ -1,6 +1,6 @@
 
 
-  def split[T](l: List[T], x: T): List[List[T]] = {
+  method split[T](l: List[T], x: T): List[List[T]] = {
     decreases(l)
     l match {
       case Nil() => List[List[T]](List[T]())
@@ -12,7 +12,7 @@
     }
   }
 
-  def join[T](ll: List[List[T]], l: List[T]): List[T] = {
+  method join[T](ll: List[List[T]], l: List[T]): List[T] = {
     decreases(ll)
     ll match {
       case Nil() => Nil[T]()
@@ -21,7 +21,7 @@
     }
   }
 
-  def replace[T](l1: List[T], x: T, l2: List[T]): List[T] = {
+  method replace[T](l1: List[T], x: T, l2: List[T]): List[T] = {
     decreases(l1)
     l1 match {
       case Nil() => Nil[T]()
@@ -30,6 +30,6 @@
     }
   }
 
-  def slowReplace[T](l1: List[T], x: T, l2: List[T]): List[T] = join(split(l1, x), l2)
+  method slowReplace[T](l1: List[T], x: T, l2: List[T]): List[T] = join(split(l1, x), l2)
 
 }

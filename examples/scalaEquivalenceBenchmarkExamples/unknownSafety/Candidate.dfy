@@ -1,12 +1,12 @@
 
 
-  def zero(x: BigInt): BigInt = {
+  method zero(x: int): int = {
     require(x >= 0)
     if (x > 0) zero(x - 1)
     else x
   }
 
-  def add(x: BigInt, y: BigInt): BigInt = {
+  method add(x: int, y: int): int = {
     if (x >= 0) {
       val z = zero(x)
       assert(z == 0) // timeout
@@ -16,10 +16,10 @@
 
   /////////////////////////////////////
 
-  def isEvenTopLvl(x: BigInt): Boolean = isEven(x)
+  method isEvenTopLvl(x: int): bool = isEven(x)
 
-  def isEven(x: BigInt): Boolean = {
-    decreases(if (x <= 0) BigInt(0) else x)
+  method isEven(x: int): bool = {
+    decreases(if (x <= 0) int(0) else x)
     if (x >= 0) {
       assert(zero(x) == 0) // timeout
     }
@@ -28,8 +28,8 @@
     else !isOdd(x - 1)
   }
 
-  def isOdd(x: BigInt): Boolean = {
-    decreases(if (x <= 0) BigInt(0) else x)
+  method isOdd(x: int): bool = {
+    decreases(if (x <= 0) int(0) else x)
     if (x <= 0) false
     else if (x == 1) true
     else !isEven(x - 1)
@@ -37,7 +37,7 @@
 
   /////////////////////////////////////
 
-  def isSorted(xs: List[BigInt]): Boolean = xs match {
+  method isSorted(xs: List[int]): bool = xs match {
     case Nil() => true
     case Cons(h, Nil()) =>
       if (h >= 0) {

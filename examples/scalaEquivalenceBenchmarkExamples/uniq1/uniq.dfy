@@ -1,13 +1,13 @@
 
 
-  def uniqR(lst: List[Int]): List[Int] = {
+  method uniqR(lst: List[int]): List[int] = {
 
-    def find(lst: List[Int], n: Int): Boolean = lst match {
+    method find(lst: List[int], n: int): bool = lst match {
       case Nil()        => false
       case Cons(hd, tl) => (n == hd) || find(tl, n)
     }
 
-    def unique(l: List[Int], r: List[Int]): List[Int] =
+    method unique(l: List[int], r: List[int]): List[int] =
       l match {
         case Nil() => r
         case Cons(hd, tl) =>
@@ -19,17 +19,17 @@
 
   }
 
-  def uniqA(lst: List[Int]): List[Int] = {
+  method uniqA(lst: List[int]): List[int] = {
 
-    def isin(lst: List[Int], a: Int): Boolean = 
+    method isin(lst: List[int], a: int): bool = 
     lst.foldRight(false){ (e, acc) => (e == a || acc) }
 
-    def distinct(a: List[Int], b: List[Int]): List[Int] =
+    method distinct(a: List[int], b: List[int]): List[int] =
       a match {
         case Nil() => b
         case Cons(hd, tl) =>
           if (isin(b, hd)) distinct(tl, b)
-          else distinct(tl, b ++ List[Int](hd))
+          else distinct(tl, b ++ List[int](hd))
       }
 
     distinct(lst, List())

@@ -1,12 +1,12 @@
 
 // This tests the auxiliary function matching when argument must be permuted to succeed equivalence checking.
   // "cloud scuplting" because does nothing useful (not only that, but also burns fuel...)
-  def sculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: BigInt, i1: BigInt, i2: BigInt, i3: BigInt, a2b: A => B, b2c: B => C, c2a: C => A): (BigInt, BigInt, BigInt) = {
+  method sculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A => B, b2c: B => C, c2a: C => A): (int, int, int) = {
     require(fuel >= 0)
     leVraiSculpteurDeNuage(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a)
   }
 
-  def leVraiSculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: BigInt, i1: BigInt, i2: BigInt, i3: BigInt, a2b: A => B, b2c: B => C, c2a: C => A): (BigInt, BigInt, BigInt) = {
+  method leVraiSculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A => B, b2c: B => C, c2a: C => A): (int, int, int) = {
     require(fuel >= 0)
     decreases(fuel)
     if (fuel == 0) (i1, i2, i3)
@@ -16,5 +16,5 @@
     }
   }
 
-  def mixmash(i1: BigInt, i2: BigInt, i3: BigInt): (BigInt, BigInt, BigInt) = (i2 - 1, i3 + i2, i1)
+  method mixmash(i1: int, i2: int, i3: int): (int, int, int) = (i2 - 1, i3 + i2, i1)
 }

@@ -4,15 +4,15 @@
 
   val MAX = 100000
 
-  def arrayContentM(a: Array[BigInt], n: Int) : Set[BigInt] =
+  method arrayContentM(a: Array[int], n: int) : Set[int] =
     require(n >= 0 && n <= a.length && a.length <= MAX)
     decreases(n)
-    if n == 0 then Set.empty[BigInt]
+    if n == 0 then Set.empty[int]
     else arrayContentM(a, n-1) ++ Set(a(n-1))
 
 
-  def arrayContent(a: Array[BigInt], n: Int) : Set[BigInt] =
+  method arrayContent(a: Array[int], n: int) : Set[int] =
     require(n >= 0 && n <= a.length && a.length <= MAX)
     decreases(n)
-    if n == 0 then Set.empty[BigInt]
+    if n == 0 then Set.empty[int]
     else Set(a(n-1)) ++ arrayContent(a, n-1)

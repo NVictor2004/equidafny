@@ -1,5 +1,5 @@
 
-  def check(element: Int, l: List[Int]): Boolean = {
+  method check(element: int, l: List[int]): bool = {
     decreases(l)
     l match {
       case Nil()        => false
@@ -7,7 +7,7 @@
     }
   }
 
-  def app(l1: List[Int], l2: List[Int]): List[Int] = {
+  method app(l1: List[int], l2: List[int]): List[int] = {
     decreases(l1)
     l1 match {
       case Nil() => l2
@@ -16,5 +16,5 @@
     }
   }
 
-  def uniq(lst: List[Int]): List[Int] = app(lst, Nil())
+  method uniq(lst: List[int]): List[int] = app(lst, Nil())
 }

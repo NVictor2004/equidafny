@@ -1,6 +1,6 @@
 
 
-  def binSum(l1: List[Boolean], l2: List[Boolean], c: Boolean): List[Boolean] =
+  method binSum(l1: List[bool], l2: List[bool], c: bool): List[bool] =
     (l1, l2, c) match
       case (Nil(), Nil(), _) => List(false)
       case (Cons(true, t1), Cons(false, t2), false) => true::binSum(t1, t2, false)

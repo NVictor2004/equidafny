@@ -6,17 +6,17 @@
 
   // Fig. 12
 
-  def m1(n: BigInt, flag: Boolean): BigInt = {
+  method m1(n: int, flag: bool): int = {
     if (n < 1) 0
     else if (n == 1) 1
     else m1(n - 1, !flag) + m1(n - 2, !flag)
   }
 
-  def m2(n: BigInt, mode: Boolean): BigInt = {
+  method m2(n: int, mode: bool): int = {
     if (n < 1) 0
     else if (n == 1 || n == 2) 1
     else {
-      var results: BigInt = 0
+      var results: int = 0
       if (mode) results = m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)
       if (!mode) results = m2(n-1, !mode) + m2(n-2, !mode)
       results

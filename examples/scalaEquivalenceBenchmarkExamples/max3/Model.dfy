@@ -1,9 +1,9 @@
 
 // This is not expected to verify (it should timeout)
-// but here we ensure that the `choose` functions (created from the `choose((x: Int) => true)`)
+// but here we ensure that the `choose` functions (created from the `choose((x: int) => true)`)
 // for the Model and the Candidate do not get matched because it would make the type-checker unhappy
 // (because we would create `choose` expressions when doing the replacement).
-  def fold(f: (Int, Int) => Int, l: List[Int], a: Int): Int = {
+  method fold(f: (int, int) => int, l: List[int], a: int): int = {
     decreases(l)
     l match {
       case Nil()        => a
@@ -11,9 +11,9 @@
     }
   }
 
-  def max(lst: List[Int]): Int = {
+  method max(lst: List[int]): int = {
     lst match {
-      case Nil() => choose((x: Int) => true)
+      case Nil() => choose((x: int) => true)
       case Cons(hd, tl) =>
         fold(
           (x, y) => if (x > y) x else y,
@@ -23,7 +23,7 @@
       }
   }
 
-  def norm(l: List[Int], f: Int): Int = {
+  method norm(l: List[int], f: int): int = {
     if (l.isEmpty) -1
     else f
   }
