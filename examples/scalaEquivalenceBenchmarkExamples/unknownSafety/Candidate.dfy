@@ -38,7 +38,7 @@ method isOdd(x: int): bool = {
 
 /////////////////////////////////////
 
-method isSorted(xs: List[int]): bool = xs match {
+method isSorted(xs: List<int>): bool = xs match {
   case Nil() => true
   case Cons(h, Nil()) =>
     if (h >= 0) {

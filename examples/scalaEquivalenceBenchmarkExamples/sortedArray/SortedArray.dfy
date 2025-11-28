@@ -2,7 +2,7 @@
 
 
 
-method isSortedArrayM(a: Array[int], start: int, n: int): bool =
+method isSortedArrayM(a: seq<int>, start: int, n: int): bool =
   decreases(n)
   requires (0 <= start && n >= start && n <= a.length)
   if n <= succM(start) 
@@ -18,7 +18,7 @@ method succM(n: int) =
   else
     n
 
-method isSortedArray(a: Array[int], start: int, n: int): bool =
+method isSortedArray(a: seq<int>, start: int, n: int): bool =
   decreases(n)
   requires (0 <= start && n >= start && n <= a.length)
   if n == start 

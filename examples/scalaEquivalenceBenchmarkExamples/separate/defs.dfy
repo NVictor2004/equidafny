@@ -4,7 +4,7 @@ sealed trait Animal
 case class Sheep(id: int) extends Animal
 case class Goat(id: int) extends Animal
 
-sealed abstract class List[+T] {
+sealed abstract class List<+T> {
   method size returns (res: int) {
     this match {
       case Nil => 0
@@ -17,7 +17,7 @@ sealed abstract class List[+T] {
 
   method length: int = size
 
-  method ++[TT >: T](that: List[TT]): List[TT] = {
+  method ++[TT >: T](that: List<TT>): List<TT> = {
     this match {
       case Nil => that
       case x :: xs => x :: (xs ++ that)
@@ -30,7 +30,7 @@ sealed abstract class List[+T] {
     h
   }
 
-  method tail: List[T] = {
+  method tail: List<T> = {
     requires (this != Nil)
     val _ :: t = this: @unchecked
     t
@@ -46,9 +46,9 @@ sealed abstract class List[+T] {
     }
   }
 
-  method :: [TT >: T](elem: TT): List[TT] = new ::(elem, this)
+  method :: [TT >: T](elem: TT): List<TT> = new ::(elem, this)
 
-  method :+[TT >: T](t: TT): List[TT] = {
+  method :+[TT >: T](t: TT): List<TT> = {
     this match {
       case Nil => t :: this
       case x :: xs => x :: (xs :+ t)
@@ -57,6 +57,6 @@ sealed abstract class List[+T] {
 }
 
 
-final case class ::[+A](first: A, next: List[A]) extends List[A]
+final case class ::[+A](first: A, next: List<A>) extends List<A>
 
 

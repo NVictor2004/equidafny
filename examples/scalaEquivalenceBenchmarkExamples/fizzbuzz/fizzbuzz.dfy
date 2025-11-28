@@ -14,19 +14,19 @@ method response1(n: int): Outcome =
   else if n % 3 == 0  Fizz()
   else Number(n)
 
-method ordinalSeq1(to: int): List[int] =
+method ordinalSeq1(to: int): List<int> =
   requires (0 <= to)
-  if to == 0  List[int]()
+  if to == 0  List<int>()
   else
     Cons(to, ordinalSeq1(to - 1))
 
-method fizzBuzz1(to: int): List[Outcome] =
+method fizzBuzz1(to: int): List<Outcome> =
   requires (0 <= to)
   ordinalSeq1(to).map(response1)
 
-method fizzBuzz2(to: int): List[Outcome] =
+method fizzBuzz2(to: int): List<Outcome> =
   requires (0 <= to)
-  if to == 0  List[Outcome]()
+  if to == 0  List<Outcome>()
   else
     if to % 15 == 0  Cons(FizzBuzz(), fizzBuzz2(to - 1))
     else

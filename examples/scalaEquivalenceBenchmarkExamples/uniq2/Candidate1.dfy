@@ -1,6 +1,6 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method check(element: int, l: List[int]): bool = {
+method check(element: int, l: List<int>): bool = {
   decreases(l)
   l match {
     case Nil()        => false
@@ -8,7 +8,7 @@ method check(element: int, l: List[int]): bool = {
   }
 }
 
-method app(l1: List[int], l2: List[int]): List[int] = {
+method app(l1: List<int>, l2: List<int>): List<int> = {
   decreases(l1)
   l1 match {
     case Nil() => l2
@@ -17,5 +17,5 @@ method app(l1: List[int], l2: List[int]): List[int] = {
   }
 }
 
-method uniq(lst: List[int]): List[int] = app(lst, Nil())
+method uniq(lst: List<int>): List<int> = app(lst, Nil())
 

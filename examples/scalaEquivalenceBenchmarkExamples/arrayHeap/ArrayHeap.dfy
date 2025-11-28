@@ -4,7 +4,7 @@
 
 val MAX = 100000
 
-method childrenAreHeapsM(a: Array[int], N: int, i: int): bool =
+method childrenAreHeapsM(a: seq<int>, N: int, i: int): bool =
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   val l = leftM(i)
   val r = rightM(i)
@@ -15,7 +15,7 @@ method childrenAreHeapsM(a: Array[int], N: int, i: int): bool =
   else
     true
 
-method isHeapM(a: Array[int], N: int, i: int) : bool =
+method isHeapM(a: seq<int>, N: int, i: int) : bool =
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   decreases(N - i)
   val l = leftM(i)
@@ -43,7 +43,7 @@ method rightM(i: int) : int =
   2 * i + 2
 
 
-method childrenAreHeaps(a: Array[int], N: int, i: int): bool =
+method childrenAreHeaps(a: seq<int>, N: int, i: int): bool =
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   if (2 * i + 1 < N && 2 * i + 2 < N) 
     isHeap(a, N, 2 * i + 1) && isHeap(a, N, 2 * i + 2)
@@ -52,7 +52,7 @@ method childrenAreHeaps(a: Array[int], N: int, i: int): bool =
   else
     true
 
-method isHeap(a: Array[int], N: int, i: int) : bool =
+method isHeap(a: seq<int>, N: int, i: int) : bool =
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   decreases(N - i)
   val l = 2 * i + 1

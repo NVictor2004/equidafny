@@ -1,8 +1,8 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method isSortedR(l: List[int]): bool = {
-  method loop(p: int, l: List[int]): bool = l match {
+method isSortedR(l: List<int>): bool = {
+  method loop(p: int, l: List<int>): bool = l match {
     case Nil() => true
     case Cons(x, xs) if (p <= x) => loop(x, xs)
     case _ => false
@@ -11,9 +11,9 @@ method isSortedR(l: List[int]): bool = {
   else loop(l.head, l.tail)
 }
 
-method isSortedA(l: List[int]): bool = {
+method isSortedA(l: List<int>): bool = {
   method leq(cur: int, next: int): bool = cur < next
-  method iter(l: List[int]): bool =
+  method iter(l: List<int>): bool =
     if (l.isEmpty) true
     else if (l.tail.isEmpty) true
     else leq(l.head, l.tail.head) && iter(l.tail)
@@ -21,7 +21,7 @@ method isSortedA(l: List[int]): bool = {
   else l.head <= l.tail.head && iter(l.tail)
 }
 
-method isSortedB(l: List[int]): bool = {
+method isSortedB(l: List<int>): bool = {
   if (l.isEmpty)
     true
   else if (!l.tail.isEmpty && l.head > l.tail.head)
@@ -30,8 +30,8 @@ method isSortedB(l: List[int]): bool = {
     isSortedB(l.tail)
 }
 
-method isSortedC(l: List[int]): bool = {
-  method chk(l: List[int], p: int, a: bool): bool = {
+method isSortedC(l: List<int>): bool = {
+  method chk(l: List<int>, p: int, a: bool): bool = {
     if (l.isEmpty) a
     else if (l.head < p) false
     else chk(l.tail, l.head, a)

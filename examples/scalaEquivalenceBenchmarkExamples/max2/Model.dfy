@@ -1,7 +1,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method max(lst: List[int]) returns (res: int) {
+method max(lst: List<int>) returns (res: int) {
   decreases(lst)
   lst match {
     case Nil()           => Integer.MIN_VALUE
@@ -10,7 +10,7 @@ method max(lst: List[int]) returns (res: int) {
   }
 }
 
-method norm(l: List[int], f: int) returns (res: int) {
+method norm(l: List<int>, f: int) returns (res: int) {
   if (l.isEmpty) -1
   else f
 }

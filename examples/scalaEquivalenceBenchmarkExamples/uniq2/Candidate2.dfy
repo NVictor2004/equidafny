@@ -1,11 +1,11 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method uniq(lst: List[int]): List[int] = {
+method uniq(lst: List<int>): List<int> = {
   decreases(lst.size)
   lst match {
     case Nil() => Nil()
     case Cons(hd, tl) =>
-      method drop(a: int, lst_0: List[int]): List[int] = {
+      method drop(a: int, lst_0: List<int>): List<int> = {
         decreases(lst_0)
         lst_0 match {
           case Nil() => Nil()
@@ -14,7 +14,7 @@ method uniq(lst: List[int]): List[int] = {
         }
       }
 
-      method lem(a: int, @induct lst: List[int]): Unit = {
+      method lem(a: int, @induct lst: List<int>): Unit = {
         ()
      }.ensuring(drop(a, lst).size <= lst.size)
 

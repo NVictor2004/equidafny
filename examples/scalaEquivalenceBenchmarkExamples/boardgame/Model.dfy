@@ -25,7 +25,7 @@ method adjacencyBonus2(wm: WorldMap, x: int, y: int, districtKind: DistrictKind)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
 
-  method sum(acc: int, ts: List[Tile]) returns (res: int) {
+  method sum(acc: int, ts: List<Tile>) returns (res: int) {
     decreases(ts)
     ts match {
       case Nil() => acc
@@ -35,7 +35,7 @@ method adjacencyBonus2(wm: WorldMap, x: int, y: int, districtKind: DistrictKind)
   sum(0, collectTilesInRing(wm, x, y, 1))
 }
 
-method testsAdjacencyBonus: List[(WorldMap, int, int, DistrictKind)] = List(
+method testsAdjacencyBonus: List<(WorldMap, int, int, DistrictKind)> = List(
   testsAdjacencyBonus1,
 )
 
@@ -96,7 +96,7 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
   tileOkForCity(wm, x, y) && noOtherCitiesInRange(wm, x, y)
 }
 
-method testsValidCitySettlement: List[(WorldMap, int, int)] = List(
+method testsValidCitySettlement: List<(WorldMap, int, int)> = List(
   testValidCitySettlement1,
   testValidCitySettlement2,
   testValidCitySettlement3,
@@ -166,7 +166,7 @@ method tileOkForCity(wm: WorldMap, x: int, y: int): bool = {
 method noOtherCitiesInRange(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
-  method loop(ls: List[Tile]): bool = {
+  method loop(ls: List<Tile>): bool = {
     decreases(ls)
     ls match {
       case Cons(t, rest) => t.construction match {
@@ -180,12 +180,12 @@ method noOtherCitiesInRange(wm: WorldMap, x: int, y: int): bool = {
 }
 
 // Note: includes the x,y tile as well
-method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List[Tile] = {
+method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Tile> = {
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width) // To avoid repetition of tiles due to wrapping
 
-  method allRings(currRadius: int): List[Tile] = {
+  method allRings(currRadius: int): List<Tile> = {
     decreases(radius - currRadius)
     requires (0 <= currRadius && currRadius <= radius)
     val atThisRadius = collectTilesInRing(wm, x, y, currRadius)
@@ -196,12 +196,12 @@ method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List[Til
   allRings(0)
 }
 
-method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List[Tile] = {
+method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile> = {
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width)
 
-  method loop(i: int): List[Tile] = {
+  method loop(i: int): List<Tile> = {
     requires (radius > 0)
     requires (0 <= i && i < 6 * radius)
     decreases(6 * radius - i)

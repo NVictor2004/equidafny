@@ -1,6 +1,6 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method fold(f: (int, int) => int, l: List[int], a: int) returns (res: int) {
+method fold(f: (int, int) => int, l: List<int>, a: int) returns (res: int) {
   decreases(l)
   l match {
     case Nil()        => a
@@ -8,7 +8,7 @@ method fold(f: (int, int) => int, l: List[int], a: int) returns (res: int) {
   }
 }
 
-method max(lst: List[int]) returns (res: int) {
+method max(lst: List<int>) returns (res: int) {
   lst match {
     case Nil() => choose((x: int) => true)
     case Cons(hd, tl) =>

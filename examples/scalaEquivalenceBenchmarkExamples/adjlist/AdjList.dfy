@@ -3,7 +3,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 
-method validAdjListM(adjList: Array[List[int]], N: int, pos: int): bool =
+method validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool =
   requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
   decreases(pos)
   if pos == 0 
@@ -11,7 +11,7 @@ method validAdjListM(adjList: Array[List[int]], N: int, pos: int): bool =
   else
     validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
 
-method validListM(list: List[int], N: int): bool =
+method validListM(list: List<int>, N: int): bool =
   requires (N >= 1)
   list match
     case Nil() =>
@@ -20,7 +20,7 @@ method validListM(list: List[int], N: int): bool =
       h >= 0 && h < N && validListM(t, N)
 
 
-method validAdjList(adjList: Array[List[int]], N: int, pos: int): bool =
+method validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool =
   requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
   decreases(pos)
   if (pos == 0) 
@@ -30,7 +30,7 @@ method validAdjList(adjList: Array[List[int]], N: int, pos: int): bool =
   else
     false
 
-method validList(N: int, l: List[int]): bool =
+method validList(N: int, l: List<int>): bool =
   requires (N >= 1)
   l match
     case Cons(h, t) if (h >= 0 && h < N) =>

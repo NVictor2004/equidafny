@@ -63,7 +63,7 @@ method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
 method noCitiesInHorizon(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
-  method loop(ls: List[Tile]): bool = {
+  method loop(ls: List<Tile>): bool = {
     decreases(ls)
     ls match {
       case Cons(t, rest) => t.construction match {
@@ -76,12 +76,12 @@ method noCitiesInHorizon(wm: WorldMap, x: int, y: int): bool = {
   loop(collectTilesWithinRadius(wm, x, y, 2))
 }
 
-method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List[Tile] = {
+method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Tile> = {
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width)
 
-  method allRings(currRadius: int): List[Tile] = {
+  method allRings(currRadius: int): List<Tile> = {
     decreases(radius - currRadius)
     requires (0 <= currRadius && currRadius <= radius)
     val atThisRadius = collectTilesInRing(wm, x, y, currRadius)
@@ -92,12 +92,12 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List
   allRings(0)
 }
 
-method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List[Tile] = {
+method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile> = {
   requires (0 <= y && y < wm.height)
   requires (ring >= 0)
   requires (2 * ring < wm.width)
 
-  method loop(i: int): List[Tile] = {
+  method loop(i: int): List<Tile> = {
     requires (ring > 0)
     requires (0 <= i && i < 6 * ring)
     decreases(6 * ring - i)
