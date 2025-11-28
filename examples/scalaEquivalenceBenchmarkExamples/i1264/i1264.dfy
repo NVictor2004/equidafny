@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method split[T](l: List[T], x: T): List[List[T]] = {

@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method isSortedR(l: List[int]): bool = {

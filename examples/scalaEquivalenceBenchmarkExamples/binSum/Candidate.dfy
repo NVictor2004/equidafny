@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method binSum(l1: List[bool], l2: List[bool], c: bool): List[bool] =

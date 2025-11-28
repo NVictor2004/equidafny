@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 sealed trait Animal
 case class Sheep(id: int) extends Animal

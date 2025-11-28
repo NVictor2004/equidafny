@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method maxR(lst: List[int]) returns (res: int) {

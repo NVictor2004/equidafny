@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method check(element: int, l: List[int]): bool = {
   decreases(l)

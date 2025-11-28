@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 // This is not expected to verify (it should timeout)
 // but here we ensure that the `choose` functions (created from the `choose((x: int) => true)`)

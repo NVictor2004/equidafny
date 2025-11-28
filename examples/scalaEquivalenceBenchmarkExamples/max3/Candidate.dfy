@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method fold(f: (int, int) => int, l: List[int], a: int) returns (res: int) {
   decreases(l)

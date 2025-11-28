@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 

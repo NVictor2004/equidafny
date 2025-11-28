@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 // Tests whether `choose` matching avoidance do not get fooled by functions named `choose`.
 // See max3 for explanation on this "choose matching avoidance"

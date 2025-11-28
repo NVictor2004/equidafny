@@ -1,3 +1,4 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method remove_elem_1(e: int, lst: List[int]): List[int] = {
