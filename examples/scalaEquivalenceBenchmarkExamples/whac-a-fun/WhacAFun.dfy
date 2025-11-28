@@ -17,16 +17,16 @@
   /*
   // Times out
   method rep1[A](n: int)(f: A => A)(a: A) = {
-    require(n >= 0)
+    requires (n >= 0)
     repeat1(n)(f)(a)
   }
   method rep2[A](n: int)(f: A => A)(a: A) = {
-    require(n >= 0)
+    requires (n >= 0)
     repeat2(n)(f)(a)
   }
   // Said to be non-equivalent, even though they are :(
   method repeat1[A](n: int)(f: A => A): A => A = {
-    require(n >= 0)
+    requires (n >= 0)
     decreases(n)
     a => {
       if (n == 0) a
@@ -34,7 +34,7 @@
     }
   }
   method repeat2[A](n: int)(f: A => A): A => A = {
-    require(n >= 0)
+    requires (n >= 0)
     decreases(n)
     if (n == 0) a => a
     else a => repeat2(n - 1)(f)(f(a))
@@ -42,7 +42,7 @@
   */
 
   method repeat1[A](n: int)(f: A => A): A => A = {
-    require(n >= 0)
+    requires (n >= 0)
     decreases(n)
     a => {
       if (n == 0) a
@@ -50,7 +50,7 @@
     }
   }
   method repeat2[A](n: int)(f: A => A): A => A = {
-    require(n >= 0)
+    requires (n >= 0)
     decreases(n)
     a => {
       if (n == 0) a

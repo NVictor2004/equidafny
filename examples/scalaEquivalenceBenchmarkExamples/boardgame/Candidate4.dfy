@@ -1,8 +1,8 @@
 
 
-  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
-    require(0 <= y && y < wm.height)
-    require(wm.width > 4)
+  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+    requires (0 <= y && y < wm.height)
+    requires (wm.width > 4)
     // No, one must still compute adjacency even for tiles on the y-border of the map
     if (0 < y && y < wm.height - 1) {
       adj(wm, x, y + 1, districtKind) +
@@ -14,8 +14,8 @@
     } else int(0)
   }
 
-  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
-    require(0 <= y && y < wm.height)
+  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+    requires (0 <= y && y < wm.height)
     val tile = tileInWorld(wm, x, y)
     districtKind match {
       case DistrictKind.Campus => tile.base match {
@@ -47,8 +47,8 @@
   ///////////////////////////////////////////////////////////////////////////
 
   method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
-    require(0 <= y && y < wm.height)
-    require(wm.width > 4)
+    requires (0 <= y && y < wm.height)
+    requires (wm.width > 4)
     // Desperately trying to do that by-hand, but forgets about the second ring...
     val (p1x, p1y) = (x, y + 1)
     val (p2x, p2y) = (x + 1, y)
@@ -67,14 +67,14 @@
   /////////////////////////////////////
 
   method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
-    require(0 <= y && y < wm.height)
+    requires (0 <= y && y < wm.height)
     val xx = (x % wm.width + wm.width) % wm.width
     val ix = y * wm.width + xx
     wm.tiles(ix)
   }
 
   method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
-    require(0 <= y && y < wm.height)
+    requires (0 <= y && y < wm.height)
     val tile = tileInWorld(wm, x, y)
     (tile.base match {
       case TileBase.FlatTerrain(_) => true

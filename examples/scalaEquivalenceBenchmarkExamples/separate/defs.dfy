@@ -4,7 +4,7 @@
   case class Goat(id: int) extends Animal
 
   sealed abstract class List[+T] {
-    method size: int = {
+    method size returns (res: int) {
       this match {
         case Nil => 0
         case h :: t =>
@@ -24,19 +24,19 @@
     }
 
     method head: T = {
-      require(this != Nil)
+      requires (this != Nil)
       val h :: _ = this: @unchecked
       h
     }
 
     method tail: List[T] = {
-      require(this != Nil)
+      requires (this != Nil)
       val _ :: t = this: @unchecked
       t
     }
 
     method apply(index: int): T = {
-      require(0 <= index && index < size)
+      requires (0 <= index && index < size)
       decreases(index)
       if (index == 0) {
         head

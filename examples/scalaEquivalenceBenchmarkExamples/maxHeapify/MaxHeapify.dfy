@@ -5,7 +5,7 @@
   val MAX = 100000
 
   method maxHeapifyM(a: Array[int], N: int, i: int): Unit =
-    require(i >= 0 && i < N && N <= a.length && N <= MAX)
+    requires (i >= 0 && i < N && N <= a.length && N <= MAX)
     decreases(N - i)
     val l = leftM(i)
     val r = rightM(i)
@@ -26,16 +26,16 @@
         maxHeapifyM(a, N, largest2)
 
   method leftM(i: int) : int =
-    require(0 <= i && i < MAX)
+    requires (0 <= i && i < MAX)
     2 * i + 1
 
   method rightM(i: int) : int =
-    require(0 <= i && i < MAX)
+    requires (0 <= i && i < MAX)
     2 * i + 2
 
 
   method maxHeapify(a: Array[int], N: int, i: int): Unit =
-    require(i >= 0 && i < N && N <= a.length && N <= MAX)
+    requires (i >= 0 && i < N && N <= a.length && N <= MAX)
     decreases(N - i)
     val l = 2 * i + 1
     val r = 2 * i + 2
@@ -54,7 +54,7 @@
       maxHeapify(a, N, largest2)
 
   method swap(a: int, b: int, array: Array[int], N: int): Unit =
-    require(a >= 0 && a < N && b >= 0 && b < N && N <= array.length && N <= MAX)
+    requires (a >= 0 && a < N && b >= 0 && b < N && N <= array.length && N <= MAX)
     val temp = array(a)
     array(a) = array(b)
     array(b) = temp

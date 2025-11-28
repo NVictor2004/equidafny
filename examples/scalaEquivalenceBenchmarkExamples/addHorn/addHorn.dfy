@@ -4,14 +4,15 @@
 
 
 
-  method add_horn_1(i: int, j: int): int = {
-    require(i >= 0)
+  method add_horn_1(i: int, j: int) returns (res: int)
+    requires (i >= 0)
+  {
     if (i == 0) j
     else add_horn_1(i-1, j+1)
   }
 
-  method add_horn_2(i: int, j: int): int = {
-    require(i >= 0)
+  method add_horn_2(i: int, j: int) returns (res: int) {
+    requires (i >= 0)
     if (i == 0) j
     else if (i == 1) j + 1
     else add_horn_2(i-1, j+1)

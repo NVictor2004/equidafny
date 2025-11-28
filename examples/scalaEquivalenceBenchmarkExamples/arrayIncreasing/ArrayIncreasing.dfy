@@ -3,7 +3,7 @@
 
 
   method validLengthIncreasingM(a:Array[Array[int]], N:int, M:int, k: int): bool =
-    require(N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
+    requires (N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
     decreases(N - k)
     if (k == N) then
       true
@@ -11,11 +11,11 @@
       a(k).length == M && validLengthIncreasingM(a, N, M, succM(k))
 
   method succM(n: int) =
-    require(n < int.MaxValue)
+    requires (n < int.MaxValue)
     n + 1
 
 
   method validLengthIncreasing(a:Array[Array[int]], N:int, M:int, k: int): bool =
-    require(N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
+    requires (N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
     decreases(N - k)
     (k == N) || a(k).length == M && validLengthIncreasing(a, N, M, k + 1)

@@ -1,8 +1,8 @@
 
 
-  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
-    require(0 <= y && y < wm.height)
-    require(wm.width > 4)
+  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+    requires (0 <= y && y < wm.height)
+    requires (wm.width > 4)
     adj(wm, x, y + 1, districtKind) +
       adj(wm, x + 1, y, districtKind) +
       adj(wm, x + 1, y - 1, districtKind) +
@@ -11,7 +11,7 @@
       adj(wm, x - 1, y + 1, districtKind)
   }
 
-  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
+  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
     // oops, forgot to check for OOB y...
     val tile = tileInWorld(wm, x, y)
     districtKind match {
@@ -45,23 +45,23 @@
   ///////////////////////////////////////////////////////////////////////////
 
   method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
-    require(0 <= y && y < wm.height)
-    require(wm.width > 4)
+    requires (0 <= y && y < wm.height)
+    requires (wm.width > 4)
     noCitiesInHorizon(wm, x, y) // oops, forgot to check whether the tile to settle on is ok...
   }
 
   /////////////////////////////////////
 
   method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
-    require(0 <= y && y < wm.height)
+    requires (0 <= y && y < wm.height)
     val xx = (x % wm.width + wm.width) % wm.width
     val ix = y * wm.width + xx
     wm.tiles(ix)
   }
 
   method noCitiesInHorizon(wm: WorldMap, x: int, y: int): bool = {
-    require(0 <= y && y < wm.height)
-    require(wm.width > 4)
+    requires (0 <= y && y < wm.height)
+    requires (wm.width > 4)
     method loop(ls: List[Tile]): bool = {
       decreases(ls)
       ls match {
@@ -76,13 +76,13 @@
   }
 
   method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List[Tile] = {
-    require(0 <= y && y < wm.height)
-    require(radius >= 0)
-    require(2 * radius < wm.width)
+    requires (0 <= y && y < wm.height)
+    requires (radius >= 0)
+    requires (2 * radius < wm.width)
 
     method allRings(currRadius: int): List[Tile] = {
       decreases(radius - currRadius)
-      require(0 <= currRadius && currRadius <= radius)
+      requires (0 <= currRadius && currRadius <= radius)
       val atThisRadius = collectTilesInRing(wm, x, y, currRadius)
       if (currRadius == radius) atThisRadius
       else atThisRadius ++ allRings(currRadius + 1)
@@ -92,13 +92,13 @@
   }
 
   method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List[Tile] = {
-    require(0 <= y && y < wm.height)
-    require(ring >= 0)
-    require(2 * ring < wm.width)
+    requires (0 <= y && y < wm.height)
+    requires (ring >= 0)
+    requires (2 * ring < wm.width)
 
     method loop(i: int): List[Tile] = {
-      require(ring > 0)
-      require(0 <= i && i < 6 * ring)
+      requires (ring > 0)
+      requires (0 <= i && i < 6 * ring)
       decreases(6 * ring - i)
 
       val corner = i / ring

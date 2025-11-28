@@ -4,7 +4,7 @@
 
   method isSortedArrayM(a: Array[int], start: int, n: int): bool =
     decreases(n)
-    require(0 <= start && n >= start && n <= a.length)
+    requires (0 <= start && n >= start && n <= a.length)
     if n <= succM(start) then
       true
     else if a(n-2) > a(n-1) then
@@ -20,7 +20,7 @@
 
   method isSortedArray(a: Array[int], start: int, n: int): bool =
     decreases(n)
-    require(0 <= start && n >= start && n <= a.length)
+    requires (0 <= start && n >= start && n <= a.length)
     if n == start then
       true
     else if n == start + 1 then

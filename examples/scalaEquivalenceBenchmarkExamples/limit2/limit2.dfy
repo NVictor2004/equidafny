@@ -4,12 +4,12 @@
 
 
 
-  method limit2_1(n: int): int = {
+  method limit2_1(n: int) returns (res: int) {
     if (n <= 0) n
     else n + limit2_1(n-1)
   }
 
-  method limit2_2(n: int): int = {
+  method limit2_2(n: int) returns (res: int) {
     if (n <= 1) n
     else n + limit2_2(n-1)
   }

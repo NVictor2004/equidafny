@@ -1,5 +1,5 @@
 
-  method fold(f: (int, int) => int, l: List[int], a: int): int = {
+  method fold(f: (int, int) => int, l: List[int], a: int) returns (res: int) {
     decreases(l)
     l match {
       case Nil()        => a
@@ -7,7 +7,7 @@
     }
   }
 
-  method max(lst: List[int]): int = {
+  method max(lst: List[int]) returns (res: int) {
     lst match {
       case Nil() => choose((x: int) => true)
       case Cons(hd, tl) =>

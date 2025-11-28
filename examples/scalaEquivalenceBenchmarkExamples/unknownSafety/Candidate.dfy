@@ -1,12 +1,12 @@
 
 
-  method zero(x: int): int = {
-    require(x >= 0)
+  method zero(x: int) returns (res: int) {
+    requires (x >= 0)
     if (x > 0) zero(x - 1)
     else x
   }
 
-  method add(x: int, y: int): int = {
+  method add(x: int, y: int) returns (res: int) {
     if (x >= 0) {
       val z = zero(x)
       assert(z == 0) // timeout

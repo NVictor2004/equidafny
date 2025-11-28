@@ -6,13 +6,13 @@
 
   // Fig. 12
 
-  method m1(n: int, flag: bool): int = {
+  method m1(n: int, flag: bool) returns (res: int) {
     if (n < 1) 0
     else if (n == 1) 1
     else m1(n - 1, !flag) + m1(n - 2, !flag)
   }
 
-  method m2(n: int, mode: bool): int = {
+  method m2(n: int, mode: bool) returns (res: int) {
     if (n < 1) 0
     else if (n == 1 || n == 2) 1
     else {

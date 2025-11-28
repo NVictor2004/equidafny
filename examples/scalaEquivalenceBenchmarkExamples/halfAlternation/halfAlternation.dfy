@@ -6,13 +6,13 @@
 
   // Fig. 14
 
-  method h1(n: int): int = {
+  method h1(n: int) returns (res: int) {
     if (n < 1) 0
     else if (n == 1) 1
     else h1(n - 1) + h1 (n - 2)
   }
 
-  method h2(n: int): int = {
+  method h2(n: int) returns (res: int) {
     if (n < 1) 0
     else if (n == 1) 1
     else if ((n % 2) == 0) h2(n-1) + h2(n-2)

@@ -1,5 +1,5 @@
 
-  method max(l: List[int]): int = {
+  method max(l: List[int]) returns (res: int) {
     decreases(l)
     l match {
       case Nil()        => 0

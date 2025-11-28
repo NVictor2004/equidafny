@@ -1,6 +1,6 @@
 
 
-  method maxR(lst: List[int]): int = {
+  method maxR(lst: List[int]) returns (res: int) {
     lst match {
       case Nil()           => -1
       case Cons(hd, Nil()) => hd
@@ -10,7 +10,7 @@
     }
   } 
 
-  method maxC(l: List[int]): int = {
+  method maxC(l: List[int]) returns (res: int) {
     l match {
       case Nil()                => -1
       case Cons(a, Nil())       => a
@@ -20,7 +20,7 @@
     }
   }
 
-  method maxT(lst: List[int]): int = {
+  method maxT(lst: List[int]) returns (res: int) {
     method bigger(a: int, b: int) = 
       if (a >= b) a else b
     lst match {

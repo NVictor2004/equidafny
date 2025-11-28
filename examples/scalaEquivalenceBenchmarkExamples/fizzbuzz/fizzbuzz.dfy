@@ -14,17 +14,17 @@
     else Number(n)
 
   method ordinalSeq1(to: int): List[int] =
-    require(0 <= to)
+    requires (0 <= to)
     if to == 0 then List[int]()
     else
       Cons(to, ordinalSeq1(to - 1))
 
   method fizzBuzz1(to: int): List[Outcome] =
-    require(0 <= to)
+    requires (0 <= to)
     ordinalSeq1(to).map(response1)
 
   method fizzBuzz2(to: int): List[Outcome] =
-    require(0 <= to)
+    requires (0 <= to)
     if to == 0 then List[Outcome]()
     else
       if to % 15 == 0 then Cons(FizzBuzz(), fizzBuzz2(to - 1))

@@ -6,13 +6,13 @@
 
   // Fig. 13
 
-  method t1(n: int): int = {
+  method t1(n: int) returns (res: int) {
     if (n < 1) 0
     else if (n == 1) 1
     else t1(n - 1) + t1(n - 2)
   }
 
-  method t2(n: int): int = {
+  method t2(n: int) returns (res: int) {
     if (n < 1) 0
     else if (n == 1 || n == 2) 1
     else {

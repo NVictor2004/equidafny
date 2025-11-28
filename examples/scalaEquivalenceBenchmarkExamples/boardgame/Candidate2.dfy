@@ -1,7 +1,7 @@
 
 
-  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
-    require(0 <= y && y < wm.height)
+  method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+    requires (0 <= y && y < wm.height)
     adj(wm, x, y + 1, districtKind) +
       adj(wm, x + 1, y, districtKind) +
       adj(wm, x + 1, y - 1, districtKind) +
@@ -10,7 +10,7 @@
       adj(wm, x - 1, y + 1, districtKind)
   }
 
-  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int = {
+  method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
     if (y < 0 || y >= wm.height) int(0)
     else {
       val tile = tileInWorld(wm, x, y)
@@ -45,8 +45,8 @@
   ///////////////////////////////////////////////////////////////////////////
 
   method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
-    require(0 <= y && y < wm.height)
-    require(wm.width > 4)
+    requires (0 <= y && y < wm.height)
+    requires (wm.width > 4)
     val tile = tileInWorld(wm, x, y)
     tile.base match {
       case TileBase.FlatTerrain(_) => true
@@ -58,7 +58,7 @@
   /////////////////////////////////////
 
   method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
-    require(0 <= y && y < wm.height)
+    requires (0 <= y && y < wm.height)
     val xx = (x % wm.width + wm.width) % wm.width
     val ix = y * wm.width + xx
     wm.tiles(ix)

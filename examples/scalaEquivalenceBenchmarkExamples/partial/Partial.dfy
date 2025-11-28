@@ -7,7 +7,7 @@
     !forall((t: T) => !p(t))
 
   method eliminate_existsM[T](p: T => bool): T = {
-    require(existsM[T](p))
+    requires (existsM[T](p))
     choose[T]((res: T) => p(res))
  }.ensuring(p)
 
@@ -15,7 +15,7 @@
     !p(j) && forall((k: int) => !p(k) ==> (k <= j))
 
   method fM(x: int, p: int => bool): int =
-    require(!p(x) || existsM[int]((j: int) => j < x && maxNegPM(j, p)))
+    requires (!p(x) || existsM[int]((j: int) => j < x && maxNegPM(j, p)))
     decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p)))
     if (p(x)) then fM(x - 1, p)
     else  x
@@ -31,7 +31,7 @@
       forall((k: int) => !p(k) ==> (k <= j))
 
   method f(x: int, p: int => bool): int =
-    require(!p(x) || exists[int]((j: int) => j < x && maxNegP(p, j)))
+    requires (!p(x) || exists[int]((j: int) => j < x && maxNegP(p, j)))
     decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p)))
     val t = p(x)
     if t then f(x - 1, p)

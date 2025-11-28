@@ -3,7 +3,7 @@
 
 
   method validAdjListM(adjList: Array[List[int]], N: int, pos: int): bool =
-    require(N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
+    requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
     decreases(pos)
     if pos == 0 then
       true
@@ -11,7 +11,7 @@
       validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
 
   method validListM(list: List[int], N: int): bool =
-    require(N >= 1)
+    requires (N >= 1)
     list match
       case Nil() =>
         true
@@ -20,7 +20,7 @@
 
 
   method validAdjList(adjList: Array[List[int]], N: int, pos: int): bool =
-    require(N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
+    requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
     decreases(pos)
     if (pos == 0) then
       true
@@ -30,7 +30,7 @@
       false
 
   method validList(N: int, l: List[int]): bool =
-    require(N >= 1)
+    requires (N >= 1)
     l match
       case Cons(h, t) if (h >= 0 && h < N) =>
         validList(N, t)

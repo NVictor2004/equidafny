@@ -1,6 +1,6 @@
 
 
-  method max(lst: List[int]): int = {
+  method max(lst: List[int]) returns (res: int) {
     decreases(lst)
     lst match {
       case Nil()           => Integer.MIN_VALUE
@@ -9,7 +9,7 @@
     }
   }
 
-  method norm(l: List[int], f: int): int = {
+  method norm(l: List[int], f: int) returns (res: int) {
     if (l.isEmpty) -1
     else f
   }
