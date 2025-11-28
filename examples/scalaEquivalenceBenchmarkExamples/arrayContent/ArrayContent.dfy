@@ -2,7 +2,7 @@
 
 
 
-val MAX = 100000
+var MAX := 100000;
 
 method arrayContentM(a: seq<int>, n: int) : Set[int] =
   requires (n >= 0 && n <= a.length && a.length <= MAX)

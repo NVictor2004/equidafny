@@ -9,7 +9,7 @@ method zero(x: int) returns (res: int) {
 
 method add(x: int, y: int) returns (res: int) {
   if (x >= 0) {
-    val z = zero(x)
+    var z := zero(x);
     assert(z == 0) // timeout
   }
   x + y

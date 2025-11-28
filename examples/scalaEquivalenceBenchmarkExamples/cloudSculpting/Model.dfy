@@ -11,7 +11,7 @@ method leVraiSculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: int, i1: int, i2:
   decreases(fuel)
   if (fuel == 0) (i1, i2, i3)
   else {
-    val (ii1, ii2, ii3) = mixmash(i1, i2, i3)
+    var (ii1, ii2, ii3) := mixmash(i1, i2, i3);
     leVraiSculpteurDeNuage(c2a(c), a2b(a), b2c(b), fuel - 1, ii1, ii2, ii3, a2b, b2c, c2a)
   }
 }

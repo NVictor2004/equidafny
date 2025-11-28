@@ -13,7 +13,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
 method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
   if (y < 0 || y >= wm.height) int(0)
   else {
-    val tile = tileInWorld(wm, x, y)
+    var tile := tileInWorld(wm, x, y);
     districtKind match {
       case DistrictKind.Campus => tile.base match {
         case TileBase.Mountain => int(2)
@@ -24,7 +24,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
         }
       }
       case DistrictKind.IndustrialZone =>
-        val resAdj = tile.resource match {
+        var resAdj := tile.resource match {;
           case Some(Resource.Iron) => int(2)
           case Some(Resource.Coal) => int(2)
           case _ => int(0)
@@ -47,7 +47,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
 method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
-  val tile = tileInWorld(wm, x, y)
+  var tile := tileInWorld(wm, x, y);
   tile.base match {
     case TileBase.FlatTerrain(_) => true
     case TileBase.HillTerrain(_) => true
@@ -59,8 +59,8 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
 
 method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
   requires (0 <= y && y < wm.height)
-  val xx = (x % wm.width + wm.width) % wm.width
-  val ix = y * wm.width + xx
+  var xx := (x % wm.width + wm.width) % wm.width;
+  var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 

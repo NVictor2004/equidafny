@@ -15,7 +15,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
         }
       }
       case DistrictKind.IndustrialZone =>
-        val resAdj = tile.resource match {
+        var resAdj := tile.resource match {;
           case Some(Resource.Iron) => int(2)
           case Some(Resource.Coal) => int(2)
           case _ => int(0)
@@ -53,14 +53,14 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
 
 method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
   requires (0 <= y && y < wm.height)
-  val xx = (x % wm.width + wm.width) % wm.width
-  val ix = y * wm.width + xx
+  var xx := (x % wm.width + wm.width) % wm.width;
+  var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 
 method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
-  val tile = tileInWorld(wm, x, y)
+  var tile := tileInWorld(wm, x, y);
   (tile.base match {
     case TileBase.FlatTerrain(_) => true
     case TileBase.HillTerrain(_) => true
@@ -97,7 +97,7 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List
   method allRings(currRadius: int): List<Tile> = {
     decreases(radius - currRadius)
     requires (0 <= currRadius && currRadius <= radius)
-    val atThisRadius = collectTilesInRing(wm, x, y, currRadius)
+    var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
     if (currRadius == radius) atThisRadius
     else atThisRadius ++ allRings(currRadius + 1)
   }
@@ -115,9 +115,9 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile> =
     requires (0 <= i && i < 6 * ring)
     decreases(6 * ring - i)
 
-    val corner = i / ring
-    val rest = i % ring
-    val diffX = {
+    var corner := i / ring;
+    var rest := i % ring;
+    var diffX := {;
       if (corner == 0) rest
       else if (corner == 1) ring
       else if (corner == 2) ring - rest
@@ -125,7 +125,7 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile> =
       else if (corner == 4) -ring
       else rest - ring
     }
-    val diffY = {
+    var diffY := {;
       if (corner == 0) ring - rest
       else if (corner == 1) -rest
       else if (corner == 2) -ring
@@ -134,9 +134,9 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile> =
       else ring
     }
 
-    val xx = x + diffX
-    val yy = y + diffY
-    val includeThis = {
+    var xx := x + diffX;
+    var yy := y + diffY;
+    var includeThis := {;
       if (0 <= yy && yy < wm.height) List(tileInWorld(wm, xx, yy))
       else Nil[Tile]()
     }

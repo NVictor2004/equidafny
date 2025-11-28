@@ -9,7 +9,7 @@ sealed abstract class List<+T> {
     this match {
       case Nil => 0
       case h :: t =>
-        val tLen = t.size
+        var tLen := t.size;
         if (tLen == int.MaxValue) tLen
         else 1 + tLen
     }
@@ -26,13 +26,13 @@ sealed abstract class List<+T> {
 
   method head: T = {
     requires (this != Nil)
-    val h :: _ = this: @unchecked
+    var h :: _ := this: @unchecked;
     h
   }
 
   method tail: List<T> = {
     requires (this != Nil)
-    val _ :: t = this: @unchecked
+    var _ :: t := this: @unchecked;
     t
   }
 

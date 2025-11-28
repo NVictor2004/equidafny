@@ -2,13 +2,13 @@
 
 
 
-val MAX = 100000
+var MAX := 100000;
 
 method maxHeapifyM(a: seq<int>, N: int, i: int): Unit =
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   decreases(N - i)
-  val l = leftM(i)
-  val r = rightM(i)
+  var l := leftM(i);
+  var r := rightM(i);
   val largest =
     if l < N && a(l) > a(i) 
       l
@@ -20,7 +20,7 @@ method maxHeapifyM(a: seq<int>, N: int, i: int): Unit =
     else
       largest
   if largest2 != i 
-      val temp = a(i)
+      var temp := a(i);
       a(i) = a(largest2)
       a(largest2) = temp
       maxHeapifyM(a, N, largest2)
@@ -37,8 +37,8 @@ method rightM(i: int) : int =
 method maxHeapify(a: seq<int>, N: int, i: int): Unit =
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   decreases(N - i)
-  val l = 2 * i + 1
-  val r = 2 * i + 2
+  var l := 2 * i + 1;
+  var r := 2 * i + 2;
   val largest =
     if l < N && a(l) > a(i) 
       l
@@ -55,6 +55,6 @@ method maxHeapify(a: seq<int>, N: int, i: int): Unit =
 
 method swap(a: int, b: int, array: seq<int>, N: int): Unit =
   requires (a >= 0 && a < N && b >= 0 && b < N && N <= array.length && N <= MAX)
-  val temp = array(a)
+  var temp := array(a);
   array(a) = array(b)
   array(b) = temp

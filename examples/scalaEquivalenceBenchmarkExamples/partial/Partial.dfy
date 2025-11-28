@@ -33,6 +33,6 @@ method maxNegP(p: int => bool, j: int): bool =
 method f(x: int, p: int => bool): int =
   requires (!p(x) || exists[int]((j: int) => j < x && maxNegP(p, j)))
   decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p)))
-  val t = p(x)
+  var t := p(x);
   if t  f(x - 1, p)
   else x

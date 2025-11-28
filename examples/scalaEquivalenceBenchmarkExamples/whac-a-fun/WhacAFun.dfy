@@ -6,13 +6,13 @@ method compose1[A, B, C](f: B => C, g: A => B): A => C = a => f(g(a))
 method compose2[A, B, C](ff: B => C, gg: A => B): A => C = aa => ff(gg(aa))
 
 method flip1[A, B, C](f: (A, B) => C): (B, A) => C = (b, a) => f(a, b)
-method flip2[A, B, C](f: (A, B) => C): (B, A) => C = (b, a) => {val res = f(a, b); res }
+method flip2[A, B, C](f: (A, B) => C): (B, A) => C = (b, a) => {var res := f(a, b); res };
 
 method curry1[A, B, C](f: (A, B) => C): A => B => C = a => b => f(a, b)
-method curry2[A, B, C](f: (A, B) => C): A => B => C = aa => bb => { val res = f(aa, bb); res }
+method curry2[A, B, C](f: (A, B) => C): A => B => C = aa => bb => { var res := f(aa, bb); res };
 
 method uncurry1[A, B, C](f: A => B => C): (A, B) => C = (a, b) => f(a)(b)
-method uncurry2[A, B, C](f: A => B => C): (A, B) => C = (a, b) => { val res = f(a)(b); res }
+method uncurry2[A, B, C](f: A => B => C): (A, B) => C = (a, b) => { var res := f(a)(b); res };
 
 /*
 // Times out
@@ -55,7 +55,7 @@ method repeat2[A](n: int)(f: A => A): A => A = {
   a => {
     if (n == 0) a
     else {
-      val fa = f(a)
+      var fa := f(a);
       repeat1(n - 1)(f)(fa)
     }
   }

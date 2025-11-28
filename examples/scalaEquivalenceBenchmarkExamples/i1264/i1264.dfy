@@ -8,7 +8,7 @@ method split[T](l: List<T>, x: T): List<List<T>> = {
     case Cons(y, ys) if x == y =>
       Nil[T]() :: split(ys, x)
     case Cons(y, ys) =>
-      val r = split(ys, x)
+      var r := split(ys, x);
       (y :: r.head) :: r.tail
   }
 }

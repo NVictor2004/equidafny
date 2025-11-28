@@ -12,7 +12,7 @@ method limit3_1(n: int) returns (res: int) {
 method limit3_2(n: int) returns (res: int) {
   if (n <= 1) n
   else {
-    val r = limit3_2(n-1)
+    var r := limit3_2(n-1);
     if (r >= 0) n + r
     else r
   }

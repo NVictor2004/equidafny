@@ -40,10 +40,10 @@ method testsAdjacencyBonus: List<(WorldMap, int, int, DistrictKind)> = List(
 )
 
 method testsAdjacencyBonus1: (WorldMap, int, int, DistrictKind) = {
-  val G = Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None())
-  val M = Tile(TileBase.Mountain, None(), None(), None())
-  val X = G // The emplacement where we would like to compute for potential adjacency
-  val wm = List(
+  var G := Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None());
+  var M := Tile(TileBase.Mountain, None(), None(), None());
+  var X := G // The emplacement where we would like to compute for potential adjacency;
+  var wm := List(;
           G, M, X, M, G,
         G, G, G, M, G,
       G, M, G, G, G,
@@ -67,12 +67,12 @@ method adj(tile: Tile, districtKind: DistrictKind) returns (res: int) {
     case (DistrictKind.Campus, Tile(_, _, _, Some(Construction.District(_)))) => int(1)
     case (DistrictKind.Campus, _) => int(0)
     case (DistrictKind.IndustrialZone, Tile(_, _, res, ctor)) =>
-      val resAdj = res match {
+      var resAdj := res match {;
         case Some(Resource.Iron) => int(2)
         case Some(Resource.Coal) => int(2)
         case _ => int(0)
       }
-      val resCtor = ctor match {
+      var resCtor := ctor match {;
         case Some(Construction.City(_)) => int(1)
         case Some(Construction.District(_)) => int(1)
         case Some(Construction.Exploitation(ResourceImprovement.Mine)) => int(1)
@@ -104,9 +104,9 @@ method testsValidCitySettlement: List<(WorldMap, int, int)> = List(
 
 method testValidCitySettlement1: (WorldMap, int, int) = {
   // Ok, can be settled
-  val G = Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None())
-  val X = G // where we would like to settle
-  val wm = List(
+  var G := Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None());
+  var X := G // where we would like to settle;
+  var wm := List(;
           G, G, G, G, G,
         G, G, G, G, G,
       G, X, G, G, G,
@@ -118,9 +118,9 @@ method testValidCitySettlement1: (WorldMap, int, int) = {
 
 method testValidCitySettlement2: (WorldMap, int, int) = {
   // A lake in the center, we can't settle there
-  val G = Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None())
-  val L = Tile(TileBase.Lake, None(), None(), None())
-  val wm = List(
+  var G := Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None());
+  var L := Tile(TileBase.Lake, None(), None(), None());
+  var wm := List(;
         G, G, G, G, G,
       G, G, L, G, G,
     G, G, G, G, G,
@@ -131,10 +131,10 @@ method testValidCitySettlement2: (WorldMap, int, int) = {
 
 method testValidCitySettlement3: (WorldMap, int, int) = {
   // A city in the second ring of the place where we want to settle
-  val G = Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None())
-  val X = G // where we would like to settle
-  val Y = Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), Some(Construction.City(42))) // Oh no, someone's already there :(
-  val wm = List(
+  var G := Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), None());
+  var X := G // where we would like to settle;
+  var Y := Tile(TileBase.FlatTerrain(BaseTerrain.Grassland), None(), None(), Some(Construction.City(42))) // Oh no, someone's already there :(;
+  var wm := List(;
           G, G, Y, G, G,
         G, G, G, G, G,
       G, X, G, G, G,
@@ -148,13 +148,13 @@ method testValidCitySettlement3: (WorldMap, int, int) = {
 
 method tileOkForCity(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
-  val tile = tileInWorld(wm, x, y)
-  val baseOk = tile.base match {
+  var tile := tileInWorld(wm, x, y);
+  var baseOk := tile.base match {;
     case TileBase.FlatTerrain(_) => true
     case TileBase.HillTerrain(_) => true
     case _ => false
   }
-  val ctorOk = tile.construction match {
+  var ctorOk := tile.construction match {;
     case None() => true
     case Some(Construction.Exploitation(_)) => true // res. improvement removed on settling
     case Some(Construction.District(_)) => false
@@ -188,7 +188,7 @@ method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Til
   method allRings(currRadius: int): List<Tile> = {
     decreases(radius - currRadius)
     requires (0 <= currRadius && currRadius <= radius)
-    val atThisRadius = collectTilesInRing(wm, x, y, currRadius)
+    var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
     if (currRadius == radius) atThisRadius
     else atThisRadius ++ allRings(currRadius + 1)
   }
@@ -206,9 +206,9 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile>
     requires (0 <= i && i < 6 * radius)
     decreases(6 * radius - i)
 
-    val corner = i / radius
-    val rest = i % radius
-    val diffX = {
+    var corner := i / radius;
+    var rest := i % radius;
+    var diffX := {;
       if (corner == 0) rest
       else if (corner == 1) radius
       else if (corner == 2) radius - rest
@@ -216,7 +216,7 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile>
       else if (corner == 4) -radius
       else rest - radius
     }
-    val diffY = {
+    var diffY := {;
       if (corner == 0) radius - rest
       else if (corner == 1) -rest
       else if (corner == 2) -radius
@@ -225,9 +225,9 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile>
       else radius
     }
 
-    val xx = x + diffX
-    val yy = y + diffY
-    val includeThis = {
+    var xx := x + diffX;
+    var yy := y + diffY;
+    var includeThis := {;
       if (0 <= yy && yy < wm.height) List(tileInWorld(wm, xx, yy))
       else Nil[Tile]()
     }
@@ -244,8 +244,8 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Tile>
 // As such, we use a plain function...
 method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
   requires (0 <= y && y < wm.height)
-  val xx = (x % wm.width + wm.width) % wm.width
-  val ix = y * wm.width + xx
+  var xx := (x % wm.width + wm.width) % wm.width;
+  var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 

@@ -16,7 +16,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
 
 method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
   requires (0 <= y && y < wm.height)
-  val tile = tileInWorld(wm, x, y)
+  var tile := tileInWorld(wm, x, y);
   districtKind match {
     case DistrictKind.Campus => tile.base match {
       case TileBase.Mountain => int(2)
@@ -27,7 +27,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
       }
     }
     case DistrictKind.IndustrialZone =>
-      val resAdj = tile.resource match {
+      var resAdj := tile.resource match {;
         case Some(Resource.Iron) => int(2)
         case Some(Resource.Coal) => int(2)
         case _ => int(0)
@@ -50,12 +50,12 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   // Desperately trying to do that by-hand, but forgets about the second ring...
-  val (p1x, p1y) = (x, y + 1)
-  val (p2x, p2y) = (x + 1, y)
-  val (p3x, p3y) = (x + 1, y - 1)
-  val (p4x, p4y) = (x, y - 1)
-  val (p5x, p5y) = (x - 1, y)
-  val (p6x, p6y) = (x - 1, y + 1)
+  var (p1x, p1y) := (x, y + 1);
+  var (p2x, p2y) := (x + 1, y);
+  var (p3x, p3y) := (x + 1, y - 1);
+  var (p4x, p4y) := (x, y - 1);
+  var (p5x, p5y) := (x - 1, y);
+  var (p6x, p6y) := (x - 1, y + 1);
   tileFreeForSettlement(wm, x, y) && notACity(wm, p1x, p1y) &&
     notACity(wm, p2x, p2y) &&
     notACity(wm, p3x, p3y) &&
@@ -68,14 +68,14 @@ method validCitySettlement(wm: WorldMap, x: int, y: int): bool = {
 
 method tileInWorld(wm: WorldMap, x: int, y: int): Tile = {
   requires (0 <= y && y < wm.height)
-  val xx = (x % wm.width + wm.width) % wm.width
-  val ix = y * wm.width + xx
+  var xx := (x % wm.width + wm.width) % wm.width;
+  var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 
 method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
   requires (0 <= y && y < wm.height)
-  val tile = tileInWorld(wm, x, y)
+  var tile := tileInWorld(wm, x, y);
   (tile.base match {
     case TileBase.FlatTerrain(_) => true
     case TileBase.HillTerrain(_) => true
@@ -85,7 +85,7 @@ method tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool = {
 
 method notACity(wm: WorldMap, x: int, y: int): bool = {
   !(0 <= y && y < wm.height) || {
-    val tile = tileInWorld(wm, x, y)
+    var tile := tileInWorld(wm, x, y);
     tile.construction match {
       case Some(Construction.City(_)) => false
       case Some(Construction.District(_)) => true
@@ -96,7 +96,7 @@ method notACity(wm: WorldMap, x: int, y: int): bool = {
 }
 method notADistrict(wm: WorldMap, x: int, y: int): bool = {
   !(0 <= y && y < wm.height) || {
-    val tile = tileInWorld(wm, x, y)
+    var tile := tileInWorld(wm, x, y);
     tile.construction match {
       case Some(Construction.District(_)) => false
       case Some(Construction.City(_)) => true

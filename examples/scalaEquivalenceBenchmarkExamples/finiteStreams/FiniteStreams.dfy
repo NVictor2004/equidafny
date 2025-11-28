@@ -26,7 +26,7 @@ method finite(stream: Stream): bool =
   decreases(stream.rank)
   stream match
     case SCons(_, tfun, sz) =>
-      val tail = tfun()
+      var tail := tfun();
       tail.rank < sz && finite(tail)
     case SNil() =>
       true
