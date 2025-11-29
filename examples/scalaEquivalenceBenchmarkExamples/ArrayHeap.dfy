@@ -9,6 +9,29 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
@@ -33,14 +56,14 @@ function isHeapM(a: seq<int>, N: int, i: int) : bool
   isHeapL := l < N && isHeapL;
   var isHeapR := isHeapM(a, N, r);
   isHeapR := r < N && isHeapR;
-  if (l < N && a[l] > a[i]) { return 
-    false; }
-  else if (r < N && a[r] > a[i]) { return 
-    false; }
-  else if (r < i) { return 
-    isHeapL && isHeapR; }
-  else if (l < i) { return 
-    isHeapL; }
+  if (l < N && a[l] > a[i]) then 
+    false
+  else if (r < N && a[r] > a[i]) then 
+    false
+  else if (r < i) then 
+    isHeapL && isHeapR
+  else if (l < i) then 
+    isHeapL
   else
     {return true;}
   }
@@ -68,10 +91,10 @@ function isHeap(a: seq<int>, N: int, i: int) : bool
   decreases(N - i) {
   var l := 2 * i + 1;
   var r := 2 * i + 2;
-  if (2 * i + 1 < N && a[2 * i + 1] > a[i]) { return 
-    false; }
-  else if (2 * i + 2 < N && a[r] > a[i]) { return 
-    false; }
+  if (2 * i + 1 < N && a[2 * i + 1] > a[i]) then 
+    false
+  else if (2 * i + 2 < N && a[r] > a[i]) then 
+    false
   else if (2 * i + 2 < i) 
     { var result1 := isHeap(a, N, 2 * i + 2); var result2 := isHeap(a, N, 2 * i + 1); return result1 && result2; }
   else if (2 * i + 1 < i) { var result := 

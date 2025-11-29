@@ -9,6 +9,29 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 /* Copyright 2009-2024 EPFL, Lausanne */
 
@@ -17,25 +40,27 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
   requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
   decreases(pos) {
-  if pos == 0 
+  if pos == 0 then
    true
   else
     validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
+  }
 
 function validListM(list: List<int>, N: int): bool
-  requires (N >= 1)
-  list match
+  requires (N >= 1) {
+  match list
     case Nil() =>
       true
     case Cons(h, t) =>
       h >= 0 && h < N && validListM(t, N)
+  }
 
 
 function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
   requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
   decreases(pos) {
-  if (pos == 0) { return 
-    true; }
+  if (pos == 0) then 
+    true
   else if (validAdjList(adjList, N, pos - 1)) { var result := 
     validList(N, adjList(pos - 1)); return result; }
   else

@@ -9,6 +9,29 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -224,8 +247,8 @@ function collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Til
       else if (corner == 1) then radius
       else if (corner == 2) then radius - rest
       else if (corner == 3) then -rest
-      else if (corner == 4) { return -radius
-      else rest - radius; }
+      else if (corner == 4) then -radius
+      else rest - radius
     }
     var diffY := {;
       if (corner == 0) then radius - rest

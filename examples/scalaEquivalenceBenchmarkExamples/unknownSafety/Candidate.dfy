@@ -3,6 +3,29 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -27,7 +50,7 @@ function isEvenTopLvl(x: int): bool) isEven(x
 function isEven(x: int): bool
   decreases(if (x <= 0) int(0) else x) {
   if (x >= 0) {
-    assert(zero(x) == 0) { return // timeout; }
+    assert(zero(x) == 0) then // timeout
   }
   if (x < 0) then false
   else if (x == 0) then true

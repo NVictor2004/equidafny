@@ -12,6 +12,29 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function sigma(f: int => int, a: int, b: int): int {
   decreases(if (b == a) int(2) else if (b > a) 2 + b - a else a - b) {
 
