@@ -19,7 +19,7 @@ method isSortedR(l: List<int>) returns (res: bool)
     case _ => false; return result; }
   }
   if (l.isEmpty) { return true; }
-  else { return loop(l.head, l.tail); }
+  else { var result := loop(l.head, l.tail); return result; }
 }
 
 method isSortedA(l: List<int>) returns (res: bool)
@@ -29,13 +29,13 @@ method isSortedA(l: List<int>) returns (res: bool)
     else if (l.tail.isEmpty) { return true; }
     else leq(l.head, l.tail.head) { var result := && iter(l.tail); return result; }
   if (l.size < 2) { return true; }
-  else { return l.head <= l.tail.head && iter(l.tail); }
+  else { var result := l.head <= l.tail.head && iter(l.tail); return result; }
 }
 
 method isSortedB(l: List<int>) returns (res: bool)
   if (l.isEmpty)
     true
-  else { return if (!l.tail.isEmpty && l.head > l.tail.head); }
+  else { var result := if (!l.tail.isEmpty && l.head > l.tail.head); return result; }
     false
   else
     isSortedB(l.tail)
@@ -45,8 +45,8 @@ method isSortedC(l: List<int>) returns (res: bool)
   method chk(l: List<int>, p: int, a: bool): bool = {
     if (l.isEmpty) { return a; }
     else if (l.head < p) { return false; }
-    else { return chk(l.tail, l.head, a); }
+    else { var result := chk(l.tail, l.head, a); return result; }
   }
   if (l.isEmpty) { return true; }
-  else { return chk(l, l.head, true); }
+  else { var result := chk(l, l.head, true); return result; }
 }

@@ -20,7 +20,7 @@
 method m1(n: int, flag: bool) returns (res: int) {
   if (n < 1) { return 0; }
   else if (n == 1) { return 1; }
-  else { return m1(n - 1, !flag) + m1(n - 2, !flag); }
+  else { var result := m1(n - 1, !flag) + m1(n - 2, !flag); return result; }
 }
 
 method m2(n: int, mode: bool) returns (res: int) {

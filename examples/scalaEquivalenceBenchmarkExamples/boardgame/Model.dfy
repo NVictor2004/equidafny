@@ -68,7 +68,7 @@ method testsAdjacencyBonus1: (WorldMap, int, int, DistrictKind) = {
 
 method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
   if (y < 0 || y >= wm.height) { var result := int(0); return result; }
-  else { return adj(tileInWorld(wm, x, y), districtKind); }
+  else { var result := adj(tileInWorld(wm, x, y), districtKind); return result; }
 }
 
 method adj(tile: Tile, districtKind: DistrictKind) returns (res: int) {
@@ -201,7 +201,7 @@ method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) returns (
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
     if (currRadius == radius) { return atThisRadius; }
-    else { return atThisRadius ++ allRings(currRadius + 1); }
+    else { var result := atThisRadius ++ allRings(currRadius + 1); return result; }
   }
 
   allRings(0)
@@ -240,13 +240,13 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int) returns (re
     var yy := y + diffY;
     var includeThis := {;
       if (0 <= yy && yy < wm.height) { var result := List(tileInWorld(wm, xx, yy)); return result; }
-      else { return Nil[Tile](); }
+      else { var result := Nil[Tile](); return result; }
     }
     if (i == 6 * radius - 1) { return includeThis; }
-    else { return includeThis ++ loop(i + 1); }
+    else { var result := includeThis ++ loop(i + 1); return result; }
   }
   if (radius == 0) { var result := List(tileInWorld(wm, x, y)); return result; }
-  else { return loop(0); }
+  else { var result := loop(0); return result; }
 }
 
 // Note: Using extension method here on wm will create a match with candidates `tileInWorld`.

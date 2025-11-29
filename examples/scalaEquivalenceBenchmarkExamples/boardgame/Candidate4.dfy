@@ -22,7 +22,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
       adj(wm, x, y - 1, districtKind) { return +; }
       adj(wm, x - 1, y, districtKind) { return +; }
       adj(wm, x - 1, y + 1, districtKind)
-  } else { return int(0); }
+  } else { var result := int(0); return result; }
 }
 
 method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {

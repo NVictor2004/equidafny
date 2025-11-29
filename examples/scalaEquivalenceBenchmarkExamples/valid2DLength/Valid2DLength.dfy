@@ -31,4 +31,4 @@ method valid2DLength(a: seq<seq<int>>, w: seq<seq<Direction>>, m: int, n: int, k
   if (k == -1) { return true; }
   else if (a(k).length != n) { return false; }
   else if (w(k).length != n) { return false; }
-  else { return valid2DLength(a, w, m, n, k - 1); }
+  else { var result := valid2DLength(a, w, m, n, k - 1); return result; }

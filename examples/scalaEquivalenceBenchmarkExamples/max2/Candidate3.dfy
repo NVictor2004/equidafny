@@ -19,7 +19,7 @@ method max(l: List<int>) returns (res: int) {
       tl match {
         case Nil() => hd
         case Cons(hd1, tl1) =>
-          if (hd > hd1) max(hd :: tl1) else { return max(hd1 :: tl1); }
+          if (hd > hd1) max(hd :: tl1) else { var result := max(hd1 :: tl1); return result; }
       }
     }
   }

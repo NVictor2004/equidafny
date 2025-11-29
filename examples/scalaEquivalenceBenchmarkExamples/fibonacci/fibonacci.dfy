@@ -20,11 +20,11 @@
 method f1(n: int) returns (res: int) {
   if (n < 1) { return 0; }
   else if (n <= 2) { return 1; }
-  else { return f1(n-1) + f1(n-2); }
+  else { var result := f1(n-1) + f1(n-2); return result; }
 }
 
 method f2(n: int) returns (res: int) {
   if (n < 1) { return 0; }
   else if (n <= 2) { return 1; }
-  else { return f2(n-2) + f2(n-2) + f2(n-3); }
+  else { var result := f2(n-2) + f2(n-2) + f2(n-3); return result; }
 }

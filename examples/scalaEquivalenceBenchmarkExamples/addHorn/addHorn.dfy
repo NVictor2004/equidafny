@@ -19,12 +19,12 @@ method add_horn_1(i: int, j: int) returns (res: int)
   requires (i >= 0)
 {
   if (i == 0) { return j; }
-  else { return add_horn_1(i-1, j+1); }
+  else { var result := add_horn_1(i-1, j+1); return result; }
 }
 
 method add_horn_2(i: int, j: int) returns (res: int) {
   requires (i >= 0)
   if (i == 0) { return j; }
   else if (i == 1) { return j + 1; }
-  else { return add_horn_2(i-1, j+1); }
+  else { var result := add_horn_2(i-1, j+1); return result; }
 }

@@ -22,7 +22,7 @@ method unfoldingSorted<S, T>(start: S,
       case Nil() => Cons(t, Nil())
       case Cons(hd, tl) =>
         if (leq(t, hd)) { return t :: xs; }
-        else { return Cons(hd, insert(tl, t)); }
+        else { var result := Cons(hd, insert(tl, t)); return result; }
     }
   }
   method loop(s: S, fuel: int, xs: List<T>): List<T> = {

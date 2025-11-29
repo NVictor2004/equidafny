@@ -15,7 +15,7 @@ method choose(x: int, y: int) returns (res: int) {
   decreases(if (x <= 0) int(0) else x) {
   if (x <= 0) { return y; }
   else if (y <= 0) { return x; }
-  else { return choose(x - 1, y - 1); }
+  else { var result := choose(x - 1, y - 1); return result; }
 }
 
 method funnyZip(xs: List<int>, ys: List<int>) returns (res: List<int>)

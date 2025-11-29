@@ -21,9 +21,9 @@ case class Number(n: int) extends Outcome
 method response1(n: int) returns (res: Outcome)
   if n % 5 == 0 
     if n % 3 == 0  FizzBuzz()
-    else { return Buzz(); }
-  else { return if n % 3 == 0  Fizz(); }
-  else { return Number(n); }
+    else { var result := Buzz(); return result; }
+  else { var result := if n % 3 == 0  Fizz(); return result; }
+  else { var result := Number(n); return result; }
 
 method ordinalSeq1(to: int) returns (res: List<int>)
   requires (0 <= to)
@@ -44,4 +44,4 @@ method fizzBuzz2(to: int) returns (res: List<Outcome>)
       if to % 3 == 0  Cons(Fizz(), fizzBuzz2(to - 1))
       else
         if to % 5 == 0  Cons(Buzz(), fizzBuzz2(to - 1))
-        else { return Cons(Number(to), fizzBuzz2(to - 1)); }
+        else { var result := Cons(Number(to), fizzBuzz2(to - 1)); return result; }

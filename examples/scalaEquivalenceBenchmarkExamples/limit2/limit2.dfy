@@ -17,10 +17,10 @@
 
 method limit2_1(n: int) returns (res: int) {
   if (n <= 0) { return n; }
-  else { return n + limit2_1(n-1); }
+  else { var result := n + limit2_1(n-1); return result; }
 }
 
 method limit2_2(n: int) returns (res: int) {
   if (n <= 1) { return n; }
-  else { return n + limit2_2(n-1); }
+  else { var result := n + limit2_2(n-1); return result; }
 }

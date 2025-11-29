@@ -97,7 +97,7 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) retur
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
     if (currRadius == radius) { return atThisRadius; }
-    else { return atThisRadius ++ allRings(currRadius + 1); }
+    else { var result := atThisRadius ++ allRings(currRadius + 1); return result; }
   }
 
   allRings(0)
@@ -136,11 +136,11 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int) returns (res:
     var yy := y + diffY;
     var includeThis := {;
       if (0 <= yy && yy < wm.height) { var result := List(tileInWorld(wm, xx, yy)); return result; }
-      else { return Nil[Tile](); }
+      else { var result := Nil[Tile](); return result; }
     }
     if (i == 6 * ring - 1) { return includeThis; }
-    else { return includeThis ++ loop(i + 1); }
+    else { var result := includeThis ++ loop(i + 1); return result; }
   }
   if (ring > 0) { var result := loop(0); return result; }
-  else { return List(tileInWorld(wm, x, y)); }
+  else { var result := List(tileInWorld(wm, x, y)); return result; }
 }

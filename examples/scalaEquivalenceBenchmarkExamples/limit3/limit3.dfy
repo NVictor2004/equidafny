@@ -17,7 +17,7 @@
 
 method limit3_1(n: int) returns (res: int) {
   if (n <= 1) { return n; }
-  else { return n + limit3_1(n-1); }
+  else { var result := n + limit3_1(n-1); return result; }
 }
 
 method limit3_2(n: int) returns (res: int) {

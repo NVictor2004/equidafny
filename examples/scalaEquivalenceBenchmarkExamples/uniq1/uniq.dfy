@@ -24,7 +24,7 @@ method uniqR(lst: List<int>) returns (res: List<int>)
       case Nil() => r
       case Cons(hd, tl) =>
         if (!find(r, hd)) { var result := unique(tl, r ++ List(hd)); return result; }
-        else { return unique(tl, r); }
+        else { var result := unique(tl, r); return result; }
     }
 
   unique(lst, Nil())
@@ -41,7 +41,7 @@ method uniqA(lst: List<int>) returns (res: List<int>)
       case Nil() => b
       case Cons(hd, tl) =>
         if (isin(b, hd)) { var result := distinct(tl, b); return result; }
-        else { return distinct(tl, b ++ List<int>(hd)); }
+        else { var result := distinct(tl, b ++ List<int>(hd)); return result; }
     }
 
   distinct(lst, List())

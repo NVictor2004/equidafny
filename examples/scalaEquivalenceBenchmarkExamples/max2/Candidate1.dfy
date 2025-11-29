@@ -16,6 +16,6 @@ method max(l: List<int>) returns (res: int) {
   l match {
     case Nil()           => 42
     case Cons(hd, Nil()) => hd
-    case Cons(hd, tl)    => if (hd > max(tl)) hd else { return max(tl); }
+    case Cons(hd, tl)    => if (hd > max(tl)) hd else { var result := max(tl); return result; }
   }
 }

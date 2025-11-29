@@ -17,7 +17,7 @@ method remove_elem_1(e: int, lst: List<int>) returns (res: List<int>)
   lst match {
     case Nil() => Nil()
     case Cons(hd, tl) =>
-      if (e == hd) remove_elem_1(e, tl) else { return hd :: remove_elem_1(e, tl); }
+      if (e == hd) remove_elem_1(e, tl) else { var result := hd :: remove_elem_1(e, tl); return result; }
   }
 }
 
@@ -33,7 +33,7 @@ method drop_2(lst: List<int>, n: int) returns (res: List<int>)
   decreases(lst) {
   lst match {
     case Nil()        => Nil()
-    case Cons(hd, tl) => if (hd == n) drop_2(tl, n) else { return hd :: drop_2(tl, n); }
+    case Cons(hd, tl) => if (hd == n) drop_2(tl, n) else { var result := hd :: drop_2(tl, n); return result; }
   }
 }
 
@@ -59,7 +59,7 @@ method is_in_3(lst: List<int>, a: int) returns (res: bool)
   decreases(lst) {
   lst match {
     case Nil()        => false
-    case Cons(hd, tl) => if (a == hd) true else { return is_in_3(tl, a); }
+    case Cons(hd, tl) => if (a == hd) true else { var result := is_in_3(tl, a); return result; }
   }
 }
 
@@ -68,7 +68,7 @@ method unique_3(lst1: List<int>, lst2: List<int>) returns (res: List<int>)
   lst1 match {
     case Nil() => lst2
     case Cons(hd, tl) =>
-      if (is_in_3(lst2, hd)) unique_3(tl, lst2) else { return unique_3(tl, lst2 ++ List<int>(hd)); }
+      if (is_in_3(lst2, hd)) unique_3(tl, lst2) else { var result := unique_3(tl, lst2 ++ List<int>(hd)); return result; }
   }
 }
 
@@ -80,7 +80,7 @@ method solution_4(lst: List<int>) returns (res: List<int>)
     decreases(tlst) {
     tlst match {
       case Nil()        => true
-      case Cons(hd, tl) => if (hd == c) false else { return true && isNotIn_4(tl, c); }
+      case Cons(hd, tl) => if (hd == c) false else { var result := true && isNotIn_4(tl, c); return result; }
     }
   }
 

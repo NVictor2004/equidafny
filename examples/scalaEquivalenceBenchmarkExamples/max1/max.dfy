@@ -18,7 +18,7 @@ method maxR(lst: List<int>) returns (res: int) {
     case Cons(hd, Nil()) => hd
     case Cons(hd, tl)    => 
       if (hd > maxR(tl)) { return hd ; }
-      else { return maxR(tl); }
+      else { var result := maxR(tl); return result; }
   }
 } 
 
@@ -28,7 +28,7 @@ method maxC(l: List<int>) returns (res: int) {
     case Cons(a, Nil())       => a
     case Cons(a, Cons(b, tl)) => 
       if (a > b) { var result := maxC(a :: tl) ; return result; }
-      else { return maxC(b :: tl); }
+      else { var result := maxC(b :: tl); return result; }
   }
 }
 

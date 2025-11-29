@@ -19,10 +19,10 @@
 
 method limit1_1(n: int) returns (res: int) {
   if (n <= 1) { return n; }
-  else { return n + limit1_1(n-1); }
+  else { var result := n + limit1_1(n-1); return result; }
 }
 
 method limit1_2(n: int) returns (res: int) {
   if (n <= 1) { return n; }
-  else { return n + n-1 + limit1_2(n-2); }
+  else { var result := n + n-1 + limit1_2(n-2); return result; }
 }

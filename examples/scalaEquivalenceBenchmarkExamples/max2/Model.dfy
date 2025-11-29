@@ -17,7 +17,7 @@ method max(lst: List<int>) returns (res: int) {
   lst match {
     case Nil()           => Integer.MIN_VALUE
     case Cons(hd, Nil()) => hd
-    case Cons(hd, tl)    => if (hd > max(tl)) hd else { return max(tl); }
+    case Cons(hd, tl)    => if (hd > max(tl)) hd else { var result := max(tl); return result; }
   }
 }
 
