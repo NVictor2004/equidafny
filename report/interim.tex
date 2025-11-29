@@ -55,6 +55,51 @@ As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a 
 
 Dafny's program verification heavily relies on Boogie \parencite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \parencite{10.1007/978-3-540-78800-3_24}. 
 
+\subsection{Dafny Example}
+
+To demonstrate Dafny's capabilities in proving program equivalence, consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
+
+\begin{lstlisting}
+function loop(p: int, l: seq<int>): bool
+  decreases l
+{
+  if |l| == 0 then true
+  else p <= l[0] && loop(l[0], l[1..])
+}
+
+function isSortedR(l: seq<int>): bool
+{
+  if |l| == 0 then true
+  else loop(l[0], l[1..])
+}
+\end{lstlisting}
+%
+The second is as follows:
+\begin{lstlisting}
+function isSortedB(l: seq<int>): bool
+  decreases |l|
+{
+  if |l| == 0 then true
+  else if |l| == 1 then isSortedB([])
+  else l[0] <= l[1] && isSortedB(l[1..])
+}
+\end{lstlisting}
+%
+To prove the equivalence of these two functions, we can define the following lemma:
+\begin{lstlisting}
+lemma isSortedEquivalence(l: seq<int>)
+  ensures isSortedR(l) == isSortedB(l)
+{}
+\end{lstlisting}
+%
+For this example, Dafny is able to verify that these functions are equivalent. Therefore, Dafny is capable of proving the equivalence of simple functions, with very little effort on the user's part.
+
+\subsection{Boogie Conversion}
+
+The above examples can be converted into the corresponding Boogie program. This results in a file almost 3500 lines long.
+
+TODO: Copy and paste some Boogie output here?
+
 \section{SymDiff}
 
 % add a section on Coq
@@ -63,9 +108,9 @@ SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnos
 
 SymDiff can also be used to prove program equivalence however, as described in \textcite{lahiriAutomatedDifferentialProgramb}, it can also be used in Approximate computing, to trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focusses on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
 
-\section{Dafny Demonstration}
+\section{Dafny's Weaknesses}
 
-In this section, I will provide examples of Dafny functions that attempt to check whether a list is sorted. I have converted these examples into Dafny from the original Scala examples provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. There will be one reference solution and a series of student solutions where Dafny must prove or disprove their equivalence to the reference solution. The goal of this demonstration is to show Dafny's capabilities and limitations in this field.
+In this section, demonstrate Dafny's weaknesses. 
 
 \subsection{Necessary Datastructures}
 
@@ -74,33 +119,11 @@ I will require the following definition of a list data structure:
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
-\hypertarget{egr}{
-\subsection{Reference Solution}
+\hypertarget{counterexamples}{
+\subsection{Incorrect Counterexamples}
 }
 
-The reference solution for this example is detailed below, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|. 
-\begin{lstlisting}
-function loop(p: int, l: List<int>): bool
-  decreases l
-{
-  match l
-  case Nil => true
-  case Cons(x, xs) => p <= x && loop(x, xs)
-}
-
-function isSortedR(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, xs) => loop(x, xs)
-}
-\end{lstlisting}
-
-\hypertarget{ega}{
-\subsection{Student A's Solution}
-}
-
-The first student solution is as follows:
+An example is as follows:
 \begin{lstlisting}
 function leq(cur: int, next: int): bool
 {
@@ -124,6 +147,7 @@ function isSortedA(l: List<int>): bool
 }
 \end{lstlisting}
 %
+TODO: Link to reference solution
 This solution is non-equivalent to the reference solution, as it uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
 \begin{lstlisting}
 lemma isSortedEquivalence(l: List<int>)
@@ -150,33 +174,15 @@ lemma isSortedEquivalence(l: List<int>)
 %
 Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
 
-\hypertarget{egb}{
-\subsection{Student B's Solution}
+However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. 
+
+\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+
+\hypertarget{auxiliarylemmas}{
+\subsection{Auxiliary Lemmas for Helper functions}
 }
 
-The second student solution is as follows:
-\begin{lstlisting}
-function isSortedB(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, Nil) => isSortedB(Nil)
-  case Cons(x, Cons(y, ys)) => x <= y && isSortedB(Cons(y, ys))
-}
-\end{lstlisting}
-%
-This solution is equivalent to the reference solution. Dafny is able to prove this without any additional help, through the following equivalence lemma:
-\begin{lstlisting}
-lemma isSortedEquivalence(l: List<int>)
-  ensures isSortedR(l) == isSortedB(l)
-{}
-\end{lstlisting}
-
-\hypertarget{egc}{
-\subsection{Student C's Solution}
-}
-
-The third student solution is as follows:
+The example is as follows:
 \begin{lstlisting}
 function chk(l: List<int>, p: int, a: bool): bool
 {
@@ -193,6 +199,7 @@ function isSortedC(l: List<int>): bool
 }
 \end{lstlisting}
 %
+TODO: Link to reference solution
 This example is equivalent to the reference solution, however, Dafny requires a helper lemma to prove this:
 \begin{lstlisting}
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
@@ -209,15 +216,7 @@ lemma isSortedEquivalence(l: List<int>)
 }
 \end{lstlisting}
 
-\subsection{Summary of findings from Demonstration}
-This example proves that Dafny is capable enough to prove program equivalence in some cases without any help, as with \hyperlink{egb}{Student B's solution}. However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
-
-\subsection{Possible solutions}
-\subsubsection{Proving Equivalence of Auxiliary Lemmas}
-
-\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
-
-\subsubsection{Generating Simpler Counterexamples}
+Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
 
 As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, as seen in \hyperlink{ega}{Student A's solution}, due to the Z3 solver being incomplete.
 
