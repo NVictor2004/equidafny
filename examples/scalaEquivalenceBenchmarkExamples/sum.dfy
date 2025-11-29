@@ -18,9 +18,9 @@
 // Fig. 5 - two functions are not in lock-step
 
 function sum1(n: int): int
-  if (n <= 1) { return n; }
-  else { var result := n + n-1 + sum1(n-2); return result; }
+  if (n <= 1) then n
+  else n + n-1 + sum1(n-2)
 
 function sum2(n: int): int
-  if (n <= 1) { return n; }
-  else { var result := n + sum2(n-1); return result; }
+  if (n <= 1) then n
+  else n + sum2(n-1)

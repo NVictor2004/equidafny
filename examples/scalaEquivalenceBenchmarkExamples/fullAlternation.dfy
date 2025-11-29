@@ -18,14 +18,14 @@
 // Fig. 12
 
 function m1(n: int, flag: bool): int {
-  if (n < 1) { return 0; }
-  else if (n == 1) { return 1; }
-  else { var result := m1(n - 1, !flag) + m1(n - 2, !flag); return result; }
+  if (n < 1) then 0
+  else if (n == 1) then 1
+  else m1(n - 1, !flag) + m1(n - 2, !flag)
 }
 
 function m2(n: int, mode: bool): int {
-  if (n < 1) { return 0; }
-  else if (n == 1 || n == 2) { return 1; }
+  if (n < 1) then 0
+  else if (n == 1 || n == 2) then 1
   else {
     var results: int = 0
     if (mode) results = m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)

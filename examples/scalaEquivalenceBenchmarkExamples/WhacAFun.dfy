@@ -38,14 +38,14 @@ function repeat1<A>(n: int)(f: A => A): A => A
   requires (n >= 0)
   decreases(n) {
   a => {
-    if (n == 0) { return a; }
+    if (n == 0) then a
     else repeat1(n - 1)(f)(f(a))
   }
 }
 function repeat2<A>(n: int)(f: A => A): A => A
   requires (n >= 0)
   decreases(n) {
-  if (n == 0) { return a => a; }
+  if (n == 0) then a => a
   else a => repeat2(n - 1)(f)(f(a))
 }
 */
@@ -54,7 +54,7 @@ function repeat1<A>(n: int)(f: A => A): A => A
   requires (n >= 0)
   decreases(n) {
   a => {
-    if (n == 0) { return a; }
+    if (n == 0) then a
     else repeat1(n - 1)(f)(f(a))
   }
 }
@@ -62,7 +62,7 @@ function repeat2<A>(n: int)(f: A => A): A => A
   requires (n >= 0)
   decreases(n) {
   a => {
-    if (n == 0) { return a; }
+    if (n == 0) then a
     else {
       var fa := f(a);
       repeat1(n - 1)(f)(fa)

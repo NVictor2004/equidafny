@@ -18,13 +18,13 @@
 function add_horn_1(i: int, j: int): int
   requires (i >= 0)
 {
-  if (i == 0) { return j; }
-  else { var result := add_horn_1(i-1, j+1); return result; }
+  if (i == 0) then j
+  else add_horn_1(i-1, j+1)
 }
 
 function add_horn_2(i: int, j: int): int
   requires (i >= 0) {
-  if (i == 0) { return j; }
-  else if (i == 1) { return j + 1; }
-  else { var result := add_horn_2(i-1, j+1); return result; }
+  if (i == 0) then j
+  else if (i == 1) then j + 1
+  else add_horn_2(i-1, j+1)
 }

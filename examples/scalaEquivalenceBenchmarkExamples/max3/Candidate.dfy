@@ -24,7 +24,7 @@ function max(lst: List<int>): int {
     case Nil() => choose((x: int) => true)
     case Cons(hd, tl) =>
       fold(
-        (x, y) => if (x > y) x else { return y,; }
+        (x, y) => if (x > y) x else y,
         lst,
         hd
       )

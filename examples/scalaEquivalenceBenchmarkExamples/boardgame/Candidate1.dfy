@@ -109,8 +109,8 @@ function collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): Li
     decreases(radius - currRadius) {
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
-    if (currRadius == radius) { return atThisRadius; }
-    else { var result := atThisRadius ++ allRings(currRadius + 1); return result; }
+    if (currRadius == radius) then atThisRadius
+    else atThisRadius ++ allRings(currRadius + 1)
   }
 
   allRings(0)
@@ -129,31 +129,31 @@ function collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile>
     var corner := i / ring;
     var rest := i % ring;
     var diffX := {;
-      if (corner == 0) { return rest; }
-      else if (corner == 1) { return ring; }
-      else if (corner == 2) { var result := ring - rest; return result; }
-      else if (corner == 3) { return -rest; }
+      if (corner == 0) then rest
+      else if (corner == 1) then ring
+      else if (corner == 2) then ring - rest
+      else if (corner == 3) then -rest
       else if (corner == 4) { return -ring
       else rest - ring; }
     }
     var diffY := {;
-      if (corner == 0) { return ring - rest; }
-      else if (corner == 1) { return -rest; }
-      else if (corner == 2) { return -ring; }
-      else if (corner == 3) { return rest - ring; }
-      else if (corner == 4) { return rest; }
-      else { return ring; }
+      if (corner == 0) then ring - rest
+      else if (corner == 1) then -rest
+      else if (corner == 2) then -ring
+      else if (corner == 3) then rest - ring
+      else if (corner == 4) then rest
+      else ring
     }
 
     var xx := x + diffX;
     var yy := y + diffY;
     var includeThis := {;
-      if (0 <= yy && yy < wm.height) { var result := List(tileInWorld(wm, xx, yy)); return result; }
-      else { var result := Nil[Tile](); return result; }
+      if (0 <= yy && yy < wm.height) then List(tileInWorld(wm, xx, yy))
+      else Nil[Tile]()
     }
-    if (i == 6 * ring - 1) { return includeThis; }
-    else { var result := includeThis ++ loop(i + 1); return result; }
+    if (i == 6 * ring - 1) then includeThis
+    else includeThis ++ loop(i + 1)
   }
-  if (ring > 0) { var result := loop(0); return result; }
-  else { var result := List(tileInWorld(wm, x, y)); return result; }
+  if (ring > 0) then loop(0)
+  else List(tileInWorld(wm, x, y))
 }

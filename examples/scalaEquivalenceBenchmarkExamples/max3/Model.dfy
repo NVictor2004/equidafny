@@ -28,7 +28,7 @@ function max(lst: List<int>): int {
     case Nil() => choose((x: int) => true)
     case Cons(hd, tl) =>
       fold(
-        (x, y) => if (x > y) x else { return y,; }
+        (x, y) => if (x > y) x else y,
         lst,
         hd
       )
@@ -36,6 +36,6 @@ function max(lst: List<int>): int {
 }
 
 function norm(l: List<int>, f: int): int {
-  if (l.isEmpty) { return -1; }
-  else { return f; }
+  if (l.isEmpty) then -1
+  else f
 }

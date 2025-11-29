@@ -21,7 +21,7 @@ function uniq(lst: List<int>): List<int>
         lst_0 match {
           case Nil() => Nil()
           case Cons(hd_0, tl_0) =>
-            if (a == hd_0) drop(a, tl_0) else { var result := hd_0 :: drop(a, tl_0); return result; }
+            if (a == hd_0) drop(a, tl_0) else hd_0 :: drop(a, tl_0)
         }
       }
 

@@ -18,13 +18,13 @@
 // Fig. 4
 
 function f1(n: int): int {
-  if (n < 1) { return 0; }
-  else if (n <= 2) { return 1; }
-  else { var result := f1(n-1) + f1(n-2); return result; }
+  if (n < 1) then 0
+  else if (n <= 2) then 1
+  else f1(n-1) + f1(n-2)
 }
 
 function f2(n: int): int {
-  if (n < 1) { return 0; }
-  else if (n <= 2) { return 1; }
-  else { var result := f2(n-2) + f2(n-2) + f2(n-3); return result; }
+  if (n < 1) then 0
+  else if (n <= 2) then 1
+  else f2(n-2) + f2(n-2) + f2(n-3)
 }

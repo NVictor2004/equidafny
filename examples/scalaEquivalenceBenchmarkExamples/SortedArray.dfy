@@ -18,7 +18,7 @@ function isSortedArrayM(a: seq<int>, start: int, n: int): bool
   requires (0 <= start && n >= start && n <= |a|)
   if n <= succM(start) 
     true
-  else { var result := if a(n-2) > a(n-1) ; return result; }
+  else if a(n-2) > a(n-1) 
     false
   else
     isSortedArrayM(a, start, n-1)
@@ -34,9 +34,9 @@ function isSortedArray(a: seq<int>, start: int, n: int): bool
   requires (0 <= start && n >= start && n <= |a|)
   if n == start 
     true
-  else { return if n == start + 1 ; }
+  else if n == start + 1 
     true
-  else { var result := if a(n-2) > a(n-1) ; return result; }
+  else if a(n-2) > a(n-1) 
     false
   else
     isSortedArray(a, start, n-1)

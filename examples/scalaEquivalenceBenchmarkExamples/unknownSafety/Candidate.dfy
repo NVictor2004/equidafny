@@ -8,8 +8,8 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function zero(x: int): int {
   requires (x >= 0)
-  if (x > 0) { var result := zero(x - 1); return result; }
-  else { return x; }
+  if (x > 0) then zero(x - 1)
+  else x
 }
 
 function add(x: int, y: int): int {
@@ -29,16 +29,16 @@ function isEven(x: int): bool
   if (x >= 0) {
     assert(zero(x) == 0) { return // timeout; }
   }
-  if (x < 0) { var result := false; return result; }
-  else if (x == 0) { return true; }
-  else { var result := !isOdd(x - 1); return result; }
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !isOdd(x - 1)
 }
 
 function isOdd(x: int): bool
   decreases(if (x <= 0) int(0) else x) {
-  if (x <= 0) { var result := false; return result; }
-  else if (x == 1) { return true; }
-  else { var result := !isEven(x - 1); return result; }
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !isEven(x - 1)
 }
 
 /////////////////////////////////////

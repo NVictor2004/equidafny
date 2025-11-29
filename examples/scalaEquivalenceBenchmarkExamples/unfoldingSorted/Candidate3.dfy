@@ -26,7 +26,7 @@ function unfoldingSorted<State, Elem>(start: State,
   }
   function go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {
     decreases(if (fuel <= 0) int(0) else fuel) {
-    if (fuel <= 0) { return xs; }
+    if (fuel <= 0) then xs
     else next(s) match {
       case Some((nxtS, t)) =>
         go(nxtS, insertSorted(t, xs), fuel - 1)

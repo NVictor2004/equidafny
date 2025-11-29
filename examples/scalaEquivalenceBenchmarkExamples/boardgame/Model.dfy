@@ -67,8 +67,8 @@ function testsAdjacencyBonus1: (WorldMap, int, int, DistrictKind) = {
 //////////////////////
 
 function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
-  if (y < 0 || y >= wm.height) { var result := int(0); return result; }
-  else { var result := adj(tileInWorld(wm, x, y), districtKind); return result; }
+  if (y < 0 || y >= wm.height) then int(0)
+  else adj(tileInWorld(wm, x, y), districtKind)
 }
 
 function adj(tile: Tile, districtKind: DistrictKind): int {
@@ -200,8 +200,8 @@ function allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<T
     decreases(radius - currRadius) {
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
-    if (currRadius == radius) { return atThisRadius; }
-    else { var result := atThisRadius ++ allRings(currRadius + 1); return result; }
+    if (currRadius == radius) then atThisRadius
+    else atThisRadius ++ allRings(currRadius + 1)
   }
 
   allRings(0)
@@ -220,33 +220,33 @@ function collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int): List<Til
     var corner := i / radius;
     var rest := i % radius;
     var diffX := {;
-      if (corner == 0) { return rest; }
-      else if (corner == 1) { return radius; }
-      else if (corner == 2) { var result := radius - rest; return result; }
-      else if (corner == 3) { return -rest; }
+      if (corner == 0) then rest
+      else if (corner == 1) then radius
+      else if (corner == 2) then radius - rest
+      else if (corner == 3) then -rest
       else if (corner == 4) { return -radius
       else rest - radius; }
     }
     var diffY := {;
-      if (corner == 0) { return radius - rest; }
-      else if (corner == 1) { return -rest; }
-      else if (corner == 2) { return -radius; }
-      else if (corner == 3) { return rest - radius; }
-      else if (corner == 4) { return rest; }
-      else { return radius; }
+      if (corner == 0) then radius - rest
+      else if (corner == 1) then -rest
+      else if (corner == 2) then -radius
+      else if (corner == 3) then rest - radius
+      else if (corner == 4) then rest
+      else radius
     }
 
     var xx := x + diffX;
     var yy := y + diffY;
     var includeThis := {;
-      if (0 <= yy && yy < wm.height) { var result := List(tileInWorld(wm, xx, yy)); return result; }
-      else { var result := Nil[Tile](); return result; }
+      if (0 <= yy && yy < wm.height) then List(tileInWorld(wm, xx, yy))
+      else Nil[Tile]()
     }
-    if (i == 6 * radius - 1) { return includeThis; }
-    else { var result := includeThis ++ loop(i + 1); return result; }
+    if (i == 6 * radius - 1) then includeThis
+    else includeThis ++ loop(i + 1)
   }
-  if (radius == 0) { var result := List(tileInWorld(wm, x, y)); return result; }
-  else { var result := loop(0); return result; }
+  if (radius == 0) then List(tileInWorld(wm, x, y))
+  else loop(0)
 }
 
 // Note: Using extension function here on wm will create a match with candidates `tileInWorld`.

@@ -20,16 +20,16 @@ function isEvenTopLvl(x: int): bool) isEven(x
 
 function isEven(x: int): bool
   decreases(if (x <= 0) int(0) else x) {
-  if (x < 0) { return false; }
-  else if (x == 0) { return true; }
-  else { var result := !isOdd(x - 1); return result; }
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !isOdd(x - 1)
 }
 
 function isOdd(x: int): bool
   decreases(if (x <= 0) int(0) else x) {
-  if (x <= 0) { return false; }
-  else if (x == 1) { return true; }
-  else { var result := !isEven(x - 1); return result; }
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !isEven(x - 1)
 }
 
 /////////////////////////////////////

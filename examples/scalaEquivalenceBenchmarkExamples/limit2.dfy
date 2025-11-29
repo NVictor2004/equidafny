@@ -16,11 +16,11 @@
 
 
 function limit2_1(n: int): int {
-  if (n <= 0) { return n; }
-  else { var result := n + limit2_1(n-1); return result; }
+  if (n <= 0) then n
+  else n + limit2_1(n-1)
 }
 
 function limit2_2(n: int): int {
-  if (n <= 1) { return n; }
-  else { var result := n + limit2_2(n-1); return result; }
+  if (n <= 1) then n
+  else n + limit2_2(n-1)
 }

@@ -18,11 +18,11 @@
 // REVE does not work -- requires manual unrolling
 
 function limit1_1(n: int): int {
-  if (n <= 1) { return n; }
-  else { var result := n + limit1_1(n-1); return result; }
+  if (n <= 1) then n
+  else n + limit1_1(n-1)
 }
 
 function limit1_2(n: int): int {
-  if (n <= 1) { return n; }
-  else { var result := n + n-1 + limit1_2(n-2); return result; }
+  if (n <= 1) then n
+  else n + n-1 + limit1_2(n-2)
 }

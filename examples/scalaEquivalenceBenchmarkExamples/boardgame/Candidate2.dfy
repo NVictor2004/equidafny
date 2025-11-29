@@ -22,7 +22,7 @@ function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind
 }
 
 function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
-  if (y < 0 || y >= wm.height) { var result := int(0); return result; }
+  if (y < 0 || y >= wm.height) then int(0)
   else {
     var tile := tileInWorld(wm, x, y);
     districtKind match {

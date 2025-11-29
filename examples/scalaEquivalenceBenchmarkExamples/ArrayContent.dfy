@@ -19,11 +19,11 @@ function arrayContentM(a: seq<int>, n: int) : Set[int]
   requires (n >= 0 && n <= |a| && |a| <= MAX)
   decreases(n) {
   if n == 0  Set.empty[int]
-  else { var result := arrayContentM(a, n-1) ++ Set(a(n-1)); return result; }
+  else arrayContentM(a, n-1) ++ Set(a(n-1))
 
 
 function arrayContent(a: seq<int>, n: int) : Set[int]
   requires (n >= 0 && n <= |a| && |a| <= MAX)
   decreases(n) {
   if n == 0  Set.empty[int]
-  else { var result := Set(a(n-1)) ++ arrayContent(a, n-1); return result; }
+  else Set(a(n-1)) ++ arrayContent(a, n-1)

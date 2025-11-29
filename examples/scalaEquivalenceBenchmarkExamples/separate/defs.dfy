@@ -21,8 +21,8 @@ sealed abstract class List<+T> {
       case Nil => 0
       case h :: t =>
         var tLen := t.size;
-        if (tLen == int.MaxValue) { return tLen; }
-        else { return 1 + tLen; }
+        if (tLen == int.MaxValue) then tLen
+        else 1 + tLen
     }
  }.ensuring(res => 0 <= res && res <= int.MaxValue)
 

@@ -21,10 +21,10 @@ function sigma(f: int => int, a: int, b: int): int {
       b: int,
       f: int => int
   ): int {
-    decreases(if (b == i) int(2) else { var result := if (b > i) 2 + b - i else i - b); return result; }
-    if (i < b) { var result := sigma_rec(sum + f(i), i + int(1), b, f); return result; }
+    decreases(if (b == i) int(2) else if (b > i) 2 + b - i else i - b)
+    if (i < b) then sigma_rec(sum + f(i), i + int(1), b, f)
     else if (i == b) { var result := sum + f(i)
     else int(0); return result; }
   }
-  if (a > b) int(0) else { var result := sigma_rec(int(0), a, b, f); return result; }
+  if (a > b) int(0) else sigma_rec(int(0), a, b, f)
 }

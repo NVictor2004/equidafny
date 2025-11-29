@@ -21,13 +21,13 @@ function unfoldingSorted<State, Elem>(start: State,
     xs match {
       case Nil() => Cons(t, Nil())
       case Cons(hd, tl) =>
-        if (leq(t, hd)) { return t :: xs; }
-        else { var result := Cons(hd, insertSorted(t, tl)); return result; }
+        if (leq(t, hd)) then t :: xs
+        else Cons(hd, insertSorted(t, tl))
     }
   }
   function go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {
     decreases(if (fuel <= 0) int(0) else fuel) {
-    if (fuel <= 0) { return xs; }
+    if (fuel <= 0) then xs
     else next(s).map { case (nxtS, t) =>
       go(nxtS, insertSorted(t, xs), fuel - 1)
     }.getOrElse(xs)

@@ -18,21 +18,21 @@
 // Fig. 13
 
 function t1(n: int): int {
-  if (n < 1) { return 0; }
-  else if (n == 1) { return 1; }
-  else { var result := t1(n - 1) + t1(n - 2); return result; }
+  if (n < 1) then 0
+  else if (n == 1) then 1
+  else t1(n - 1) + t1(n - 2)
 }
 
 function t2(n: int): int {
-  if (n < 1) { return 0; }
-  else if (n == 1 || n == 2) { return 1; }
+  if (n < 1) then 0
+  else if (n == 1 || n == 2) then 1
   else {
     var results: int = 0
     var r1 = t2(n-1)
     var r2 = t2(n-2)
     var r3 = t2(n-3)
-    if (n % 2 == 0) { return results = r2 + r2 + r3; }
-    else { return results = r1 + r2; }
+    if (n % 2 == 0) then results = r2 + r2 + r3
+    else results = r1 + r2
     results
   }
 }

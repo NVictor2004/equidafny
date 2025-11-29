@@ -23,8 +23,8 @@ function uniqR(lst: List<int>): List<int>
     l match {
       case Nil() => r
       case Cons(hd, tl) =>
-        if (!find(r, hd)) { var result := unique(tl, r ++ List(hd)); return result; }
-        else { var result := unique(tl, r); return result; }
+        if (!find(r, hd)) then unique(tl, r ++ List(hd))
+        else unique(tl, r)
     }
 
   unique(lst, Nil())
@@ -40,8 +40,8 @@ function uniqA(lst: List<int>): List<int>
     a match {
       case Nil() => b
       case Cons(hd, tl) =>
-        if (isin(b, hd)) { var result := distinct(tl, b); return result; }
-        else { var result := distinct(tl, b ++ List<int>(hd)); return result; }
+        if (isin(b, hd)) then distinct(tl, b)
+        else distinct(tl, b ++ List<int>(hd))
     }
 
   distinct(lst, List())

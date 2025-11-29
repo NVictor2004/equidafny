@@ -16,15 +16,15 @@
 
 
 function limit3_1(n: int): int {
-  if (n <= 1) { return n; }
-  else { var result := n + limit3_1(n-1); return result; }
+  if (n <= 1) then n
+  else n + limit3_1(n-1)
 }
 
 function limit3_2(n: int): int {
-  if (n <= 1) { return n; }
+  if (n <= 1) then n
   else {
     var r := limit3_2(n-1);
-    if (r >= 0) { return n + r; }
-    else { return r; }
+    if (r >= 0) then n + r
+    else r
   }
 }

@@ -19,13 +19,13 @@
 // RVT times out due to KLEE timing out when trying to prove the base-case
 
 function p1(n: int, m: int): int {
-  if (m < 1 || n < 1 || m > n) { return 0; }
-  else if (m == 1 || n == 1 || m == n) { return 1; }
-  else { var result := p1(n-1, m-1) + p1(n-1, m); return result; }
+  if (m < 1 || n < 1 || m > n) then 0
+  else if (m == 1 || n == 1 || m == n) then 1
+  else p1(n-1, m-1) + p1(n-1, m)
 }
 
 function p2(n: int, m: int): int {
-  if (m < 1 || n < 1 || m > n) { return 0; }
-  else if (m == 1 || n == 1 || m == n) { return 1; }
-  else { var result := p2(n-1, m-1) + p2 (n-2 , m-1) + p2 (n-2 , m); return result; }
+  if (m < 1 || n < 1 || m > n) then 0
+  else if (m == 1 || n == 1 || m == n) then 1
+  else p2(n-1, m-1) + p2 (n-2 , m-1) + p2 (n-2 , m)
 }
