@@ -43,7 +43,7 @@ function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
   if pos == 0 then
    true
   else
-    validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
+    validListM(adjList[pos - 1], N) && validAdjListM(adjList, N, pos - 1)
   }
 
 function validListM(list: List<int>, N: int): bool
@@ -61,15 +61,14 @@ function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
   decreases(pos) {
   if (pos == 0) then 
     true
-  else if (validAdjList(adjList, N, pos - 1)) { var result := 
-    validList(N, adjList(pos - 1)); return result; }
+  else if (validAdjList(adjList, N, pos - 1)) then validList(N, adjList[pos - 1])
   else
     false
+  }
 
 function validList(N: int, l: List<int>): bool
-  requires (N >= 1)
-  l match
-    case Cons(h, t) if (h >= 0 && h < N) =>
-      validList(N, t)
-    case _ =>
-      l.size == 0
+  requires (N >= 1) {
+  match l
+    case Cons(h, t) => if (h >= 0 && h < N) then validList(N, t) else false
+    case Nil => true
+  }

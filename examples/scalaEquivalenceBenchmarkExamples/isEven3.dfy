@@ -32,28 +32,36 @@
 
 
 
-enum UnaryNat:
-case Zero
-case Succ(pred: UnaryNat)
+datatype UnaryNat = Zero | Succ(pred: UnaryNat)
 
-function prev: UnaryNat this match
+function prev(un: UnaryNat): UnaryNat {
+  match un
   case Zero     => Zero
   case Succ(n0) => n0
+}
 
-function isEven1: bool this match
+function isEven1(un: UnaryNat): bool {
+  match un
   case Zero => true
-  case Succ(pred) => pred.isOdd1
+  case Succ(pred) => isOdd1(pred)
+}
 
-function isOdd1: bool this match
+function isOdd1(un: UnaryNat): bool {
+  match un
   case Zero => false 
-  case Succ(pred) => pred.isEven1
+  case Succ(pred) => isEven1(pred)
+}
     
-function isEven2: bool this match
+function isEven2(un: UnaryNat): bool {
+  match un
   case Zero => true
-  case Succ(pred) => pred.isOdd2
+  case Succ(pred) => isOdd2(pred)
+}
 
-function isOdd2: bool this match
+function isOdd2(un: UnaryNat): bool {
+  match un
   case Zero => false 
   case Succ(Zero) => true 
   case Succ(Succ(Zero)) => false 
-  case _ => this.prev.isEven2
+  case _ => isEven2(prev(un))
+}

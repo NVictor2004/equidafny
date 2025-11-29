@@ -49,6 +49,6 @@ function h1(n: int): int {
 function h2(n: int): int {
   if (n < 1) then 0
   else if (n == 1) then 1
-  else if ((n % 2) == 0) h2(n-1) then + h2(n-2)
+  else if ((n % 2) == 0) then h2(n-1) + h2(n-2)
   else h2(n-2) + h2(n-2) + h2(n-3)
 }

@@ -35,11 +35,8 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-
-var MAX := 100000;
-
 function maxHeapifyM(a: seq<int>, N: int, i: int): Unit
-  requires (i >= 0 && i < N && N <= |a| && N <= MAX)
+  requires (i >= 0 && i < N && N <= |a| && N <= 100000)
   decreases(N - i) {
   var l := leftM(i);
   var r := rightM(i);
@@ -60,16 +57,16 @@ function maxHeapifyM(a: seq<int>, N: int, i: int): Unit
       maxHeapifyM(a, N, largest2)
 
 function leftM(i: int) : int
-  requires (0 <= i && i < MAX)
+  requires (0 <= i && i < 100000)
   2 * i + 1
 
 function rightM(i: int) : int
-  requires (0 <= i && i < MAX)
+  requires (0 <= i && i < 100000)
   2 * i + 2
 
 
 function maxHeapify(a: seq<int>, N: int, i: int): Unit
-  requires (i >= 0 && i < N && N <= |a| && N <= MAX)
+  requires (i >= 0 && i < N && N <= |a| && N <= 100000)
   decreases(N - i) {
   var l := 2 * i + 1;
   var r := 2 * i + 2;

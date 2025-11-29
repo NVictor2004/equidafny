@@ -39,12 +39,9 @@ function childrenAreHeapsM(a: seq<int>, N: int, i: int): bool
   requires (i >= 0 && i < N && N <= |a| && N <= 100000) {
   var l := leftM(i);
   var r := rightM(i);
-  if (l < N && r < N) 
-    { var result := isHeapM(a, N, l); var result2 := isHeapM(a, N, r); return result && result2; }
-  else if (l < N) { var result := 
-    isHeapM(a, N, l); return result; }
-  else
-    {return true;}
+  if (l < N && r < N) then isHeapM(a, N, l) && isHeapM(a, N, r)
+  else if (l < N) then isHeapM(a, N, l)
+  else true
 }
 
 function isHeapM(a: seq<int>, N: int, i: int) : bool
@@ -52,10 +49,8 @@ function isHeapM(a: seq<int>, N: int, i: int) : bool
   decreases(N - i) {
   var l := leftM(i);
   var r := rightM(i);
-  var isHeapL := isHeapM(a, N, l);
-  isHeapL := l < N && isHeapL;
-  var isHeapR := isHeapM(a, N, r);
-  isHeapR := r < N && isHeapR;
+  var isHeapL := l < N && isHeapM(a, N, l);
+  var isHeapR := r < N && isHeapM(a, N, r);
   if (l < N && a[l] > a[i]) then 
     false
   else if (r < N && a[r] > a[i]) then 
@@ -65,25 +60,23 @@ function isHeapM(a: seq<int>, N: int, i: int) : bool
   else if (l < i) then 
     isHeapL
   else
-    {return true;}
+    true
   }
 
 function leftM(i: int) : int
   requires (0 <= i && i < 100000)
-  {return 2 * i + 1;}
+  {2 * i + 1}
 
 function rightM(i: int) : int
   requires (0 <= i && i < 100000)
-  {return 2 * i + 2;}
+  {2 * i + 2}
 
 function childrenAreHeaps(a: seq<int>, N: int, i: int): bool
   requires (i >= 0 && i < N && N <= |a| && N <= 100000) {
-  if (2 * i + 1 < N && 2 * i + 2 < N) 
-    { var result1 := isHeap(a, N, 2 * i + 1); var result2 := isHeap(a, N, 2 * i + 2); return result1 && result2; }
-  else if (2 * i + 1 < N) { var result := 
-    isHeap(a, N, 2 * i + 1); return result; }
+  if (2 * i + 1 < N && 2 * i + 2 < N) then isHeap(a, N, 2 * i + 1) && isHeap(a, N, 2 * i + 2)
+  else if (2 * i + 1 < N) then isHeap(a, N, 2 * i + 1)
   else
-    {return true;}
+    true
   }
 
 function isHeap(a: seq<int>, N: int, i: int) : bool
@@ -95,10 +88,8 @@ function isHeap(a: seq<int>, N: int, i: int) : bool
     false
   else if (2 * i + 2 < N && a[r] > a[i]) then 
     false
-  else if (2 * i + 2 < i) 
-    { var result1 := isHeap(a, N, 2 * i + 2); var result2 := isHeap(a, N, 2 * i + 1); return result1 && result2; }
-  else if (2 * i + 1 < i) { var result := 
-    isHeap(a, N, 2 * i + 1); return result; }
+  else if (2 * i + 2 < i) then isHeap(a, N, 2 * i + 2) && isHeap(a, N, 2 * i + 1)
+  else if (2 * i + 1 < i) then isHeap(a, N, 2 * i + 1)
   else
-    {return true;}
+    true
   }
