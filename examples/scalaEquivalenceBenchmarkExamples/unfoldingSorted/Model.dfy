@@ -1,7 +1,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method unfoldingSorted[S, T](start: S,
+method unfoldingSorted<S, T>(start: S,
                           next: S => Option[(S, T)],
                           leq: (T, T) => bool,
                           max: int): List<T> = {

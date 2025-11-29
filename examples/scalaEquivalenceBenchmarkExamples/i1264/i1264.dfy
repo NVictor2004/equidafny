@@ -1,7 +1,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method split[T](l: List<T>, x: T) returns (res: List<List<T>>)
+method split<T>(l: List<T>, x: T) returns (res: List<List<T>>)
   decreases(l) {
   l match {
     case Nil() => List<List<T>>(List<T>())
@@ -13,7 +13,7 @@ method split[T](l: List<T>, x: T) returns (res: List<List<T>>)
   }
 }
 
-method join[T](ll: List<List<T>>, l: List<T>) returns (res: List<T>)
+method join<T>(ll: List<List<T>>, l: List<T>) returns (res: List<T>)
   decreases(ll) {
   ll match {
     case Nil() => Nil[T]()
@@ -22,7 +22,7 @@ method join[T](ll: List<List<T>>, l: List<T>) returns (res: List<T>)
   }
 }
 
-method replace[T](l1: List<T>, x: T, l2: List<T>) returns (res: List<T>)
+method replace<T>(l1: List<T>, x: T, l2: List<T>) returns (res: List<T>)
   decreases(l1) {
   l1 match {
     case Nil() => Nil[T]()
@@ -31,6 +31,6 @@ method replace[T](l1: List<T>, x: T, l2: List<T>) returns (res: List<T>)
   }
 }
 
-method slowReplace[T](l1: List<T>, x: T, l2: List<T>) returns (res: List<T>) join(split(l1, x), l2)
+method slowReplace<T>(l1: List<T>, x: T, l2: List<T>) returns (res: List<T>) join(split(l1, x), l2)
 
 

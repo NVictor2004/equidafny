@@ -17,7 +17,7 @@ sealed abstract class List<+T> {
 
   method length: int = size
 
-  method ++[TT >: T](that: List<TT>): List<TT> = {
+  method ++<TT >: T>(that: List<TT>): List<TT> = {
     this match {
       case Nil => that
       case x :: xs => x :: (xs ++ that)
@@ -46,9 +46,9 @@ sealed abstract class List<+T> {
     }
   }
 
-  method :: [TT >: T](elem: TT): List<TT> = new ::(elem, this)
+  method :: <TT >: T>(elem: TT): List<TT> = new ::(elem, this)
 
-  method :+[TT >: T](t: TT): List<TT> = {
+  method :+<TT >: T>(t: TT): List<TT> = {
     this match {
       case Nil => t :: this
       case x :: xs => x :: (xs :+ t)

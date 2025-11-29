@@ -3,10 +3,10 @@
 
 
 
-method existsM[T](p: T => bool) returns (res: bool)
+method existsM<T>(p: T => bool) returns (res: bool)
   !forall((t: T) => !p(t))
 
-method eliminate_existsM[T](p: T => bool) returns (res: T)
+method eliminate_existsM<T>(p: T => bool) returns (res: T)
   requires (existsM[T](p))
   choose[T]((res: T) => p(res))
 }.ensuring(p)
@@ -21,7 +21,7 @@ method fM(x: int, p: int => bool) returns (res: int)
   else  x
 
 
-method exists[T](p: T => bool) returns (res: bool)
+method exists<T>(p: T => bool) returns (res: bool)
   !forall((t: T) => !p(t))
 
 method maxNegP(p: int => bool, j: int) returns (res: bool)
