@@ -15,7 +15,7 @@
 
 method isSortedArrayM(a: seq<int>, start: int, n: int) returns (res: bool)
   decreases(n) {
-  requires (0 <= start && n >= start && n <= a.length)
+  requires (0 <= start && n >= start && n <= |a|)
   if n <= succM(start) 
     true
   else { var result := if a(n-2) > a(n-1) ; return result; }
@@ -31,7 +31,7 @@ method succM(n: int) =
 
 method isSortedArray(a: seq<int>, start: int, n: int) returns (res: bool)
   decreases(n) {
-  requires (0 <= start && n >= start && n <= a.length)
+  requires (0 <= start && n >= start && n <= |a|)
   if n == start 
     true
   else { return if n == start + 1 ; }

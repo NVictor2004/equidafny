@@ -16,7 +16,7 @@
 var MAX := 100000;
 
 method maxHeapifyM(a: seq<int>, N: int, i: int) returns (res: Unit)
-  requires (i >= 0 && i < N && N <= a.length && N <= MAX)
+  requires (i >= 0 && i < N && N <= |a| && N <= MAX)
   decreases(N - i) {
   var l := leftM(i);
   var r := rightM(i);
@@ -46,7 +46,7 @@ method rightM(i: int)  returns (res: int)
 
 
 method maxHeapify(a: seq<int>, N: int, i: int) returns (res: Unit)
-  requires (i >= 0 && i < N && N <= a.length && N <= MAX)
+  requires (i >= 0 && i < N && N <= |a| && N <= MAX)
   decreases(N - i) {
   var l := 2 * i + 1;
   var r := 2 * i + 2;
@@ -65,7 +65,7 @@ method maxHeapify(a: seq<int>, N: int, i: int) returns (res: Unit)
     maxHeapify(a, N, largest2)
 
 method swap(a: int, b: int, array: seq<int>, N: int) returns (res: Unit)
-  requires (a >= 0 && a < N && b >= 0 && b < N && N <= array.length && N <= MAX)
+  requires (a >= 0 && a < N && b >= 0 && b < N && N <= |array| && N <= MAX)
   var temp := array(a);
   array(a) = array(b)
   array(b) = temp

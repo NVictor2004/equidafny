@@ -15,7 +15,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method validAdjListM(adjList: seq<List<int>>, N: int, pos: int) returns (res: bool)
-  requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
+  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
   decreases(pos) {
   if pos == 0 
    true
@@ -32,7 +32,7 @@ method validListM(list: List<int>, N: int) returns (res: bool)
 
 
 method validAdjList(adjList: seq<List<int>>, N: int, pos: int) returns (res: bool)
-  requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
+  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
   decreases(pos) {
   if (pos == 0) { return 
     true; }

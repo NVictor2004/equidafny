@@ -22,7 +22,7 @@ case class Tile(
 // Hexagon tiles, cylinder world (i.e. wraps around x-axis)
 case class WorldMap(tiles: List<Tile>, width: int, height: int) {
   requires (width > 0 && height > 0)
-  requires (tiles.length == width * height)
+  requires (|tiles| == width * height)
 }
 
 sealed trait TileBase
