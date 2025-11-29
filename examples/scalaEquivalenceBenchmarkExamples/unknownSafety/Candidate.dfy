@@ -1,3 +1,4 @@
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -25,14 +26,14 @@ method isEven(x: int) returns (res: bool)
     assert(zero(x) == 0) // timeout
   }
   if (x < 0) false
-  else if (x == 0) true
+  else if (x == 0) { return true; }
   else !isOdd(x - 1)
 }
 
 method isOdd(x: int) returns (res: bool)
   decreases(if (x <= 0) int(0) else x) {
   if (x <= 0) false
-  else if (x == 1) true
+  else if (x == 1) { return true; }
   else !isEven(x - 1)
 }
 
@@ -47,4 +48,3 @@ method isSorted(xs: List<int>) returns (res: bool) xs match {
     true
   case Cons(h1, Cons(h2, t)) => h1 <= h2 && isSorted(t)
 }
-

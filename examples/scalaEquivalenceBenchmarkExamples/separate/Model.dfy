@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {
@@ -15,4 +22,3 @@ method separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {
 method test returns (res: SList<List<Animal>>) SList(
   Goat(1) :: Sheep(2) :: Nil
 )
-

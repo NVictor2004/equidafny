@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 /* Copyright 2009-2024 EPFL, Lausanne */
 
@@ -23,8 +30,8 @@ method validListM(list: List<int>, N: int) returns (res: bool)
 method validAdjList(adjList: seq<List<int>>, N: int, pos: int) returns (res: bool)
   requires (N >= 1 && pos >= 0 && pos <= N && N == adjList.length)
   decreases(pos) {
-  if (pos == 0) 
-    true
+  if (pos == 0) { return 
+    true; }
   else if (validAdjList(adjList, N, pos - 1)) 
     validList(N, adjList(pos - 1))
   else

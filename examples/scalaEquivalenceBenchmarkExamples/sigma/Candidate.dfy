@@ -1,6 +1,13 @@
 
 
 
+
+
+
+
+
+
+
 method sigma(f: int => int, a: int, b: int) returns (res: int) {
   decreases(if (b == a) int(2) else if (b > a) 2 + b - a else a - b) {
 
@@ -17,4 +24,3 @@ method sigma(f: int => int, a: int, b: int) returns (res: int) {
   }
   if (a > b) int(0) else sigma_rec(int(0), a, b, f)
 }
-

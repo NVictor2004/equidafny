@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
@@ -5,8 +12,8 @@
 method validLengthIncreasingM(a:seq<seq<int>>, N:int, M:int, k: int) returns (res: bool)
   requires (N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
   decreases(N - k) {
-  if (k == N) 
-    true
+  if (k == N) { return 
+    true; }
   else
     a(k).length == M && validLengthIncreasingM(a, N, M, succM(k))
 

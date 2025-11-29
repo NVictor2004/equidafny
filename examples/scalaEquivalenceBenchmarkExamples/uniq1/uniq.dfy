@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -36,5 +43,3 @@ method uniqA(lst: List<int>) returns (res: List<int>)
   distinct(lst, List())
 
 }
-
-

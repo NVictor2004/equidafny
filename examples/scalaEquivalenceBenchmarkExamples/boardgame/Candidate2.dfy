@@ -1,5 +1,12 @@
 
 
+
+
+
+
+
+
+
 method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
   requires (0 <= y && y < wm.height)
   adj(wm, x, y + 1, districtKind) +
@@ -63,4 +70,3 @@ method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
   var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
-

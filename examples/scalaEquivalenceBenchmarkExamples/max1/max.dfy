@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -6,7 +13,7 @@ method maxR(lst: List<int>) returns (res: int) {
     case Nil()           => -1
     case Cons(hd, Nil()) => hd
     case Cons(hd, tl)    => 
-      if (hd > maxR(tl)) hd 
+      if (hd > maxR(tl)) { return hd ; }
       else maxR(tl)
   }
 } 
@@ -30,5 +37,3 @@ method maxT(lst: List<int>) returns (res: int) {
       tl.foldLeft(hd)(bigger)
   }
 }
-
-

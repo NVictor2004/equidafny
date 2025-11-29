@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -32,5 +39,3 @@ method replace<T>(l1: List<T>, x: T, l2: List<T>) returns (res: List<T>)
 }
 
 method slowReplace<T>(l1: List<T>, x: T, l2: List<T>) returns (res: List<T>) join(split(l1, x), l2)
-
-

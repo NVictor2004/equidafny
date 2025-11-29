@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -43,4 +50,3 @@ sealed trait DistrictKind
 sealed trait ResourceImprovement
   // etc.
 }
-

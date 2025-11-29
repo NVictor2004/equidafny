@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method max(l: List<int>) returns (res: int) {
@@ -7,4 +14,3 @@ method max(l: List<int>) returns (res: int) {
     case Cons(hd, tl) => if (hd > max(tl)) hd else max(tl)
   }
 }
-

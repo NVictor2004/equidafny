@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -10,13 +17,13 @@ method unfoldingSorted<State, Elem>(start: State,
     xs match {
       case Nil() => Cons(t, Nil())
       case Cons(hd, tl) =>
-        if (leq(t, hd)) t :: xs
+        if (leq(t, hd)) { return t :: xs; }
         else Cons(hd, insertSorted(t, tl))
     }
   }
   method go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {
     decreases(if (fuel <= 0) int(0) else fuel) {
-    if (fuel <= 0) xs
+    if (fuel <= 0) { return xs; }
     else next(s) match {
       case Some((t, nxtS)) =>
         go(nxtS, insertSorted(t, xs), fuel - 1)
@@ -26,4 +33,3 @@ method unfoldingSorted<State, Elem>(start: State,
 
   go(start, Nil(), max)
 }
-

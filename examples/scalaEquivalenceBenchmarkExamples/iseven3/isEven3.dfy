@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 enum UnaryNat:
 case Zero
 case Succ(pred: UnaryNat)

@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -189,7 +196,7 @@ method allTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) returns (
     decreases(radius - currRadius) {
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
-    if (currRadius == radius) atThisRadius
+    if (currRadius == radius) { return atThisRadius; }
     else atThisRadius ++ allRings(currRadius + 1)
   }
 
@@ -212,16 +219,16 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int) returns (re
       if (corner == 0) rest
       else if (corner == 1) radius
       else if (corner == 2) radius - rest
-      else if (corner == 3) -rest
-      else if (corner == 4) -radius
-      else rest - radius
+      else if (corner == 3) { return -rest; }
+      else if (corner == 4) { return -radius
+      else rest - radius; }
     }
     var diffY := {;
-      if (corner == 0) radius - rest
-      else if (corner == 1) -rest
-      else if (corner == 2) -radius
-      else if (corner == 3) rest - radius
-      else if (corner == 4) rest
+      if (corner == 0) { return radius - rest; }
+      else if (corner == 1) { return -rest; }
+      else if (corner == 2) { return -radius; }
+      else if (corner == 3) { return rest - radius; }
+      else if (corner == 4) { return rest; }
       else radius
     }
 
@@ -231,7 +238,7 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, radius: int) returns (re
       if (0 <= yy && yy < wm.height) List(tileInWorld(wm, xx, yy))
       else Nil[Tile]()
     }
-    if (i == 6 * radius - 1) includeThis
+    if (i == 6 * radius - 1) { return includeThis; }
     else includeThis ++ loop(i + 1)
   }
   if (radius == 0) List(tileInWorld(wm, x, y))
@@ -248,4 +255,3 @@ method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
   var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
-

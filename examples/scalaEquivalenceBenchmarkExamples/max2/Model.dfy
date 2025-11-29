@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -11,7 +18,6 @@ method max(lst: List<int>) returns (res: int) {
 }
 
 method norm(l: List<int>, f: int) returns (res: int) {
-  if (l.isEmpty) -1
+  if (l.isEmpty) { return -1; }
   else f
 }
-

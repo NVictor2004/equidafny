@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 sealed trait Animal
@@ -10,7 +17,7 @@ sealed abstract class List<+T> {
       case Nil => 0
       case h :: t =>
         var tLen := t.size;
-        if (tLen == int.MaxValue) tLen
+        if (tLen == int.MaxValue) { return tLen; }
         else 1 + tLen
     }
  }.ensuring(res => 0 <= res && res <= int.MaxValue)
@@ -58,5 +65,3 @@ sealed abstract class List<+T> {
 
 
 final case class ::[+A](first: A, next: List<A>) extends List<A>
-
-

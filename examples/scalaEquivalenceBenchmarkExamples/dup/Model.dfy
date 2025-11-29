@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -11,4 +18,3 @@ method norm<S, T>(n: int, s: S, t: T, res: List<(S, T)>): List<(S, T)> = {
   if (n < 0) Nil()
   else res
 }
-

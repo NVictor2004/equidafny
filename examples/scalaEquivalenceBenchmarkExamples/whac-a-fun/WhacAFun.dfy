@@ -1,4 +1,11 @@
 
+
+
+
+
+
+
+
 method andThen1<A, B, C>(f: A => B, g: B => C): A => C = a => g(f(a))
 method andThen2<A, B, C>(ff: A => B, gg: B => C): A => C = aa => gg(ff(aa))
 
@@ -29,14 +36,14 @@ method repeat1<A>(n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
   decreases(n) {
   a => {
-    if (n == 0) a
+    if (n == 0) { return a; }
     else repeat1(n - 1)(f)(f(a))
   }
 }
 method repeat2<A>(n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
   decreases(n) {
-  if (n == 0) a => a
+  if (n == 0) { return a => a; }
   else a => repeat2(n - 1)(f)(f(a))
 }
 */
@@ -45,7 +52,7 @@ method repeat1<A>(n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
   decreases(n) {
   a => {
-    if (n == 0) a
+    if (n == 0) { return a; }
     else repeat1(n - 1)(f)(f(a))
   }
 }
@@ -53,11 +60,10 @@ method repeat2<A>(n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
   decreases(n) {
   a => {
-    if (n == 0) a
+    if (n == 0) { return a; }
     else {
       var fa := f(a);
       repeat1(n - 1)(f)(fa)
     }
   }
 }
-

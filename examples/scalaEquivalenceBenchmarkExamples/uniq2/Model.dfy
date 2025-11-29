@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -88,5 +95,3 @@ method solution_4(lst: List<int>) returns (res: List<int>)
   uniqSave_4(lst, Nil())
 
 }
-
-

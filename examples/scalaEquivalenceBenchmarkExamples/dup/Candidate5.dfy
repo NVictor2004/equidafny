@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method dup<S, T>(n: int, s: S, t: T): List<(S, T)> = {
@@ -5,4 +12,3 @@ method dup<S, T>(n: int, s: S, t: T): List<(S, T)> = {
   if (n <= 0) Nil()
   else (s, t) :: dup(n - 1, s, t)
 }
-

@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
@@ -22,14 +29,14 @@ method isHeapM(a: seq<int>, N: int, i: int)  returns (res: bool)
   var r := rightM(i);
   var isHeapL := l < N && isHeapM(a, N, l);
   var isHeapR := r < N && isHeapM(a, N, r);
-  if (l < N && a(l) > a(i)) 
-    false
-  else if (r < N && a(r) > a(i)) 
-    false
-  else if (r < i) 
-    isHeapL && isHeapR
-  else if (l < i) 
-    isHeapL
+  if (l < N && a(l) > a(i)) { return 
+    false; }
+  else if (r < N && a(r) > a(i)) { return 
+    false; }
+  else if (r < i) { return 
+    isHeapL && isHeapR; }
+  else if (l < i) { return 
+    isHeapL; }
   else
     true
 
@@ -57,10 +64,10 @@ method isHeap(a: seq<int>, N: int, i: int)  returns (res: bool)
   decreases(N - i) {
   var l := 2 * i + 1;
   var r := 2 * i + 2;
-  if (2 * i + 1 < N && a(2 * i + 1) > a(i)) 
-    false
-  else if (2 * i + 2 < N && a(r) > a(i)) 
-    false
+  if (2 * i + 1 < N && a(2 * i + 1) > a(i)) { return 
+    false; }
+  else if (2 * i + 2 < N && a(r) > a(i)) { return 
+    false; }
   else if (2 * i + 2 < i) 
     isHeap(a, N, 2 * i + 2) && isHeap(a, N, 2 * i + 1)
   else if (2 * i + 1 < i) 

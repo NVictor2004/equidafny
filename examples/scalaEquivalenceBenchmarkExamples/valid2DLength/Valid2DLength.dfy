@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
@@ -17,7 +24,7 @@ method valid2DLengthM(a: seq<seq<int>>, w: seq<seq<Direction>>, m: int, n: int, 
 method valid2DLength(a: seq<seq<int>>, w: seq<seq<Direction>>, m: int, n: int, k: int) returns (res: bool)
   requires (a.length == m && w.length == m && a.length > 0 && w.length > 0 && k >= -1 && k < m)
   decreases(k+1) {
-  if (k == -1) true
-  else if (a(k).length != n) false
-  else if (w(k).length != n) false
+  if (k == -1) { return true; }
+  else if (a(k).length != n) { return false; }
+  else if (w(k).length != n) { return false; }
   else valid2DLength(a, w, m, n, k - 1)

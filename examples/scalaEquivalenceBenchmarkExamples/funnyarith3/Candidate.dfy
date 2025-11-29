@@ -1,11 +1,18 @@
 
 
+
+
+
+
+
+
+
 // Top level
 method eval(x: int, y: int) returns (res: int) myMul(x, y)
 
 method myAdd(x: int, y: int) returns (res: int) {
   decreases(if (x <= 0) -x else x) {
-  if (x == 0) y
+  if (x == 0) { return y; }
   else if (x > 0) myAdd(x - 1, y + 1)
   else myAdd(x + 1, y - 1)
 }
@@ -13,7 +20,7 @@ method myAdd(x: int, y: int) returns (res: int) {
 // Computes y - x and not x - y
 method mySub(x: int, y: int) returns (res: int) {
   decreases(if (y <= 0) -y else y) {
-  if (y == 0) -x
+  if (y == 0) { return -x; }
   else if (y > 0) mySub(x - 1, y - 1)
   else mySub(x + 1, y + 1)
 }
@@ -24,4 +31,3 @@ method myMul(x: int, y: int) returns (res: int) {
   else if (x > 0) myAdd(myMul(x - 1, y), y)
   else mySub(y, myMul(x + 1, y))
 }
-

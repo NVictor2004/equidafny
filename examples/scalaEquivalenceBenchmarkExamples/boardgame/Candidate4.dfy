@@ -1,15 +1,22 @@
 
 
+
+
+
+
+
+
+
 method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   // No, one must still compute adjacency even for tiles on the y-border of the map
   if (0 < y && y < wm.height - 1) {
-    adj(wm, x, y + 1, districtKind) +
-      adj(wm, x + 1, y, districtKind) +
-      adj(wm, x + 1, y - 1, districtKind) +
-      adj(wm, x, y - 1, districtKind) +
-      adj(wm, x - 1, y, districtKind) +
+    adj(wm, x, y + 1, districtKind) { return +; }
+      adj(wm, x + 1, y, districtKind) { return +; }
+      adj(wm, x + 1, y - 1, districtKind) { return +; }
+      adj(wm, x, y - 1, districtKind) { return +; }
+      adj(wm, x - 1, y, districtKind) { return +; }
       adj(wm, x - 1, y + 1, districtKind)
   } else int(0)
 }
@@ -105,4 +112,3 @@ method notADistrict(wm: WorldMap, x: int, y: int) returns (res: bool)
     }
   }
 }
-

@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -6,4 +13,3 @@ method dup<S, T>(n: int, s: S, t: T): List<(S, T)> = {
   if (n <= 0) Nil()
   else dup(n - 1, s, t) // duplicating nils, very useful
 }
-
