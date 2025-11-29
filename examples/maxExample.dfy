@@ -9,37 +9,41 @@ function length<T>(l: List<T>): nat
   case Cons(_, tl) => 1 + length(tl)
 }
 
-function foldLeft<T, U>(f: (U, T) -> U, acc: U, l: List<T>): U
+function foldLeft<T, U>(f: (U, T) -> U, acc: U, l: seq<T>): U
 {
-  match l
-  case Nil => acc
-  case Cons(hd, tl) => foldLeft(f, f(acc, hd), tl)
+  if |l| == 0 then acc
+  else foldLeft(f, f(acc, l[0]), l[1..])
 }
 
 // Reference solution
-function maxR(l: List<int>): int
+function maxR(l: seq<int>): int
 {
-  match l
-  case Nil => -1
-  case Cons(hd, Nil) => hd
-  case Cons(hd, tl) =>
-    if hd > maxR(tl) then hd else maxR(tl)
+  if |l| == 0 then -1
+  else if |l| == 1 then l[0]
+  else
+    var m := maxR(l[1..]);
+    if l[0] > m then l[0] else m
 }
 
 // Defining maxC
-function maxC(l: List<int>): int
-  decreases length(l)
+function maxC(l: seq<int>): int
+  decreases |l|
+  ensures maxC(l) == maxR(l)
 {
-  match l
-  case Nil => -1
-  case Cons(a, Nil) => a
-  case Cons(a, Cons(b, tl)) =>
+  if |l| == 0 then -1
+  else if |l| == 1 then l[0]
+  else
+    var a := l[0];
+    var b := l[1];
     if a > b then
-      assert length(l) decreases to length(Cons(a, tl));
-      maxC(Cons(a, tl))
+      maxC([l[0]] + l[2..])
     else
-      maxC(Cons(b, tl))
+      maxC(l[1..])
 }
+
+lemma maxEquivalence(l: seq<int>)
+  ensures maxC(l) == maxR(l)
+{}
 
 // Defining maxT
 
@@ -49,9 +53,20 @@ function bigger(a: int, b: int): int
   if a >= b then a else b
 }
 
-function maxT(l: List<int>): int
+function maxT(l: seq<int>): int
 {
-  match l
-  case Nil => -1
-  case Cons(hd, tl) => foldLeft(bigger, hd, tl)
+  if |l| == 0 then -1
+  else foldLeft(bigger, l[0], l[1..])
 }
+
+lemma maxEquivalence2(l: seq<int>)
+  ensures maxT(l) == maxC(l)
+{
+  if |l| == 0 || |l| == 1 {}
+  else { maxEquivalence2Helper(l[0], l[1..]); }
+}
+
+lemma maxEquivalence2Helper(a: int, b: seq<int>)
+  ensures foldLeft(bigger, a, b) == maxC([a] + b)
+  decreases |b|
+{}
