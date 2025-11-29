@@ -1,37 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Examples are figures from paper:
 // Automating Regression Verification.
 // https://doi.org/10.1145/2642937.2642987

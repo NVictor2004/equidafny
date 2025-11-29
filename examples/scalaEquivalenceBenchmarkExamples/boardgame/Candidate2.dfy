@@ -1,39 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   requires (0 <= y && y < wm.height)
   adj(wm, x, y + 1, districtKind) +

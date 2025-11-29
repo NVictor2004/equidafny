@@ -1,37 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function append<T>(l1: List<T>, l2: List<T>): List<T>

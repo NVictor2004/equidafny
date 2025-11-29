@@ -1,38 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // This one is expected to timeout, but we want to test that permutation of arguments
 // for auxiliary functions does not go wrong when doing a "model first"
 // and "candidate first" induction strategy

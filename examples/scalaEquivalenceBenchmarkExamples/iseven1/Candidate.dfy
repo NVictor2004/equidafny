@@ -1,39 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function isEvenTopLvl(x: int): bool) myIsEven(x
 
 function myIsOdd(x: int): bool

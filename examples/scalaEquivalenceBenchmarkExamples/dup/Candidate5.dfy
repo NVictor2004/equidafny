@@ -1,37 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function dup<S, T>(n: int, s: S, t: T): List<(S, T)> = {

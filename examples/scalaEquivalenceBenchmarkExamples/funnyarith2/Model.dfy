@@ -1,38 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // As funnyarith1 but the Candidate swaps the arguments of sub
 
 function eval(op: OpKind, x: int, y: int): int op match {

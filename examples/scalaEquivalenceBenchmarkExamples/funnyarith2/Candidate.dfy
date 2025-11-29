@@ -1,39 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function eval(op: OpKind, x: int, y: int): int op match {
   case OpKind.Sub => mySub(y, x)
   case OpKind.Mul => myMul(x, y)

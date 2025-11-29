@@ -1,37 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Examples are figures from paper:
 // Regression Verification for unbalanced recursive functions
 // https://iew.technion.ac.il/~ofers/publications/fm16.pdf

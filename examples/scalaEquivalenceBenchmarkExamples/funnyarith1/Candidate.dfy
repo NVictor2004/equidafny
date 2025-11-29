@@ -1,38 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Top level
 function eval(op: OpKind, x: int, y: int): int op match {
   case OpKind.Sub => mySub(x, y)

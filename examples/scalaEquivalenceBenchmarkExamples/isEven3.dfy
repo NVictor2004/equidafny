@@ -1,37 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 datatype UnaryNat = Zero | Succ(pred: UnaryNat)
 
 function prev(un: UnaryNat): UnaryNat {
