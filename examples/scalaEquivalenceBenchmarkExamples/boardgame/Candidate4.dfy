@@ -7,6 +7,10 @@
 
 
 
+
+
+
+
 method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
@@ -18,7 +22,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
       adj(wm, x, y - 1, districtKind) { return +; }
       adj(wm, x - 1, y, districtKind) { return +; }
       adj(wm, x - 1, y + 1, districtKind)
-  } else int(0)
+  } else { return int(0); }
 }
 
 method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {

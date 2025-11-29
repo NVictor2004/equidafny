@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method uniq(lst: List<int>) returns (res: List<int>)
@@ -17,7 +21,7 @@ method uniq(lst: List<int>) returns (res: List<int>)
         lst_0 match {
           case Nil() => Nil()
           case Cons(hd_0, tl_0) =>
-            if (a == hd_0) drop(a, tl_0) else hd_0 :: drop(a, tl_0)
+            if (a == hd_0) drop(a, tl_0) else { return hd_0 :: drop(a, tl_0); }
         }
       }
 

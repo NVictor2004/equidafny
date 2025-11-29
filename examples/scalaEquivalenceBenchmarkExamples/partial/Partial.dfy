@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 /* From ESOP 2014, Kuwahara et al */
 
@@ -24,8 +28,8 @@ method maxNegPM(j: int, p: int => bool) returns (res: bool)
 method fM(x: int, p: int => bool) returns (res: int)
   requires (!p(x) || existsM[int]((j: int) => j < x && maxNegPM(j, p)))
   decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
-  if (p(x))  fM(x - 1, p)
-  else  x
+  if (p(x)) { var result :=  fM(x - 1, p); return result; }
+  else { return  x; }
 
 
 method exists<T>(p: T => bool) returns (res: bool)
@@ -42,4 +46,4 @@ method f(x: int, p: int => bool) returns (res: int)
   decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
   var t := p(x);
   if t  f(x - 1, p)
-  else x
+  else { return x; }

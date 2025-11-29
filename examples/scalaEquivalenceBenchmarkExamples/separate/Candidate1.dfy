@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {

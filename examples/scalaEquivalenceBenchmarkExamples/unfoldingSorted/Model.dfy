@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -18,7 +22,7 @@ method unfoldingSorted<S, T>(start: S,
       case Nil() => Cons(t, Nil())
       case Cons(hd, tl) =>
         if (leq(t, hd)) { return t :: xs; }
-        else Cons(hd, insert(tl, t))
+        else { return Cons(hd, insert(tl, t)); }
     }
   }
   method loop(s: S, fuel: int, xs: List<T>): List<T> = {

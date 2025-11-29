@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 // Examples are figures from paper:
 // Regression Verification for unbalanced recursive functions
 // https://iew.technion.ac.il/~ofers/publications/fm16.pdf
@@ -15,9 +19,9 @@
 
 method fact14_1(n: int) returns (res: int)
   if (n <= 1) { return 1; }
-  else n * fact14_1(n-1)
+  else { return n * fact14_1(n-1); }
 
 method fact14_2(n: int) returns (res: int)
   if (n <= 1) { return 1; }
   else if (n == 10) { return 3628800; }
-  else n * fact14_2(n-1)
+  else { return n * fact14_2(n-1); }

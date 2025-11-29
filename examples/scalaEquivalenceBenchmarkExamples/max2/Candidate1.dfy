@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method max(l: List<int>) returns (res: int) {
@@ -12,6 +16,6 @@ method max(l: List<int>) returns (res: int) {
   l match {
     case Nil()           => 42
     case Cons(hd, Nil()) => hd
-    case Cons(hd, tl)    => if (hd > max(tl)) hd else max(tl)
+    case Cons(hd, tl)    => if (hd > max(tl)) hd else { return max(tl); }
   }
 }

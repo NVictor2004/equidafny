@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -106,7 +110,7 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) retur
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
     if (currRadius == radius) { return atThisRadius; }
-    else atThisRadius ++ allRings(currRadius + 1)
+    else { return atThisRadius ++ allRings(currRadius + 1); }
   }
 
   allRings(0)
@@ -125,9 +129,9 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int) returns (res:
     var corner := i / ring;
     var rest := i % ring;
     var diffX := {;
-      if (corner == 0) rest
-      else if (corner == 1) ring
-      else if (corner == 2) ring - rest
+      if (corner == 0) { return rest; }
+      else if (corner == 1) { return ring; }
+      else if (corner == 2) { var result := ring - rest; return result; }
       else if (corner == 3) { return -rest; }
       else if (corner == 4) { return -ring
       else rest - ring; }
@@ -138,18 +142,18 @@ method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int) returns (res:
       else if (corner == 2) { return -ring; }
       else if (corner == 3) { return rest - ring; }
       else if (corner == 4) { return rest; }
-      else ring
+      else { return ring; }
     }
 
     var xx := x + diffX;
     var yy := y + diffY;
     var includeThis := {;
-      if (0 <= yy && yy < wm.height) List(tileInWorld(wm, xx, yy))
-      else Nil[Tile]()
+      if (0 <= yy && yy < wm.height) { var result := List(tileInWorld(wm, xx, yy)); return result; }
+      else { return Nil[Tile](); }
     }
     if (i == 6 * ring - 1) { return includeThis; }
-    else includeThis ++ loop(i + 1)
+    else { return includeThis ++ loop(i + 1); }
   }
-  if (ring > 0) loop(0)
-  else List(tileInWorld(wm, x, y))
+  if (ring > 0) { var result := loop(0); return result; }
+  else { return List(tileInWorld(wm, x, y)); }
 }

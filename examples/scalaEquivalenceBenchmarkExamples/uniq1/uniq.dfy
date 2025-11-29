@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -19,8 +23,8 @@ method uniqR(lst: List<int>) returns (res: List<int>)
     l match {
       case Nil() => r
       case Cons(hd, tl) =>
-        if (!find(r, hd)) unique(tl, r ++ List(hd))
-        else unique(tl, r)
+        if (!find(r, hd)) { var result := unique(tl, r ++ List(hd)); return result; }
+        else { return unique(tl, r); }
     }
 
   unique(lst, Nil())
@@ -36,8 +40,8 @@ method uniqA(lst: List<int>) returns (res: List<int>)
     a match {
       case Nil() => b
       case Cons(hd, tl) =>
-        if (isin(b, hd)) distinct(tl, b)
-        else distinct(tl, b ++ List<int>(hd))
+        if (isin(b, hd)) { var result := distinct(tl, b); return result; }
+        else { return distinct(tl, b ++ List<int>(hd)); }
     }
 
   distinct(lst, List())

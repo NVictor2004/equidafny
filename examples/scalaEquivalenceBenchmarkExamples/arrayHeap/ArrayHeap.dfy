@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
@@ -16,9 +20,9 @@ method childrenAreHeapsM(a: seq<int>, N: int, i: int) returns (res: bool)
   var l := leftM(i);
   var r := rightM(i);
   if (l < N && r < N) 
-    isHeapM(a, N, l) && isHeapM(a, N, r)
-  else if (l < N) 
-    isHeapM(a, N, l)
+    isHeapM(a, N, l) { var result := && isHeapM(a, N, r); return result; }
+  else if (l < N) { var result := 
+    isHeapM(a, N, l); return result; }
   else
     true
 
@@ -53,9 +57,9 @@ method rightM(i: int)  returns (res: int)
 method childrenAreHeaps(a: seq<int>, N: int, i: int) returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
   if (2 * i + 1 < N && 2 * i + 2 < N) 
-    isHeap(a, N, 2 * i + 1) && isHeap(a, N, 2 * i + 2)
-  else if (2 * i + 1 < N) 
-    isHeap(a, N, 2 * i + 1)
+    isHeap(a, N, 2 * i + 1) { var result := && isHeap(a, N, 2 * i + 2); return result; }
+  else if (2 * i + 1 < N) { var result := 
+    isHeap(a, N, 2 * i + 1); return result; }
   else
     true
 
@@ -69,8 +73,8 @@ method isHeap(a: seq<int>, N: int, i: int)  returns (res: bool)
   else if (2 * i + 2 < N && a(r) > a(i)) { return 
     false; }
   else if (2 * i + 2 < i) 
-    isHeap(a, N, 2 * i + 2) && isHeap(a, N, 2 * i + 1)
-  else if (2 * i + 1 < i) 
-    isHeap(a, N, 2 * i + 1)
+    isHeap(a, N, 2 * i + 2) { var result := && isHeap(a, N, 2 * i + 1); return result; }
+  else if (2 * i + 1 < i) { var result := 
+    isHeap(a, N, 2 * i + 1); return result; }
   else
     true

@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -18,7 +22,7 @@ method unfoldingSorted<State, Elem>(start: State,
       case Nil() => Cons(t, Nil())
       case Cons(hd, tl) =>
         if (leq(t, hd)) { return t :: xs; }
-        else Cons(hd, insertSorted(t, tl))
+        else { return Cons(hd, insertSorted(t, tl)); }
     }
   }
   method go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {

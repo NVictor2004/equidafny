@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method fold(f: (int, int) => int, l: List<int>, a: int) returns (res: int) {
@@ -20,7 +24,7 @@ method max(lst: List<int>) returns (res: int) {
     case Nil() => choose((x: int) => true)
     case Cons(hd, tl) =>
       fold(
-        (x, y) => if (x > y) x else y,
+        (x, y) => if (x > y) x else { return y,; }
         lst,
         hd
       )

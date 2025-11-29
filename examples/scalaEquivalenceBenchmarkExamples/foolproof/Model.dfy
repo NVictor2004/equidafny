@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 // Tests whether `choose` matching avoidance do not get fooled by functions named `choose`.
@@ -13,7 +17,7 @@ method choose(x: int, y: int) returns (res: int) {
   decreases(if (x <= 0) int(0) else x) {
   if (x <= 0) { return y; }
   else if (y <= 0) { return x; }
-  else choose(x - 1, y - 1)
+  else { return choose(x - 1, y - 1); }
 }
 
 method funnyZip(xs: List<int>, ys: List<int>) returns (res: List<int>)

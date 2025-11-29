@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
@@ -27,4 +31,4 @@ method valid2DLength(a: seq<seq<int>>, w: seq<seq<Direction>>, m: int, n: int, k
   if (k == -1) { return true; }
   else if (a(k).length != n) { return false; }
   else if (w(k).length != n) { return false; }
-  else valid2DLength(a, w, m, n, k - 1)
+  else { return valid2DLength(a, w, m, n, k - 1); }

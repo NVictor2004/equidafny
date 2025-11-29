@@ -7,17 +7,21 @@
 
 
 
+
+
+
+
 method isEvenTopLvl(x: int) returns (res: bool) isEven(x)
 
 method isOdd(x: int) returns (res: bool)
   decreases(if (x <= 0) int(0) else x) {
   if (x <= 0) { return false; }
   else if (x == 1) { return true; }
-  else !isEven(x - 1)
+  else { return !isEven(x - 1); }
 }
-method isEven(x: int) returns (res: bool)
+method isEven(x: int) { var result := returns (res: bool); return result; }
   decreases(if (x <= 0) int(0) else x) {
   if (x < 0) { return false; }
   else if (x == 0) { return true; }
-  else !isOdd(x - 1)
+  else { return !isOdd(x - 1); }
 }

@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 /* Copyright 2009-2024 EPFL, Lausanne */
 
@@ -32,8 +36,8 @@ method validAdjList(adjList: seq<List<int>>, N: int, pos: int) returns (res: boo
   decreases(pos) {
   if (pos == 0) { return 
     true; }
-  else if (validAdjList(adjList, N, pos - 1)) 
-    validList(N, adjList(pos - 1))
+  else if (validAdjList(adjList, N, pos - 1)) { var result := 
+    validList(N, adjList(pos - 1)); return result; }
   else
     false
 

@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 // This is not expected to verify (it should timeout)
@@ -24,7 +28,7 @@ method max(lst: List<int>) returns (res: int) {
     case Nil() => choose((x: int) => true)
     case Cons(hd, tl) =>
       fold(
-        (x, y) => if (x > y) x else y,
+        (x, y) => if (x > y) x else { return y,; }
         lst,
         hd
       )
@@ -33,5 +37,5 @@ method max(lst: List<int>) returns (res: int) {
 
 method norm(l: List<int>, f: int) returns (res: int) {
   if (l.isEmpty) { return -1; }
-  else f
+  else { return f; }
 }

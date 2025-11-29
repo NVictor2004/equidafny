@@ -5,6 +5,10 @@
 
 
 
+
+
+
+
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
@@ -17,9 +21,9 @@ case class Number(n: int) extends Outcome
 method response1(n: int) returns (res: Outcome)
   if n % 5 == 0 
     if n % 3 == 0  FizzBuzz()
-    else Buzz()
-  else if n % 3 == 0  Fizz()
-  else Number(n)
+    else { return Buzz(); }
+  else { return if n % 3 == 0  Fizz(); }
+  else { return Number(n); }
 
 method ordinalSeq1(to: int) returns (res: List<int>)
   requires (0 <= to)
@@ -40,4 +44,4 @@ method fizzBuzz2(to: int) returns (res: List<Outcome>)
       if to % 3 == 0  Cons(Fizz(), fizzBuzz2(to - 1))
       else
         if to % 5 == 0  Cons(Buzz(), fizzBuzz2(to - 1))
-        else Cons(Number(to), fizzBuzz2(to - 1))
+        else { return Cons(Number(to), fizzBuzz2(to - 1)); }
