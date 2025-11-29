@@ -2,7 +2,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method remove_elem_1(e: int, lst: List<int>) returns (res: List<int>)
-  decreases(lst)
+  decreases(lst) {
   lst match {
     case Nil() => Nil()
     case Cons(hd, tl) =>
@@ -11,7 +11,7 @@ method remove_elem_1(e: int, lst: List<int>) returns (res: List<int>)
 }
 
 method solution_1(lst: List<int>) returns (res: List<int>)
-  decreases(lst)
+  decreases(lst) {
   lst match {
     case Nil()        => Nil()
     case Cons(hd, tl) => hd :: remove_elem_1(hd, solution_1(tl))
@@ -19,7 +19,7 @@ method solution_1(lst: List<int>) returns (res: List<int>)
 }
 
 method drop_2(lst: List<int>, n: int) returns (res: List<int>)
-  decreases(lst)
+  decreases(lst) {
   lst match {
     case Nil()        => Nil()
     case Cons(hd, tl) => if (hd == n) drop_2(tl, n) else hd :: drop_2(tl, n)
@@ -30,7 +30,7 @@ method lemma_2(n: int, @induct lst: List<int>) returns (res: Unit)
 }.ensuring(drop_2(lst, n).size <= lst.size)
 
 method solution_2(lst: List<int>) returns (res: List<int>)
-  decreases(lst.size)
+  decreases(lst.size) {
 
   method lem(n: int, @stainless.annotation.induct lst: List<int>): Unit = {
     ()
@@ -45,7 +45,7 @@ method solution_2(lst: List<int>) returns (res: List<int>)
 }
 
 method is_in_3(lst: List<int>, a: int) returns (res: bool)
-  decreases(lst)
+  decreases(lst) {
   lst match {
     case Nil()        => false
     case Cons(hd, tl) => if (a == hd) true else is_in_3(tl, a)
@@ -53,7 +53,7 @@ method is_in_3(lst: List<int>, a: int) returns (res: bool)
 }
 
 method unique_3(lst1: List<int>, lst2: List<int>) returns (res: List<int>)
-  decreases(lst1)
+  decreases(lst1) {
   lst1 match {
     case Nil() => lst2
     case Cons(hd, tl) =>
@@ -66,7 +66,7 @@ method solution_3(lst: List<int>) returns (res: List<int>) { unique_3(lst, Nil()
 method solution_4(lst: List<int>) returns (res: List<int>)
 
   method isNotIn_4(tlst: List<int>, c: int): bool = {
-    decreases(tlst)
+    decreases(tlst) {
     tlst match {
       case Nil()        => true
       case Cons(hd, tl) => if (hd == c) false else true && isNotIn_4(tl, c)
@@ -74,7 +74,7 @@ method solution_4(lst: List<int>) returns (res: List<int>)
   }
 
   method uniqSave_4(l1: List<int>, l2: List<int>): List<int> = {
-    decreases(l1)
+    decreases(l1) {
     l1 match {
       case Nil() => { l2 }
       case Cons(hd, tl) =>

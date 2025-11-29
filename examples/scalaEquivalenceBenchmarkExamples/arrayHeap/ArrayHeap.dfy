@@ -17,7 +17,7 @@ method childrenAreHeapsM(a: seq<int>, N: int, i: int) returns (res: bool)
 
 method isHeapM(a: seq<int>, N: int, i: int)  returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
-  decreases(N - i)
+  decreases(N - i) {
   var l := leftM(i);
   var r := rightM(i);
   var isHeapL := l < N && isHeapM(a, N, l);
@@ -54,7 +54,7 @@ method childrenAreHeaps(a: seq<int>, N: int, i: int) returns (res: bool)
 
 method isHeap(a: seq<int>, N: int, i: int)  returns (res: bool)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
-  decreases(N - i)
+  decreases(N - i) {
   var l := 2 * i + 1;
   var r := 2 * i + 2;
   if (2 * i + 1 < N && a(2 * i + 1) > a(i)) 

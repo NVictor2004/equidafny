@@ -4,7 +4,7 @@
 
 method validLengthIncreasingM(a:seq<seq<int>>, N:int, M:int, k: int) returns (res: bool)
   requires (N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
-  decreases(N - k)
+  decreases(N - k) {
   if (k == N) 
     true
   else
@@ -17,5 +17,5 @@ method succM(n: int) =
 
 method validLengthIncreasing(a:seq<seq<int>>, N:int, M:int, k: int) returns (res: bool)
   requires (N > 0 && N == a.length && M > 0 && k >= 0 && k <= N)
-  decreases(N - k)
+  decreases(N - k) {
   (k == N) || a(k).length == M && validLengthIncreasing(a, N, M, k + 1)

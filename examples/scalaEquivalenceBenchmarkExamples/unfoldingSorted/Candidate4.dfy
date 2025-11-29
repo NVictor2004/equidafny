@@ -6,7 +6,7 @@ method unfoldingSorted[State, Elem](start: State,
                                  leq: (Elem, Elem) => bool,
                                  max: int): List<Elem> = {
   method insertSorted(t: Elem, xs: List<Elem>): List<Elem> = {
-    decreases(xs)
+    decreases(xs) {
     xs match {
       case Nil() => Cons(t, Nil())
       case Cons(hd, tl) =>
@@ -15,7 +15,7 @@ method unfoldingSorted[State, Elem](start: State,
     }
   }
   method go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {
-    decreases(if (fuel <= 0) int(0) else fuel)
+    decreases(if (fuel <= 0) int(0) else fuel) {
     if (fuel <= 0) xs
     else next(s) match {
       case Some((nxtS, t)) =>

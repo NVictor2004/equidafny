@@ -38,7 +38,7 @@ sealed abstract class List<+T> {
 
   method apply(index: int): T = {
     requires (0 <= index && index < size)
-    decreases(index)
+    decreases(index) {
     if (index == 0) {
       head
     } else {

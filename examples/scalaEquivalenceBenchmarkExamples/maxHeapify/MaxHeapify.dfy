@@ -6,7 +6,7 @@ var MAX := 100000;
 
 method maxHeapifyM(a: seq<int>, N: int, i: int) returns (res: Unit)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
-  decreases(N - i)
+  decreases(N - i) {
   var l := leftM(i);
   var r := rightM(i);
   val largest =
@@ -36,7 +36,7 @@ method rightM(i: int)  returns (res: int)
 
 method maxHeapify(a: seq<int>, N: int, i: int) returns (res: Unit)
   requires (i >= 0 && i < N && N <= a.length && N <= MAX)
-  decreases(N - i)
+  decreases(N - i) {
   var l := 2 * i + 1;
   var r := 2 * i + 2;
   val largest =

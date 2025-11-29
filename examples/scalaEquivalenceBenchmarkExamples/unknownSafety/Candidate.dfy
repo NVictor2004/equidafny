@@ -20,7 +20,7 @@ method add(x: int, y: int) returns (res: int) {
 method isEvenTopLvl(x: int) returns (res: bool) isEven(x)
 
 method isEven(x: int) returns (res: bool)
-  decreases(if (x <= 0) int(0) else x)
+  decreases(if (x <= 0) int(0) else x) {
   if (x >= 0) {
     assert(zero(x) == 0) // timeout
   }
@@ -30,7 +30,7 @@ method isEven(x: int) returns (res: bool)
 }
 
 method isOdd(x: int) returns (res: bool)
-  decreases(if (x <= 0) int(0) else x)
+  decreases(if (x <= 0) int(0) else x) {
   if (x <= 0) false
   else if (x == 1) true
   else !isEven(x - 1)

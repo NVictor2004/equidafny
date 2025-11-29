@@ -1,12 +1,12 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method uniq(lst: List<int>) returns (res: List<int>)
-  decreases(lst.size)
+  decreases(lst.size) {
   lst match {
     case Nil() => Nil()
     case Cons(hd, tl) =>
       method drop(a: int, lst_0: List<int>): List<int> = {
-        decreases(lst_0)
+        decreases(lst_0) {
         lst_0 match {
           case Nil() => Nil()
           case Cons(hd_0, tl_0) =>

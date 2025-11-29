@@ -12,7 +12,7 @@ case class SCons(x: int, tailFun: () => Stream, sz: int) extends Stream
 case class SNil() extends Stream
 
 method finiteM(s: Stream) returns (res: bool)
-  decreases(s.rank)
+  decreases(s.rank) {
   s match
     case SCons(_, tfun, sz) if tfun().rank >= sz =>
       false
@@ -23,7 +23,7 @@ method finiteM(s: Stream) returns (res: bool)
 
 
 method finite(stream: Stream) returns (res: bool)
-  decreases(stream.rank)
+  decreases(stream.rank) {
   stream match
     case SCons(_, tfun, sz) =>
       var tail := tfun();

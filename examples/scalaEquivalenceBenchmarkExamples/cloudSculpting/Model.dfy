@@ -8,7 +8,7 @@ method sculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: int, i1: int, i2: int, 
 
 method leVraiSculpteurDeNuage[A, B, C](a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A => B, b2c: B => C, c2a: C => A): (int, int, int) = {
   requires (fuel >= 0)
-  decreases(fuel)
+  decreases(fuel) {
   if (fuel == 0) (i1, i2, i3)
   else {
     var (ii1, ii2, ii3) := mixmash(i1, i2, i3);

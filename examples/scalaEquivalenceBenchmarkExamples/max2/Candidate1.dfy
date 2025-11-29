@@ -1,7 +1,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 method max(l: List<int>) returns (res: int) {
-  decreases(l)
+  decreases(l) {
   l match {
     case Nil()           => 42
     case Cons(hd, Nil()) => hd

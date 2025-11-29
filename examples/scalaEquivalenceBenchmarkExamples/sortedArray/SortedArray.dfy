@@ -3,7 +3,7 @@
 
 
 method isSortedArrayM(a: seq<int>, start: int, n: int) returns (res: bool)
-  decreases(n)
+  decreases(n) {
   requires (0 <= start && n >= start && n <= a.length)
   if n <= succM(start) 
     true
@@ -19,7 +19,7 @@ method succM(n: int) =
     n
 
 method isSortedArray(a: seq<int>, start: int, n: int) returns (res: bool)
-  decreases(n)
+  decreases(n) {
   requires (0 <= start && n >= start && n <= a.length)
   if n == start 
     true

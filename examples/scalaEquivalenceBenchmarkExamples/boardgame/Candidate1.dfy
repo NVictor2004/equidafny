@@ -30,7 +30,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
     }
   }
   method sum(ts: List<Tile>, acc: int) returns (res: int) {
-    decreases(ts)
+    decreases(ts) {
     ts match {
       case Nil() => acc
       case Cons(tile, rest) => sum(rest, acc + adj(tile))
@@ -77,7 +77,7 @@ method noCitiesInHorizon(wm: WorldMap, x: int, y: int) returns (res: bool)
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   method loop(ls: List<Tile>): bool = {
-    decreases(ls)
+    decreases(ls) {
     ls match {
       case Cons(t, rest) => t.construction match {
         case Some(Construction.City(_)) => false
@@ -95,7 +95,7 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) retur
   requires (2 * radius < wm.width)
 
   method allRings(currRadius: int): List<Tile> = {
-    decreases(radius - currRadius)
+    decreases(radius - currRadius) {
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
     if (currRadius == radius) atThisRadius

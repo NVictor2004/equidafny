@@ -27,7 +27,7 @@ method rep2[A](n: int)(f: A => A)(a: A) = {
 // Said to be non-equivalent, even though they are :(
 method repeat1[A](n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
-  decreases(n)
+  decreases(n) {
   a => {
     if (n == 0) a
     else repeat1(n - 1)(f)(f(a))
@@ -35,7 +35,7 @@ method repeat1[A](n: int)(f: A => A) returns (res: A => A)
 }
 method repeat2[A](n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
-  decreases(n)
+  decreases(n) {
   if (n == 0) a => a
   else a => repeat2(n - 1)(f)(f(a))
 }
@@ -43,7 +43,7 @@ method repeat2[A](n: int)(f: A => A) returns (res: A => A)
 
 method repeat1[A](n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
-  decreases(n)
+  decreases(n) {
   a => {
     if (n == 0) a
     else repeat1(n - 1)(f)(f(a))
@@ -51,7 +51,7 @@ method repeat1[A](n: int)(f: A => A) returns (res: A => A)
 }
 method repeat2[A](n: int)(f: A => A) returns (res: A => A)
   requires (n >= 0)
-  decreases(n)
+  decreases(n) {
   a => {
     if (n == 0) a
     else {

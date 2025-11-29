@@ -2,7 +2,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 method split[T](l: List<T>, x: T) returns (res: List<List<T>>)
-  decreases(l)
+  decreases(l) {
   l match {
     case Nil() => List<List<T>>(List<T>())
     case Cons(y, ys) if x == y =>
@@ -14,7 +14,7 @@ method split[T](l: List<T>, x: T) returns (res: List<List<T>>)
 }
 
 method join[T](ll: List<List<T>>, l: List<T>) returns (res: List<T>)
-  decreases(ll)
+  decreases(ll) {
   ll match {
     case Nil() => Nil[T]()
     case Cons(l1, Nil()) => l1
@@ -23,7 +23,7 @@ method join[T](ll: List<List<T>>, l: List<T>) returns (res: List<T>)
 }
 
 method replace[T](l1: List<T>, x: T, l2: List<T>) returns (res: List<T>)
-  decreases(l1)
+  decreases(l1) {
   l1 match {
     case Nil() => Nil[T]()
     case Cons(y, ys) if x == y => l2 ++ replace(ys, x, l2)

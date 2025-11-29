@@ -2,7 +2,7 @@
 
 
 method sigma(f: int => int, a: int, b: int) returns (res: int) {
-  decreases(if (b == a) int(2) else if (b > a) 2 + b - a else a - b)
+  decreases(if (b == a) int(2) else if (b > a) 2 + b - a else a - b) {
 
   method sigma_rec(
       sum: int,

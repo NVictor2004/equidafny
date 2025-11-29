@@ -5,7 +5,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 // for the Model and the Candidate do not get matched because it would make the type-checker unhappy
 // (because we would create `choose` expressions when doing the replacement).
 method fold(f: (int, int) => int, l: List<int>, a: int) returns (res: int) {
-  decreases(l)
+  decreases(l) {
   l match {
     case Nil()        => a
     case Cons(hd, tl) => f(hd, fold(f, tl, a))
