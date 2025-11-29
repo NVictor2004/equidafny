@@ -12,3 +12,10 @@
 # sed -n '/^method/{N; /requires\|decreases/{N; /requires\|decreases/{p}}}' "./adjlist/AdjList.dfy"
 
 # sed -i -f "stuff.sed" "$1"
+
+# sed -i '/./{H; $!d}; x; s/if \((.*)\) { return \([^\(\)\{\}][^\(\)\{\}]*\); }\(\n.*else\)/if \1 then \2\3/g' "$1"
+# sed -i '/./{H; $!d}; x; s/if \((.*)\) { var result := \([^\(\)\{\}][^\(\)\{\}]*\); return result; }\(\n.*else\)/if \1 then \2\3/g' "$1"
+
+
+# sed -i '/./{H; $!d}; x; s/else { return \([^\(\)\{\}][^\(\)\{\}]*\); }/else \1/g' "$1"
+
