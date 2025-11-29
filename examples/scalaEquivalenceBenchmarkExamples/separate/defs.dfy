@@ -16,7 +16,7 @@ case class Sheep(id: int) extends Animal
 case class Goat(id: int) extends Animal
 
 sealed abstract class List<+T> {
-  method size returns (res: int) {
+  function size: int {
     this match {
       case Nil => 0
       case h :: t =>
@@ -26,28 +26,28 @@ sealed abstract class List<+T> {
     }
  }.ensuring(res => 0 <= res && res <= int.MaxValue)
 
-  method length: int = size
+  function length: int = size
 
-  method ++<TT >: T>(that: List<TT>): List<TT> = {
+  function ++<TT >: T>(that: List<TT>): List<TT> = {
     this match {
       case Nil => that
       case x :: xs => x :: (xs ++ that)
     }
   }
 
-  method head: T = {
+  function head: T = {
     requires (this != Nil)
     var h :: _ := this: @unchecked;
     h
   }
 
-  method tail: List<T> = {
+  function tail: List<T> = {
     requires (this != Nil)
     var _ :: t := this: @unchecked;
     t
   }
 
-  method apply(index: int): T = {
+  function apply(index: int): T = {
     requires (0 <= index && index < size)
     decreases(index) {
     if (index == 0) {
@@ -57,9 +57,9 @@ sealed abstract class List<+T> {
     }
   }
 
-  method :: <TT >: T>(elem: TT): List<TT> = new ::(elem, this)
+  function :: <TT >: T>(elem: TT): List<TT> = new ::(elem, this)
 
-  method :+<TT >: T>(t: TT): List<TT> = {
+  function :+<TT >: T>(t: TT): List<TT> = {
     this match {
       case Nil => t :: this
       case x :: xs => x :: (xs :+ t)

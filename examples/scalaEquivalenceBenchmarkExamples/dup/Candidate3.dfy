@@ -13,7 +13,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 // Wrong signature
-method dup<S, T>(n: int, t: T, s: S): List<(S, T)> = {
+function dup<S, T>(n: int, t: T, s: S): List<(S, T)> = {
   decreases(if (n <= 0) int(0) else n) {
   if (n <= 0) { var result := Nil(); return result; }
   else { var result := (s, t) :: dup(n - 1, t, s); return result; }

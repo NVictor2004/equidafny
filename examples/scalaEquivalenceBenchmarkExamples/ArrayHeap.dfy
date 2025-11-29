@@ -12,7 +12,7 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
 
-method childrenAreHeapsM(a: seq<int>, N: int, i: int) returns (res: bool)
+function childrenAreHeapsM(a: seq<int>, N: int, i: int): bool
   requires (i >= 0 && i < N && N <= |a| && N <= 100000) {
   var l := leftM(i);
   var r := rightM(i);
@@ -24,7 +24,7 @@ method childrenAreHeapsM(a: seq<int>, N: int, i: int) returns (res: bool)
     {return true;}
 }
 
-method isHeapM(a: seq<int>, N: int, i: int)  returns (res: bool)
+function isHeapM(a: seq<int>, N: int, i: int) : bool
   requires (i >= 0 && i < N && N <= |a| && N <= 100000)
   decreases(N - i) {
   var l := leftM(i);
@@ -45,15 +45,15 @@ method isHeapM(a: seq<int>, N: int, i: int)  returns (res: bool)
     {return true;}
   }
 
-method leftM(i: int)  returns (res: int)
+function leftM(i: int) : int
   requires (0 <= i && i < 100000)
   {return 2 * i + 1;}
 
-method rightM(i: int)  returns (res: int)
+function rightM(i: int) : int
   requires (0 <= i && i < 100000)
   {return 2 * i + 2;}
 
-method childrenAreHeaps(a: seq<int>, N: int, i: int) returns (res: bool)
+function childrenAreHeaps(a: seq<int>, N: int, i: int): bool
   requires (i >= 0 && i < N && N <= |a| && N <= 100000) {
   if (2 * i + 1 < N && 2 * i + 2 < N) 
     { var result1 := isHeap(a, N, 2 * i + 1); var result2 := isHeap(a, N, 2 * i + 2); return result1 && result2; }
@@ -63,7 +63,7 @@ method childrenAreHeaps(a: seq<int>, N: int, i: int) returns (res: bool)
     {return true;}
   }
 
-method isHeap(a: seq<int>, N: int, i: int)  returns (res: bool)
+function isHeap(a: seq<int>, N: int, i: int) : bool
   requires (i >= 0 && i < N && N <= |a| && N <= 100000)
   decreases(N - i) {
   var l := 2 * i + 1;

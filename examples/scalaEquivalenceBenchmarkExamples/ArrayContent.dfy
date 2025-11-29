@@ -15,14 +15,14 @@
 
 var MAX := 100000;
 
-method arrayContentM(a: seq<int>, n: int)  returns (res: Set[int])
+function arrayContentM(a: seq<int>, n: int) : Set[int]
   requires (n >= 0 && n <= |a| && |a| <= MAX)
   decreases(n) {
   if n == 0  Set.empty[int]
   else { var result := arrayContentM(a, n-1) ++ Set(a(n-1)); return result; }
 
 
-method arrayContent(a: seq<int>, n: int)  returns (res: Set[int])
+function arrayContent(a: seq<int>, n: int) : Set[int]
   requires (n >= 0 && n <= |a| && |a| <= MAX)
   decreases(n) {
   if n == 0  Set.empty[int]

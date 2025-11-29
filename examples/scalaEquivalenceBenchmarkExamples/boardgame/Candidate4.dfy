@@ -11,7 +11,7 @@
 
 
 
-method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   // No, one must still compute adjacency even for tiles on the y-border of the map
@@ -25,7 +25,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
   } else { var result := int(0); return result; }
 }
 
-method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   requires (0 <= y && y < wm.height)
   var tile := tileInWorld(wm, x, y);
   districtKind match {
@@ -57,7 +57,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
+function validCitySettlement(wm: WorldMap, x: int, y: int): bool
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   // Desperately trying to do that by-hand, but forgets about the second ring...
@@ -77,14 +77,14 @@ method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
 
 /////////////////////////////////////
 
-method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
+function tileInWorld(wm: WorldMap, x: int, y: int): Tile
   requires (0 <= y && y < wm.height)
   var xx := (x % wm.width + wm.width) % wm.width;
   var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 
-method tileFreeForSettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
+function tileFreeForSettlement(wm: WorldMap, x: int, y: int): bool
   requires (0 <= y && y < wm.height)
   var tile := tileInWorld(wm, x, y);
   (tile.base match {
@@ -94,7 +94,7 @@ method tileFreeForSettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
   }) && notACity(wm, x, y) && notADistrict(wm, x, y)
 }
 
-method notACity(wm: WorldMap, x: int, y: int) returns (res: bool)
+function notACity(wm: WorldMap, x: int, y: int): bool
   !(0 <= y && y < wm.height) || {
     var tile := tileInWorld(wm, x, y);
     tile.construction match {
@@ -105,7 +105,7 @@ method notACity(wm: WorldMap, x: int, y: int) returns (res: bool)
     }
   }
 }
-method notADistrict(wm: WorldMap, x: int, y: int) returns (res: bool)
+function notADistrict(wm: WorldMap, x: int, y: int): bool
   !(0 <= y && y < wm.height) || {
     var tile := tileInWorld(wm, x, y);
     tile.construction match {

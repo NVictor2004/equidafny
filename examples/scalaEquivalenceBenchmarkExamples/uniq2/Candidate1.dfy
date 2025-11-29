@@ -11,7 +11,7 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method check(element: int, l: List<int>) returns (res: bool)
+function check(element: int, l: List<int>): bool
   decreases(l) {
   l match {
     case Nil()        => false
@@ -19,7 +19,7 @@ method check(element: int, l: List<int>) returns (res: bool)
   }
 }
 
-method app(l1: List<int>, l2: List<int>) returns (res: List<int>)
+function app(l1: List<int>, l2: List<int>): List<int>
   decreases(l1) {
   l1 match {
     case Nil() => l2
@@ -28,4 +28,4 @@ method app(l1: List<int>, l2: List<int>) returns (res: List<int>)
   }
 }
 
-method uniq(lst: List<int>) returns (res: List<int>) app(lst, Nil())
+function uniq(lst: List<int>): List<int>) app(lst, Nil()

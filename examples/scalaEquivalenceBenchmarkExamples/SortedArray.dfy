@@ -13,7 +13,7 @@
 
 
 
-method isSortedArrayM(a: seq<int>, start: int, n: int) returns (res: bool)
+function isSortedArrayM(a: seq<int>, start: int, n: int): bool
   decreases(n) {
   requires (0 <= start && n >= start && n <= |a|)
   if n <= succM(start) 
@@ -23,13 +23,13 @@ method isSortedArrayM(a: seq<int>, start: int, n: int) returns (res: bool)
   else
     isSortedArrayM(a, start, n-1)
 
-method succM(n: int) =
+function succM(n: int) =
   if n < int.MaxValue 
     n + 1
   else
     n
 
-method isSortedArray(a: seq<int>, start: int, n: int) returns (res: bool)
+function isSortedArray(a: seq<int>, start: int, n: int): bool
   decreases(n) {
   requires (0 <= start && n >= start && n <= |a|)
   if n == start 

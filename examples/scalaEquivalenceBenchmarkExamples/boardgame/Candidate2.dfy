@@ -11,7 +11,7 @@
 
 
 
-method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   requires (0 <= y && y < wm.height)
   adj(wm, x, y + 1, districtKind) +
     adj(wm, x + 1, y, districtKind) +
@@ -21,7 +21,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
     adj(wm, x - 1, y + 1, districtKind)
 }
 
-method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   if (y < 0 || y >= wm.height) { var result := int(0); return result; }
   else {
     var tile := tileInWorld(wm, x, y);
@@ -55,7 +55,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
+function validCitySettlement(wm: WorldMap, x: int, y: int): bool
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   var tile := tileInWorld(wm, x, y);
@@ -68,7 +68,7 @@ method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
 
 /////////////////////////////////////
 
-method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
+function tileInWorld(wm: WorldMap, x: int, y: int): Tile
   requires (0 <= y && y < wm.height)
   var xx := (x % wm.width + wm.width) % wm.width;
   var ix := y * wm.width + xx;

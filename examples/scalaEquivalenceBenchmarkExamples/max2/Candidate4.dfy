@@ -11,7 +11,7 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method max(l: List<int>) returns (res: int) {
+function max(l: List<int>): int {
   decreases(l) {
   l match {
     case Nil()        => 0

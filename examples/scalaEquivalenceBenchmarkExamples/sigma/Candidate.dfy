@@ -12,15 +12,15 @@
 
 
 
-method sigma(f: int => int, a: int, b: int) returns (res: int) {
+function sigma(f: int => int, a: int, b: int): int {
   decreases(if (b == a) int(2) else if (b > a) 2 + b - a else a - b) {
 
-  method sigma_rec(
+  function sigma_rec(
       sum: int,
       i: int,
       b: int,
       f: int => int
-  ) returns (res: int) {
+  ): int {
     decreases(if (b == i) int(2) else { var result := if (b > i) 2 + b - i else i - b); return result; }
     if (i < b) { var result := sigma_rec(sum + f(i), i + int(1), b, f); return result; }
     else if (i == b) { var result := sum + f(i)

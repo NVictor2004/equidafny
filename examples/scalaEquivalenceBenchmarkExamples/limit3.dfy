@@ -15,12 +15,12 @@
 
 
 
-method limit3_1(n: int) returns (res: int) {
+function limit3_1(n: int): int {
   if (n <= 1) { return n; }
   else { var result := n + limit3_1(n-1); return result; }
 }
 
-method limit3_2(n: int) returns (res: int) {
+function limit3_2(n: int): int {
   if (n <= 1) { return n; }
   else {
     var r := limit3_2(n-1);

@@ -12,7 +12,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method remove_elem_1(e: int, lst: List<int>) returns (res: List<int>)
+function remove_elem_1(e: int, lst: List<int>): List<int>
   decreases(lst) {
   lst match {
     case Nil() => Nil()
@@ -21,7 +21,7 @@ method remove_elem_1(e: int, lst: List<int>) returns (res: List<int>)
   }
 }
 
-method solution_1(lst: List<int>) returns (res: List<int>)
+function solution_1(lst: List<int>): List<int>
   decreases(lst) {
   lst match {
     case Nil()        => Nil()
@@ -29,7 +29,7 @@ method solution_1(lst: List<int>) returns (res: List<int>)
   }
 }
 
-method drop_2(lst: List<int>, n: int) returns (res: List<int>)
+function drop_2(lst: List<int>, n: int): List<int>
   decreases(lst) {
   lst match {
     case Nil()        => Nil()
@@ -37,13 +37,13 @@ method drop_2(lst: List<int>, n: int) returns (res: List<int>)
   }
 }
 
-method lemma_2(n: int, @induct lst: List<int>) returns (res: Unit)
+function lemma_2(n: int, @induct lst: List<int>): Unit
 }.ensuring(drop_2(lst, n).size <= lst.size)
 
-method solution_2(lst: List<int>) returns (res: List<int>)
+function solution_2(lst: List<int>): List<int>
   decreases(lst.size) {
 
-  method lem(n: int, @stainless.annotation.induct lst: List<int>): Unit = {
+  function lem(n: int, @stainless.annotation.induct lst: List<int>): Unit = {
     ()
  }.ensuring(drop_2(lst, n).size <= lst.size)
 
@@ -55,7 +55,7 @@ method solution_2(lst: List<int>) returns (res: List<int>)
   }
 }
 
-method is_in_3(lst: List<int>, a: int) returns (res: bool)
+function is_in_3(lst: List<int>, a: int): bool
   decreases(lst) {
   lst match {
     case Nil()        => false
@@ -63,7 +63,7 @@ method is_in_3(lst: List<int>, a: int) returns (res: bool)
   }
 }
 
-method unique_3(lst1: List<int>, lst2: List<int>) returns (res: List<int>)
+function unique_3(lst1: List<int>, lst2: List<int>): List<int>
   decreases(lst1) {
   lst1 match {
     case Nil() => lst2
@@ -72,11 +72,11 @@ method unique_3(lst1: List<int>, lst2: List<int>) returns (res: List<int>)
   }
 }
 
-method solution_3(lst: List<int>) returns (res: List<int>) { unique_3(lst, Nil()) }
+function solution_3(lst: List<int>): List<int>) { unique_3(lst, Nil() }
 
-method solution_4(lst: List<int>) returns (res: List<int>)
+function solution_4(lst: List<int>): List<int>
 
-  method isNotIn_4(tlst: List<int>, c: int): bool = {
+  function isNotIn_4(tlst: List<int>, c: int): bool = {
     decreases(tlst) {
     tlst match {
       case Nil()        => true
@@ -84,7 +84,7 @@ method solution_4(lst: List<int>) returns (res: List<int>)
     }
   }
 
-  method uniqSave_4(l1: List<int>, l2: List<int>): List<int> = {
+  function uniqSave_4(l1: List<int>, l2: List<int>): List<int> = {
     decreases(l1) {
     l1 match {
       case Nil() => { l2 }

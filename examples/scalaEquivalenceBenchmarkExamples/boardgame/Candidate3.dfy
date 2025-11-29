@@ -12,7 +12,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   adj(wm, x, y + 1, districtKind) +
@@ -23,7 +23,7 @@ method adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) 
     adj(wm, x - 1, y + 1, districtKind)
 }
 
-method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (res: int) {
+function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   // oops, forgot to check for OOB y...
   var tile := tileInWorld(wm, x, y);
   districtKind match {
@@ -56,7 +56,7 @@ method adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind) returns (re
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
+function validCitySettlement(wm: WorldMap, x: int, y: int): bool
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
   noCitiesInHorizon(wm, x, y) // oops, forgot to check whether the tile to settle on is ok...
@@ -64,17 +64,17 @@ method validCitySettlement(wm: WorldMap, x: int, y: int) returns (res: bool)
 
 /////////////////////////////////////
 
-method tileInWorld(wm: WorldMap, x: int, y: int) returns (res: Tile)
+function tileInWorld(wm: WorldMap, x: int, y: int): Tile
   requires (0 <= y && y < wm.height)
   var xx := (x % wm.width + wm.width) % wm.width;
   var ix := y * wm.width + xx;
   wm.tiles(ix)
 }
 
-method noCitiesInHorizon(wm: WorldMap, x: int, y: int) returns (res: bool)
+function noCitiesInHorizon(wm: WorldMap, x: int, y: int): bool
   requires (0 <= y && y < wm.height)
   requires (wm.width > 4)
-  method loop(ls: List<Tile>): bool = {
+  function loop(ls: List<Tile>): bool = {
     decreases(ls) {
     ls match {
       case Cons(t, rest) => t.construction match {
@@ -87,12 +87,12 @@ method noCitiesInHorizon(wm: WorldMap, x: int, y: int) returns (res: bool)
   loop(collectTilesWithinRadius(wm, x, y, 2))
 }
 
-method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) returns (res: List<Tile>)
+function collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int): List<Tile>
   requires (0 <= y && y < wm.height)
   requires (radius >= 0)
   requires (2 * radius < wm.width)
 
-  method allRings(currRadius: int): List<Tile> = {
+  function allRings(currRadius: int): List<Tile> = {
     decreases(radius - currRadius) {
     requires (0 <= currRadius && currRadius <= radius)
     var atThisRadius := collectTilesInRing(wm, x, y, currRadius);
@@ -103,12 +103,12 @@ method collectTilesWithinRadius(wm: WorldMap, x: int, y: int, radius: int) retur
   allRings(0)
 }
 
-method collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int) returns (res: List<Tile>)
+function collectTilesInRing(wm: WorldMap, x: int, y: int, ring: int): List<Tile>
   requires (0 <= y && y < wm.height)
   requires (ring >= 0)
   requires (2 * ring < wm.width)
 
-  method loop(i: int): List<Tile> = {
+  function loop(i: int): List<Tile> = {
     requires (ring > 0)
     requires (0 <= i && i < 6 * ring)
     decreases(6 * ring - i)

@@ -14,7 +14,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
 
-method validAdjListM(adjList: seq<List<int>>, N: int, pos: int) returns (res: bool)
+function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
   requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
   decreases(pos) {
   if pos == 0 
@@ -22,7 +22,7 @@ method validAdjListM(adjList: seq<List<int>>, N: int, pos: int) returns (res: bo
   else
     validListM(adjList(pos - 1), N) && validAdjListM(adjList, N, pos - 1)
 
-method validListM(list: List<int>, N: int) returns (res: bool)
+function validListM(list: List<int>, N: int): bool
   requires (N >= 1)
   list match
     case Nil() =>
@@ -31,7 +31,7 @@ method validListM(list: List<int>, N: int) returns (res: bool)
       h >= 0 && h < N && validListM(t, N)
 
 
-method validAdjList(adjList: seq<List<int>>, N: int, pos: int) returns (res: bool)
+function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
   requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
   decreases(pos) {
   if (pos == 0) { return 
@@ -41,7 +41,7 @@ method validAdjList(adjList: seq<List<int>>, N: int, pos: int) returns (res: boo
   else
     false
 
-method validList(N: int, l: List<int>) returns (res: bool)
+function validList(N: int, l: List<int>): bool
   requires (N >= 1)
   l match
     case Cons(h, t) if (h >= 0 && h < N) =>

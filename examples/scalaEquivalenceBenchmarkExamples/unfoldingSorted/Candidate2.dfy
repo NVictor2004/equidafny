@@ -12,11 +12,11 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method unfoldingSorted<State, Elem>(start: State,
+function unfoldingSorted<State, Elem>(start: State,
                                  next: State => Option[(Elem, State)], // oops, should be State, Elem not Elem, State
                                  leq: (Elem, Elem) => bool,
                                  max: int): List<Elem> = {
-  method insertSorted(t: Elem, xs: List<Elem>): List<Elem> = {
+  function insertSorted(t: Elem, xs: List<Elem>): List<Elem> = {
     decreases(xs) {
     xs match {
       case Nil() => Cons(t, Nil())
@@ -25,7 +25,7 @@ method unfoldingSorted<State, Elem>(start: State,
         else { var result := Cons(hd, insertSorted(t, tl)); return result; }
     }
   }
-  method go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {
+  function go(s: State, xs: List<Elem>, fuel: int): List<Elem> = {
     decreases(if (fuel <= 0) int(0) else fuel) {
     if (fuel <= 0) { return xs; }
     else next(s) match {

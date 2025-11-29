@@ -17,13 +17,13 @@
 
 // Fig. 4
 
-method f1(n: int) returns (res: int) {
+function f1(n: int): int {
   if (n < 1) { return 0; }
   else if (n <= 2) { return 1; }
   else { var result := f1(n-1) + f1(n-2); return result; }
 }
 
-method f2(n: int) returns (res: int) {
+function f2(n: int): int {
   if (n < 1) { return 0; }
   else if (n <= 2) { return 1; }
   else { var result := f2(n-2) + f2(n-2) + f2(n-3); return result; }

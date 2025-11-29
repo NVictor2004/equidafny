@@ -24,7 +24,7 @@ function p1(n: int, m: int): int {
   else { var result := p1(n-1, m-1) + p1(n-1, m); return result; }
 }
 
-method p2(n: int, m: int) returns (res: int) {
+function p2(n: int, m: int): int {
   if (m < 1 || n < 1 || m > n) { return 0; }
   else if (m == 1 || n == 1 || m == n) { return 1; }
   else { var result := p2(n-1, m-1) + p2 (n-2 , m-1) + p2 (n-2 , m); return result; }

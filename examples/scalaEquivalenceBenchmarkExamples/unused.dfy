@@ -17,13 +17,13 @@
 
 // Fig. 13
 
-method t1(n: int) returns (res: int) {
+function t1(n: int): int {
   if (n < 1) { return 0; }
   else if (n == 1) { return 1; }
   else { var result := t1(n - 1) + t1(n - 2); return result; }
 }
 
-method t2(n: int) returns (res: int) {
+function t2(n: int): int {
   if (n < 1) { return 0; }
   else if (n == 1 || n == 2) { return 1; }
   else {

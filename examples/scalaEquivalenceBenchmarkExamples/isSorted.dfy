@@ -12,8 +12,8 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method isSortedR(l: List<int>) returns (res: bool)
-  method loop(p: int, l: List<int>): bool = l match {
+function isSortedR(l: List<int>): bool
+  function loop(p: int, l: List<int>): bool = l match {
     case Nil() => true
     case Cons(x, xs) if (p <= x) { var result := => loop(x, xs)
     case _ => false; return result; }
@@ -22,9 +22,9 @@ method isSortedR(l: List<int>) returns (res: bool)
   else { var result := loop(l.head, l.tail); return result; }
 }
 
-method isSortedA(l: List<int>) returns (res: bool)
-  method leq(cur: int, next: int): bool = cur < next
-  method iter(l: List<int>): bool =
+function isSortedA(l: List<int>): bool
+  function leq(cur: int, next: int): bool = cur < next
+  function iter(l: List<int>): bool =
     if (l.isEmpty) { return true; }
     else if (l.tail.isEmpty) { return true; }
     else leq(l.head, l.tail.head) { var result := && iter(l.tail); return result; }
@@ -32,7 +32,7 @@ method isSortedA(l: List<int>) returns (res: bool)
   else { var result := l.head <= l.tail.head && iter(l.tail); return result; }
 }
 
-method isSortedB(l: List<int>) returns (res: bool)
+function isSortedB(l: List<int>): bool
   if (l.isEmpty)
     true
   else { var result := if (!l.tail.isEmpty && l.head > l.tail.head); return result; }
@@ -41,8 +41,8 @@ method isSortedB(l: List<int>) returns (res: bool)
     isSortedB(l.tail)
 }
 
-method isSortedC(l: List<int>) returns (res: bool)
-  method chk(l: List<int>, p: int, a: bool): bool = {
+function isSortedC(l: List<int>): bool
+  function chk(l: List<int>, p: int, a: bool): bool = {
     if (l.isEmpty) { return a; }
     else if (l.head < p) { return false; }
     else { var result := chk(l.tail, l.head, a); return result; }

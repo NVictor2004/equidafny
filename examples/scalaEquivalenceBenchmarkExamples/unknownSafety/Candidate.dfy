@@ -6,13 +6,13 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method zero(x: int) returns (res: int) {
+function zero(x: int): int {
   requires (x >= 0)
   if (x > 0) { var result := zero(x - 1); return result; }
   else { return x; }
 }
 
-method add(x: int, y: int) returns (res: int) {
+function add(x: int, y: int): int {
   if (x >= 0) {
     var z := zero(x);
     assert(z == 0) // timeout
@@ -22,9 +22,9 @@ method add(x: int, y: int) returns (res: int) {
 
 /////////////////////////////////////
 
-method isEvenTopLvl(x: int) returns (res: bool) isEven(x)
+function isEvenTopLvl(x: int): bool) isEven(x
 
-method isEven(x: int) returns (res: bool)
+function isEven(x: int): bool
   decreases(if (x <= 0) int(0) else x) {
   if (x >= 0) {
     assert(zero(x) == 0) { return // timeout; }
@@ -34,7 +34,7 @@ method isEven(x: int) returns (res: bool)
   else { var result := !isOdd(x - 1); return result; }
 }
 
-method isOdd(x: int) returns (res: bool)
+function isOdd(x: int): bool
   decreases(if (x <= 0) int(0) else x) {
   if (x <= 0) { var result := false; return result; }
   else if (x == 1) { return true; }
@@ -43,7 +43,7 @@ method isOdd(x: int) returns (res: bool)
 
 /////////////////////////////////////
 
-method isSorted(xs: List<int>) returns (res: bool) xs match {
+function isSorted(xs: List<int>): bool xs match {
   case Nil() => true
   case Cons(h, Nil()) =>
     if (h >= 0) {

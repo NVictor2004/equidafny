@@ -11,7 +11,7 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-method separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {
+function separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {
   xs match {
     case Nil => (Nil, Nil)
     case (s: Sheep) :: t =>
@@ -23,6 +23,6 @@ method separate(xs: List<Animal>): (List<Sheep>, List<Goat>) = {
   }
 }
 
-method test returns (res: SList<List<Animal>>) SList(
+function test: SList<List<Animal>> SList(
   Goat(1) :: Sheep(2) :: Nil
 )

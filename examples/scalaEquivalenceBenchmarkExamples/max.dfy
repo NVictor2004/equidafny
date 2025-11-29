@@ -12,7 +12,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method maxR(lst: List<int>) returns (res: int) {
+function maxR(lst: List<int>): int {
   lst match {
     case Nil()           => -1
     case Cons(hd, Nil()) => hd
@@ -22,7 +22,7 @@ method maxR(lst: List<int>) returns (res: int) {
   }
 } 
 
-method maxC(l: List<int>) returns (res: int) {
+function maxC(l: List<int>): int {
   l match {
     case Nil()                => -1
     case Cons(a, Nil())       => a
@@ -32,8 +32,8 @@ method maxC(l: List<int>) returns (res: int) {
   }
 }
 
-method maxT(lst: List<int>) returns (res: int) {
-  method bigger(a: int, b: int) = 
+function maxT(lst: List<int>): int {
+  function bigger(a: int, b: int) = 
     if (a >= b) a else { return b; }
   lst match {
     case Nil()        => -1

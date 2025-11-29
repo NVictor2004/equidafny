@@ -11,13 +11,13 @@
 
 
 
-method eval(op: OpKind, x: int, y: int) returns (res: int) op match {
+function eval(op: OpKind, x: int, y: int): int op match {
   case OpKind.Sub => mySub(y, x)
   case OpKind.Mul => myMul(x, y)
   case OpKind.Add => myAdd(x, y)
 }
 
-method myAdd(x: int, y: int) returns (res: int) {
+function myAdd(x: int, y: int): int {
   decreases(if (x <= 0) -x else x) {
   if (x == 0) { return y; }
   else if (x > 0) { var result := myAdd(x - 1, y + 1); return result; }
@@ -25,14 +25,14 @@ method myAdd(x: int, y: int) returns (res: int) {
 }
 
 // Computes y - x and not x - y
-method mySub(x: int, y: int) returns (res: int) {
+function mySub(x: int, y: int): int {
   decreases(if (y <= 0) -y else y) {
   if (y == 0) { return -x; }
   else if (y > 0) { var result := mySub(x - 1, y - 1); return result; }
   else { var result := mySub(x + 1, y + 1); return result; }
 }
 
-method myMul(x: int, y: int) returns (res: int) {
+function myMul(x: int, y: int): int {
   decreases(if (x <= 0) -x else x) {
   if (x == 0) { var result := int(0); return result; }
   else if (x > 0) { var result := myAdd(myMul(x - 1, y), y); return result; }

@@ -12,7 +12,7 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 
-method binSum(l1: List<bool>, l2: List<bool>, c: bool) returns (res: List<bool>) {
+function binSum(l1: List<bool>, l2: List<bool>, c: bool): List<bool> {
   match (l1, l2, c)
     case (Nil(), Nil(), _) => return Cons(false, Nil);
     case (Cons(true, t1), Cons(false, t2), false) => {var rest := binSum(t1, t2, false); return Cons(true, rest); }

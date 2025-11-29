@@ -15,7 +15,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 // but here we ensure that the `choose` functions (created from the `choose((x: int) => true)`)
 // for the Model and the Candidate do not get matched because it would make the type-checker unhappy
 // (because we would create `choose` expressions when doing the replacement).
-method fold(f: (int, int) => int, l: List<int>, a: int) returns (res: int) {
+function fold(f: (int, int) => int, l: List<int>, a: int): int {
   decreases(l) {
   l match {
     case Nil()        => a
@@ -23,7 +23,7 @@ method fold(f: (int, int) => int, l: List<int>, a: int) returns (res: int) {
   }
 }
 
-method max(lst: List<int>) returns (res: int) {
+function max(lst: List<int>): int {
   lst match {
     case Nil() => choose((x: int) => true)
     case Cons(hd, tl) =>
@@ -35,7 +35,7 @@ method max(lst: List<int>) returns (res: int) {
     }
 }
 
-method norm(l: List<int>, f: int) returns (res: int) {
+function norm(l: List<int>, f: int): int {
   if (l.isEmpty) { return -1; }
   else { return f; }
 }

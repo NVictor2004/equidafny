@@ -13,7 +13,7 @@
 
 
 
-method validLengthIncreasingM(a:seq<seq<int>>, N:int, M:int, k: int) returns (res: bool)
+function validLengthIncreasingM(a:seq<seq<int>>, N:int, M:int, k: int): bool
   requires (N > 0 && N == |a| && M > 0 && k >= 0 && k <= N)
   decreases(N - k) {
   if (k == N) { return 
@@ -27,7 +27,7 @@ function succM(n: int): int
 }
 
 
-method validLengthIncreasing(a:seq<seq<int>>, N:int, M:int, k: int) returns (res: bool)
+function validLengthIncreasing(a:seq<seq<int>>, N:int, M:int, k: int): bool
   requires (N > 0 && N == |a| && M > 0 && k >= 0 && k <= N)
   decreases(N - k) {
   if (k == N) { return 

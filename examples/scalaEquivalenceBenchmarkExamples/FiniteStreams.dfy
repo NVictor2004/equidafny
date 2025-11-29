@@ -14,7 +14,7 @@
 
 
 sealed abstract class Stream:
-  method rank = {
+  function rank = {
     this match
       case SCons(_, _, sz) if (sz > 0) => sz
       case _                           => int(0)
@@ -22,7 +22,7 @@ sealed abstract class Stream:
 case class SCons(x: int, tailFun: () => Stream, sz: int) extends Stream
 case class SNil() extends Stream
 
-method finiteM(s: Stream) returns (res: bool)
+function finiteM(s: Stream): bool
   decreases(s.rank) {
   s match
     case SCons(_, tfun, sz) if tfun().rank >= sz =>
@@ -33,7 +33,7 @@ method finiteM(s: Stream) returns (res: bool)
       true
 
 
-method finite(stream: Stream) returns (res: bool)
+function finite(stream: Stream): bool
   decreases(stream.rank) {
   stream match
     case SCons(_, tfun, sz) =>
