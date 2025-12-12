@@ -1,41 +1,43 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-
-function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
-  requires (0 <= y && y < wm.height)
-  requires (wm.width > 4)
-  function adj(tile: Tile): int {
-    districtKind match {
-      case DistrictKind.Campus => tile.base match {
-        case TileBase.Mountain => int(2)
-        case _ => tile.construction match {
-          case Some(Construction.City(_))  => int(1)
-          case Some(Construction.District(_)) => int(1)
-          case _ => int(0)
-        }
+function adj(tile: Tile): int {
+  match districtKind {
+    case DistrictKind.Campus => tile.base match {
+      case TileBase.Mountain => int(2)
+      case _ => tile.construction match {
+        case Some(Construction.City(_))  => int(1)
+        case Some(Construction.District(_)) => int(1)
+        case _ => int(0)
       }
-      case DistrictKind.IndustrialZone =>
-        var resAdj := tile.resource match {;
-          case Some(Resource.Iron) => int(2)
-          case Some(Resource.Coal) => int(2)
-          case _ => int(0)
-        }
-        tile.construction match {
-          case Some(Construction.City(_)) => resAdj + int(1)
-          case Some(Construction.District(_)) => resAdj + int(1)
-          case Some(Construction.Exploitation(ResourceImprovement.Mine)) => resAdj + int(1)
-          case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => resAdj + int(2)
-          case _ => resAdj
-        }
     }
+    case DistrictKind.IndustrialZone =>
+      var resAdj := tile.resource match {;
+        case Some(Resource.Iron) => int(2)
+        case Some(Resource.Coal) => int(2)
+        case _ => int(0)
+      }
+      tile.construction match {
+        case Some(Construction.City(_)) => resAdj + int(1)
+        case Some(Construction.District(_)) => resAdj + int(1)
+        case Some(Construction.Exploitation(ResourceImprovement.Mine)) => resAdj + int(1)
+        case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => resAdj + int(2)
+        case _ => resAdj
+      }
   }
-  function sum(ts: List<Tile>, acc: int): int {
-    decreases(ts) {
-    ts match {
-      case Nil() => acc
-      case Cons(tile, rest) => sum(rest, acc + adj(tile))
-    }
+}
+
+function sum(ts: List<Tile>, acc: int): int {
+  decreases(ts) {
+  ts match {
+    case Nil() => acc
+    case Cons(tile, rest) => sum(rest, acc + adj(tile))
   }
+}
+
+function adjacencyBonus(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int
+  requires (0 <= y && y < wm.height)
+  requires (wm.width > 4) {
+  
   sum(collectTilesInRing(wm, x, y, 1), 0)
 }
 
