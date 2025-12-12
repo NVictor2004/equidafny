@@ -17,24 +17,24 @@ function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
   var tile := tileInWorld(wm, x, y);
   districtKind match {
     case DistrictKind.Campus => tile.base match {
-      case TileBase.Mountain => int(2)
+      case TileBase.Mountain => 2
       case _ => tile.construction match {
-        case Some(Construction.City(_))  => int(1)
-        case Some(Construction.District(_)) => int(1)
-        case _ => int(0)
+        case Some(Construction.City(_))  => 1
+        case Some(Construction.District(_)) => 1
+        case _ => 0
       }
     }
     case DistrictKind.IndustrialZone =>
       var resAdj := tile.resource match {;
-        case Some(Resource.Iron) => int(2)
-        case Some(Resource.Coal) => int(2)
-        case _ => int(0)
+        case Some(Resource.Iron) => 2
+        case Some(Resource.Coal) => 2
+        case _ => 0
       }
       tile.construction match {
-        case Some(Construction.City(_)) => resAdj + int(1)
-        case Some(Construction.District(_)) => resAdj + int(1)
-        case Some(Construction.Exploitation(ResourceImprovement.Mine)) => resAdj + int(1)
-        case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => resAdj + int(2)
+        case Some(Construction.City(_)) => resAdj + 1
+        case Some(Construction.District(_)) => resAdj + 1
+        case Some(Construction.Exploitation(ResourceImprovement.Mine)) => resAdj + 1
+        case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => resAdj + 2
         case _ => resAdj
       }
   }

@@ -15,7 +15,7 @@ function unfoldingSorted<S, T>(start: S,
     }
   }
   function loop(s: S, fuel: int, xs: List<T>): List<T> = {
-    decreases(if (fuel <= 0) int(0) else fuel) {
+    decreases(if (fuel <= 0) 0 else fuel) {
     if (fuel <= 0) then xs
     else next(s) match {
       case Some((nxtS, t)) =>

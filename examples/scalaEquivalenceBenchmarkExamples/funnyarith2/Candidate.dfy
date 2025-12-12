@@ -21,7 +21,7 @@ function mySub(x: int, y: int): int {
 
 function myMul(x: int, y: int): int {
   decreases(if (x <= 0) -x else x) {
-  if (x == 0) then int(0)
+  if (x == 0) then 0
   else if (x > 0) then myAdd(myMul(x - 1, y), y)
   else mySub(y, myMul(x + 1, y))
 }

@@ -56,28 +56,28 @@ function testsAdjacencyBonus1: (WorldMap, int, int, DistrictKind) = {
 //////////////////////
 
 function adj(wm: WorldMap, x: int, y: int, districtKind: DistrictKind): int {
-  if (y < 0 || y >= wm.height) then int(0)
+  if (y < 0 || y >= wm.height) then 0
   else adj(tileInWorld(wm, x, y), districtKind)
 }
 
 function adj(tile: Tile, districtKind: DistrictKind): int {
   (districtKind, tile) match {
-    case (DistrictKind.Campus, Tile(TileBase.Mountain, _, _, _)) => int(2)
-    case (DistrictKind.Campus, Tile(_, _, _, Some(Construction.City(_)))) => int(1)
-    case (DistrictKind.Campus, Tile(_, _, _, Some(Construction.District(_)))) => int(1)
-    case (DistrictKind.Campus, _) => int(0)
+    case (DistrictKind.Campus, Tile(TileBase.Mountain, _, _, _)) => 2
+    case (DistrictKind.Campus, Tile(_, _, _, Some(Construction.City(_)))) => 1
+    case (DistrictKind.Campus, Tile(_, _, _, Some(Construction.District(_)))) => 1
+    case (DistrictKind.Campus, _) => 0
     case (DistrictKind.IndustrialZone, Tile(_, _, res, ctor)) =>
       var resAdj := res match {;
-        case Some(Resource.Iron) => int(2)
-        case Some(Resource.Coal) => int(2)
-        case _ => int(0)
+        case Some(Resource.Iron) => 2
+        case Some(Resource.Coal) => 2
+        case _ => 0
       }
       var resCtor := ctor match {;
-        case Some(Construction.City(_)) => int(1)
-        case Some(Construction.District(_)) => int(1)
-        case Some(Construction.Exploitation(ResourceImprovement.Mine)) => int(1)
-        case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => int(2)
-        case _ => int(0)
+        case Some(Construction.City(_)) => 1
+        case Some(Construction.District(_)) => 1
+        case Some(Construction.Exploitation(ResourceImprovement.Mine)) => 1
+        case Some(Construction.Exploitation(ResourceImprovement.Quarry)) => 2
+        case _ => 0
       }
       resAdj + resCtor
   }

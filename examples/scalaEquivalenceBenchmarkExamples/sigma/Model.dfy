@@ -4,9 +4,9 @@
 
 function sigma(f: int => int, a: int, b: int): int {
   function s(a: int, b: int, f: int => int, acc: int): int {
-    decreases(if (b == a) int(2) else if (b > a) then 2 + b - a else a - b)
-    if (a > b) acc else s(a + int(1), b, f, acc + f(a))
+    decreases(if (b == a) 2 else if (b > a) then 2 + b - a else a - b)
+    if (a > b) acc else s(a + 1, b, f, acc + f(a))
   }
 
-  s(a, b, f, int(0))
+  s(a, b, f, 0)
 }

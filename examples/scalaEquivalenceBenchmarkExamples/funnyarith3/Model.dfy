@@ -7,7 +7,7 @@ function eval(x: int, y: int): int) mul(x, y
 
 function mul(x: int, y: int): int {
   decreases(if (x <= 0) -x else x) {
-  if (x == 0) then int(0)
+  if (x == 0) then 0
   else if (x > 0) then add(mul(x - 1, y), y)
   else sub(mul(x + 1, y), y)
 }

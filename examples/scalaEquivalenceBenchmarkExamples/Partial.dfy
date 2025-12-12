@@ -16,7 +16,7 @@ function maxNegPM(j: int, p: int => bool): bool
 
 function fM(x: int, p: int => bool): int
   requires (!p(x) || existsM[int]((j: int) => j < x && maxNegPM(j, p)))
-  decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
+  decreases(if (!p(x)) 0 else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
   if (p(x)) then  fM(x - 1, p)
   else  x
 
@@ -32,7 +32,7 @@ function maxNegP(p: int => bool, j: int): bool
 
 function f(x: int, p: int => bool): int
   requires (!p(x) || exists[int]((j: int) => j < x && maxNegP(p, j)))
-  decreases(if (!p(x)) int(0) else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
+  decreases(if (!p(x)) 0 else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
   var t := p(x);
   if t  f(x - 1, p)
   else x
