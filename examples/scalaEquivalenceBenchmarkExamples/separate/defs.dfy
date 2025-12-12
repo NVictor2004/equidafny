@@ -1,21 +1,13 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-sealed trait Animal
-case class Sheep(id: int) extends Animal
-case class Goat(id: int) extends Animal
+datatype Animal = Sheep(id: int) | Goat(id: int)
 
-sealed abstract class List<+T> {
-  function size: int {
-    this match {
+function length<T>(l: List<T>): nat {
+    match l {
       case Nil => 0
-      case h :: t =>
-        var tLen := t.size;
-        if (tLen == int.MaxValue) then tLen
-        else 1 + tLen
+      case Cons(h, t) => 1 + length(t)
     }
- }.ensuring(res => 0 <= res && res <= int.MaxValue)
-
-  function length: int = size
+ }
 
   function ++<TT >: T>(that: List<TT>): List<TT> = {
     this match {

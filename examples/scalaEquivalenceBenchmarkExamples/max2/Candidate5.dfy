@@ -1,3 +1,3 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function max(l: List<int>): int -1
+function max(l: List<int>): int {-1}

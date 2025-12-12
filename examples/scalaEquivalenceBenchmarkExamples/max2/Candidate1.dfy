@@ -1,10 +1,10 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function max(l: List<int>): int {
+function max(l: List<int>): int
   decreases(l) {
-  l match {
-    case Nil()           => 42
-    case Cons(hd, Nil()) => hd
-    case Cons(hd, tl)    => if (hd > max(tl)) hd else max(tl)
+  match l {
+    case Nil           => 42
+    case Cons(hd, Nil) => hd
+    case Cons(hd, tl)    => if (hd > max(tl)) then hd else max(tl)
   }
 }
