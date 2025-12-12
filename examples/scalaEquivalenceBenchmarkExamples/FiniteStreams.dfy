@@ -1,32 +1,28 @@
 /* Copyright 2009-2024 EPFL, Lausanne */
 
+datatype Stream = SNil | SCons(x: int, tailFun: () -> Stream, sz: int)
 
-
-sealed abstract class Stream:
-  function rank = {
-    this match
-      case SCons(_, _, sz) if (sz > 0) => sz
-      case _                           => int(0)
- }.ensuring(_ >= 0)
-case class SCons(x: int, tailFun: () => Stream, sz: int) extends Stream
-case class SNil() extends Stream
+function rank(s: Stream): int
+  ensures rank(s) >= 0
+  {
+    match s
+      case SCons(_, _, sz) => if (sz > 0) then sz else 0
+      case _                           => 0
+  }
 
 function finiteM(s: Stream): bool
-  decreases(s.rank) {
-  s match
-    case SCons(_, tfun, sz) if tfun().rank >= sz =>
-      false
-    case SCons(_, tfun, sz) =>
-      finiteM(tfun())
-    case _ =>
-      true
-
+  decreases(rank(s)) {
+  match s
+    case SCons(_, tfun, sz)  => if rank(tfun()) >= sz then false else finiteM(tfun())
+    case _ => true
+  }
 
 function finite(stream: Stream): bool
-  decreases(stream.rank) {
-  stream match
+  decreases(rank(stream)) {
+  match stream
     case SCons(_, tfun, sz) =>
       var tail := tfun();
-      tail.rank < sz && finite(tail)
+      rank(tail) < sz && finite(tail)
     case SNil() =>
       true
+  }

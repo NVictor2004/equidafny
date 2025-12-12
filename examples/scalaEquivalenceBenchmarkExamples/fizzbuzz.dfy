@@ -3,6 +3,13 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 datatype Outcome = Fizz | Buzz | FizzBuzz | Number(n: int)
 
+function mapf<T, U>(lst: List<T>, f: (T) -> U): List<U>
+  {
+    match lst
+      case Nil => Nil
+      case Cons(h, t) => Cons(f(h), mapf(t, f))
+  }
+
 function response1(n: int): Outcome
   {if n % 5 == 0 then
     if n % 3 == 0  then FizzBuzz()
@@ -18,7 +25,7 @@ function ordinalSeq1(to: int): List<int>
 
 function fizzBuzz1(to: int): List<Outcome>
   requires (0 <= to)
-  {ordinalSeq1(to).map(response1)}
+  {mapf(ordinalSeq1(to), response1)}
 
 function fizzBuzz2(to: int): List<Outcome>
   requires (0 <= to)

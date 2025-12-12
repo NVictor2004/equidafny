@@ -3,29 +3,30 @@
 
 
 function isSortedArrayM(a: seq<int>, start: int, n: int): bool
-  decreases(n) {
-  requires (0 <= start && n >= start && n <= |a|)
-  if n <= succM(start) 
+  decreases(n)
+  requires (0 <= start && n >= start && n <= |a|) {
+  if n <= succM(start) then
     true
-  else if a(n-2) > a(n-1) 
+  else if a[n-2] > a[n-1] then
     false
   else
     isSortedArrayM(a, start, n-1)
+  }
 
-function succM(n: int) =
-  if n < int.MaxValue 
+function succM(n: int): int
+  {
     n + 1
-  else
-    n
+}
 
 function isSortedArray(a: seq<int>, start: int, n: int): bool
-  decreases(n) {
-  requires (0 <= start && n >= start && n <= |a|)
-  if n == start 
+  decreases(n)
+  requires (0 <= start && n >= start && n <= |a|) {
+  if n == start then
     true
-  else if n == start + 1 
+  else if n == start + 1 then
     true
-  else if a(n-2) > a(n-1) 
+  else if a[n-2] > a[n-1] then
     false
   else
     isSortedArray(a, start, n-1)
+  }

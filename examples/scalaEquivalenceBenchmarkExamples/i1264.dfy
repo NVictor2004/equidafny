@@ -12,7 +12,7 @@ function append<T>(l1: List<T>, l2: List<T>): List<T>
 function split<T(==)>(l: List<T>, x: T): List<List<T>>
   decreases(l) {
   match l {
-    case Nil => Nil
+    case Nil => Cons(Nil, Nil)
     case Cons(y, ys) => if (x == y) then Cons(Nil, split(ys, x)) else
       var r := split(ys, x);
       Cons(Cons(y, r.head), r.tail)

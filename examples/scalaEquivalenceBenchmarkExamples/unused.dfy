@@ -15,13 +15,10 @@ function t1(n: int): int {
 function t2(n: int): int {
   if (n < 1) then 0
   else if (n == 1 || n == 2) then 1
-  else {
-    var results: int = 0
-    var r1 = t2(n-1)
-    var r2 = t2(n-2)
-    var r3 = t2(n-3)
-    if (n % 2 == 0) then results = r2 + r2 + r3
-    else results = r1 + r2
+  else
+    var r1 := t2(n-1);
+    var r2 := t2(n-2);
+    var r3 := t2(n-3);
+    var results := if (n % 2 == 0) then r2 + r2 + r3 else r1 + r2;
     results
-  }
 }
