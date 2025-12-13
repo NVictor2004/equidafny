@@ -3,36 +3,48 @@
 
 
 
-function existsM<T>(p: T => bool): bool
-  !forall((t: T) => !p(t))
+ghost function existsM<T(!new)>(p: T -> bool): bool
+  ensures existsM(p) <==> exists t: T :: p(t)
+{
+  ! forall t: T :: !p(t)
+}
 
-function eliminate_existsM<T>(p: T => bool): T
-  requires (existsM[T](p))
-  choose[T]((res: T) => p(res))
-}.ensuring(p)
+ghost function eliminate_existsM<T(!new)>(p: T -> bool): T
+  requires (existsM(p))
+  ensures (p(eliminate_existsM(p))) {
+  var res :| p(res);
+  res
+}
 
-function maxNegPM(j: int, p: int => bool): bool
-  !p(j) && forall((k: int) => !p(k) ==> (k <= j))
+ghost function maxNegPM(j: int, p: int -> bool): bool {
+  !p(j) && forall k :: !p(k) ==> (k <= j)
+}
 
-function fM(x: int, p: int => bool): int
-  requires (!p(x) || existsM[int]((j: int) => j < x && maxNegPM(j, p)))
-  decreases(if (!p(x)) 0 else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
-  if (p(x)) then  fM(x - 1, p)
-  else  x
+ghost function fM(x: int, p: int -> bool): int
+  requires (!p(x) || existsM((j: int) => j < x && maxNegPM(j, p)))
+  decreases(if (!p(x)) then 0 else x - eliminate_existsM((j: int) => j < x && maxNegPM(j, p))) {
+  if (p(x)) then 
+    var j :| j < x && !p(j) && forall k :: !p(k) ==> (k <= j);
+    assert j < x - 1 ==> exists j :: ((j: int) => j < x - 1 && maxNegPM(j, p))(j);
+    fM(x - 1, p)
+  else x
+  }
 
+ghost function existsF<T(!new)>(p: T -> bool): bool {
+  ! forall t :: !p(t)
+}
 
-function exists<T>(p: T => bool): bool
-  !forall((t: T) => !p(t))
-
-function maxNegP(p: int => bool, j: int): bool
-  if p(j) 
+ghost function maxNegP(p: int -> bool, j: int): bool {
+  if p(j) then
     false
   else
-    forall((k: int) => !p(k) ==> (k <= j))
+    forall k :: !p(k) ==> (k <= j)
+}
 
-function f(x: int, p: int => bool): int
-  requires (!p(x) || exists[int]((j: int) => j < x && maxNegP(p, j)))
-  decreases(if (!p(x)) 0 else x - eliminate_existsM[int]((j: int) => j < x && maxNegPM(j, p))) {
+function f(x: int, p: int -> bool): int
+  requires (!p(x) || existsF((j: int) => j < x && maxNegP(p, j)))
+  decreases(if (!p(x)) then 0 else x - eliminate_existsM((j: int) => j < x && maxNegPM(j, p))) {
   var t := p(x);
-  if t  f(x - 1, p)
+  if t then f(x - 1, p)
   else x
+  }
