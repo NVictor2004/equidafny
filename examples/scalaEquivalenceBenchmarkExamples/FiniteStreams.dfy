@@ -26,3 +26,8 @@ function finite(stream: Stream): bool
     case SNil() =>
       true
   }
+
+lemma equivalenceFinite(s: Stream)
+  ensures (finite(s) <==> finiteM(s))
+  decreases (rank(s))
+{}

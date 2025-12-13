@@ -37,3 +37,7 @@ function replace<T(==)>(l1: List<T>, x: T, l2: List<T>): List<T>
 }
 
 function slowReplace<T(==)>(l1: List<T>, x: T, l2: List<T>): List<T> { join(split(l1, x), l2) }
+
+lemma equivalenceReplace<T>(l1: List<T>, x: T, l2: List<T>)
+  ensures (replace(l1, x, l2) == slowReplace(l1, x, l2))
+{}

@@ -59,3 +59,9 @@ function swap(a: int, b: int, arr: seq<int>, N: int): seq<int>
     var temp := arr[a];
     arr[a := arr[b]][b := temp]
   }
+
+lemma equivalenceMaxHeapify(a: seq<int>, N: int, i: int)
+  requires (i >= 0 && i < N && N <= |a| && N <= 100000)
+  ensures (maxHeapify(a, N, i) == maxHeapifyM(a, N, i))
+  decreases (N - i)
+{}

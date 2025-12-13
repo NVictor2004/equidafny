@@ -31,3 +31,19 @@ function isOdd2(un: UnaryNat): bool {
   case Succ(Succ(Zero)) => false 
   case _ => isEven2(prev(un))
 }
+
+lemma equivalenceIsEven(un: UnaryNat)
+  ensures (isEven1(un) == isEven2(un))
+{
+  match un
+  case Zero => {}
+  case Succ(_) => equivalenceIsOdd(prev(un));
+}
+
+lemma equivalenceIsOdd(un: UnaryNat)
+  ensures (isOdd1(un) == isOdd2(un))
+{
+  match un
+  case Zero => {}
+  case Succ(_) => equivalenceIsEven(prev(un));
+}

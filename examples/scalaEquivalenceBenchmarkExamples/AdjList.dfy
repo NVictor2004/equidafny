@@ -38,3 +38,15 @@ function validList(N: int, l: List<int>): bool
     case Cons(h, t) => if (h >= 0 && h < N) then validList(N, t) else false
     case Nil => true
   }
+
+lemma equivalenceValidList(l: List<int>, N: int)
+  requires (N >= 1)
+  ensures (validList(N, l) <==> validListM(l, N))
+{}
+
+lemma equivalenceValidAdjList(adjList: seq<List<int>>, N: int, pos: int)
+  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
+  ensures (validAdjList(adjList, N, pos) <==> validAdjListM(adjList, N, pos))
+{
+  if pos > 0 {equivalenceValidList(adjList[pos - 1], N);}
+}

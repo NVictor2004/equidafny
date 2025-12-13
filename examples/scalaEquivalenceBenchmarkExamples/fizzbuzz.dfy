@@ -37,3 +37,8 @@ function fizzBuzz2(to: int): List<Outcome>
       else
         if to % 5 == 0 then Cons(Buzz(), fizzBuzz2(to - 1))
         else Cons(Number(to), fizzBuzz2(to - 1))}
+
+lemma equivalenceFizzBuzz(to: int)
+  requires (0 <= to)
+  ensures (fizzBuzz1(to) == fizzBuzz2(to))
+{}

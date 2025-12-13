@@ -24,3 +24,9 @@ function validLengthIncreasing(a:seq<seq<int>>, N:int, M:int, k: int): bool
   else 
     |a[k]| == M && validLengthIncreasing(a, N, M, k + 1)
   }
+
+lemma equivalenceValidLengthIncreasing(a:seq<seq<int>>, N:int, M:int, k: int)
+  requires (N > 0 && N == |a| && M > 0 && k >= 0 && k <= N)
+  ensures (validLengthIncreasing(a, N, M, k) <==> validLengthIncreasingM(a, N, M, k))
+  decreases (N - k)
+{}

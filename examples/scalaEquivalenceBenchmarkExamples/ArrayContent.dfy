@@ -15,3 +15,8 @@ function arrayContent(a: seq<int>, n: int) : set<int>
   if n == 0  then {}
   else {a[n-1]} + arrayContent(a, n-1)
   }
+
+lemma equivalenceArrayContent(a: seq<int>, n: int)
+  requires (n >= 0 && n <= |a| && |a| <= 100000)
+  ensures (arrayContent(a, n) == arrayContentM(a, n))
+{}
