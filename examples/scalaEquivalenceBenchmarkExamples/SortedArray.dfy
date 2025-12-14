@@ -30,3 +30,8 @@ function isSortedArray(a: seq<int>, start: int, n: int): bool
   else
     isSortedArray(a, start, n-1)
   }
+
+lemma equivalenceIsSortedArray(a: seq<int>, start: int, n: int)
+  requires (0 <= start && n >= start && n <= |a|)
+  ensures (isSortedArrayM(a, start, n) == isSortedArray(a, start, n))
+{}

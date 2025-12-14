@@ -13,3 +13,7 @@ function sum1(n: int): int
 function sum2(n: int): int
   {if (n <= 1) then n
   else n + sum2(n-1)}
+
+lemma equivalenceSum(n: int)
+  ensures (sum1(n) == sum2(n))
+{}

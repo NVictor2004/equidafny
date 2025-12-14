@@ -21,3 +21,8 @@ function valid2DLength(a: seq<seq<int>>, w: seq<seq<Direction>>, m: int, n: int,
   else if (|w[k]| != n) then false
   else valid2DLength(a, w, m, n, k - 1)
   }
+
+lemma equivalenceValid2DLength(a: seq<seq<int>>, w: seq<seq<Direction>>, m: int, n: int, k: int)
+  requires (|a| == m && |w| == m && |a| > 0 && |w| > 0 && k >= -1 && k < m)
+  ensures (valid2DLengthM(a, w, m, n, k) == valid2DLength(a, w, m, n, k))
+{}
