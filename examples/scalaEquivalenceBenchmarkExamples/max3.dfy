@@ -51,4 +51,14 @@ ghost function max1(lst: List<int>): int {
       )
     }
 
+lemma equivalenceFold1(f: (int, int) -> int, l: List<int>, a: int)
+  ensures (fold1(f, l, a) == foldM(f, l, a))
+{}
 
+lemma equivalenceMax1(l: List<int>)
+  ensures (norm(l, max1(l)) == norm(l, maxM(l)))
+{
+  match l
+    case Cons(hd, _) => equivalenceFold1((x, y) => if (x > y) then x else y, l, hd);
+    case Nil =>
+}

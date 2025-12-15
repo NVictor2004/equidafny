@@ -66,4 +66,29 @@ function myMul(x: int, y: int): int
   else mySub(myMul(x + 1, y), y)
 }
 
+lemma equivalenceAdd(x: int, y: int)
+  decreases(if (x <= 0) then -x else x)
+  ensures (add(x, y) == myAdd(x, y))
+{}
+
+lemma equivalenceSub(x: int, y: int)
+  decreases(if (x <= 0) then -x else x)
+  ensures (sub(x, y) == mySub(x, y))
+{}
+
+lemma equivalenceMul(x: int, y: int)
+  decreases(if (x <= 0) then -x else x)
+  ensures (mul(x, y) == myMul(x, y))
+{
+  equivalenceAdd(mul(x - 1, y), y);
+  equivalenceSub(mul(x + 1, y), y);
+}
+
+lemma equivalenceEval(op: OpKind, x: int, y: int)
+  ensures (eval1(op, x, y) == evalM(op, x, y))
+{
+  equivalenceAdd(x, y);
+  equivalenceSub(x, y);
+  equivalenceMul(x, y);
+}
 

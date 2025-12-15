@@ -33,4 +33,22 @@ function myIsEven(x: int): bool
   else !myIsOdd(x - 1)
 }
 
+lemma equivalenceIsOdd(x: int)
+  decreases(if (x <= 0) then 0 else x)
+  ensures (isOdd(x) == myIsOdd(x))
+{
+  if (x >= 1) {equivalenceIsEven(x - 1);}
+}
 
+lemma equivalenceIsEven(x: int)
+  decreases(if (x <= 0) then 0 else x)
+  ensures (isEven(x) == myIsEven(x))
+{
+  if (x >= 1) {equivalenceIsOdd(x - 1);}
+}
+
+lemma equivalenceIsEvenTopLvl(x: int)
+  ensures (isEvenTopLvlM(x) == isEvenTopLvl1(x))
+{
+  equivalenceIsEven(x);
+}

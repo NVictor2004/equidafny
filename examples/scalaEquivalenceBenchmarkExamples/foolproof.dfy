@@ -38,4 +38,14 @@ function funnyZip1(xs: List<int>, ys: List<int>): List<int>
   }
 }
 
+lemma equivalenceChoose(x: int, y: int)
+  ensures (choose1(x, y) == chooseM(x, y))
+{}
 
+lemma equivalenceFunnyZip(xs: List<int>, ys: List<int>)
+  ensures (funnyZip1(xs, ys) == funnyZipM(xs, ys))
+{
+  match (xs, ys)
+    case (Cons(x, _), Cons(y, _)) => equivalenceChoose(x, y);
+    case _ =>
+}

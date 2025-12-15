@@ -28,6 +28,6 @@ function finite(stream: Stream): bool
   }
 
 lemma equivalenceFinite(s: Stream)
-  ensures (finite(s) <==> finiteM(s))
+  ensures (finite(s) == finiteM(s))
   decreases (rank(s))
 {}
