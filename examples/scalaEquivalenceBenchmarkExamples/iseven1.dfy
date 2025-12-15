@@ -1,6 +1,6 @@
 // MODEL
 
-function isEvenTopLvl(x: int): bool {isEven(x)}
+function isEvenTopLvlM(x: int): bool {isEven(x)}
 
 function isOdd(x: int): bool
   decreases(if (x <= 0) then 0 else x) {
@@ -17,7 +17,7 @@ function isEven(x: int): bool
 
 // CANDIDATE
 
-function isEvenTopLvl(x: int): bool {myIsEven(x)}
+function isEvenTopLvl1(x: int): bool {myIsEven(x)}
 
 function myIsOdd(x: int): bool
   decreases(if (x <= 0) then 0 else x) {

@@ -43,7 +43,7 @@ function drop_2(lst: List<int>, n: int): List<int>
 }
 
 // Removed @induct annotation from lst argument
-lemma lem(n: int, lst: List<int>)
+lemma lemM(n: int, lst: List<int>)
   ensures length(drop_2(lst, n)) <= length(lst)
 {}
 
@@ -53,7 +53,7 @@ function solution_2(lst: List<int>): List<int>
   match lst {
     case Nil        => Nil
     case Cons(hd, tl) =>
-      lem(hd, tl);
+      lemM(hd, tl);
       Cons(hd, solution_2(drop_2(tl, hd)))
   }
 }
@@ -103,15 +103,6 @@ function solution_4(lst: List<int>): List<int> {
 
 // CANDIDATE 1
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-function snoc<T>(l: List<T>, elem: T): List<T> {
-  match l {
-    case Nil => Cons(elem, Nil)
-    case Cons(hd, tl) => Cons(hd, snoc(tl, elem))
-  }
-}
-
 function check(element: int, l: List<int>): bool
   decreases(l) {
   match l {
@@ -129,19 +120,9 @@ function app(l1: List<int>, l2: List<int>): List<int>
   }
 }
 
-function uniq(lst: List<int>): List<int> {app(lst, Nil())}
+function uniq1(lst: List<int>): List<int> {app(lst, Nil())}
 
 // CANDIDATE 2
-
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-function length<T>(lst: List<T>): nat
-  decreases(lst) {
-  match lst {
-    case Nil => 0
-    case Cons(_, tl) => 1 + length(tl)
-  }
-}
 
 function drop(a: int, lst_0: List<int>): List<int>
   decreases(lst_0) {
@@ -153,19 +134,19 @@ function drop(a: int, lst_0: List<int>): List<int>
 }
 
 // Removed @induct annotation from lst argument
-lemma lem(a: int, lst: List<int>)
+lemma lem2(a: int, lst: List<int>)
   ensures length(drop(a, lst)) <= length(lst)
 {}
 
-function uniq(lst: List<int>): List<int>
+function uniq2(lst: List<int>): List<int>
   decreases(length(lst)) {
   match lst {
     case Nil => Nil
     case Cons(hd, tl) =>
-      lem(hd, tl);
+      lem2(hd, tl);
       assert(length(drop(hd, tl)) <= length(tl));
       assert(length(drop(hd, tl)) < length(lst));
-      Cons(hd, uniq(drop(hd, tl)))
+      Cons(hd, uniq2(drop(hd, tl)))
   }
 }
 

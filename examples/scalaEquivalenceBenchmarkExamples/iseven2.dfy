@@ -1,6 +1,6 @@
 // MODEL
 
-function isEvenTopLvl(x: int): bool {isEven(x) && !isOdd(x)} // calls isEven and isOdd to force matching for both of them
+function isEvenTopLvlM(x: int): bool {isEven(x) && !isOdd(x)} // calls isEven and isOdd to force matching for both of them
 
 function isOdd(x: int): bool
   decreases(if (x <= 0) then 0 else x) {
@@ -17,7 +17,7 @@ function isEven(x: int): bool
 
 // CANDIDATE
 
-function isEvenTopLvl(x: int): bool {!myIsOdd(x) && myIsEven(x)} // Note: swapped order to cause "pairs" to be mismatched
+function isEvenTopLvl1(x: int): bool {!myIsOdd(x) && myIsEven(x)} // Note: swapped order to cause "pairs" to be mismatched
 
 function myIsOdd(x: int): bool
   decreases(if (x <= 0) then 0 else x) {

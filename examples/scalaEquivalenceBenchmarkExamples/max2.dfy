@@ -2,13 +2,12 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-
-function max(lst: List<int>): int
+function maxM(lst: List<int>): int
   decreases(lst) {
   match lst {
     case Nil             => -999999999999 // represent very small number
     case Cons(hd, Nil)   => hd
-    case Cons(hd, tl)    => if (hd > max(tl)) then hd else max(tl)
+    case Cons(hd, tl)    => if (hd > maxM(tl)) then hd else maxM(tl)
   }
 }
 
@@ -20,31 +19,25 @@ function norm(l: List<int>, f: int): int {
 
 // CANDIDATE 1
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-function max(l: List<int>): int
+function max1(l: List<int>): int
   decreases(l) {
   match l {
     case Nil           => 42
     case Cons(hd, Nil) => hd
-    case Cons(hd, tl)    => if (hd > max(tl)) then hd else max(tl)
+    case Cons(hd, tl)    => if (hd > max1(tl)) then hd else max1(tl)
   }
 }
 
 // CANDIDATE 2
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-function max(l: List<int>): int
+function max2(l: List<int>): int
   decreases(l) {
   match l
     case Nil        => -999999999999 // represent very small number
-    case Cons(h, t) => if (h > max(t)) then h else max(t)
+    case Cons(h, t) => if (h > max2(t)) then h else max2(t)
 }
 
 // CANDIDATE 3
-
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function length<T>(l: List<T>): nat
   decreases(l) {
@@ -54,7 +47,7 @@ function length<T>(l: List<T>): nat
   }
 }
 
-function max(l: List<int>): int
+function max3(l: List<int>): int
   decreases(length(l)) {
   match l
     case Nil => -999999999999 // represent very small number
@@ -63,26 +56,22 @@ function max(l: List<int>): int
         case Nil => hd
         case Cons(hd1, tl1) =>
           assert length(Cons(hd, tl1)) < length(l); // Requires additional assertion to prove termination
-          if (hd > hd1) then max(Cons(hd, tl1)) else max(Cons(hd1, tl1))
+          if (hd > hd1) then max3(Cons(hd, tl1)) else max3(Cons(hd1, tl1))
       }
 }
 
 // CANDIDATE 4
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-function max(l: List<int>): int
+function max4(l: List<int>): int
   decreases(l) {
   match l {
     case Nil          => 0
-    case Cons(hd, tl) => if (hd > max(tl)) then hd else max(tl)
+    case Cons(hd, tl) => if (hd > max4(tl)) then hd else max4(tl)
   }
 }
 
 // CANDIDATE 5
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-function max(l: List<int>): int {-1}
+function max5(l: List<int>): int {-1}
 
 

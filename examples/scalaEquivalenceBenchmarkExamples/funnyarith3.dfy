@@ -5,7 +5,7 @@
 // but also functions transitively appearing in mul and myMul
 // Furthermore, Candidate mySub arguments are swapped
 // Top level
-function eval(x: int, y: int): int {mul(x, y)}
+function evalM(x: int, y: int): int {mul(x, y)}
 
 function mul(x: int, y: int): int
   decreases(if (x <= 0) then -x else x) {
@@ -31,7 +31,7 @@ function sub(x: int, y: int): int
 // CANDIDATE
 
 // Top level
-function eval(x: int, y: int): int { myMul(x, y) }
+function eval1(x: int, y: int): int { myMul(x, y) }
 
 function myAdd(x: int, y: int): int
   decreases(if (x <= 0) then -x else x) {

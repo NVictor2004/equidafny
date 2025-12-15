@@ -9,12 +9,11 @@ function s(a: int, b: int, f: int -> int, acc: int): int
   if (a > b) then acc else s(a + 1, b, f, acc + f(a))
 }
 
-function sigma(f: int -> int, a: int, b: int): int {
+function sigmaM(f: int -> int, a: int, b: int): int {
   s(a, b, f, 0)
 }
 
 // CANDIDATE
-
 
 function sigma_rec(
       sum: int,
@@ -28,7 +27,7 @@ function sigma_rec(
     else 0
   }
 
-function sigma(f: int -> int, a: int, b: int): int
+function sigma1(f: int -> int, a: int, b: int): int
   decreases(if (b == a) then 2 else if (b > a) then 2 + b - a else a - b) {
   if (a > b) then 0 else sigma_rec(0, a, b, f)
 }

@@ -7,7 +7,7 @@ datatype OpKind = Add | Sub | Mul
 // In Candidate.eval, the order of patmat over op is not the same here to ensure
 // a different starting matching strategy from the correct one: add <-> myAdd; sub <-> mySub; mul <-> myMul
 // Top level
-function eval(op: OpKind, x: int, y: int): int {
+function evalM(op: OpKind, x: int, y: int): int {
   match op
   case Add => add(x, y)
   case Sub => sub(x, y)
@@ -37,11 +37,8 @@ function mul(x: int, y: int): int
 
 // CANDIDATE
 
-
-datatype OpKind = Add | Sub | Mul
-
 // Top level
-function eval(op: OpKind, x: int, y: int): int {
+function eval1(op: OpKind, x: int, y: int): int {
   match op
   case Sub => mySub(x, y)
   case Mul => myMul(x, y)

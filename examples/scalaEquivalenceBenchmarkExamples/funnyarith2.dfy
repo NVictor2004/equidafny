@@ -5,7 +5,7 @@ datatype OpKind = Add | Sub | Mul
 
 // As funnyarith1 but the Candidate swaps the arguments of sub
 
-function eval(op: OpKind, x: int, y: int): int {match op
+function evalM(op: OpKind, x: int, y: int): int {match op
   case Add => add(x, y)
   case Sub => sub(x, y)
   case Mul => mul(x, y)
@@ -35,12 +35,11 @@ function mul(x: int, y: int): int
 // CANDIDATE
 
 
-datatype OpKind = Add | Sub | Mul
-
-function eval(op: OpKind, x: int, y: int): int {match op
-  case Sub => mySub(y, x)
-  case Mul => myMul(x, y)
-  case Add => myAdd(x, y)
+function eval1(op: OpKind, x: int, y: int): int {
+  match op
+    case Sub => mySub(y, x)
+    case Mul => myMul(x, y)
+    case Add => myAdd(x, y)
 }
 
 function myAdd(x: int, y: int): int

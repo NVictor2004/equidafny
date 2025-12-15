@@ -4,202 +4,182 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 datatype Option<T> = None | Some(value: T)
 
-function insert<T>(xs: List<T>, leq: (T, T) -> bool, t: T): List<T>
+function insertM<T>(xs: List<T>, leq: (T, T) -> bool, t: T): List<T>
   decreases(xs) {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
       if (leq(t, hd)) then Cons(t, xs)
-      else Cons(hd, insert(tl, leq, t))
+      else Cons(hd, insertM(tl, leq, t))
   }
 }
 
-function loop<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>): List<T>
+function loopM<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>): List<T>
   decreases(if (fuel <= 0) then 0 else fuel) {
   if (fuel <= 0) then xs
   else match next(s) {
     case Some((nxtS, t)) =>
-      loop(nxtS, next, leq, fuel - 1, insert(xs, leq, t))
+      loopM(nxtS, next, leq, fuel - 1, insertM(xs, leq, t))
     case None => xs
   }
 }
 
-function unfoldingSorted<S, T>(start: S,
+function unfoldingSortedM<S, T>(start: S,
                           next: S -> Option<(S, T)>,
                           leq: (T, T) -> bool,
                           max: int): List<T> {
-  loop(start, next, leq, max, Nil)
+  loopM(start, next, leq, max, Nil)
 }
 
 // CANDIDATE 1
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-datatype Option<T> = None | Some(value: T)
-
-function insertSorted<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
+function insertSorted1<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
   decreases(xs) {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
       if (leq(t, hd)) then Cons(t, xs)
-      else Cons(hd, insertSorted(t, leq, tl))
+      else Cons(hd, insertSorted1(t, leq, tl))
   }
 }
 
-function go<State, Elem>(s: State, next: State -> Option<(State, Elem)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
+function go1<State, Elem>(s: State, next: State -> Option<(State, Elem)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
   decreases(if (fuel <= 0) then 0 else fuel) {
   if (fuel <= 0) then xs
   else match next(s) {
     case Some((nxtS, t)) =>
-      go(nxtS, next, leq, insertSorted(t, leq, xs), fuel - 1)
+      go1(nxtS, next, leq, insertSorted1(t, leq, xs), fuel - 1)
     case None => xs
   }
 }
 
-function unfoldingSorted<State, Elem>(start: State,
+function unfoldingSorted1<State, Elem>(start: State,
                                  next: State -> Option<(State, Elem)>,
                                  leq: (Elem, Elem) -> bool,
                                  max: int): List<Elem> {
 
-  go(start, next, leq, Nil, max)
+  go1(start, next, leq, Nil, max)
 }
 
 // CANDIDATE 2
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-datatype Option<T> = None | Some(value: T)
-
-function insertSorted<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
+function insertSorted2<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
   decreases(xs) {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
       if (leq(t, hd)) then Cons(t, xs)
-      else Cons(hd, insertSorted(t, leq, tl))
+      else Cons(hd, insertSorted2(t, leq, tl))
   }
 }
 
-function go<State, Elem>(s: State, next: State -> Option<(Elem, State)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
+function go2<State, Elem>(s: State, next: State -> Option<(Elem, State)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
   decreases(if (fuel <= 0) then 0 else fuel) {
   if (fuel <= 0) then xs
   else match next(s) {
     case Some((t, nxtS)) =>
-      go(nxtS, next, leq, insertSorted(t, leq, xs), fuel - 1)
+      go2(nxtS, next, leq, insertSorted2(t, leq, xs), fuel - 1)
     case None() => xs
   }
 }
 
-function unfoldingSorted<State, Elem>(start: State,
+function unfoldingSorted2<State, Elem>(start: State,
                                  next: State -> Option<(Elem, State)>, // oops, should be State, Elem not Elem, State
                                  leq: (Elem, Elem) -> bool,
                                  max: int): List<Elem> {
-  go(start, next, leq, Nil, max)
+  go2(start, next, leq, Nil, max)
 }
 
 // CANDIDATE 3
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-datatype Option<T> = None | Some(value: T)
-
 // Incorrect, this is an append
-function insertSorted<Elem>(t: Elem, xs: List<Elem>): List<Elem>
+function insertSorted3<Elem>(t: Elem, xs: List<Elem>): List<Elem>
   decreases(xs) {
   match xs {
     case Nil => Cons(t, Nil)
-    case Cons(hd, tl) => Cons(hd, insertSorted(t, tl))
+    case Cons(hd, tl) => Cons(hd, insertSorted3(t, tl))
   }
 }
 
-function go<State, Elem>(s: State, next: State -> Option<(State, Elem)>, xs: List<Elem>, fuel: int): List<Elem>
+function go3<State, Elem>(s: State, next: State -> Option<(State, Elem)>, xs: List<Elem>, fuel: int): List<Elem>
   decreases(if (fuel <= 0) then 0 else fuel) {
   if (fuel <= 0) then xs
   else match next(s) {
     case Some((nxtS, t)) =>
-      go(nxtS, next, insertSorted(t, xs), fuel - 1)
+      go3(nxtS, next, insertSorted3(t, xs), fuel - 1)
     case None => xs
   }
 }
 
-function unfoldingSorted<State, Elem>(start: State,
+function unfoldingSorted3<State, Elem>(start: State,
                                  next: State -> Option<(State, Elem)>,
                                  leq: (Elem, Elem) -> bool,
                                  max: int): List<Elem> {
 
-  go(start, next, Nil, max)
+  go3(start, next, Nil, max)
 }
 
 // CANDIDATE 4
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-datatype Option<T> = None | Some(value: T)
-
-function insertSorted<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
+function insertSorted4<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
   decreases(xs) {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
       if (leq(t, hd)) then Cons(t, xs)
-      else Cons(hd, insertSorted(t, leq, tl))
+      else Cons(hd, insertSorted4(t, leq, tl))
   }
 }
 
-function go<State, Elem>(s: State, next: State -> Option<(State, Elem)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
+function go4<State, Elem>(s: State, next: State -> Option<(State, Elem)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
   decreases(if (fuel <= 0) then 0 else fuel) {
   if (fuel <= 0) then xs
   else match next(s) {
     case Some((nxtS, t)) =>
-      go(nxtS, next, leq, insertSorted(t, leq, xs), fuel - 1)
+      go4(nxtS, next, leq, insertSorted4(t, leq, xs), fuel - 1)
     case None => match xs
       // Incorrect, should stop here
-      case Cons(_, _) => go(s, next, leq, insertSorted(xs.head, leq, xs), fuel - 1)
+      case Cons(_, _) => go4(s, next, leq, insertSorted4(xs.head, leq, xs), fuel - 1)
       case Nil => xs
   }
 }
 
-function unfoldingSorted<State, Elem>(start: State,
+function unfoldingSorted4<State, Elem>(start: State,
                                  next: State -> Option<(State, Elem)>,
                                  leq: (Elem, Elem) -> bool,
                                  max: int): List<Elem> {
 
-  go(start, next, leq, Nil, max)
+  go4(start, next, leq, Nil, max)
 }
 
 // CANDIDATE 5
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-
-datatype Option<T> = None | Some(value: T)
-
-function insertSorted<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
+function insertSorted5<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
   decreases(xs) {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
       if (leq(t, hd)) then Cons(t, xs)
-      else Cons(hd, insertSorted(t, leq, tl))
+      else Cons(hd, insertSorted5(t, leq, tl))
   }
 }
 
-function go<State, Elem>(s: State, next: State -> Option<(State, Elem)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
+function go5<State, Elem>(s: State, next: State -> Option<(State, Elem)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
   decreases(if (fuel <= 0) then 0 else fuel) {
   if (fuel <= 0) then xs
   else match next(s) {
     case Some((nxtS, t)) =>
-      go(nxtS, next, leq, insertSorted(t, leq, xs), fuel - 1)
+      go5(nxtS, next, leq, insertSorted5(t, leq, xs), fuel - 1)
     case None => xs
   }
 }
 
-function unfoldingSorted<State, Elem>(start: State,
+function unfoldingSorted5<State, Elem>(start: State,
                                  next: State -> Option<(State, Elem)>,
                                  leq: (Elem, Elem) -> bool,
                                  max: int): List<Elem> {
 
-  go(start, next, leq, Nil, max)
+  go5(start, next, leq, Nil, max)
 }
 
 
