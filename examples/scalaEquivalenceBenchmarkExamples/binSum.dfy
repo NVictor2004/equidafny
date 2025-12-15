@@ -38,27 +38,34 @@ function listToInt(l: List<bool>): int {
 
 // CANDIDATE
 
-function binSum(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
+function binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
   decreases length(l1) + length(l2)
 {
   match (l1, l2, c)
     case (Nil, Nil, _) => Cons(false, Nil)
-    case (Cons(true, t1), Cons(false, t2), false) => Cons(true, binSum(t1, t2, false))
-    case (Cons(true, t1), Cons(false, t2), true) => Cons(false, binSum(t1, t2, true))
-    case (Cons(false, t1), Cons(true, t2), false) => Cons(true, binSum(t1, t2, false))
-    case (Cons(false, t1), Cons(true, t2), true) => Cons(false, binSum(t1, t2, true))
-    case (Cons(false, t1), Cons(false, t2), false) => Cons(false, binSum(t1, t2, false))
-    case (Cons(false, t1), Cons(false, t2), true) => Cons(true, binSum(t1, t2, false))
-    case (Cons(true, t1), Cons(true, t2), false) => Cons(false, binSum(t1, t2, true))
-    case (Cons(true, t1), Cons(true, t2), true) => Cons(true, binSum(t1, t2, true))
-    case (Cons(true, t1), Nil, true) => Cons(false, binSum(t1, Nil, true))
-    case (Cons(true, t1), Nil, false) => Cons(true, binSum(t1, Nil, false))
-    case (Cons(false, t1), Nil, true) => Cons(true, binSum(t1, Nil, false))
-    case (Cons(false, t1), Nil, false) => Cons(false, binSum(t1, Nil, false))
-    case (Nil, Cons(true, t1), true) => Cons(false, binSum(t1, Nil, true))
-    case (Nil, Cons(true, t1), false) => Cons(true, binSum(t1, Nil, false))
-    case (Nil, Cons(false, t1), true) => Cons(true, binSum(t1, Nil, false))
-    case (Nil, Cons(false, t1), false) => Cons(false, binSum(t1, Nil, false))
+    case (Cons(true, t1), Cons(false, t2), false) => Cons(true, binSum1(t1, t2, false))
+    case (Cons(true, t1), Cons(false, t2), true) => Cons(false, binSum1(t1, t2, true))
+    case (Cons(false, t1), Cons(true, t2), false) => Cons(true, binSum1(t1, t2, false))
+    case (Cons(false, t1), Cons(true, t2), true) => Cons(false, binSum1(t1, t2, true))
+    case (Cons(false, t1), Cons(false, t2), false) => Cons(false, binSum1(t1, t2, false))
+    case (Cons(false, t1), Cons(false, t2), true) => Cons(true, binSum1(t1, t2, false))
+    case (Cons(true, t1), Cons(true, t2), false) => Cons(false, binSum1(t1, t2, true))
+    case (Cons(true, t1), Cons(true, t2), true) => Cons(true, binSum1(t1, t2, true))
+    case (Cons(true, t1), Nil, true) => Cons(false, binSum1(t1, Nil, true))
+    case (Cons(true, t1), Nil, false) => Cons(true, binSum1(t1, Nil, false))
+    case (Cons(false, t1), Nil, true) => Cons(true, binSum1 (t1, Nil, false))
+    case (Cons(false, t1), Nil, false) => Cons(false, binSum1(t1, Nil, false))
+    case (Nil, Cons(true, t1), true) => Cons(false, binSum1(t1, Nil, true))
+    case (Nil, Cons(true, t1), false) => Cons(true, binSum1(t1, Nil, false))
+    case (Nil, Cons(false, t1), true) => Cons(true, binSum1(t1, Nil, false))
+    case (Nil, Cons(false, t1), false) => Cons(false, binSum1(t1, Nil, false))
 }
 
-
+lemma equivalenceBinSum(l1: List<bool>, l2: List<bool>, c: bool)
+  ensures norm(l1, l2, c, binSum1(l1, l2, c)) == norm(l1, l2, c, binSumM(l1, l2, c))
+  decreases length(l1) + length(l2)
+{
+  match (l1, l2)
+    case (Cons(_, t1), Cons(_, t2)) => equivalenceBinSum(t1, t2, c);
+    case _ => 
+}
