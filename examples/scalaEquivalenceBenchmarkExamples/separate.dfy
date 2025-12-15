@@ -29,6 +29,10 @@ function separate1(xs: List<Animal>): (List<Animal>, List<Animal>) {
       (s2, Cons(Goat(id), g2))
   }
 
+lemma equivalenceSeparate1(xs: List<Animal>)
+  ensures (separate1(xs) == separateM(xs))
+{}
+
 // CANDIDATE 2
 
 function separate2(xs: List<Animal>): (List<Animal>, List<Animal>) {
@@ -42,5 +46,10 @@ function separate2(xs: List<Animal>): (List<Animal>, List<Animal>) {
       (s2, g2) // oops, forgets to add goat
   }
 }
+
+// Counter Example: xs = Cons(Goat(7), Nil)
+lemma equivalenceSeparate2(xs: List<Animal>)
+  ensures (separate2(xs) == separateM(xs))
+{} 
 
 

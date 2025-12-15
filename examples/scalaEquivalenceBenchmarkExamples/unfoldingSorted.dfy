@@ -61,6 +61,37 @@ function unfoldingSorted1<State, Elem>(start: State,
   go1(start, next, leq, Nil, max)
 }
 
+lemma equivalenceInsertSorted1<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>)
+  ensures (insertSorted1(t, leq, xs) == insertM(xs, leq, t))
+{}
+
+lemma equivalenceGo1<State, Elem>(s: State,
+                             next: State -> Option<(State, Elem)>,
+                             leq: (Elem, Elem) -> bool,
+                             xs: List<Elem>,
+                             fuel: int)
+  ensures (go1(s, next, leq, xs, fuel) == loopM(s, next, leq, fuel, xs))
+  decreases(if (fuel <= 0) then 0 else fuel)
+{
+  if fuel > 0 {
+    match next(s) {
+      case Some((nxtS, t)) =>
+        equivalenceGo1(nxtS, next, leq, insertSorted1(t, leq, xs), fuel - 1);
+        equivalenceInsertSorted1(t, leq, xs);
+      case None => {}
+    }
+  }
+}
+
+lemma equivalenceUnfoldingSorted1<State, Elem>(start: State,
+                                         next: State -> Option<(State, Elem)>,
+                                         leq: (Elem, Elem) -> bool,
+                                         max: int)
+  ensures (unfoldingSorted1(start, next, leq, max) == unfoldingSortedM(start, next, leq, max))
+{
+  equivalenceGo1(start, next, leq, Nil, max);
+}
+
 // CANDIDATE 2
 
 function insertSorted2<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
@@ -90,6 +121,14 @@ function unfoldingSorted2<State, Elem>(start: State,
   go2(start, next, leq, Nil, max)
 }
 
+// Cannot be proven due to type mismatch in `next` function
+lemma equivalenceUnfoldingSorted2<State, Elem>(start: State,
+                                         next: State -> Option<(Elem, State)>,
+                                         leq: (Elem, Elem) -> bool,
+                                         max: int)
+  // ensures (unfoldingSorted2(start, next, leq, max) == unfoldingSortedM(start, next, leq, max))
+{}
+
 // CANDIDATE 3
 
 // Incorrect, this is an append
@@ -118,6 +157,11 @@ function unfoldingSorted3<State, Elem>(start: State,
 
   go3(start, next, Nil, max)
 }
+
+// Cannot be proven due to incorrectness of insertSorted3
+lemma equivalenceInsertSorted3<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>)
+  ensures (insertSorted3(t, xs) == insertM(xs, leq, t))
+{}
 
 // CANDIDATE 4
 
@@ -152,6 +196,19 @@ function unfoldingSorted4<State, Elem>(start: State,
   go4(start, next, leq, Nil, max)
 }
 
+lemma equivalenceInsertSorted4<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>)
+  ensures (insertSorted4(t, leq, xs) == insertM(xs, leq, t))
+{}
+
+// Cannot be proven due to incorrectness of go4
+lemma equivalenceGo4<State, Elem>(s: State,
+                             next: State -> Option<(State, Elem)>,
+                             leq: (Elem, Elem) -> bool,
+                             xs: List<Elem>,
+                             fuel: int)
+  ensures (go4(s, next, leq, xs, fuel) == loopM(s, next, leq, fuel, xs))
+{}
+
 // CANDIDATE 5
 
 function insertSorted5<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
@@ -182,4 +239,33 @@ function unfoldingSorted5<State, Elem>(start: State,
   go5(start, next, leq, Nil, max)
 }
 
+lemma equivalenceInsertSorted5<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>)
+  ensures (insertSorted5(t, leq, xs) == insertM(xs, leq, t))
+{}
 
+lemma equivalenceGo5<State, Elem>(s: State,
+                             next: State -> Option<(State, Elem)>,
+                             leq: (Elem, Elem) -> bool,
+                             xs: List<Elem>,
+                             fuel: int)
+  ensures (go5(s, next, leq, xs, fuel) == loopM(s, next, leq, fuel, xs))
+  decreases(if (fuel <= 0) then 0 else fuel)
+{
+  if fuel > 0 {
+    match next(s) {
+      case Some((nxtS, t)) =>
+        equivalenceGo5(nxtS, next, leq, insertSorted5(t, leq, xs), fuel - 1);
+        equivalenceInsertSorted5(t, leq, xs);
+      case None => {}
+    }
+  }
+}
+
+lemma equivalenceUnfoldingSorted5<State, Elem>(start: State,
+                                         next: State -> Option<(State, Elem)>,
+                                         leq: (Elem, Elem) -> bool,
+                                         max: int)
+  ensures (unfoldingSorted5(start, next, leq, max) == unfoldingSortedM(start, next, leq, max))
+{
+  equivalenceGo5(start, next, leq, Nil, max);
+}

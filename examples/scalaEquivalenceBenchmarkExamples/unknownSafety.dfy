@@ -90,4 +90,32 @@ function isSorted1(xs: List<int>): bool {
 }
 }
 
+lemma equivalence_add(x: int, y: int)
+  ensures (addM(x, y) == add1(x, y))
+{}
 
+lemma equivalence_isEven(x: int)
+  ensures (isEvenM(x) == isEven1(x))
+{
+  if (x > 1) {
+    equivalence_isOdd(x - 1);
+  }
+}
+
+lemma equivalence_isOdd(x: int)
+  ensures (isOddM(x) == isOdd1(x))
+{
+  if (x > 1) {
+    equivalence_isEven(x - 1);
+  }
+}
+
+lemma equivalence_isEvenTopLvl(x: int)
+  ensures (isEvenTopLvlM(x) == isEvenTopLvl1(x))
+{
+  equivalence_isEven(x);
+}
+
+lemma equivalence_isSorted(xs: List<int>)
+  ensures (isSortedM(xs) == isSorted1(xs))
+{}
