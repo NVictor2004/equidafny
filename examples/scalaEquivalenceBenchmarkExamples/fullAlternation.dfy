@@ -20,42 +20,41 @@ function m2(n: int, mode: bool): int {
     results
 }
 
-lemma m2_equivalence_no_flag(n: int, flag: bool)
-  ensures (m2(n, flag) == m2(n, !flag))
+lemma m2_equivalence_mode(n: int, mode: bool)
+  ensures (m2(n, mode) == m2(n, !mode))
 {
   if n >= 3 {
-    if flag {
-      assert m2(n, flag) == m2(n-2, !flag) + m2(n-2, !flag) + m2(n-3, !flag);
-      assert m2(n, !flag) == m2(n-1, flag) + m2(n-2, flag);
-      m2_equivalence_no_flag(n - 2, flag);
-      m2_equivalence_no_flag(n - 3, flag);
-      m2_equivalence_helper(n - 1, flag);
+    if mode {
+      assert m2(n, mode) == m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode);
+      assert m2(n, !mode) == m2(n-1, mode) + m2(n-2, mode);
+      m2_equivalence_fib(n - 1, mode);
+      assert m2(n, mode) == m2(n-2, !mode) + m2(n-1, mode);
+      m2_equivalence_mode(n - 2, mode);
+      assert m2(n, mode) == m2(n-1, mode) + m2(n-2, mode);
     } else {
-      assert m2(n, flag) == m2(n-1, !flag) + m2(n-2, !flag);
-      assert m2(n, !flag) == m2(n-2, flag) + m2(n-2, flag) + m2(n-3, flag);
-      m2_equivalence_helper(n - 1, flag);
-      m2_equivalence_no_flag(n - 2, flag);
-      m2_equivalence_no_flag(n - 1, flag);
+      assert m2(n, mode) == m2(n-1, !mode) + m2(n-2, !mode);
+      assert m2(n, !mode) == m2(n-2, mode) + m2(n-2, mode) + m2(n-3, mode);
+      m2_equivalence_fib(n - 1, !mode);
+      assert m2(n, !mode) == m2(n-2, mode) + m2(n-1, !mode);
+      m2_equivalence_mode(n - 2, mode);
+      assert m2(n, !mode) == m2(n-1, !mode) + m2(n-2, !mode);
     }
   }
 }
 
-lemma m2_equivalence_helper(n: int, flag: bool)
+lemma m2_equivalence_fib(n: int, mode: bool)
   requires (n >= 2)
-  ensures (m2(n, flag) == m2(n - 1, flag) + m2(n - 2, flag))
+  ensures (m2(n, mode) == m2(n - 1, !mode) + m2(n - 2, !mode))
 {
   if (n >= 3) {
-    if flag {
-      assert m2(n, flag) == m2(n-2, !flag) + m2(n-2, !flag) + m2(n-3, !flag);
-      m2_equivalence_no_flag(n - 2, flag);
-      m2_equivalence_no_flag(n - 3, flag);
-      assert m2(n, flag) == m2(n-2, flag) + m2(n-2, flag) + m2(n-3, flag);
-      m2_equivalence_helper(n - 1, flag);
+    if mode {
+      assert m2(n, mode) == m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode);
+      m2_equivalence_fib(n - 1, mode);
+      assert m2(n, mode) == m2(n-1, mode) + m2(n-2, !mode);
+      m2_equivalence_mode(n - 1, mode);
+      assert m2(n, mode) == m2(n-1, !mode) + m2(n-2, !mode);
     } else {
-      assert m2(n, flag) == m2(n-1, !flag) + m2(n-2, !flag);
-      m2_equivalence_no_flag(n - 2, flag);
-      m2_equivalence_no_flag(n - 1, flag);
-      assert m2(n, flag) == m2(n-1, flag) + m2(n-2, flag);
+      assert m2(n, mode) == m2(n-1, !mode) + m2(n-2, !mode);
     }
   }
 }
@@ -63,8 +62,5 @@ lemma m2_equivalence_helper(n: int, flag: bool)
 lemma equivalence(n: int, flag: bool)
   ensures (m1(n, flag) == m2(n, flag))
 {
-  if n >= 2 {
-    m2_equivalence_helper(n, flag);
-    equivalence(n - 2, !flag);
-  }
+  if n >= 2 { m2_equivalence_fib(n, flag); }
 }
