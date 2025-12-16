@@ -15,3 +15,7 @@ function inlining_2(x: int): int {
   else if (x < 0) then 0
   else x
 }
+
+lemma equivalenceInlining(x: int)
+  ensures (inlining_1(x) == inlining_2(x))
+{}

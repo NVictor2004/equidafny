@@ -18,3 +18,7 @@ function h2(n: int): int {
   else if ((n % 2) == 0) then h2(n-1) + h2(n-2)
   else h2(n-2) + h2(n-2) + h2(n-3)
 }
+
+lemma equivalence(n: int)
+  ensures (h1(n) == h2(n))
+{}

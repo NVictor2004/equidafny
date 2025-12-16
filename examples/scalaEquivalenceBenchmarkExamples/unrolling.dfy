@@ -24,3 +24,7 @@ function fact13_2(n: int): int
   else if (n == 7) then 5040
   else if (n == 8) then 40320
   else n * (n-1) * (n-2) * (n-3) * fact13_2(n-4)}
+
+lemma equivalenceFact13(n: int)
+  ensures (fact13_1(n) == fact13_2(n))
+{}

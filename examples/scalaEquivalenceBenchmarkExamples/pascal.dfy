@@ -18,3 +18,7 @@ function p2(n: int, m: int): int {
   else if (m == 1 || n == 1 || m == n) then 1
   else p2(n-1, m-1) + p2 (n-2 , m-1) + p2 (n-2 , m)
 }
+
+lemma equivalence(n: int, m: int)
+  ensures (p1(n, m) == p2(n, m))
+{}

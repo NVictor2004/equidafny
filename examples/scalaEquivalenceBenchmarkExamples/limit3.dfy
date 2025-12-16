@@ -16,3 +16,14 @@ function limit3_2(n: int): int {
     if (r >= 0) then n + r
     else r
 }
+
+lemma equivalenceLimit3_Helper(n: int)
+  requires n >= 1
+  ensures limit3_2(n) > 0
+{}
+
+lemma equivalenceLimit3(n: int)
+  ensures (limit3_1(n) == limit3_2(n))
+{
+  if n >= 2 { equivalenceLimit3_Helper(n); }
+}

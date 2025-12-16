@@ -59,3 +59,8 @@ function isHeap(a: seq<int>, N: int, i: int) : bool
   else
     true
   }
+
+lemma equivalenceChildrenAreHeaps(a: seq<int>, N: int, i: int)
+  requires (i >= 0 && i < N && N <= |a| && N <= 100000)
+  ensures (childrenAreHeaps(a, N, i) <==> childrenAreHeapsM(a, N, i))
+{}
