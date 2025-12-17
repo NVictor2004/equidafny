@@ -174,9 +174,11 @@ lemma isSortedEquivalence(l: List<int>)
 %
 Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
 
-However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. 
+Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
 
-\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, as seen in \hyperlink{ega}{Student A's solution}, due to the Z3 solver being incomplete.
+
+TODO
 
 \hypertarget{auxiliarylemmas}{
 \subsection{Auxiliary Lemmas for Helper functions}
@@ -216,11 +218,9 @@ lemma isSortedEquivalence(l: List<int>)
 }
 \end{lstlisting}
 
-Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
+However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. 
 
-As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, as seen in \hyperlink{ega}{Student A's solution}, due to the Z3 solver being incomplete.
-
-TODO
+\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
 
 \printbibliography
 \end{document}
