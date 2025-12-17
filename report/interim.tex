@@ -68,7 +68,7 @@ Dafny's program verification heavily relies on Boogie \parencite{10.1007/1180419
 
 To demonstrate Dafny's capabilities in proving program equivalence, consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
 
-\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function]
+\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
 function loop(p: int, l: seq<int>): bool
   decreases l
 {
@@ -105,9 +105,7 @@ For this example, Dafny is able to verify that these functions are equivalent. T
 
 \subsection{Boogie Conversion}
 
-The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long.
-
-TODO: Summarise, Copy and paste some Boogie output here?
+The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function. Finally, the equivalence lemma is translated, taking only around 50 lines of code. 
 
 \section{SymDiff}
 
@@ -159,8 +157,7 @@ function isSortedA(l: List<int>): bool
 }
 \end{lstlisting}
 %
-TODO: Link to reference solution
-This solution is non-equivalent to the reference solution, as it uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
+This solution is non-equivalent to the reference solution detailed in \Cref{lst:isSortedR}, as it uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedA| and \lstinline|isSortedR|]
 lemma isSortedEquivalence(l: List<int>)
   ensures isSortedA(l) == isSortedR(l)
@@ -186,14 +183,10 @@ lemma isSortedEquivalence(l: List<int>)
 %
 Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
 
-Finally, as with \hyperlink{ega}{Student A's solution}, Dafny can sometimes provide incorrect counterexamples for non-equivalent functions. When provided with helper lemmas, the tool will eventually provide a correct counterexample, but not necessarily the simplest one.
-
-As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, as seen in \hyperlink{ega}{Student A's solution}, due to the Z3 solver being incomplete.
-
-TODO
+As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, due to the Z3 solver being incomplete.
 
 \hypertarget{auxiliarylemmas}{
-\subsection{Auxiliary Lemmas for Helper functions}
+\subsection{Equivalence Lemmas for Helper functions}
 }
 
 The example is as follows:
@@ -213,8 +206,7 @@ function isSortedC(l: List<int>): bool
 }
 \end{lstlisting}
 %
-TODO: Link to reference solution
-This example is equivalent to the reference solution, however, Dafny requires a helper lemma to prove this:
+This example is equivalent to the reference solution detailed in \Cref{lst:isSortedR}, however, Dafny requires a helper lemma to prove this:
 \begin{lstlisting}[caption=Equivalence Lemma with Helper for \lstinline|isSortedC| and \lstinline|isSortedR|]
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
   decreases xs
@@ -229,10 +221,12 @@ lemma isSortedEquivalence(l: List<int>)
   case Cons(x, xs) => isSortedEquivalenceHelper(x, xs);
 }
 \end{lstlisting}
+%
+Therefore, for Dafny to verify the equivalence of the main functions \lstinline|isSortedC| and \lstinline|isSortedR|, it must also verify the equivalence of its helper functions \lstinline|chk| and \lstinline|loop|. This means that the user must provide additional helper lemmas to prove the equivalence of these helper functions. The user must also explicitly call these helper lemmas, with the correct arguments, within the main equivalence lemma. 
 
-However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. 
+\textcite{milovancevicProvingDisprovingEquivalence2023} solved the problem of generating these helper lemmas by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
 
-\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+This solves the problem of generating the helper lemmas automatically, however, the user must still explicitly call these helper lemmas, with the correct arguments, within the main equivalence lemma. This will be difficult to do since the helper lemmas will only be generated after the user as finished writing. 
 
 \subsection{Providing Variants to prove termination}
 
@@ -277,9 +271,7 @@ Dafny requires a variant to prove termination, as it proves the equivalence lemm
 
 \subsection{Equivalence of Imperative Methods}
 
-TODO: Add link to specific code listing for isSortedB
-
-Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB| can be converted into the following imperative method:
+Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB|, described in \Cref{lst:isSortedB}, can be converted into the following imperative method:
 \begin{lstlisting}[caption=\lstinline|isSortedBI| Method]
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
@@ -289,7 +281,8 @@ method isSortedBI(l: seq<int>) returns (res: bool)
   while true
     decreases |currentL|
     invariant currentL == l[|l| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |l| - |currentL| ==> (i < |l| - 1 ==> l[i] <= l[i+1])
+    invariant forall i :: 0 <= i < |l| - |currentL| ==>
+                          (i < |l| - 1 ==> l[i] <= l[i+1])
   {
     if |currentL| == 0 {
         return true;
@@ -313,14 +306,13 @@ These specifications can be very difficult to write correctly. Additionally, jus
 
 \subsubsection{Proving Equivalence of Imperative Methods using Product Programs}
 
-TODO: Add reference for product programs, add link to specific code listing for isSortedR
+As described by \textcite{lahiriDifferentialAssertionChecking2013}, one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
-As described by ..., one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
-
-For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB|. Firstly, the imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|:
+For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function versions can be found in \Cref{lst:isSortedR,lst:isSortedB} respectively). First, the imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|:
 \begin{lstlisting}[caption=\lstinline|isSortedRI| Method with \lstinline|loopI| Helper Method]
 method loopI(p: int, l: seq<int>) returns (res: bool)
-  ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
+  ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) &&
+                    (|l| > 0 ==> p <= l[0]))
 {
   var currentP := p;
   var currentL := l;
@@ -328,7 +320,8 @@ method loopI(p: int, l: seq<int>) returns (res: bool)
   while true
     decreases |currentL|
     invariant currentL == l[|l| - |currentL| .. ]
-    invariant currentP == if |l| == |currentL| then p else l[|l| - |currentL| - 1]
+    invariant currentP == if |l| == |currentL| then p
+                          else l[|l| - |currentL| - 1]
     invariant |l| > |currentL| ==> p <= l[0]
     invariant forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1]
   {
@@ -361,7 +354,10 @@ method isSortedRI(l: seq<int>) returns (res: bool)
 %
 These methods can be used to construct a product program as follows, using the definition of \lstinline|loopI| given above:
 \begin{lstlisting}[caption=Product Program for \lstinline|isSortedBI| and \lstinline|isSortedRI| using \lstinline|loopI|]
-method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool, bres: bool)
+method isSortedBI_RI_Equivalence(
+  lb: seq<int>,
+  lr: seq<int>
+) returns (rres: bool, bres: bool)
   requires lb == lr
   ensures rres == bres
 {
@@ -385,7 +381,8 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
   while true
     decreases |currentL|
     invariant currentL == lb[|lb| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |lb| - |currentL| ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
+    invariant forall i :: 0 <= i < |lb| - |currentL| ==>
+                          (i < |lb| - 1 ==> lb[i] <= lb[i+1])
   {
     if |currentL| == 0 {
       bout := true;
