@@ -1,3 +1,5 @@
+// Based on examples from Dragana's paper
+
 // Defining isSortedR
 // This is the reference solution
 // Requires a clause to prove termination
