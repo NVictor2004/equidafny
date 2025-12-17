@@ -101,7 +101,7 @@ For this example, Dafny is able to verify that these functions are equivalent. T
 
 \subsection{Boogie Conversion}
 
-The above examples can be converted into the corresponding Boogie program. This results in a file almost 3500 lines long.
+The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long.
 
 TODO: Summarise, Copy and paste some Boogie output here?
 
@@ -229,6 +229,87 @@ lemma isSortedEquivalence(l: List<int>)
 However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additional helper lemmas to be provided to prove the equivalence of helper functions. It also requires that these helper lemmas are explicitly called within the main equivalence lemma. 
 
 \textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+
+\subsection{Providing Variants to prove termination}
+
+Here, I provide two implementations of a function to find the maximum element in a sequence of integers. The first is as follows:
+\begin{lstlisting}
+function maxR(l: seq<int>): int
+{
+  if |l| == 0 then -1
+  else if |l| == 1 then l[0]
+  else
+    var m := maxR(l[1..]);
+    if l[0] > m then l[0] else m
+}
+\end{lstlisting}
+%
+The second is as follows:
+\begin{lstlisting}
+function maxC(l: seq<int>): int
+  decreases |l|
+{
+  if |l| == 0 then -1
+  else if |l| == 1 then l[0]
+  else
+    var a := l[0];
+    var b := l[1];
+    if a > b then
+      maxC([l[0]] + l[2..])
+    else
+      maxC(l[1..])
+}
+\end{lstlisting}
+%
+The main difficulty with proving the equivalence of these two functions is that they approach the problem in opposite ways: the first function processes the list from the end to the start, while the second processes it from the start to the end. However, despite this, Dafny is able to prove equivalence with almost no help from the user:
+\begin{lstlisting}
+lemma maxEquivalence(l: seq<int>)
+  ensures maxC(l) == maxR(l)
+  decreases |l|
+{}
+\end{lstlisting}
+%
+Dafny requires a variant to prove termination, as it proves the equivalence lemma through induction. However, in this case, it is unable to infer this variant by itself, therefore, the user must provide it.
+
+\subsection{Equivalence of Imperative Methods}
+
+TODO: Add link to specific code listing
+
+Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB| can be converted into the following imperative method:
+\begin{lstlisting}
+method isSortedBI(l: seq<int>) returns (res: bool)
+  ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
+{
+  var currentL := l;
+
+  while true
+    decreases |currentL|
+    invariant currentL == l[|l| - |currentL| .. ]
+    invariant forall i :: 0 <= i < |l| - |currentL| ==> (i < |l| - 1 ==> l[i] <= l[i+1])
+  {
+    if |currentL| == 0 {
+        return true;
+    } else if |currentL| == 1 {
+        currentL := [];
+    } else {
+        var x := currentL[0];
+        var y := currentL[1];
+        if x > y {
+            return false;
+        }
+        currentL := currentL[1..];
+    }
+  }
+}
+\end{lstlisting}
+%
+Proving the equivalence of imperative methods cannot be achieved directly through lemmas in Dafny; only functions can be called within lemmas as, by definition, Dafny functions are pure while Dafny methods are allowed to have side effects. Therefore, to prove equivalence, we must prove postconditions for both methods, and then state that these postconditions are equivalent. In turn, as in the above example, the user will often need to provide loop invariants and variants to help Dafny prove these postconditions.
+
+These specifications can be very difficult to write correctly. Additionally, just proving that the methods' postconditions are equivalent is not sufficient to prove the equivalence of the methods themselves, as the postconditions may not fully capture the behaviour of the methods. 
+
+\subsubsection{Proving Equivalence of Imperative Methods using Product Programs}
+
+
 
 \printbibliography
 \end{document}
