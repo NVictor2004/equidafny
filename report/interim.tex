@@ -24,6 +24,7 @@
 
 % Hyperlink settings
 \usepackage{hyperref}
+\usepackage{cleveref}
 % Define colours
 \definecolor[named]{ACMPurple}{cmyk}{0.55,1,0,0.15}
 \definecolor[named]{ACMDarkBlue}{cmyk}{1,0.58,0,0.21}
@@ -44,7 +45,6 @@
 \maketitle
 \tableofcontents
 \lstlistoflistings
-\newpage
 
 % Using induction on the recursive structure of the functions
 % when functions are not recursive, we directly encode equivalence lemmas into SMT solver formulas. 
@@ -84,7 +84,7 @@ function isSortedR(l: seq<int>): bool
 \end{lstlisting}
 %
 The second is as follows:
-\begin{lstlisting}[caption=\lstinline|isSortedB| Function]
+\begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
 function isSortedB(l: seq<int>): bool
   decreases |l|
 {
@@ -409,6 +409,38 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
 \end{lstlisting}
 %
 The specification of this product program ensures that, since Dafny is able to verify this method, \lstinline|isSortedBI| and \lstinline|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \lstinline|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
+
+\subsubsection{Equivalence of Methods and Functions}
+
+A similar problem to that discussed above is proving the equivalence of a method and a function. In this case, the user does not need to write a postcondition for the method, since the function can be called directly within the specification. The user still needs to provide loop invariants and variants for the method, however, these do not need to be as complicated as those detailed above, as again, they can be defined in terms of the function. For example, the function \lstinline|isSortedB| defined in \Cref{lst:isSortedB} can be proven to be equivalent with the following imperative method:
+\begin{lstlisting}[caption=\lstinline|isSortedBI| Method with simplified specifications]
+method isSortedBI(l: seq<int>) returns (res: bool)
+  ensures res == isSortedB(l)
+{
+  var currentL := l;
+
+  while true
+    decreases |currentL|
+    invariant isSortedB(currentL) == isSortedB(l)
+  {
+    if |currentL| == 0 {
+        return true;
+    } else if |currentL| == 1 {
+        currentL := [];
+    } else {
+        var x := currentL[0];
+        var y := currentL[1];
+        if x > y {
+            return false;
+        }
+        currentL := currentL[1..];
+    }
+  }
+}
+\end{lstlisting}
+%
+Thus, the necessary specifications can be greatly simplified if they are defined in terms of the function the method is being compared to.
+
 
 \printbibliography
 \end{document}
