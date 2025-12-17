@@ -273,7 +273,7 @@ Dafny requires a variant to prove termination, as it proves the equivalence lemm
 
 \subsection{Equivalence of Imperative Methods}
 
-TODO: Add link to specific code listing
+TODO: Add link to specific code listing for isSortedB
 
 Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB| can be converted into the following imperative method:
 \begin{lstlisting}
@@ -309,6 +309,102 @@ These specifications can be very difficult to write correctly. Additionally, jus
 
 \subsubsection{Proving Equivalence of Imperative Methods using Product Programs}
 
+TODO: Add reference for product programs, add link to specific code listing for isSortedR
+
+As described by ..., one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
+
+For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB|. Firstly, the imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|:
+\begin{lstlisting}
+method loopI(p: int, l: seq<int>) returns (res: bool)
+  ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
+{
+  var currentP := p;
+  var currentL := l;
+
+  while true
+    decreases |currentL|
+    invariant currentL == l[|l| - |currentL| .. ]
+    invariant currentP == if |l| == |currentL| then p else l[|l| - |currentL| - 1]
+    invariant |l| > |currentL| ==> p <= l[0]
+    invariant forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1]
+  {
+    if |currentL| == 0 {
+        return true;
+    } else {
+        var x := currentL[0];
+        if currentP > x {
+            return false;
+        }
+        currentP := x;
+        currentL := currentL[1..];
+    }
+  }
+}
+
+method isSortedRI(l: seq<int>) returns (res: bool)
+  ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
+{
+  if |l| == 0 {
+    return true;
+  } else {
+    var x := l[0];
+    var xs := l[1..];
+    var result := loopI(x, xs);
+    return result;
+  }
+}
+\end{lstlisting}
+%
+These methods can be used to construct a product program as follows, using the definition of \lstinline|loopI| given above:
+\begin{lstlisting}
+method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool, bres: bool)
+  requires lb == lr
+  ensures rres == bres
+{
+  // Defining output variables
+  var rout: bool;
+  var bout: bool;
+
+  // Computing isSortedRI
+  if |lr| == 0 {
+    rout := true;
+  } else {
+    var x := lr[0];
+    var xs := lr[1..];
+    var result := loopI(x, xs);
+    rout := result;
+  }
+
+  // Computing isSortedBI
+  var currentL := lb;
+
+  while true
+    decreases |currentL|
+    invariant currentL == lb[|lb| - |currentL| .. ]
+    invariant forall i :: 0 <= i < |lb| - |currentL| ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
+  {
+    if |currentL| == 0 {
+      bout := true;
+      break;
+    } else if |currentL| == 1 {
+      currentL := [];
+    } else {
+      var x := currentL[0];
+      var y := currentL[1];
+      if x > y {
+        bout := false;
+        break;
+      }
+      currentL := currentL[1..];
+    }
+  }
+
+  // Returning the results
+  return rout, bout;
+}
+\end{lstlisting}
+%
+The specification of this product program ensures that, since Dafny is able to verify this method, \lstinline|isSortedBI| and \lstinline|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \lstinline|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
 
 
 \printbibliography
