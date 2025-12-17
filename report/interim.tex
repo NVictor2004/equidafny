@@ -20,6 +20,7 @@
     basicstyle=\ttfamily\footnotesize
 }
 \lstset{style=codestyle}
+\lstset{captionpos=b}
 
 % Hyperlink settings
 \usepackage{hyperref}
@@ -41,6 +42,9 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
+\lstlistoflistings
+\newpage
 
 % Using induction on the recursive structure of the functions
 % when functions are not recursive, we directly encode equivalence lemmas into SMT solver formulas. 
@@ -64,7 +68,7 @@ Dafny's program verification heavily relies on Boogie \parencite{10.1007/1180419
 
 To demonstrate Dafny's capabilities in proving program equivalence, consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function]
 function loop(p: int, l: seq<int>): bool
   decreases l
 {
@@ -80,7 +84,7 @@ function isSortedR(l: seq<int>): bool
 \end{lstlisting}
 %
 The second is as follows:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|isSortedB| Function]
 function isSortedB(l: seq<int>): bool
   decreases |l|
 {
@@ -91,7 +95,7 @@ function isSortedB(l: seq<int>): bool
 \end{lstlisting}
 %
 To prove the equivalence of these two functions, we can define the following lemma:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedR| and \lstinline|isSortedB|]
 lemma isSortedEquivalence(l: seq<int>)
   ensures isSortedR(l) == isSortedB(l)
 {}
@@ -123,7 +127,7 @@ In this section, demonstrate Dafny's weaknesses.
 \subsection{Necessary Datastructures}
 
 I will require the following definition of a list data structure:
-\begin{lstlisting}
+\begin{lstlisting}[caption=List Data Structure]
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
@@ -132,7 +136,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 }
 
 An example is as follows:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|isSortedA| Function]
 function leq(cur: int, next: int): bool
 {
   cur < next
@@ -157,14 +161,14 @@ function isSortedA(l: List<int>): bool
 %
 TODO: Link to reference solution
 This solution is non-equivalent to the reference solution, as it uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedA| and \lstinline|isSortedR|]
 lemma isSortedEquivalence(l: List<int>)
   ensures isSortedA(l) == isSortedR(l)
 {}
 \end{lstlisting}
 %
 However, it incorrectly provides \lstinline|Cons(-38, Cons(7681, Nil))| as a counterexample. I extended the above proof to include and use a helper lemma, as shown below:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Equivalence Lemma with Helper for \lstinline|isSortedA| and \lstinline|isSortedR|]
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
   decreases xs
   ensures iter(Cons(x, xs)) == loop(x, xs)
@@ -193,7 +197,7 @@ TODO
 }
 
 The example is as follows:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|isSortedC| Function]
 function chk(l: List<int>, p: int, a: bool): bool
 {
   match l
@@ -211,7 +215,7 @@ function isSortedC(l: List<int>): bool
 %
 TODO: Link to reference solution
 This example is equivalent to the reference solution, however, Dafny requires a helper lemma to prove this:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Equivalence Lemma with Helper for \lstinline|isSortedC| and \lstinline|isSortedR|]
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
   decreases xs
   ensures chk(xs, x, true) == loop(x, xs)
@@ -233,7 +237,7 @@ However, as with \hyperlink{egc}{Student C's solution}, Dafny requires additiona
 \subsection{Providing Variants to prove termination}
 
 Here, I provide two implementations of a function to find the maximum element in a sequence of integers. The first is as follows:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|maxR| Function]
 function maxR(l: seq<int>): int
 {
   if |l| == 0 then -1
@@ -245,7 +249,7 @@ function maxR(l: seq<int>): int
 \end{lstlisting}
 %
 The second is as follows:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|maxC| Function]
 function maxC(l: seq<int>): int
   decreases |l|
 {
@@ -262,7 +266,7 @@ function maxC(l: seq<int>): int
 \end{lstlisting}
 %
 The main difficulty with proving the equivalence of these two functions is that they approach the problem in opposite ways: the first function processes the list from the end to the start, while the second processes it from the start to the end. However, despite this, Dafny is able to prove equivalence with almost no help from the user:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|maxC| and \lstinline|maxR|]
 lemma maxEquivalence(l: seq<int>)
   ensures maxC(l) == maxR(l)
   decreases |l|
@@ -276,7 +280,7 @@ Dafny requires a variant to prove termination, as it proves the equivalence lemm
 TODO: Add link to specific code listing for isSortedB
 
 Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB| can be converted into the following imperative method:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|isSortedBI| Method]
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
@@ -314,7 +318,7 @@ TODO: Add reference for product programs, add link to specific code listing for 
 As described by ..., one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
 For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB|. Firstly, the imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|:
-\begin{lstlisting}
+\begin{lstlisting}[caption=\lstinline|isSortedRI| Method with \lstinline|loopI| Helper Method]
 method loopI(p: int, l: seq<int>) returns (res: bool)
   ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
 {
@@ -356,7 +360,7 @@ method isSortedRI(l: seq<int>) returns (res: bool)
 \end{lstlisting}
 %
 These methods can be used to construct a product program as follows, using the definition of \lstinline|loopI| given above:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Product Program for \lstinline|isSortedBI| and \lstinline|isSortedRI| using \lstinline|loopI|]
 method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool, bres: bool)
   requires lb == lr
   ensures rres == bres
@@ -405,7 +409,6 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
 \end{lstlisting}
 %
 The specification of this product program ensures that, since Dafny is able to verify this method, \lstinline|isSortedBI| and \lstinline|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \lstinline|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
-
 
 \printbibliography
 \end{document}
