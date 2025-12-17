@@ -1,5 +1,5 @@
 // **********************
-//   Booelean Formulae
+//   Boolean Formulae
 // **********************
 //
 // Demonstrates limitations of Defny wrt to termination checks

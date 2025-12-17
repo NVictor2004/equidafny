@@ -28,7 +28,6 @@ function maxR(l: seq<int>): int
 // Defining maxC
 function maxC(l: seq<int>): int
   decreases |l|
-  ensures maxC(l) == maxR(l)
 {
   if |l| == 0 then -1
   else if |l| == 1 then l[0]
@@ -43,6 +42,7 @@ function maxC(l: seq<int>): int
 
 lemma maxEquivalence(l: seq<int>)
   ensures maxC(l) == maxR(l)
+  decreases |l|
 {}
 
 // Defining maxT
@@ -60,13 +60,12 @@ function maxT(l: seq<int>): int
 }
 
 lemma maxEquivalence2(l: seq<int>)
-  ensures maxT(l) == maxC(l)
+  ensures maxT(l) == maxR(l)
 {
-  if |l| == 0 || |l| == 1 {}
-  else { maxEquivalence2Helper(l[0], l[1..]); }
+  if |l| >= 1 { maxEquivalence2Helper(l[0], l[1..]); }
 }
 
 lemma maxEquivalence2Helper(a: int, b: seq<int>)
-  ensures foldLeft(bigger, a, b) == maxC([a] + b)
+  ensures foldLeft(bigger, a, b) == maxR([a] + b)
   decreases |b|
 {}
