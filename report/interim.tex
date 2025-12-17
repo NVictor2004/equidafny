@@ -49,6 +49,11 @@
 % pipeline phases. This series of transformations results in verification conditions that are then sent
 % to an SMT solver.
 
+\section{Abstract}
+
+TODO Need to say what the project aims are, 3 paragraphs.
+Why should we care about program equivalence?
+
 \section{Dafny}
 
 As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants, to allow Dafny's program verifier to automatically prove that a given program matches its specification. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
@@ -98,17 +103,20 @@ For this example, Dafny is able to verify that these functions are equivalent. T
 
 The above examples can be converted into the corresponding Boogie program. This results in a file almost 3500 lines long.
 
-TODO: Copy and paste some Boogie output here?
+TODO: Summarise, Copy and paste some Boogie output here?
 
 \section{SymDiff}
 
-% add a section on Coq
+TODO Why do I care about SymDiff?
 
 SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
 
 SymDiff can also be used to prove program equivalence however, as described in \textcite{lahiriAutomatedDifferentialProgramb}, it can also be used in Approximate computing, to trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focusses on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
 
 \section{Dafny's Weaknesses}
+
+TODO: Weaknesses is too general, weaknesses in what way? As a programming language design? Weaknesses as a software design?
+TODO Give a summary of weaknesses before showing examples.
 
 In this section, demonstrate Dafny's weaknesses. 
 
