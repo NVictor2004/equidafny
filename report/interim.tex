@@ -489,6 +489,58 @@ lemma equivalenceSub(x: int, y: int)
 {}
 \end{lstlisting}
 %
+In addition, if at least one of the functions requires a lemma or an assertion to prove termination, this must be copied into the equivalence lemma as well. For example, here are two implementations of a function to reduce a list down to its unique elements:
+\begin{lstlisting}[caption=\lstinline|solution_2| and \lstinline|uniq2| Functions]
+function solution_2(lst: List<int>): List<int>
+  decreases(length(lst)) {
+  match lst {
+    case Nil        => Nil
+    case Cons(hd, tl) =>
+      lemM(hd, tl);
+      Cons(hd, solution_2(drop_2(tl, hd)))
+  }
+}
+
+function uniq2(lst: List<int>): List<int>
+  decreases(length(lst)) {
+  match lst {
+    case Nil => Nil
+    case Cons(hd, tl) =>
+      lem2(hd, tl);
+      Cons(hd, uniq2(drop(hd, tl)))
+  }
+}
+\end{lstlisting}
+%
+The definitions of \lstinline|drop_2| and \lstinline|drop| are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|drop_2| and \lstinline|drop|]
+lemma equivalenceDrop(a: int, lst: List<int>)
+  ensures (drop(a, lst) == drop_2(lst, a))
+{}
+\end{lstlisting}
+%
+\lstinline|solution_2| and \lstinline|uniq2| also use helper lemmas \lstinline|lemM| and \lstinline|lem2| respectively to prove termination. These lemmas are equivalent, so I will only provide \lstinline|lem2|:
+\begin{lstlisting}[caption=\lstinline|lem2| Helper Lemma]
+lemma lem2(a: int, lst: List<int>)
+  ensures length(drop(a, lst)) <= length(lst)
+{}
+\end{lstlisting}
+%
+Using \lstinline|equivalenceDrop|, Dafny is able to prove the equivalence of \lstinline|solution_2| and \lstinline|uniq2|, but only if the user explicitly calls \lstinline|lem2|:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|solution_2| and \lstinline|uniq2|]
+lemma equivalence_solution2_uniq2(lst: List<int>)
+  ensures (solution_2(lst) == uniq2(lst))
+  decreases(length(lst))
+{
+  match lst
+    case Nil => {}
+    case Cons(hd, tl) =>
+      lem2(hd, tl);
+      equivalenceDrop(hd, tl);
+}
+\end{lstlisting}
+%
+Thus, if lemmas or assertions are needed to prove termination of at least one of the functions being compared, the user must explicitly copy them into the equivalence lemma as well. 
 
 \subsection{Equivalence of Imperative Methods}
 
