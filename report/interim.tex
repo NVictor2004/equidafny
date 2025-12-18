@@ -271,6 +271,59 @@ Dafny must verify that \lstinline|pos - 1| is a valid index for \lstinline|adjLi
 
 Explicitly calling these helper lemmas, especially with the correct arguments and under the correct conditions, will be difficult to do if we use the process described above by \textcite{milovancevicProvingDisprovingEquivalence2023}, since the helper lemmas will only be generated after the user has finished writing the main equivalence lemma. 
 
+\subsection{Generating Auxiliary Lemmas}
+
+Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two equivalent functions \lstinline|limit3_1| and \lstinline|limit3_2|:
+\begin{lstlisting}[caption=\lstinline|limit3_1| and \lstinline|limit3_2| Functions]
+function limit3_1(n: int): int {
+  if (n <= 1) then n
+  else n + limit3_1(n-1)
+}
+
+function limit3_2(n: int): int {
+  if (n <= 1) then n
+  else
+    var r := limit3_2(n-1);
+    if (r >= 0) then n + r
+    else r
+}
+\end{lstlisting}
+%
+The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|limit3_2| function, where it will either output \lstinline|n + r| or \lstinline|r|, depending on whether \lstinline|r >= 0|. However, we can prove that \lstinline|r| is always strictly positive in this case, thus \lstinline|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
+\begin{lstlisting}[caption=Auxiliary and Equivalence Lemmas for the \lstinline|limit3_1| and \lstinline|limit3_2| Functions]
+lemma equivalenceLimit3_Helper(n: int)
+  requires n >= 1
+  ensures limit3_2(n) > 0
+{}
+
+lemma equivalenceLimit3(n: int)
+  ensures (limit3_1(n) == limit3_2(n))
+{
+  if n >= 2 { equivalenceLimit3_Helper(n); }
+}
+\end{lstlisting}
+%
+Therefore, Dafny is able to prove the equivalence of these two functions, but only after the user provides a helper lemma that would be difficult for Dafny to automatically generate. Here is another, more complicated example. Consider the following two equivalent functions \lstinline|m1| and \lstinline|m2|:
+\begin{lstlisting}[caption=\lstinline|m1| and \lstinline|m2| Functions]
+function m1(n: int, flag: bool): int {
+  if (n < 1) then 0
+  else if (n == 1) then 1
+  else m1(n - 1, !flag) + m1(n - 2, !flag)
+}
+
+function m2(n: int, mode: bool): int {
+  if (n < 1) then 0
+  else if (n == 1 || n == 2) then 1
+  else
+    var results := if (mode) then m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode) else m2(n-1, !mode) + m2(n-2, !mode);
+    results
+}
+\end{lstlisting}
+%
+The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|m2| function, where it will output one of two different expressions depending on the value of \lstinline|mode|. However, we can prove that \lstinline|m2| outputs the fibonacci sequence, and outputs the same values regardless of the value of \lstinline|mode|. Dafny requires some help to realise this:
+\begin{lstlisting}[caption=Auxiliary Lemmas for the \lstinline|m2| Function]
+\end{lstlisting}
+
 \subsection{Providing Variants to prove termination}
 
 Here, I provide two implementations of a function to find the maximum element in a sequence of integers. The first is as follows:
