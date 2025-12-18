@@ -55,16 +55,19 @@
 
 \section{Abstract}
 
-TODO Need to say what the project aims are, 3 paragraphs.
-Why should we care about program equivalence?
+Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. If this can be proven, then these programs are described as equivalent. Program equivalence is a very important concept in Computer Science, with applications in a variety of fields. University lecturers can apply this to verify that student submissions to programming courseworks are equivalent to reference solutions. Compiler developers use this to ensure that optimisations do not change a program's behaviour. 
 
-\section{Dafny}
+However, proving Program Equivalence is a very difficult task, especially since the problem is undecidable in general. Therefore, a variety of tools are being developed to help prove equivalence automatically. Using these tools makes proving equivalence significantly easier for developers, especially when working with large codebases. These tools can also generate counterexamples when equivalence cannot be proven, making debugging much easier. 
+
+This project will focus on Dafny, a popular program verifier, under active development by Amazon. I will explore Dafny's capabilities and limitations in proving program equivalence. As detailed below, there are many cases where Dafny requires user assistance to complete its proofs. The aim of this project is to build techniques to allow Dafny to prove equivalence fully automatically, and to evaluate the new system against state-of-the-art tools.
+
+\section{Introduction to Dafny}
 
 As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants, to allow Dafny's program verifier to automatically prove that a given program matches its specification. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
 
 Dafny's program verification heavily relies on Boogie \parencite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \parencite{10.1007/978-3-540-78800-3_24}. 
 
-\subsection{Dafny Example}
+\subsection{Dafny Demonstration}
 
 To demonstrate Dafny's capabilities in proving program equivalence, consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
 
@@ -103,24 +106,21 @@ lemma isSortedEquivalence(l: seq<int>)
 %
 For this example, Dafny is able to verify that these functions are equivalent. Therefore, Dafny is capable of proving the equivalence of simple functions, with very little effort on the user's part.
 
-\subsection{Boogie Conversion}
+\subsection{Conversion to Boogie}
 
 The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function. Finally, the equivalence lemma is translated, taking only around 50 lines of code. 
 
-\section{SymDiff}
+\subsection{Alterative to Dafny: SymDiff}
 
-TODO Why do I care about SymDiff?
+An alterative to Dafny for proving program equivalence is SymDiff. SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
 
-SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
+SymDiff can also be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focusses on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
 
-SymDiff can also be used to prove program equivalence however, as described in \textcite{lahiriAutomatedDifferentialProgramb}, it can also be used in Approximate computing, to trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focusses on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
+\section{Dafny's Limitations in Proving Program Equivalence}
 
-\section{Dafny's Weaknesses}
+Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically, however, there are many cases where the user needs to provide assistance. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence.
 
-TODO: Weaknesses is too general, weaknesses in what way? As a programming language design? Weaknesses as a software design?
 TODO Give a summary of weaknesses before showing examples.
-
-In this section, demonstrate Dafny's weaknesses. 
 
 \subsection{Necessary Datastructures}
 
@@ -129,9 +129,7 @@ I will require the following definition of a list data structure:
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
-\hypertarget{counterexamples}{
 \subsection{Incorrect Counterexamples}
-}
 
 An example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedA| Function]
@@ -185,9 +183,7 @@ Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| a
 
 As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, due to the Z3 solver being incomplete.
 
-\hypertarget{auxiliarylemmas}{
 \subsection{Equivalence Lemmas for Helper functions}
-}
 
 The example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedC| Function]
