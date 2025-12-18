@@ -20,47 +20,34 @@ function m2(n: int, mode: bool): int {
     results
 }
 
-lemma m2_equivalence_mode(n: int, mode: bool)
-  ensures (m2(n, mode) == m2(n, !mode))
+lemma m2_equivalence_mode(n: int)
+  ensures m2(n, true) == m2(n, false)
 {
   if n >= 3 {
-    if mode {
-      assert m2(n, mode) == m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode);
-      assert m2(n, !mode) == m2(n-1, mode) + m2(n-2, mode);
-      m2_equivalence_fib(n - 1, mode);
-      assert m2(n, mode) == m2(n-2, !mode) + m2(n-1, mode);
-      m2_equivalence_mode(n - 2, mode);
-      assert m2(n, mode) == m2(n-1, mode) + m2(n-2, mode);
-    } else {
-      assert m2(n, mode) == m2(n-1, !mode) + m2(n-2, !mode);
-      assert m2(n, !mode) == m2(n-2, mode) + m2(n-2, mode) + m2(n-3, mode);
-      m2_equivalence_fib(n - 1, !mode);
-      assert m2(n, !mode) == m2(n-2, mode) + m2(n-1, !mode);
-      m2_equivalence_mode(n - 2, mode);
-      assert m2(n, !mode) == m2(n-1, !mode) + m2(n-2, !mode);
-    }
+      assert m2(n, true) == m2(n-2, false) + m2(n-2, false) + m2(n-3, false);
+      assert m2(n, false) == m2(n-1, true) + m2(n-2, true);
+      m2_equivalence_fib(n - 1);
+      assert m2(n, true) == m2(n-2, false) + m2(n-1, true);
+      m2_equivalence_mode(n - 2);
+      assert m2(n, true) == m2(n-1, true) + m2(n-2, true);
   }
 }
 
-lemma m2_equivalence_fib(n: int, mode: bool)
-  requires (n >= 2)
-  ensures (m2(n, mode) == m2(n - 1, !mode) + m2(n - 2, !mode))
+lemma m2_equivalence_fib(n: int)
+  requires n >= 2
+  ensures m2(n, true) == m2(n - 1, false) + m2(n - 2, false)
 {
-  if (n >= 3) {
-    if mode {
-      assert m2(n, mode) == m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode);
-      m2_equivalence_fib(n - 1, mode);
-      assert m2(n, mode) == m2(n-1, mode) + m2(n-2, !mode);
-      m2_equivalence_mode(n - 1, mode);
-      assert m2(n, mode) == m2(n-1, !mode) + m2(n-2, !mode);
-    } else {
-      assert m2(n, mode) == m2(n-1, !mode) + m2(n-2, !mode);
-    }
+  if n >= 3 {
+      assert m2(n, true) == m2(n-2, false) + m2(n-2, false) + m2(n-3, false);
+      m2_equivalence_fib(n - 1);
+      assert m2(n, true) == m2(n-1, true) + m2(n-2, false);
+      m2_equivalence_mode(n - 1);
+      assert m2(n, true) == m2(n-1, false) + m2(n-2, false);
   }
 }
 
 lemma equivalence(n: int, flag: bool)
-  ensures (m1(n, flag) == m2(n, flag))
+  ensures m1(n, flag) == m2(n, flag)
 {
-  if n >= 2 { m2_equivalence_fib(n, flag); }
+  if n >= 2 { m2_equivalence_fib(n); }
 }
