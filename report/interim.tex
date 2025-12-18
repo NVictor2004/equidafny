@@ -315,14 +315,53 @@ function m2(n: int, mode: bool): int {
   if (n < 1) then 0
   else if (n == 1 || n == 2) then 1
   else
-    var results := if (mode) then m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode) else m2(n-1, !mode) + m2(n-2, !mode);
+    var results := if (mode) then
+                      m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode) 
+                   else
+                      m2(n-1, !mode) + m2(n-2, !mode);
     results
 }
 \end{lstlisting}
 %
 The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|m2| function, where it will output one of two different expressions depending on the value of \lstinline|mode|. However, we can prove that \lstinline|m2| outputs the fibonacci sequence, and outputs the same values regardless of the value of \lstinline|mode|. Dafny requires some help to realise this:
-\begin{lstlisting}[caption=Auxiliary Lemmas for the \lstinline|m2| Function]
+\begin{lstlisting}[caption=Auxiliary Lemmas for \lstinline|m2|]
+lemma m2_equivalence_mode(n: int)
+  ensures m2(n, true) == m2(n, false)
+{
+  if n >= 3 {
+      assert m2(n, true) == m2(n-2, false) + m2(n-2, false) + m2(n-3, false);
+      assert m2(n, false) == m2(n-1, true) + m2(n-2, true);
+      m2_equivalence_fib(n - 1);
+      assert m2(n, true) == m2(n-2, false) + m2(n-1, true);
+      m2_equivalence_mode(n - 2);
+      assert m2(n, true) == m2(n-1, true) + m2(n-2, true);
+  }
+}
+
+lemma m2_equivalence_fib(n: int)
+  requires n >= 2
+  ensures m2(n, true) == m2(n - 1, false) + m2(n - 2, false)
+{
+  if n >= 3 {
+      assert m2(n, true) == m2(n-2, false) + m2(n-2, false) + m2(n-3, false);
+      m2_equivalence_fib(n - 1);
+      assert m2(n, true) == m2(n-1, true) + m2(n-2, false);
+      m2_equivalence_mode(n - 1);
+      assert m2(n, true) == m2(n-1, false) + m2(n-2, false);
+  }
+}
 \end{lstlisting}
+%
+Dafny does not need the assertions to prove these two lemmas, but I've included them to illustrate how the proofs work. Using the second lemma, Dafny can now prove the equivalence of \lstinline|m1| and \lstinline|m2|:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|m1| and \lstinline|m2|]
+lemma equivalence(n: int, flag: bool)
+  ensures m1(n, flag) == m2(n, flag)
+{
+  if n >= 2 { m2_equivalence_fib(n); }
+}
+\end{lstlisting}
+%
+Thus, this is another example of where Dafny can prove the equivalence of two functions, but only after the user provides helper lemmas that would be difficult for Dafny to automatically generate.
 
 \subsection{Providing Variants to prove termination}
 
