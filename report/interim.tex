@@ -226,10 +226,50 @@ Therefore, for Dafny to verify the equivalence of the main functions \lstinline|
 
 \textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
 
-The user must also explicitly call these helper lemmas, with the correct arguments, within the main equivalence lemma (as demonstrated above). Sometimes, these helper lemmas can only be called when specific conditions are met.
-TODO is the above example sufficient?
+Additionally, the user must explicitly call these helper lemmas, with the correct arguments, within the main equivalence lemma (as demonstrated above). Sometimes, these helper lemmas can only be called when specific conditions are met. To demonstrate this second point, I will provide two implementations of a function to determine whether a given adjacency list is valid. They are as follows:
+\begin{lstlisting}[caption=\lstinline|validAdjListM| and \lstinline|validAdjList| Functions]
+function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
+  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
+  decreases(pos) {
+  if pos == 0 then
+   true
+  else
+    validListM(adjList[pos - 1], N) && validAdjListM(adjList, N, pos - 1)
+  }
 
-This will be difficult to do if we use the process described above, since the helper lemmas will only be generated after the user has finished writing. 
+function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
+  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
+  decreases(pos) {
+  if (pos == 0) then 
+    true
+  else if (validAdjList(adjList, N, pos - 1)) then
+    validList(N, adjList[pos - 1])
+  else
+    false
+  }
+\end{lstlisting}
+%
+The definitions of \lstinline|validListM| and \lstinline|validList| are irrelevant for this example, so I will omit them. All that is required is that they are equivalent:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|validListM| and \lstinline|validList|]
+lemma equivalenceValidList(l: List<int>, N: int)
+  requires (N >= 1)
+  ensures (validList(N, l) <==> validListM(l, N))
+{}
+\end{lstlisting}
+%
+Dafny can now use this lemma to prove the equivalence of \lstinline|validAdjListM| and \lstinline|validAdjList|, but only if it is used when a specific condition is met:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|validAdjListM| and \lstinline|validAdjList|]
+lemma equivalenceValidAdjList(adjList: seq<List<int>>, N: int, pos: int)
+  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
+  ensures (validAdjList(adjList, N, pos) <==> validAdjListM(adjList, N, pos))
+{
+  if pos > 0 {equivalenceValidList(adjList[pos - 1], N);}
+}
+\end{lstlisting}
+%
+Dafny must verify that \lstinline|pos - 1| is a valid index for \lstinline|adjList| before the lemma \lstinline|equivalenceValidList| can be called. Therefore, the lemma can only be called under the condition that \lstinline|pos > 0|.
+
+Explicitly calling these helper lemmas, especially with the correct arguments and under the correct conditions, will be difficult to do if we use the process described above by \textcite{milovancevicProvingDisprovingEquivalence2023}, since the helper lemmas will only be generated after the user has finished writing the main equivalence lemma. 
 
 \subsection{Providing Variants to prove termination}
 
