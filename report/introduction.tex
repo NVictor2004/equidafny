@@ -1,0 +1,56 @@
+\chapter{Introduction}
+
+\section{Introduction to Dafny}
+
+As described in \textcite{leinoDafnyAutomaticProgram2010}, Dafny is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants, to allow Dafny's program verifier to automatically prove that a given program matches its specification. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
+
+Dafny's program verification heavily relies on Boogie \parencite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \parencite{10.1007/978-3-540-78800-3_24}. 
+
+\subsection{Dafny Demonstration}
+
+To demonstrate Dafny's capabilities in proving program equivalence, consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
+
+\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
+function loop(p: int, l: seq<int>): bool
+  decreases l
+{
+  if |l| == 0 then true
+  else p <= l[0] && loop(l[0], l[1..])
+}
+
+function isSortedR(l: seq<int>): bool
+{
+  if |l| == 0 then true
+  else loop(l[0], l[1..])
+}
+\end{lstlisting}
+%
+The second is as follows:
+\begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
+function isSortedB(l: seq<int>): bool
+  decreases |l|
+{
+  if |l| == 0 then true
+  else if |l| == 1 then isSortedB([])
+  else l[0] <= l[1] && isSortedB(l[1..])
+}
+\end{lstlisting}
+%
+To prove the equivalence of these two functions, we can define the following lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedR| and \lstinline|isSortedB|]
+lemma isSortedEquivalence(l: seq<int>)
+  ensures isSortedR(l) == isSortedB(l)
+{}
+\end{lstlisting}
+%
+For this example, Dafny is able to verify that these functions are equivalent. Therefore, Dafny is capable of proving the equivalence of simple functions, with very little effort on the user's part.
+
+\subsection{Conversion to Boogie}
+
+The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function. Finally, the equivalence lemma is translated, taking only around 50 lines of code. 
+
+\subsection{Alterative to Dafny: SymDiff}
+
+An alterative to Dafny for proving program equivalence is SymDiff. SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
+
+SymDiff can also be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focusses on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
