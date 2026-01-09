@@ -688,6 +688,48 @@ method isSortedBI(l: seq<int>) returns (res: bool)
 %
 Thus, the necessary specifications can be greatly simplified if they are defined in terms of the function the method is being compared to.
 
+\subsection{Equivalence of Higher-Order Functions}
+
+Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two equivalent functions \lstinline|andThen1| and \lstinline|andThen2|:
+\begin{lstlisting}[caption=\lstinline|andThen1| and \lstinline|andThen2| Functions]
+function andThen1<A, B, C>(f: A -> B, g: B -> C): A -> C { a => g(f(a)) }
+function andThen2<A, B, C>(ff: A -> B, gg: B -> C): A -> C { aa => gg(ff(aa)) }
+\end{lstlisting}
+%
+Dafny is able to prove their equivalence without any help:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|andThen1| and \lstinline|andThen2|]
+lemma equivalenceAndThen<A, B, C>(f: A -> B, g: B -> C)
+  ensures andThen1(f, g) == andThen2(f, g)
+{}
+\end{lstlisting}
+%
+Here are two more such functions \lstinline|flip1| and \lstinline|flip2|:
+\begin{lstlisting}[caption=\lstinline|flip1| and \lstinline|flip2| Functions]
+function flip1<A, B, C>(f: (A, B) -> C): (B, A) -> C {
+  (b, a) => f(a, b)
+}
+
+function flip2<A, B, C>(f: (A, B) -> C): (B, A) -> C {
+  (b, a) => var res := f(a, b); res
+}
+\end{lstlisting}
+%
+Dafny is able to prove that the outputted functions give the same output for the same inputs:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|flip1| and \lstinline|flip2| with specified arguments]
+lemma equivalenceFlip<A, B, C>(f: (A, B) -> C)
+  ensures forall b: B, a: A :: flip1(f)(b, a) == flip2(f)(b, a)
+{}
+\end{lstlisting}
+%
+However, it is unable to prove that the outputted functions themselves are equivalent:
+\begin{lstlisting}[caption=Invalid Equivalence Lemma for \lstinline|flip1| and \lstinline|flip2|]
+// Dafny cannot prove this lemma
+lemma equivalenceFlip<A, B, C>(f: (A, B) -> C)
+  ensures flip1(f) == flip2(f)
+{}
+\end{lstlisting}
+%
+Therefore, Dafny is able to prove the equivalence of some higher-order functions. However, it struggles with others, despite being able to prove that the outputted functions give the same output for the same inputs.
 
 \printbibliography
 \end{document}

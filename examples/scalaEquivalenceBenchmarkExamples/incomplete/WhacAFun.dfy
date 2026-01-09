@@ -14,19 +14,17 @@ function uncurry1<A, B, C>(f: A -> B -> C): (A, B) -> C { (a, b) => f(a)(b) }
 function uncurry2<A, B, C>(f: A -> B -> C): (A, B) -> C { (a, b) => var res := f(a)(b); res }
 
 lemma equivalenceAndThen<A, B, C>(f: A -> B, g: B -> C)
-  ensures (andThen1(f, g) == andThen2(f, g))
+  ensures andThen1(f, g) == andThen2(f, g)
 {}
 
 lemma equivalenceCompose<A, B, C>(f: B -> C, g: A -> B)
-  ensures (compose1(f, g) == compose2(f, g))
+  ensures compose1(f, g) == compose2(f, g)
 {}
 
+// Dafny cannot prove this lemma
 lemma equivalenceFlip<A, B, C>(f: (A, B) -> C)
-  ensures (flip1(f) == flip2(f))
-{
-  assert forall b: B, a: A :: flip1(f)(b, a) == flip2(f)(b, a);
-  assert forall b: B, a: A :: ((b, a) => flip1(f)(b, a))(b, a) == ((b, a) => flip2(f)(b, a))(b, a);
-}
+  ensures flip1(f) == flip2(f)
+{}
 
 lemma equivalenceCurry<A, B, C>(f: (A, B) -> C)
   ensures (curry1(f) == curry2(f))
