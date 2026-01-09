@@ -4,6 +4,26 @@
 
 Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically, however, there are many cases where the user needs to provide assistance. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
+\begin{center}
+  \begin{tabular}{ |c|c| } 
+  \hline
+  Type of Limitation & Number of Examples \\
+  \hline
+  \nameref{sec:counterexamples} & 1 \\ 
+  \hline
+  \nameref{sec:equivalence-lemmas} & 16 \\
+  \hline 
+  \nameref{sec:auxiliary-lemmas} & 3 \\
+  \hline 
+  \nameref{sec:induction} & 4 \\
+  \hline
+  \nameref{sec:termination} & 17 \\
+  \hline
+  \nameref{sec:higher-order} & 1 \\
+  \hline
+  \end{tabular}
+\end{center}
+
 \subsection{Necessary Datastructures}
 
 I will require the following definition of a list data structure:
@@ -11,7 +31,7 @@ I will require the following definition of a list data structure:
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
-\subsection{Incorrect Counterexamples}
+\subsection{Incorrect Counterexamples}\label{sec:counterexamples}
 
 An example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedA| Function]
@@ -65,7 +85,7 @@ Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| a
 
 As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, due to the Z3 solver being incomplete.
 
-\subsection{Equivalence Lemmas for Helper functions}
+\subsection{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
 
 The example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedC| Function]
@@ -149,7 +169,7 @@ Dafny must verify that \lstinline|pos - 1| is a valid index for \lstinline|adjLi
 
 Explicitly calling these helper lemmas, especially with the correct arguments and under the correct conditions, will be difficult to do if we use the process described above by \textcite{milovancevicProvingDisprovingEquivalence2023}, since the helper lemmas will only be generated after the user has finished writing the main equivalence lemma. 
 
-\subsection{Generating Auxiliary Lemmas}
+\subsection{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
 
 Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two equivalent functions \lstinline|limit3_1| and \lstinline|limit3_2|:
 \begin{lstlisting}[caption=\lstinline|limit3_1| and \lstinline|limit3_2| Functions]
@@ -220,7 +240,7 @@ lemma equivalence(n: int, flag: bool)
 %
 Thus, this is another example of where Dafny can prove the equivalence of two functions, but only after the user provides helper lemmas that would be difficult for Dafny to automatically generate.
 
-\subsection{Explicitly enforcing induction to prove lemmas}
+\subsection{Explicitly enforcing induction to prove lemmas}\label{sec:induction}
 
 Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, here are the two equivalent functions \lstinline|leVraiSculpteurDeNuage| and \lstinline|leVraiSculpteurDeNuageM|:
 \begin{lstlisting}[caption=\lstinline|leVraiSculpteurDeNuage| and \lstinline|leVraiSculpteurDeNuageM| Functions]
@@ -282,7 +302,7 @@ lemma equivalenceLeVraiSculpteurDeNuage<A, B, C>(
 %
 Therefore, in many cases Dafny is able to infer the correct induction method automatically, however, it sometimes requires the user to explicitly provide it themselves.
 
-\subsection{Providing Variants to prove termination}
+\subsection{Providing Variants to prove termination}\label{sec:termination}
 
 Here, I provide two implementations of a function to find the maximum element in a sequence of integers. The first is as follows:
 \begin{lstlisting}[caption=\lstinline|maxR| Function]
@@ -572,7 +592,7 @@ method isSortedBI(l: seq<int>) returns (res: bool)
 %
 Thus, the necessary specifications can be greatly simplified if they are defined in terms of the function the method is being compared to.
 
-\subsection{Equivalence of Higher-Order Functions}
+\subsection{Equivalence of Higher-Order Functions}\label{sec:higher-order}
 
 Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two equivalent functions \lstinline|andThen1| and \lstinline|andThen2|:
 \begin{lstlisting}[caption=\lstinline|andThen1| and \lstinline|andThen2| Functions]
