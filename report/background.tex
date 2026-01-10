@@ -4,7 +4,10 @@
 
 Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically, however, there are many cases where the user needs to provide assistance. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
-\begin{center}
+The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \textcite{StainlessFrontendsBenchmarks}. The following table summarises the number of tests that demonstrate each type of limitation, after converting them into Dafny and proving their equivalence: 
+
+\begin{table}[ht]
+  \centering
   \begin{tabular}{ |c|c| } 
   \hline
   Type of Limitation & Number of Examples \\
@@ -22,7 +25,10 @@ Dafny is a powerful tool for proving program equivalence. It is often able to pr
   \nameref{sec:higher-order} & 1 \\
   \hline
   \end{tabular}
-\end{center}
+  \caption{Summary of the number of examples that demonstrate each type of limitation}
+\end{table}
+
+Many examples demonstrate multiple types of limitations, therefore, these examples are counted multiple times.
 
 \subsection{Necessary Datastructures}
 
