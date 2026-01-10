@@ -175,7 +175,7 @@ lemma equivalenceValidAdjList(adjList: seq<List<int>>, N: int, pos: int)
 %
 Dafny must verify that \lstinline|pos - 1| is a valid index for \lstinline|adjList| before the lemma \lstinline|equivalenceValidList| can be called. Therefore, the lemma can only be called under the condition that \lstinline|pos > 0|.
 
-Explicitly calling these helper lemmas, especially with the correct arguments and under the correct conditions, will be difficult to do if we use the process described above by \textcite{milovancevicProvingDisprovingEquivalence2023}, since the helper lemmas will only be generated after the user has finished writing the main equivalence lemma. 
+Therefore, to prove the equivalence of two functions that both use helper functions, the user must first prove the equivalence of the helper functions, and then explicitly call the corresponding lemmas within the main equivalence lemma, ensuring that all required conditions are met at the call site. 
 
 \subsection{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
 
