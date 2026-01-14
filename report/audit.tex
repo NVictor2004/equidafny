@@ -4,8 +4,46 @@
 \footnote{SD: I think the aim here is to investigate in how far Dafny can prove program equivalence. Ie to identify strength as well as limitations.}
 \footnote{SD: Is the aim of this section to identify limitations and think where we can push the boundaries?}
 
-Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically, however, there are many cases where the user needs to provide assistance. 
-In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
+Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically. Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
+
+\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
+function loop(p: int, l: seq<int>): bool
+  decreases l
+{
+  if |l| == 0 then true
+  else p <= l[0] && loop(l[0], l[1..])
+}
+
+function isSortedR(l: seq<int>): bool
+{
+  if |l| == 0 then true
+  else loop(l[0], l[1..])
+}
+\end{lstlisting}
+%
+The second is as follows:
+\begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
+function isSortedB(l: seq<int>): bool
+  decreases |l|
+{
+  if |l| == 0 then true
+  else if |l| == 1 then isSortedB([])
+  else l[0] <= l[1] && isSortedB(l[1..])
+}
+\end{lstlisting}
+%
+To prove the equivalence of these two functions, we can define the following lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedR| and \lstinline|isSortedB|]
+lemma isSortedEquivalence(l: seq<int>)
+  ensures isSortedR(l) == isSortedB(l)
+{}
+\end{lstlisting}
+%
+For this example, Dafny is able to verify that these functions are equivalent. Therefore, Dafny is capable of proving the equivalence of some functions without much effort on the user's part.
+
+\paragraph{Conversion to Boogie} The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function. Finally, the equivalence lemma is translated, taking only around 50 lines of code. 
+
+However, there are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In the rest of this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
 The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}.\footnote{SD: Say how many examples are in this repo. What was your approach in chosing which examples to investigate. What guided you to add examples to your investigation. How long the examples were. What data structures they used. Are they all functional code? }
 \footnote{SD: Did you aim to compare Dafny's current proof strength with that of Dragana's tool or did you go beyond?}
