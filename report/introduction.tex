@@ -1,1 +1,18 @@
 \chapter{Introduction}
+
+\footnote{SD:First define what Program Equivalance is, and then say what it means to prove it. You will see that you will need fewer words -- always a good thing.}
+
+Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. If this can be proven, then these programs are described as equivalent. 
+Program equivalence is a concept with applications in a variety of fields.
+
+\footnote{SD: better Fields, N: are these better?}
+
+Developers in safety-critical fields, including medicine and aviation, use this to ensure bugs are not introduced when refactoring or updating code. Security specialists use this to identify malicious code that has been deliberately rewritten to look benign. Compiler developers use this to ensure that optimisations always preserve the intended behaviour of the original program. Software developers in general can use this to formally verify that their code is bug-free, removing the necessity for exhaustive testing, which is often infeasible for large projects. 
+
+Therefore, Program Equivalence is a very exciting area of Computer Science, due to how integral it is to many important fields, and to its potential to replace exhaustive testing. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of tools are being developed to help prove equivalence automatically. These tools can make proving equivalence significantly easier for developers, especially when working with large codebases. They can also generate counterexamples when equivalence cannot be proven, making debugging much easier.
+
+The main drawback of these tools is that, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. The average software developer will not have the necessary expertise to provide these, thus, these tools will be inaccessible to them. Therefore, the general aim of this project is to decrease the level of user assistance required by these tools to prove equivalence, thus allowing the average software developer to better reap the benefits of using these tools in their work.
+
+TODO:
+
+This project will focus on Dafny, a popular program verifier, under active development by Amazon. I will explore Dafny's capabilities and limitations in proving program equivalence. As detailed below, there are many cases where Dafny requires user assistance to complete its proofs. The aim of this project is to build techniques to allow Dafny to prove equivalence fully automatically, and to evaluate the new system against state-of-the-art tools.
