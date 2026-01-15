@@ -2,10 +2,25 @@
 
 \section{Project Plan}
 
+Just focus on functions for this project, imperative programs are future work or separate project
+Interface, two files for two functions, lemma file, JSON
 Build a tool on top of Dafny
 With Dates
+Use Scala for development
+
+V0: CI gitlab scripts for testing and evaluation data, 2 files + lemma to prove, no aux lemma
+V1: 2 files + aux lemma + invocations + lemma to prove
+V2: aux lemmas made by tool
+V3: auxiliary lemma guessed, Dafny can use lemmas as axioms
+use table of limitations to create versions, think about what are the challenges, start with the easiest to implement, and move upwards
 
 \section{Evaluation Plan}
 
-Finish boardgame.dfy
-Convert C benchmarks to Dafny, use those and Scala benchmarks for evaluation
+
+base-line of current Dafny performance
+testsuite development: Convert C benchmarks to Dafny, use those and Scala benchmarks for evaluation, Finish boardgame.dfy
+how much better is the new tool
+deeper characterization of challenges
+measure the user input: VN to V1
+use metrics like number of lines of code, number of helper lemmas, time taken to verify
+compare with Scala Stainless
