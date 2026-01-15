@@ -1,9 +1,8 @@
 \chapter{Introduction}
 
-\footnote{SD:First define what Program Equivalance is, and then say what it means to prove it. You will see that you will need fewer words -- always a good thing.}
+\footnote{SD:First define what Program Equivalance is, and then say what it means to prove it}
 
-Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. If this can be proven, then these programs are described as equivalent. 
-Program equivalence is a concept with applications in a variety of fields.
+Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. If this can be proven, then these programs are described as equivalent. Program equivalence is a concept with applications in a variety of fields.
 
 \footnote{SD: better Fields, N: are these better?}
 
@@ -13,6 +12,4 @@ Therefore, Program Equivalence is a very exciting area of Computer Science, due 
 
 The main drawback of these tools is that, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. The average software developer will not have the necessary expertise to provide these, thus, these tools will be inaccessible to them. Therefore, the general aim of this project is to decrease the level of user assistance required by these tools to prove equivalence, thus allowing the average software developer to better reap the benefits of using these tools in their work.
 
-TODO:
-
-This project will focus on Dafny, a popular program verifier, under active development by Amazon. I will explore Dafny's capabilities and limitations in proving program equivalence. As detailed below, there are many cases where Dafny requires user assistance to complete its proofs. The aim of this project is to build techniques to allow Dafny to prove equivalence fully automatically, and to evaluate the new system against state-of-the-art tools.
+This project will begin with a review of the current tools for proving program equivalence in \Cref{chp:background}. After this, this project will focus solely on the Dafny program verifier. I will explore Dafny's capabilities and limitations in proving program equivalence in \Cref{chp:audit}; this will clearly demonstrate that there are many cases where Dafny requires user assistance to complete its proofs. Thus, the aim of this project is to build a tool on top of Dafny that will allow the user to prove the equivalence of two Dafny functions fully automatically, and to evaluate this tool against the current state-of-the-art systems. The plans for this are detailed in \Cref{chp:plans}.
