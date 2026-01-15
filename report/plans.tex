@@ -2,20 +2,67 @@
 
 \section{Project Plan}
 
-Just focus on functions for this project, imperative programs are future work or separate project
-Interface, two files for two functions, lemma file, JSON
-Build a tool on top of Dafny
-With Dates
-Use Scala for development
+% Use Scala for development
 
-V0: CI gitlab scripts for testing and evaluation data, 2 files + lemma to prove, no aux lemma
-V1: 2 files + aux lemma + invocations + lemma to prove
-V2: aux lemmas made by tool
-V3: auxiliary lemma guessed, Dafny can use lemmas as axioms
-use table of limitations to create versions, think about what are the challenges, start with the easiest to implement, and move upwards
+% E1: induction stuff
+% E2: proving auxiliary lemmas
 
-\section{Evaluation Plan}
+The aim of this project is to build a tool on top of the Dafny program verifier that removes as many of the limitations identified in \Cref{chp:audit} as possible. Some of these limitations are out of the scope of this project. Preventing incorrect counterexamples (as described in \Cref{sec:counterexamples}) is one such limitation, as it results from problems in Boogie and the underlying Z3 solver. Similarly, the limitations related to imperative programs (as described in \Cref{sec:imperative-equivalence}) are also out of scope, as Dafny functions provide enough complexity for this project by themselves.
 
+I plan to build my tool so that it can be called from the command line, taking as input multiple Dafny files, containing the functions to be compared and any help the user needs to provide. The tool will also require a JSON configuration file, specifying which functions must be proven to be equivalent and any other information the tool requires. The tool will attempt to create an equivalence proof and prove it using Dafny; Dafny's output will be used as the output of the tool.
+
+The following table summarises the current development plan, broken down into milestones. Each milestone has an associated completion deadline and a description of what that milestone involves. 
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ |c|c|c| } 
+  \hline
+  Milestone & Description & Deadline \\
+    \hline
+    1 & \nameref{para:basic-structure} & \\
+    \hline
+    2 & \nameref{para:ci-scripts} & \\
+    \hline
+    3 & \nameref{para:parser} & \\
+    \hline
+    4 & \nameref{para:variants} & \\
+    \hline
+    5 & \nameref{para:helper-axioms} & \\
+    \hline
+    6 & \nameref{para:calling-lemmas-main} & \\
+    \hline
+    7 & \nameref{para:calling-lemmas-helper} & \\
+    \hline
+    8 & \nameref{para:multiple-solutions} & \\
+    \hline
+    9 & \nameref{para:auxiliary-axioms} & \\
+    \hline
+    10 & \nameref{para:higher-order} & \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\paragraph{Building the basic structure}\label{para:basic-structure} This milestone involves creating the skeleton of the tool. It should be able to take in Dafny files and a JSON configuration file. The Dafny files will contain the two functions being compared and an equivalence lemma without any user assistance. The tool will simply combine these files together, call the Dafny verifier on the resulting file, and return its output. Equivalence lemmas with no user assistance are used here to provide an evaluation baseline for the evaluation of the remaining milestones. 
+
+\paragraph{Creating a CI script for Continuous Testing and Evaluation}\label{para:ci-scripts} At each milestone, evaluation data must be generated and collected (see \Cref{sec:evaluation-plan} for more details on this). This milestone involves creating a script to collect this data, and setting up a GitLab CI pipeline to automatically run this script on every merge. Once this is done, evaluation data should be collected for the previous milestone. Then, the equivalence lemmas should be replaced with lemmas that include all the user assistance that Dafny requires, followed by a recollection of the evaluation data, to serve as another baseline for the remaining milestones. 
+
+\paragraph{Create Parser for Dafny functions}\label{para:parser} Several of the future milestones will require an in depth understanding of the structure of the Dafny functions being compared and of the equivalence lemma provided by the user. Therefore, in this milestone, I will create parsers specifically for Dafny functions and lemmas. 
+
+\paragraph{Copying Variants from functions into the main equivalence lemma}\label{para:variants} As described in \Cref{sec:termination}, when one or both of the functions being compared require the user to explicitly provide variants, this must be copied into the main equivalence lemma. This milestone involves implementing this functionality.
+
+\paragraph{Generating Helper Equivalence Lemmas as Axioms}\label{para:helper-axioms} This milestone will involve implementing the method of finding and generating equivalence lemmas for helper functions described by \textcite{milovancevicProvingDisprovingEquivalence2023} and summarised in \Cref{sec:equivalence-lemmas}. For now, these lemmas will be generated as axioms; they will be proven properly in a later milestone. 
+
+\paragraph{Calling Equivalence and Termination Lemmas in the Main Lemma}\label{para:calling-lemmas-main} As described in \Cref{sec:equivalence-lemmas,sec:termination}, helper equivalence and termination lemmas must be explicitly called in the main equivalence lemma, under the correct conditions and with the correct arguments. This milestone involves implementing this specifically for the main equivalence lemma.
+
+\paragraph{Calling Equivalence and Termination Lemmas in Equivalence Lemmas}\label{para:calling-lemmas-helper} This milestone involves extending the functionality implemented in the previous milestone to also prove the generated helper equivalence lemmas.
+
+\paragraph{Proving Equivalence with one of a number of solutions}\label{para:multiple-solutions} In certain cases, including those described by \textcite{milovancevicProvingDisprovingEquivalence2023}, the user may wish to prove the equivalence of a function with any one of a number of possible other functions. This milestone involves implementing this. 
+
+\paragraph{Allowing the user to provide Auxiliary Lemmas as Axioms}\label{para:auxiliary-axioms} In certain cases, the user will need to provide auxiliary lemmas to help Dafny prove equivalence. These lemmas are specific to each individual scenario, and so automatic generation is out of scope for this project. Therefore, a reasonable alterative is to allow the user to provide auxiliary lemmas, which can then be called in the main equivalence lemma. These auxiliary lemmas will be added as axioms, as it would be difficult to prove them automatically. The burden of ensuring these lemmas are correct will be on the user. This milestone will involve implementing this.
+
+\paragraph{Proving equivalence of higher order functions}\label{para:higher-order} When proving the equivalence of functions that output lambda functions, these functions can be proven equivalent if the lambda functions output the same values for the same inputs. This milestone involves implementing this.
+
+\section{Evaluation Plan}\label{sec:evaluation-plan}
 
 base-line of current Dafny performance
 testsuite development: Convert C benchmarks to Dafny, use those and Scala benchmarks for evaluation, Finish boardgame.dfy
