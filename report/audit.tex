@@ -39,11 +39,13 @@ Thus, Dafny is capable of proving that these functions are equivalent. As descri
 
 However, there are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In the rest of this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
-The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}.\footnote{SD: Say how many examples are in this repo. What was your approach in chosing which examples to investigate. What guided you to add examples to your investigation. How long the examples were. What data structures they used. Are they all functional code? }
+The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. I converted all of their tests into Dafny functions, and proved their equivalence. Many of these tests consisted of more than 2 functions, each in their own file. For these cases, I concatenated all of these functions into a single Dafny file to form a single test, and proved the equivalence of each function with a single function, thus proving, through the transitivity of equivalence, that all of these functions were pairwise equivalent. This resulted in a total of 62 tests.
+
+\footnote{SD: How long the examples were. What data structures they used }
 \footnote{SD: Did you aim to compare Dafny's current proof strength with that of Dragana's tool or did you go beyond?}
 
-\footnote{SD:Then say that you waanted to characterize the cases where Dafny was too weak, and so dentified 6 different types of limitations. Your categorization is in some sense arbnitrary} The following table summarises the number of tests that demonstrate each type of limitation, after converting them into Dafny and proving their equivalence: 
-\footnote{SD: Add to the table whether Dragana's tool can automatically verify equivalence}
+Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 6 different types of limitations. \Cref{tbl:limitations-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of limitations, therefore, these are counted multiple times. All of these tests can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
+
 \footnote{SD: Add to the table how many of these were from Dragana's suite} 
 
 \begin{table}[ht]
@@ -68,9 +70,10 @@ The majority of the following examples have been taken from the program equivale
   \hline
   \end{tabular}
   \caption{Summary of the number of examples that demonstrate each type of limitation}
+  \label{tbl:limitations-summary}
 \end{table}
 
-Many examples demonstrate multiple types of limitations, therefore, these examples are counted multiple times.
+The following sections describe each type of limitation that I have identified. Each section contains at least one example to clearly demonstrate the limitation being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. 
 
 \section{Necessary Datastructures}
 
@@ -169,7 +172,7 @@ lemma isSortedEquivalence(l: List<int>)
 %
 Therefore, for Dafny to verify the equivalence of the main functions \lstinline|isSortedC| and \lstinline|isSortedR|, it must also verify the equivalence of its helper functions \lstinline|chk| and \lstinline|loop|. This means that the user must provide additional helper lemmas to prove the equivalence of these helper functions. 
 
-\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the student and reference solutions\footnote{SD: At this point, the reader does not know anything about student and reference solutions} to find functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the two programs being compared to find helper functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
 
 Additionally, the user must explicitly call these helper lemmas, with the correct arguments, within the main equivalence lemma (as demonstrated above). Sometimes, these helper lemmas can only be called when specific conditions are met. To demonstrate this second point, I will provide two implementations of a function to determine whether a given adjacency list is valid. They are as follows:
 \begin{lstlisting}[caption=\lstinline|validAdjListM| and \lstinline|validAdjList| Functions]
