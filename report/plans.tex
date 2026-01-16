@@ -2,23 +2,20 @@
 
 \section{Project Plan}\label{sec:project-plan}
 
-% include the project write-up (the final report)
 % identify fall-back positions, in case you run out of time
 % identify what extensions could be added if time permits
-% The plan should include those parts that you have already addressed (make it clear how far you have progressed at the time of writing)
 
 % DEADLINES!
 
 % Use Scala for development
-
-% E1: induction stuff
-% E2: proving auxiliary lemmas
 
 The aim of this project is to build a tool on top of the Dafny program verifier that removes as many of the limitations identified in \Cref{chp:audit} as possible. Some of these limitations are out of the scope of this project. Preventing incorrect counterexamples (as described in \Cref{sec:counterexamples}) is one such limitation, as it results from problems in Boogie and the underlying Z3 solver. Similarly, the limitations related to imperative programs (as described in \Cref{sec:imperative-equivalence}) are also out of scope, as Dafny functions provide enough complexity for this project by themselves.
 
 I plan to build my tool so that it can be called from the command line, taking as input multiple Dafny files, containing the functions to be compared and any help the user needs to provide. The tool will also require a JSON configuration file, specifying which functions must be proven to be equivalent and any other information the tool requires. The tool will attempt to create an equivalence proof and prove it using Dafny; Dafny's output will be used as the output of the tool.
 
 The following table summarises the current development plan, broken down into milestones. Each milestone has an associated completion deadline and a description of what that milestone involves. 
+
+If I have time remaining once all the project and evaluation milestones are completed, I plan to further extend our tool to handle the remaining limitations relating to Dafny functions identified in \Cref{chp:audit}. This includes removing the necessity for the user to explicitly define induction schemes to prove lemmas (\Cref{sec:induction}) and implementing the ability to prove user-provided auxiliary lemmas (\Cref{sec:auxiliary-lemmas}).
 
 \begin{table}[ht]
   \centering
@@ -46,6 +43,7 @@ The following table summarises the current development plan, broken down into mi
     \hline
     10 & \nameref{para:higher-order} & \\
     \hline
+    11 & \nameref{para:final-report-project} & \\
   \end{tabular}
   \caption{Summary of the current development plan}
 \end{table}
@@ -70,6 +68,8 @@ The following table summarises the current development plan, broken down into mi
 
 \paragraph{Proving equivalence of higher order functions}\label{para:higher-order} When proving the equivalence of functions that output lambda functions, these functions can be proven equivalent if the lambda functions output the same values for the same inputs. This milestone involves implementing this.
 
+\paragraph{Writing the Final Report}\label{para:final-report-project} This milestone involves writing the technical chapters of the final report.
+
 \section{Evaluation Plan}\label{sec:evaluation-plan}
 
 % deeper characterization of challenges
@@ -85,20 +85,28 @@ In a similar manner to \Cref{sec:project-plan}, here is a table summarising the 
   \hline
   Milestone & Description & Deadline \\
     \hline
-    1 & \nameref{para:evaluation-data-gathering} & \\
+    1 & \nameref{para:init-eval-testsuite} & Completed \\
     \hline
-    2 & \nameref{para:testsuite-development} & \\
+    2 & \nameref{para:evaluation-data-gathering} & \\
     \hline
-    3 & \nameref{para:benchmark-comparison} & \\
+    3 & \nameref{para:testsuite-development} & \\
+    \hline
+    4 & \nameref{para:benchmark-comparison} & \\
+    \hline
+    5 & \nameref{para:final-report-eval} & \\
     \hline
   \end{tabular}
   \caption{Summary of the current evaluation plan}
 \end{table}
 
+\paragraph{Creating Initial Evaluation Testsuite}\label{para:init-eval-testsuite} Before evaluation can begin, we need a testsuite containing pairs of functions which our tool will attempt to prove equivalent. As described in \Cref{chp:audit}, I have already created an initial testsuite using the equivalence tests from the repository for the Stainless Scala verification tool\cite{StainlessFrontendsBenchmarks}. This testsuite will be extended in a later milestone. 
+
 \paragraph{Setup of Evaluation Data Gathering}\label{para:evaluation-data-gathering} As described in \Cref{sec:project-plan}, once each milestone is completed, a CI script will be used to automatically collect evaluation data. The first two milestones will provide baseline data on Dafny without any user assistance, and on Dafny with all the assistance it requires respectively. Data collected from all subsequent milestones will be compared to this baseline data. The evaluation data will consist of two categories. First, we must gather data to represent how difficult each example is for Dafny to verify. This category will include the metrics of the number of lines of code in each function being compared, the number of helper functions called and the time taken for Dafny to verify the example. Second, we must gather data to represent how much user assistance Dafny requires. This will include the metrics of the number of lines of code in the main equivalence lemma and the numbers of helper equivalence and auxiliary lemmas the user needs to provide. The aim of this project is for the metrics in the second category to decrease as much as possible. The first category metrics will ensure that we are interpreting these decreases in the correct context. These metrics are too shallow to provide a complete picture of the complexity of the examples and the level of user assistance required, however, they will provide a reasonable approximation. 
 
-\paragraph{Testsuite Development}\label{para:testsuite-development} A second set of program equivalence tests have been gathered by \textcite{badihiEqBenchDatasetEquivalent2021}. This milestone involves converting these tests from C and Java into Dafny, and appending them into my evaluation testsuite. 
+\paragraph{Testsuite Development}\label{para:testsuite-development} A second set of program equivalence tests have been gathered by \textcite{badihiEqBenchDatasetEquivalent2021}. This milestone involves converting these tests from C and Java into Dafny, and appending them into my evaluation testsuite.
 
 % Which C / Java program equivalence checker?
 
 \paragraph{Benchmark Comparison}\label{para:benchmark-comparison} In this milestone, I will compare the results of our tool on our evaluation testsuite with the results from the original Dafny verifier, to demonstrate the improvements made. I will also compare our tool with Stainless on the subset of our testsuite that originated from their equivalence tests, to demonstrate how our tool compares with other state-of-the-art program verifiers. 
+
+\paragraph{Writing the Final Report}\label{para:final-report-eval} This milestone involves writing the evaluation chapter of the final report. 
