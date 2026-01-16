@@ -1,9 +1,5 @@
 \chapter{Technical Audit}\label{chp:audit}
 
-
-\footnote{SD: I think the aim here is to investigate in how far Dafny can prove program equivalence. Ie to identify strength as well as limitations.}
-\footnote{SD: Is the aim of this section to identify limitations and think where we can push the boundaries?}
-
 Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically. Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
 
 \begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
@@ -39,9 +35,7 @@ lemma isSortedEquivalence(l: seq<int>)
 {}
 \end{lstlisting}
 %
-For this example, Dafny is able to verify that these functions are equivalent. Therefore, Dafny is capable of proving the equivalence of some functions without much effort on the user's part.
-
-\paragraph{Conversion to Boogie} The above examples can be concatenated into a single file and converted into the corresponding Boogie program. This results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function. Finally, the equivalence lemma is translated, taking only around 50 lines of code. 
+Thus, Dafny is capable of proving that these functions are equivalent. As described in \Cref{sec:dafny}, this is achieved by translating the Dafny program into Boogie. For this example, this results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function, and ends with the translation of the equivalence lemma, taking only around 50 lines of code. Therefore, the Dafny programming language is highly expressive, allowing users to define functions in a concise manner. Meanwhile, the Dafny program verifier is capable of proving the equivalence of some functions without much effort on the user's part.
 
 However, there are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In the rest of this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
