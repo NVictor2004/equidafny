@@ -2,48 +2,44 @@
 
 \section{Project Plan}\label{sec:project-plan}
 
-% identify fall-back positions, in case you run out of time
-% identify what extensions could be added if time permits
-
 % DEADLINES!
-
-% Use Scala for development
 
 The aim of this project is to build a tool on top of the Dafny program verifier that removes as many of the limitations identified in \Cref{chp:audit} as possible. Some of these limitations are out of the scope of this project. Preventing incorrect counterexamples (as described in \Cref{sec:counterexamples}) is one such limitation, as it results from problems in Boogie and the underlying Z3 solver. Similarly, the limitations related to imperative programs (as described in \Cref{sec:imperative-equivalence}) are also out of scope, as Dafny functions provide enough complexity for this project by themselves.
 
-I plan to build my tool so that it can be called from the command line, taking as input multiple Dafny files, containing the functions to be compared and any help the user needs to provide. The tool will also require a JSON configuration file, specifying which functions must be proven to be equivalent and any other information the tool requires. The tool will attempt to create an equivalence proof and prove it using Dafny; Dafny's output will be used as the output of the tool.
+I plan to build my tool in Scala. It will be called from the command line, taking as input multiple Dafny files, containing the functions to be compared and any help the user needs to provide. The tool will also require a JSON configuration file, specifying which functions must be proven to be equivalent and any other information the tool requires. The tool will attempt to create an equivalence proof and prove it using Dafny; Dafny's output will be used as the output of the tool.
 
-The following table summarises the current development plan, broken down into milestones. Each milestone has an associated completion deadline and a description of what that milestone involves. 
+The following table summarises the current development plan, broken down into milestones. Each milestone has an associated completion deadline and a description of what that milestone involves. Each milestone is described as either Necessary or Optional. If Necessary milestones take longer than I expected, I will use the time previously dedicated to Optional milestones to complete the Necessary ones.
 
 If I have time remaining once all the project and evaluation milestones are completed, I plan to further extend our tool to handle the remaining limitations relating to Dafny functions identified in \Cref{chp:audit}. This includes removing the necessity for the user to explicitly define induction schemes to prove lemmas (\Cref{sec:induction}) and implementing the ability to prove user-provided auxiliary lemmas (\Cref{sec:auxiliary-lemmas}).
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c|c| } 
+  \begin{tabular}{ |c|c|c|c| } 
   \hline
-  Milestone & Description & Deadline \\
+  Milestone & Description & Deadline & Necessity \\
     \hline
-    1 & \nameref{para:basic-structure} & \\
+    1 & \nameref{para:basic-structure} & & Necessary \\
     \hline
-    2 & \nameref{para:ci-scripts} & \\
+    2 & \nameref{para:ci-scripts} & & Necessary \\
     \hline
-    3 & \nameref{para:parser} & \\
+    3 & \nameref{para:parser} & & Necessary \\
     \hline
-    4 & \nameref{para:variants} & \\
+    4 & \nameref{para:variants} & & Optional \\
     \hline
-    5 & \nameref{para:helper-axioms} & \\
+    5 & \nameref{para:helper-axioms} & & Optional \\
     \hline
-    6 & \nameref{para:calling-lemmas-main} & \\
+    6 & \nameref{para:calling-lemmas-main} & & Optional \\
     \hline
-    7 & \nameref{para:calling-lemmas-helper} & \\
+    7 & \nameref{para:calling-lemmas-helper} & & Optional \\
     \hline
-    8 & \nameref{para:multiple-solutions} & \\
+    8 & \nameref{para:multiple-solutions} & & Optional \\
     \hline
-    9 & \nameref{para:auxiliary-axioms} & \\
+    9 & \nameref{para:auxiliary-axioms} & & Optional \\
     \hline
-    10 & \nameref{para:higher-order} & \\
+    10 & \nameref{para:higher-order} & & Optional \\
     \hline
-    11 & \nameref{para:final-report-project} & \\
+    11 & \nameref{para:final-report-project} & & Necessary \\
+    \hline
   \end{tabular}
   \caption{Summary of the current development plan}
 \end{table}
@@ -54,13 +50,13 @@ If I have time remaining once all the project and evaluation milestones are comp
 
 \paragraph{Create Parser for Dafny functions}\label{para:parser} Several of the future milestones will require an in depth understanding of the structure of the Dafny functions being compared and of the equivalence lemma provided by the user. Therefore, in this milestone, I will create parsers specifically for Dafny functions and lemmas. 
 
-\paragraph{Copying Variants from functions into the main equivalence lemma}\label{para:variants} As described in \Cref{sec:termination}, when one or both of the functions being compared require the user to explicitly provide variants, this must be copied into the main equivalence lemma. This milestone involves implementing this functionality.
+\paragraph{Copying Variants into the Main Lemma}\label{para:variants} As described in \Cref{sec:termination}, when one or both of the functions being compared require the user to explicitly provide variants, this must be copied into the main equivalence lemma. This milestone involves implementing this functionality.
 
 \paragraph{Generating Helper Equivalence Lemmas as Axioms}\label{para:helper-axioms} This milestone will involve implementing the method of finding and generating equivalence lemmas for helper functions described by \textcite{milovancevicProvingDisprovingEquivalence2023} and summarised in \Cref{sec:equivalence-lemmas}. For now, these lemmas will be generated as axioms; they will be proven properly in a later milestone. 
 
-\paragraph{Calling Equivalence and Termination Lemmas in the Main Lemma}\label{para:calling-lemmas-main} As described in \Cref{sec:equivalence-lemmas,sec:termination}, helper equivalence and termination lemmas must be explicitly called in the main equivalence lemma, under the correct conditions and with the correct arguments. This milestone involves implementing this specifically for the main equivalence lemma.
+\paragraph{Calling Helper Lemmas in the Main Lemma}\label{para:calling-lemmas-main} As described in \Cref{sec:equivalence-lemmas,sec:termination}, helper equivalence and termination lemmas must be explicitly called in the main equivalence lemma, under the correct conditions and with the correct arguments. This milestone involves implementing this specifically for the main equivalence lemma.
 
-\paragraph{Calling Equivalence and Termination Lemmas in Equivalence Lemmas}\label{para:calling-lemmas-helper} This milestone involves extending the functionality implemented in the previous milestone to also prove the generated helper equivalence lemmas.
+\paragraph{Calling Helper Lemmas in Equivalence Lemmas}\label{para:calling-lemmas-helper} This milestone involves extending the functionality implemented in the previous milestone to also prove the generated helper equivalence lemmas.
 
 \paragraph{Proving Equivalence with one of a number of solutions}\label{para:multiple-solutions} In certain cases, including those described by \textcite{milovancevicProvingDisprovingEquivalence2023}, the user may wish to prove the equivalence of a function with any one of a number of possible other functions. This milestone involves implementing this. 
 
@@ -81,19 +77,19 @@ In a similar manner to \Cref{sec:project-plan}, here is a table summarising the 
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c|c| } 
+  \begin{tabular}{ |c|c|c|c| } 
   \hline
-  Milestone & Description & Deadline \\
+  Milestone & Description & Deadline & Necessity \\
     \hline
-    1 & \nameref{para:init-eval-testsuite} & Completed \\
+    1 & \nameref{para:init-eval-testsuite} & Completed & Necessary \\
     \hline
-    2 & \nameref{para:evaluation-data-gathering} & \\
+    2 & \nameref{para:evaluation-data-gathering} & & Necessary \\
     \hline
-    3 & \nameref{para:testsuite-development} & \\
+    3 & \nameref{para:testsuite-development} & & Optional\\
     \hline
-    4 & \nameref{para:benchmark-comparison} & \\
+    4 & \nameref{para:benchmark-comparison} & & Necessary \\
     \hline
-    5 & \nameref{para:final-report-eval} & \\
+    5 & \nameref{para:final-report-eval} & & Necessary \\
     \hline
   \end{tabular}
   \caption{Summary of the current evaluation plan}
@@ -105,7 +101,7 @@ In a similar manner to \Cref{sec:project-plan}, here is a table summarising the 
 
 \paragraph{Testsuite Development}\label{para:testsuite-development} A second set of program equivalence tests have been gathered by \textcite{badihiEqBenchDatasetEquivalent2021}. This milestone involves converting these tests from C and Java into Dafny, and appending them into my evaluation testsuite.
 
-% Which C / Java program equivalence checker?
+\footnote{Which C / Java program equivalence checker?}
 
 \paragraph{Benchmark Comparison}\label{para:benchmark-comparison} In this milestone, I will compare the results of our tool on our evaluation testsuite with the results from the original Dafny verifier, to demonstrate the improvements made. I will also compare our tool with Stainless on the subset of our testsuite that originated from their equivalence tests, to demonstrate how our tool compares with other state-of-the-art program verifiers. 
 

@@ -41,8 +41,7 @@ However, there are many cases where the user needs to provide assistance to Dafn
 
 The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. I converted all of their tests into Dafny functions, and proved their equivalence. Many of these tests consisted of more than 2 functions, each in their own file. For these cases, I concatenated all of these functions into a single Dafny file to form a single test, and proved the equivalence of each function with a single function, thus proving, through the transitivity of equivalence, that all of these functions were pairwise equivalent. This resulted in a total of 62 tests.
 
-\footnote{SD: How long the examples were. What data structures they used }
-\footnote{SD: Did you aim to compare Dafny's current proof strength with that of Dragana's tool or did you go beyond?}
+These tests cover a great variety of types of programs. The number of lines of code in each test ranges from around 10 to over 200. They cover a variety of inbuilt and custom data structures, including sequences, lists and the Option datatype. Some tests also cover concepts such as mutual recursion, generic types and higher-order functions.
 
 Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 6 different types of limitations. \Cref{tbl:limitations-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of limitations, therefore, these are counted multiple times. All of these tests can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
 
