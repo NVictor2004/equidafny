@@ -2,7 +2,6 @@
  
 \section{Dafny}\label{sec:dafny}
 
-\footnote{SD: The citations appear wird for me}
 Dafny is a popular program verifier, under active development by Amazon \cite{leinoDafnyAutomaticProgram2010}. It is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants. This allows Dafny's verifier to automatically prove theorems and that programs match their specifications. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
 
 Dafny's program verification heavily relies on Boogie \cite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \cite{10.1007/978-3-540-78800-3_24}. 
