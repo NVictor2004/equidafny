@@ -43,30 +43,29 @@ The majority of the following examples have been taken from the program equivale
 
 These tests cover a great variety of types of programs. The number of lines of code in each test ranges from around 10 to over 200. They cover a variety of inbuilt and custom data structures, including sequences, lists and the Option datatype. Some tests also cover concepts such as mutual recursion, generic types and higher-order functions.
 
-Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 6 different types of limitations. \Cref{tbl:limitations-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of limitations, therefore, these are counted multiple times. All of these tests can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
-
-\footnote{SD: Add to the table how many of these were from Dragana's suite} 
-\footnote{Add source to the table, New for your own creation}
+Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 7 different types of limitations. \Cref{tbl:limitations-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of limitations, therefore, these are counted multiple times. This table also includes imperative equivalence tests that I wrote myself. All of the tests from the Stainless repository can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c| } 
+  \begin{tabular}{ |c|c|c| } 
   \hline
-  Type of Limitation & Number of Examples \\
+  Type of Limitation & Number of Examples & Source \\
   \hline
-  None (Fully Automatic) & 19 \\
+  None (Fully Automatic) & 19 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline
-  \nameref{sec:counterexamples} & 1 \\ 
+  \nameref{sec:counterexamples} & 1 & \parencite{StainlessFrontendsBenchmarks} \\ 
   \hline
-  \nameref{sec:equivalence-lemmas} & 17 \\
+  \nameref{sec:equivalence-lemmas} & 17 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline 
-  \nameref{sec:auxiliary-lemmas} & 3 \\
+  \nameref{sec:auxiliary-lemmas} & 3 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline 
-  \nameref{sec:induction} & 4 \\
+  \nameref{sec:induction} & 4 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline
-  \nameref{sec:termination} & 17 \\
+  \nameref{sec:termination} & 17 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline
-  \nameref{sec:higher-order} & 1 \\
+  \nameref{sec:imperative-equivalence} & 7 & New \\
+  \hline
+  \nameref{sec:higher-order} & 1 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline
   \end{tabular}
   \caption{Summary of the number of examples that demonstrate each type of limitation}
