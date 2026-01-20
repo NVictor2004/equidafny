@@ -3,8 +3,11 @@
 \section{Project Plan}\label{sec:project-plan}
 
 % DEADLINES!
+% Further Extension: List and seqs can be matched if the functions operate on them in the same way
 
 The aim of this project is to build a tool on top of the Dafny program verifier that removes as many of the limitations identified in \Cref{chp:audit} as possible. Some of these limitations are out of the scope of this project. Preventing incorrect counterexamples (as described in \Cref{sec:counterexamples}) is one such limitation, as it results from problems in Boogie and the underlying Z3 solver. Similarly, the limitations related to imperative programs (as described in \Cref{sec:imperative-equivalence}) are also out of scope, as Dafny functions provide enough complexity for this project by themselves.
+
+\footnote{Look at Dafny and see how easy it is to program in}
 
 I plan to build my tool in Scala. It will be called from the command line, taking as input multiple Dafny files, containing the functions to be compared and any help the user needs to provide. The tool will also require a JSON configuration file, specifying which functions must be proven to be equivalent and any other information the tool requires. The tool will attempt to create an equivalence proof and prove it using Dafny; Dafny's output will be used as the output of the tool.
 
@@ -44,6 +47,8 @@ If I have time remaining once all the project and evaluation milestones are comp
   \caption{Summary of the current development plan}
 \end{table}
 
+\footnote{Add to final report as you go along, and maybe testsuite?}
+
 \paragraph{Building the basic structure}\label{para:basic-structure} This milestone involves creating the skeleton of the tool. It should be able to take in Dafny files and a JSON configuration file. The Dafny files will contain the two functions being compared and an equivalence lemma without any user assistance. The tool will simply combine these files together, call the Dafny verifier on the resulting file, and return its output. Equivalence lemmas with no user assistance are used here to provide an evaluation baseline for the evaluation of the remaining milestones. 
 
 \paragraph{Creating a CI script for Continuous Testing and Evaluation}\label{para:ci-scripts} At each milestone, evaluation data must be generated and collected (see \Cref{sec:evaluation-plan} for more details on this). This milestone involves creating a script to collect this data, and setting up a GitLab CI pipeline to automatically run this script on every merge. Once this is done, evaluation data should be collected for the previous milestone. Then, the equivalence lemmas should be replaced with lemmas that include all the user assistance that Dafny requires, followed by a recollection of the evaluation data, to serve as another baseline for the remaining milestones. 
@@ -62,6 +67,7 @@ If I have time remaining once all the project and evaluation milestones are comp
 
 \paragraph{Allowing the user to provide Auxiliary Lemmas as Axioms}\label{para:auxiliary-axioms} In certain cases, the user will need to provide auxiliary lemmas to help Dafny prove equivalence. These lemmas are specific to each individual scenario, and so automatic generation is out of scope for this project. Therefore, a reasonable alterative is to allow the user to provide auxiliary lemmas, which can then be called in the main equivalence lemma. These auxiliary lemmas will be added as axioms, as it would be difficult to prove them automatically. The burden of ensuring these lemmas are correct will be on the user. This milestone will involve implementing this.
 
+\footnote{Replace 'these functions can be proven equivalent' with 'these functions are equivalent'}
 \paragraph{Proving equivalence of higher order functions}\label{para:higher-order} When proving the equivalence of functions that output lambda functions, these functions can be proven equivalent if the lambda functions output the same values for the same inputs. This milestone involves implementing this.
 
 \paragraph{Writing the Final Report}\label{para:final-report-project} This milestone involves writing the technical chapters of the final report.
