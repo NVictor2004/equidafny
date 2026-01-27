@@ -14,62 +14,63 @@ import parsers.lexer.implicits.implicitSymbol
 // TODO: Parentheses need to be used
 
 lazy val expr: Parsley[Expr] =
-precedence(ident.map(Ident(_)), literal, endless)(
+precedence(Ident(ident), literal, endless)(
     Ops(Prefix)(
-    "!" as Not.apply,
-    "-" as Neg.apply,
+    Not from "!",
+    Neg from "-",
     ),
     Ops(InfixL)(
-    "|" as BitOr.apply,
-    "&" as BitAnd.apply,
-    "^" as BitXor.apply,
+    BitOr from "|", 
+    BitAnd from "&",
+    BitXor from "^",
     ),
     Ops(InfixL)(
-    "*" as Mul.apply,
-    "/" as Div.apply,
-    "%" as Mod.apply,
+    Mul from "*",
+    Div from "/",
+    Mod from "%",
     ),
     Ops(InfixL)(
-    "+" as Add.apply,
-    "-" as Sub.apply,
+    Add from "+",
+    Sub from "-",
     ),
     Ops(InfixL)(
-    "<<" as LeftShift.apply,
-    ">>" as RightShift.apply,
+    LeftShift from "<<",
+    RightShift from ">>",
     ),
     Ops(InfixL)(
-    "==" as Eq.apply,
-    "!=" as Neq.apply,
-    "<=" as LTE.apply,
-    ">=" as GTE.apply,  
-    "<" as LT.apply,
-    ">" as GT.apply,
-    "in" as In.apply,
-    "!in" as NotIn.apply,
-    "!!" as Disjoint.apply,
+     Eq from "==",
+    Neq from "!=",
+    LTE from "<=",
+    GTE from ">=",  
+    LT from "<",
+    GT from ">",
+    In from "in",
+    NotIn from "!in",
+    Disjoint from "!!",
     ),
     Ops(InfixL)(
-    "&&" as BoolAnd.apply,
-    "||" as BoolOr.apply, 
+    BoolAnd from "&&",
+    BoolOr from "||", 
     ),
     Ops(InfixR)(
-    "==>" as RightImplies.apply,
+    RightImplies from "==>",
     ),
     Ops(InfixL)(
-    "<==" as LeftImplies.apply,
+    LeftImplies from "<==",
     ),
     Ops(InfixL)(
-    "<==>" as Iff.apply,
+    Iff from "<==>",
     )
 )
 
 lazy val literal: Parsley[Expr] =
-    bool.map(BoolLiteral(_))
-    | "null".as(Null)
-    | integer.map(IntLiteral(_))
-    | real.map(RealLiteral(_))
-    | char.map(CharLiteral(_))
-    | string.map(StringLiteral(_))
+    BoolLiteral(bool)
+    | ("null" as Null)
+    | IntLiteral(integer)
+    | RealLiteral(real)
+    | CharLiteral(char)
+    | StringLiteral(string)
 
-lazy val endless: Parsley[Expr] = ???
+lazy val endless: Parsley[Expr] = 
+    Cond("if" ~> expr, "then" ~> expr, "else" ~> expr)
 
