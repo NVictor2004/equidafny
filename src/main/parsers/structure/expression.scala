@@ -3,6 +3,15 @@ package parsers.structure
 // Creating the Expression data structure
 sealed trait Expr
 
+// Literals
+case class Ident(name: String) extends Expr
+case class BoolLiteral(value: Boolean) extends Expr
+case class CharLiteral(value: Int) extends Expr
+case class IntLiteral(value: BigInt) extends Expr
+case class StringLiteral(value: String) extends Expr
+case class RealLiteral(value: BigDecimal) extends Expr
+case object Null extends Expr
+
 // Operator Expressions
 case class Iff(left: Expr, right: Expr) extends Expr
 case class LeftImplies(left: Expr, right: Expr) extends Expr

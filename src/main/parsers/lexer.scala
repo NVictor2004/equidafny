@@ -6,15 +6,18 @@ import parsley.token.descriptions.*
 import parsley.token.descriptions.BreakCharDesc
 import parsley.token.descriptions.ExponentDesc
 import parsley.token.descriptions.PlusSignPresence.Optional
+import parsley.syntax.character.stringLift
 
 import scala.language.implicitConversions
 
 lazy val lexer = Lexer(desc)
 
 lazy val integer = lexer.lexeme.integer.number
+lazy val real = lexer.lexeme.real.number
 lazy val ident = lexer.lexeme.names.identifier
 lazy val char = lexer.lexeme.character.fullUtf16
 lazy val string = lexer.lexeme.string.fullUtf16
+lazy val bool = lexer.lexeme(("true" as true) | ("false" as false))
 lazy val implicits = lexer.lexeme.symbol.implicits
 
 def fully[A](p: Parsley[A]): Parsley[A] = lexer.fully(p)

@@ -2,20 +2,19 @@ package parsers.expression
 
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
-import parsers.lexer.implicits.implicitSymbol
-
-import parsers.structure.*
 
 import scala.language.implicitConversions
+
+import parsers.structure.*
+import parsers.lexer.*
+import parsers.lexer.implicits.implicitSymbol
 
 // TODO: ==> and <== should not be interchangeable
 // TODO: Within each group, different operators should not associate
 // TODO: Parentheses need to be used
 
 lazy val expr: Parsley[Expr] =
-precedence(
-    primary,
-)(
+precedence(ident.map(Ident(_)), literal, endless)(
     Ops(Prefix)(
     "!" as Not.apply,
     "-" as Neg.apply,
@@ -64,4 +63,13 @@ precedence(
     )
 )
 
-lazy val primary: Parsley[Expr] = ???
+lazy val literal: Parsley[Expr] =
+    bool.map(BoolLiteral(_))
+    | "null".as(Null)
+    | integer.map(IntLiteral(_))
+    | real.map(RealLiteral(_))
+    | char.map(CharLiteral(_))
+    | string.map(StringLiteral(_))
+
+lazy val endless: Parsley[Expr] = ???
+
