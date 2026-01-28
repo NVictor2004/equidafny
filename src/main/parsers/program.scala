@@ -24,6 +24,6 @@ lazy val function = Function(
 
 lazy val lemma = Lemma("lemma" ~> ident, "(" ~> parameters <~ ")", spec, option(block))
 
-lazy val datatype = Datatype("datatype" ~> ident, "=" ~> sepBy(declaredType, "|"))
+lazy val datatype = Datatype("datatype" ~> ident, option("<" ~> sepBy(ident, ",") <~ ">"), "=" ~> sepBy(declaredType, "|"))
 
 lazy val program = fully(many(datatype | function | lemma))

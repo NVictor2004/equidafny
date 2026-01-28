@@ -1,6 +1,6 @@
 package parsers.structure
 
-import parsley.templates.{PureParserBridge2, PureParserBridge4, PureParserBridge5}
+import parsley.templates.{PureParserBridge2, PureParserBridge3, PureParserBridge4, PureParserBridge5}
 
 sealed trait TopLevel
 
@@ -10,8 +10,8 @@ object Parameter extends PureParserBridge2[String, Type, Parameter]
 case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
 object DeclaredType extends PureParserBridge2[String, Option[List[Parameter]], DeclaredType]
 
-case class Datatype(name: String, types: List[DeclaredType]) extends TopLevel
-object Datatype extends PureParserBridge2[String, List[DeclaredType], Datatype]
+case class Datatype(name: String, generic: Option[List[String]], types: List[DeclaredType]) extends TopLevel
+object Datatype extends PureParserBridge3[String, Option[List[String]], List[DeclaredType], Datatype]
 
 case class Function(name: String, params: List[Parameter], returnType: Type, specs: List[Spec], body: Expr) extends TopLevel
 object Function extends PureParserBridge5[String, List[Parameter], Type, List[Spec], Expr, Function]

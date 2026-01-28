@@ -15,5 +15,5 @@ import parsers.expression.expr
 lazy val block = "{" ~> many(stmt) <~ "}"
 lazy val elseBlock: Parsley[CondStmt | List[Stmt]] = block | condStmt
 lazy val condStmt: Parsley[CondStmt] = CondStmt("if" ~> expr, block, option("else" ~> elseBlock))
-lazy val call = Call(ident, "(" ~> sepBy(expr, ",") <~ ")" <~ ";")
+lazy val call = CallStmt(ident, "(" ~> sepBy(expr, ",") <~ ")" <~ ";")
 lazy val stmt = condStmt | call

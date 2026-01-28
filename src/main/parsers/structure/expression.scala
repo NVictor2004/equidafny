@@ -77,3 +77,5 @@ object Not extends PureParserBridge1[Expr, Not]
 // Statement-Like Expressions
 case class Cond(cond: Expr, thenBranch: Expr, elseBranch: Expr) extends Expr
 object Cond extends PureParserBridge3[Expr, Expr, Expr, Cond]
+case class Call(name: String, args: List[Expr]) extends Expr
+object Call extends PureParserBridge2[String, List[Expr], Call]

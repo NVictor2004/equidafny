@@ -2,6 +2,8 @@ package parsers.expression
 
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
+import parsley.Parsley.atomic
+import parsley.combinator.sepBy
 
 import scala.language.implicitConversions
 
@@ -14,7 +16,7 @@ import parsers.lexer.implicits.implicitSymbol
 // TODO: Parentheses need to be used
 
 lazy val expr: Parsley[Expr] =
-precedence(Ident(ident), literal, endless)(
+precedence(endless, Ident(ident), literal, "(" ~> expr <~ ")")(
     Ops(Prefix)(
     Not from "!",
     Neg from "-",
@@ -73,4 +75,5 @@ lazy val literal: Parsley[Expr] =
 
 lazy val endless: Parsley[Expr] = 
     Cond("if" ~> expr, "then" ~> expr, "else" ~> expr)
+    | Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")")   
 

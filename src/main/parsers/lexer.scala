@@ -29,7 +29,9 @@ val desc: LexicalDesc = LexicalDesc.plain.copy(
   ),
 
   spaceDesc = SpaceDesc.plain.copy(
-    lineCommentStart = "//"
+    lineCommentStart = "//",
+    multiLineCommentStart = "/*",
+    multiLineCommentEnd = "*/"
   ),
 
   symbolDesc = SymbolDesc(
