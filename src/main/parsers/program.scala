@@ -19,7 +19,7 @@ lazy val parameters = sepBy(parameter, ",")
 lazy val declaredType = DeclaredType(ident, option("(" ~> parameters <~ ")"))
 
 lazy val function = Function(
-    "function" ~> ident, "(" ~> parameters <~ ")", ":" ~> typeParser, spec, "{" ~> expr <~ "}"
+    "function" ~> ident, option("<" ~> sepBy(ident, ",") <~ ">"), "(" ~> parameters <~ ")", ":" ~> typeParser, spec, "{" ~> expr <~ "}"
     )
 
 lazy val lemma = Lemma("lemma" ~> ident, "(" ~> parameters <~ ")", spec, option(block))

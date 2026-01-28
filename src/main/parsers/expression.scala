@@ -2,7 +2,7 @@ package parsers.expression
 
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
-import parsley.Parsley.atomic
+import parsley.Parsley.{atomic, notFollowedBy}
 import parsley.combinator.sepBy
 
 import scala.language.implicitConversions
@@ -22,8 +22,8 @@ precedence(endless, Ident(ident), literal, "(" ~> expr <~ ")")(
     Neg from "-",
     ),
     Ops(InfixL)(
-    BitOr from "|", 
-    BitAnd from "&",
+    // BitOr from atomic("|" <~ notFollowedBy("|")), TODO: Add this back in
+    BitAnd from atomic("&" <~ notFollowedBy("&")),
     BitXor from "^",
     ),
     Ops(InfixL)(
@@ -40,7 +40,7 @@ precedence(endless, Ident(ident), literal, "(" ~> expr <~ ")")(
     RightShift from ">>",
     ),
     Ops(InfixL)(
-     Eq from "==",
+    Eq from "==",
     Neq from "!=",
     LTE from "<=",
     GTE from ">=",  
@@ -72,6 +72,7 @@ lazy val literal: Parsley[Expr] =
     | RealLiteral(real)
     | CharLiteral(char)
     | StringLiteral(string)
+    | Cardinality("|" ~> expr <~ "|")
 
 lazy val endless: Parsley[Expr] = 
     Cond("if" ~> expr, "then" ~> expr, "else" ~> expr)

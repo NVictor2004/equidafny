@@ -1,6 +1,8 @@
 package parsers.types
 
 import parsley.Parsley
+import parsley.Parsley.atomic
+import parsley.combinator.{sepBy, option}
 
 import scala.language.implicitConversions
 
@@ -8,8 +10,17 @@ import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.structure.*
 
-lazy val typeParser: Parsley[Type] = 
+lazy val domainType: Parsley[Type] = 
     ("int" as TypeInt)
     | ("bool" as TypeBool)
     | ("string" as TypeString)
     | ("char" as TypeChar)
+    | ("nat" as TypeNat)
+    | Seq("seq" ~> "<" ~> typeParser <~ ">")
+    | Set("set" ~> "<" ~> typeParser <~ ">")
+    | TupleType("(" ~> sepBy(typeParser, ",") <~ ")")
+    | NamedType(ident, option("<" ~> sepBy(typeParser, ",") <~ ">"))
+
+lazy val arrowType = ArrowType(atomic(domainType <~ "->"), typeParser)
+
+lazy val typeParser: Parsley[Type] = arrowType | domainType

@@ -19,6 +19,8 @@ object StringLiteral extends PureParserBridge1[String, StringLiteral]
 case class RealLiteral(value: BigDecimal) extends Expr
 object RealLiteral extends PureParserBridge1[BigDecimal, RealLiteral]
 case object Null extends Expr
+case class Cardinality(expr: Expr) extends Expr
+object Cardinality extends PureParserBridge1[Expr, Cardinality]
 
 // Operator Expressions
 case class Iff(left: Expr, right: Expr) extends Expr
