@@ -12,6 +12,7 @@ import parsers.types.typeParser
 import parsers.specification.spec
 import parsers.expression.expr
 import parsers.statement.block
+import parsers.lexer.fully
 
 lazy val parameter = Parameter(ident, ":" ~> typeParser)
 lazy val parameters = sepBy(parameter, ",")
@@ -25,4 +26,4 @@ lazy val lemma = Lemma("lemma" ~> ident, "(" ~> parameters <~ ")", spec, option(
 
 lazy val datatype = Datatype("datatype" ~> ident, "=" ~> sepBy(declaredType, "|"))
 
-lazy val program = many(datatype | function | lemma)
+lazy val program = fully(many(datatype | function | lemma))
