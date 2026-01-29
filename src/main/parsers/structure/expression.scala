@@ -87,13 +87,6 @@ object Call extends PureParserBridge2[String, List[Expr], Call]
 case class Let(left: List[String], right: Expr, in: Expr) extends Expr
 object Let extends PureParserBridge3[List[String], Expr, Expr, Let]
 
-sealed trait Pattern
-object UnNamed extends Pattern
-case class Basic(name: String, values: Option[List[Pattern]]) extends Pattern
-object Basic extends PureParserBridge2[String, Option[List[Pattern]], Basic]
-case class PatternTuple(elements: List[Pattern]) extends Pattern
-object PatternTuple extends PureParserBridge1[List[Pattern], PatternTuple]
-
 case class Match(expr: Expr, cases: List[(Pattern, Expr)]) extends Expr
 object Match extends PureParserBridge2[Expr, List[(Pattern, Expr)], Match]
 

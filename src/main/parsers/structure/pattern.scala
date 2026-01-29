@@ -1,0 +1,10 @@
+package parsers.structure
+
+import parsley.templates.{PureParserBridge1, PureParserBridge2}
+
+sealed trait Pattern
+object UnNamed extends Pattern
+case class Basic(name: String, values: Option[List[Pattern]]) extends Pattern
+object Basic extends PureParserBridge2[String, Option[List[Pattern]], Basic]
+case class PatternTuple(elements: List[Pattern]) extends Pattern
+object PatternTuple extends PureParserBridge1[List[Pattern], PatternTuple]

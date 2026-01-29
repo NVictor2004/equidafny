@@ -10,10 +10,21 @@ import parsers.structure.*
 import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.expression.expr
+import parsers.pattern.pattern
 
 
 lazy val block = "{" ~> many(stmt) <~ "}"
 lazy val elseBlock: Parsley[CondStmt | List[Stmt]] = block | condStmt
 lazy val condStmt: Parsley[CondStmt] = CondStmt("if" ~> expr, block, option("else" ~> elseBlock))
 lazy val call = CallStmt(ident, "(" ~> sepBy(expr, ",") <~ ")" <~ ";")
-lazy val stmt = condStmt | call
+lazy val matchStmt: Parsley[MatchStmt] = MatchStmt("match" ~> expr,
+        "{" ~> many("case" ~> (pattern <~ "=>") <~> many(stmt)) <~ "}"
+        | many("case" ~> (pattern <~ "=>") <~> many(stmt))
+    )
+lazy val assertStmt = AssertStmt("assert" ~> expr <~ ";")
+lazy val letStmt = LetStmt("var" ~> lvalue, ":=" ~> expr <~ ";")
+lazy val stmt = condStmt | call | matchStmt | assertStmt | letStmt
+
+lazy val lvalue =
+    "(" ~> sepBy(ident, ",") <~ ")"
+    | ident.map(List(_))

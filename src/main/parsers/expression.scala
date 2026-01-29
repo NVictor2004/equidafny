@@ -3,13 +3,14 @@ package parsers.expression
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
 import parsley.Parsley.{atomic, notFollowedBy, many}
-import parsley.combinator.{sepBy, option}
+import parsley.combinator.sepBy
 
 import scala.language.implicitConversions
 
 import parsers.structure.*
 import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
+import parsers.pattern.pattern
 
 // TODO: ==> and <== should not be interchangeable
 // TODO: Within each group, different operators should not associate
@@ -98,8 +99,3 @@ lazy val endless: Parsley[Expr] =
 lazy val lvalue =
     "(" ~> sepBy(ident, ",") <~ ")"
     | ident.map(List(_))
-
-lazy val pattern: Parsley[Pattern] =
-        ("_" as UnNamed)
-        | Basic(ident, option("(" ~> sepBy(pattern, ",") <~ ")"))
-        | PatternTuple("(" ~> sepBy(pattern, ",") <~ ")")
