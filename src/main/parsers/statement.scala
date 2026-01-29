@@ -13,8 +13,8 @@ import parsers.expression.expr
 import parsers.pattern.pattern
 
 
-lazy val block = "{" ~> many(stmt) <~ "}"
-lazy val elseBlock: Parsley[CondStmt | List[Stmt]] = block | condStmt
+lazy val block = BlockStmt("{" ~> many(stmt) <~ "}")
+lazy val elseBlock: Parsley[CondStmt | BlockStmt] = block | condStmt
 lazy val condStmt: Parsley[CondStmt] = CondStmt("if" ~> expr, block, option("else" ~> elseBlock))
 lazy val call = CallStmt(ident, "(" ~> sepBy(expr, ",") <~ ")" <~ ";")
 lazy val matchStmt: Parsley[MatchStmt] = MatchStmt("match" ~> expr,
@@ -23,7 +23,7 @@ lazy val matchStmt: Parsley[MatchStmt] = MatchStmt("match" ~> expr,
     )
 lazy val assertStmt = AssertStmt("assert" ~> expr <~ ";")
 lazy val letStmt = LetStmt("var" ~> lvalue, ":=" ~> expr <~ ";")
-lazy val stmt = condStmt | call | matchStmt | assertStmt | letStmt
+lazy val stmt: Parsley[Stmt] = condStmt | call | matchStmt | assertStmt | letStmt | block
 
 lazy val lvalue =
     "(" ~> sepBy(ident, ",") <~ ")"

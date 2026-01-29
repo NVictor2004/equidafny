@@ -6,6 +6,7 @@ sealed trait TopLevel
 sealed trait GOption
 
 case object Equals extends GOption
+case object NotNew extends GOption
 
 case class Parameter(name: String, paramType: Type)
 object Parameter extends PureParserBridge2[String, Type, Parameter]
@@ -19,5 +20,8 @@ object Datatype extends PureParserBridge3[String, Option[List[(String, Option[GO
 case class Function(name: String, generic: Option[List[(String, Option[GOption])]], params: List[Parameter], returnType: Type, specs: List[Spec], body: Expr) extends TopLevel
 object Function extends PureParserBridge6[String, Option[List[(String, Option[GOption])]], List[Parameter], Type, List[Spec], Expr, Function]
 
-case class Lemma(name: String, generic: Option[List[(String, Option[GOption])]], params: List[Parameter], specs: List[Spec], body: Option[List[Stmt]]) extends TopLevel
-object Lemma extends PureParserBridge5[String, Option[List[(String, Option[GOption])]], List[Parameter], List[Spec], Option[List[Stmt]], Lemma]
+case class GhostFunction(name: String, generic: Option[List[(String, Option[GOption])]], params: List[Parameter], returnType: Type, specs: List[Spec], body: Expr) extends TopLevel
+object GhostFunction extends PureParserBridge6[String, Option[List[(String, Option[GOption])]], List[Parameter], Type, List[Spec], Expr, GhostFunction]
+
+case class Lemma(name: String, generic: Option[List[(String, Option[GOption])]], params: List[Parameter], specs: List[Spec], body: Option[BlockStmt]) extends TopLevel
+object Lemma extends PureParserBridge5[String, Option[List[(String, Option[GOption])]], List[Parameter], List[Spec], Option[BlockStmt], Lemma]
