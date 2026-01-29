@@ -18,9 +18,7 @@ import parsers.lexer.implicits.implicitSymbol
 lazy val expr: Parsley[Expr] =
 precedence(
     endless,
-    Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")"),
     Ident(atomic(ident <~ notFollowedBy("(" | "["))),
-    SeqIndex(atomic(ident <~ "["), expr <~ "]"),
     literal,
     "(" ~> expr <~ ")"
 )(
@@ -91,6 +89,11 @@ lazy val endless: Parsley[Expr] =
         "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> expr)
     )
+    | Assert("assert" ~> expr, ";" ~> expr)
+    | Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")")
+    | SeqIndex(atomic(ident <~ "["), expr <~ "]")
+    | Set("{" ~> sepBy(expr, ",") <~ "}")
+    | Lambda(atomic(lvalue <~ "=>"), expr)
 
 lazy val lvalue =
     "(" ~> sepBy(ident, ",") <~ ")"

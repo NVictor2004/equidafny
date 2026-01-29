@@ -22,7 +22,7 @@ lazy val function = Function(
     "function" ~> ident, option("<" ~> sepBy(ident, ",") <~ ">"), "(" ~> parameters <~ ")", ":" ~> typeParser, spec, "{" ~> expr <~ "}"
     )
 
-lazy val lemma = Lemma("lemma" ~> ident, "(" ~> parameters <~ ")", spec, option(block))
+lazy val lemma = Lemma("lemma" ~> ident, option("<" ~> sepBy(ident, ",") <~ ">"), "(" ~> parameters <~ ")", spec, option(block))
 
 lazy val datatype = Datatype("datatype" ~> ident, option("<" ~> sepBy(ident, ",") <~ ">"), "=" ~> sepBy(declaredType, "|"))
 

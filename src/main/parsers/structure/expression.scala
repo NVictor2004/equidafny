@@ -24,10 +24,6 @@ object Cardinality extends PureParserBridge1[Expr, Cardinality]
 case class Tuple(elements: List[Expr]) extends Expr
 object Tuple extends PureParserBridge1[List[Expr], Tuple]
 
-
-case class SeqIndex(name: String, index: Expr) extends Expr
-object SeqIndex extends PureParserBridge2[String, Expr, SeqIndex]
-
 // Operator Expressions
 case class Iff(left: Expr, right: Expr) extends Expr
 object Iff extends PureParserBridge2[Expr, Expr, Iff]
@@ -82,7 +78,7 @@ object Neg extends PureParserBridge1[Expr, Neg]
 case class Not(expr: Expr) extends Expr
 object Not extends PureParserBridge1[Expr, Not]
 
-// Statement-Like Expressions
+// Higher-level Expressions
 case class Cond(cond: Expr, thenBranch: Expr, elseBranch: Expr) extends Expr
 object Cond extends PureParserBridge3[Expr, Expr, Expr, Cond]
 case class Call(name: String, args: List[Expr]) extends Expr
@@ -100,3 +96,12 @@ object PatternTuple extends PureParserBridge1[List[Pattern], PatternTuple]
 
 case class Match(expr: Expr, cases: List[(Pattern, Expr)]) extends Expr
 object Match extends PureParserBridge2[Expr, List[(Pattern, Expr)], Match]
+
+case class SeqIndex(name: String, index: Expr) extends Expr
+object SeqIndex extends PureParserBridge2[String, Expr, SeqIndex]
+case class Set(elements: List[Expr]) extends Expr
+object Set extends PureParserBridge1[List[Expr], Set]
+case class Assert(expr: Expr, rem: Expr) extends Expr
+object Assert extends PureParserBridge2[Expr, Expr, Assert]
+case class Lambda(lvalues: List[String], body: Expr) extends Expr
+object Lambda extends PureParserBridge2[List[String], Expr, Lambda]
