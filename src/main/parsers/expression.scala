@@ -4,7 +4,6 @@ import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
 import parsley.Parsley.{atomic, notFollowedBy, many}
 import parsley.combinator.{sepBy, option}
-import parsley.syntax.zipped.*
 
 import scala.language.implicitConversions
 
@@ -20,9 +19,9 @@ lazy val expr: Parsley[Expr] =
 precedence(
     endless,
     Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")"),
-    literal,
     Ident(atomic(ident <~ notFollowedBy("(" | "["))),
     SeqIndex(atomic(ident <~ "["), expr <~ "]"),
+    literal,
     "(" ~> expr <~ ")"
 )(
     Ops(Prefix)(
@@ -73,8 +72,10 @@ precedence(
     )
 )
 
+// TODO: Something was wrong with the bool parser here
+// TODO: move literal back up in the precedence atom list to see
 lazy val literal: Parsley[Expr] =
-    BoolLiteral(bool)
+    BoolLiteral(bool) 
     | ("null" as Null)
     | IntLiteral(integer)
     | RealLiteral(real)
@@ -99,10 +100,3 @@ lazy val pattern: Parsley[Pattern] =
         ("_" as UnNamed)
         | Basic(ident, option("(" ~> sepBy(pattern, ",") <~ ")"))
         | PatternTuple("(" ~> sepBy(pattern, ",") <~ ")")
-
-// lazy val identDistinguish = (ident, option("(" ~> sepBy(expr, ",") <~ ")"), option("[" ~> expr <~ "]")).zipped((i, c, s) =>
-//         (c, s) match {
-//             case (Some(c), _) => Call(i, c)
-//             case (_, Some(s)) => SeqIndex(i, s)
-//             case _ => Ident(i)
-//     })
