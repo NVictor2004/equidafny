@@ -21,6 +21,12 @@ object RealLiteral extends PureParserBridge1[BigDecimal, RealLiteral]
 case object Null extends Expr
 case class Cardinality(expr: Expr) extends Expr
 object Cardinality extends PureParserBridge1[Expr, Cardinality]
+case class Tuple(elements: List[Expr]) extends Expr
+object Tuple extends PureParserBridge1[List[Expr], Tuple]
+
+
+case class SeqIndex(name: String, index: Expr) extends Expr
+object SeqIndex extends PureParserBridge2[String, Expr, SeqIndex]
 
 // Operator Expressions
 case class Iff(left: Expr, right: Expr) extends Expr
@@ -81,3 +87,16 @@ case class Cond(cond: Expr, thenBranch: Expr, elseBranch: Expr) extends Expr
 object Cond extends PureParserBridge3[Expr, Expr, Expr, Cond]
 case class Call(name: String, args: List[Expr]) extends Expr
 object Call extends PureParserBridge2[String, List[Expr], Call]
+
+case class Let(left: List[String], right: Expr, in: Expr) extends Expr
+object Let extends PureParserBridge3[List[String], Expr, Expr, Let]
+
+sealed trait Pattern
+object UnNamed extends Pattern
+case class Basic(name: String, values: Option[List[Pattern]]) extends Pattern
+object Basic extends PureParserBridge2[String, Option[List[Pattern]], Basic]
+case class PatternTuple(elements: List[Pattern]) extends Pattern
+object PatternTuple extends PureParserBridge1[List[Pattern], PatternTuple]
+
+case class Match(expr: Expr, cases: List[(Pattern, Expr)]) extends Expr
+object Match extends PureParserBridge2[Expr, List[(Pattern, Expr)], Match]

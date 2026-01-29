@@ -2,8 +2,9 @@ package parsers.expression
 
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
-import parsley.Parsley.{atomic, notFollowedBy}
-import parsley.combinator.sepBy
+import parsley.Parsley.{atomic, notFollowedBy, many}
+import parsley.combinator.{sepBy, option}
+import parsley.syntax.zipped.*
 
 import scala.language.implicitConversions
 
@@ -16,7 +17,14 @@ import parsers.lexer.implicits.implicitSymbol
 // TODO: Parentheses need to be used
 
 lazy val expr: Parsley[Expr] =
-precedence(endless, Ident(ident), literal, "(" ~> expr <~ ")")(
+precedence(
+    endless,
+    Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")"),
+    literal,
+    Ident(atomic(ident <~ notFollowedBy("(" | "["))),
+    SeqIndex(atomic(ident <~ "["), expr <~ "]"),
+    "(" ~> expr <~ ")"
+)(
     Ops(Prefix)(
     Not from "!",
     Neg from "-",
@@ -42,9 +50,9 @@ precedence(endless, Ident(ident), literal, "(" ~> expr <~ ")")(
     Ops(InfixL)(
     Eq from "==",
     Neq from "!=",
-    LTE from "<=",
+    LTE from atomic("<=" <~ notFollowedBy("=>")),
     GTE from ">=",  
-    LT from "<",
+    LT from atomic("<" <~ notFollowedBy("==>")),
     GT from ">",
     In from "in",
     NotIn from "!in",
@@ -58,7 +66,7 @@ precedence(endless, Ident(ident), literal, "(" ~> expr <~ ")")(
     RightImplies from "==>",
     ),
     Ops(InfixL)(
-    LeftImplies from "<==",
+    LeftImplies from atomic("<==" <~ notFollowedBy(">")),
     ),
     Ops(InfixL)(
     Iff from "<==>",
@@ -73,8 +81,28 @@ lazy val literal: Parsley[Expr] =
     | CharLiteral(char)
     | StringLiteral(string)
     | Cardinality("|" ~> expr <~ "|")
+    | Tuple("(" ~> sepBy(expr, ",") <~ ")")
 
 lazy val endless: Parsley[Expr] = 
     Cond("if" ~> expr, "then" ~> expr, "else" ~> expr)
-    | Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")")   
+    | Let("var" ~> lvalue, ":=" ~> expr, ";" ~> expr)
+    | Match("match" ~> expr,
+        "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
+        | many("case" ~> (pattern <~ "=>") <~> expr)
+    )
 
+lazy val lvalue =
+    "(" ~> sepBy(ident, ",") <~ ")"
+    | ident.map(List(_))
+
+lazy val pattern: Parsley[Pattern] =
+        ("_" as UnNamed)
+        | Basic(ident, option("(" ~> sepBy(pattern, ",") <~ ")"))
+        | PatternTuple("(" ~> sepBy(pattern, ",") <~ ")")
+
+// lazy val identDistinguish = (ident, option("(" ~> sepBy(expr, ",") <~ ")"), option("[" ~> expr <~ "]")).zipped((i, c, s) =>
+//         (c, s) match {
+//             case (Some(c), _) => Call(i, c)
+//             case (_, Some(s)) => SeqIndex(i, s)
+//             case _ => Ident(i)
+//     })
