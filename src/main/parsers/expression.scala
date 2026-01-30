@@ -2,8 +2,8 @@ package parsers.expression
 
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
-import parsley.Parsley.{atomic, notFollowedBy, many}
-import parsley.combinator.{sepBy, option}
+import parsley.Parsley.{atomic, notFollowedBy, many, lookAhead}
+import parsley.combinator.{sepBy, option, endBy}
 import parsley.syntax.zipped.*
 
 import scala.language.implicitConversions
@@ -18,12 +18,12 @@ import parsers.types.typeParser
 // TODO: Within each group, different operators should not associate
 // TODO: Parentheses need to be used
 
-lazy val expr: Parsley[Expr] =
+lazy val basic: Parsley[Expr] =
 precedence(
-    endless,
+    endlessBasic,
     Ident(ident, many("." ~> ident)),
     literal,
-    "(" ~> expr <~ ")"
+    Brackets("(" ~> basic <~ ")")
 )(
     Ops(Prefix)(
     Not from "!",
@@ -82,29 +82,41 @@ lazy val literal: Parsley[Expr] =
     | RealLiteral(real)
     | CharLiteral(char)
     | StringLiteral(string)
-    | Cardinality("|" ~> expr <~ "|")
-    | Tuple("(" ~> sepBy(expr, ",") <~ ")")
+    | Cardinality("|" ~> basic <~ "|")
+    | Tuple("(" ~> sepBy(basic, ",") <~ ")")
 
 lazy val index = 
-    StartSubIndex(atomic(expr <~ ".."))
-    | UpdateIndex(atomic(expr <~ ":="), expr)
-    | ExprIndex(expr)
+    StartSubIndex(atomic(basic <~ ".."))
+    | UpdateIndex(atomic(basic <~ ":="), basic)
+    | ExprIndex(basic)
 
-lazy val endless: Parsley[Expr] = 
-    Cond("if" ~> expr, "then" ~> expr, "else" ~> expr)
-    | Let(atomic("var" ~> lvalue <~ ":="), expr, ";" ~> expr)
-    | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> expr, ";" ~> expr)
-    | Match("match" ~> expr,
+lazy val lambda = Lambda(atomic(lvalue <~ "=>"), expr)
+
+lazy val endlessBasic = 
+    Cond("if" ~> basic, "then" ~> expr, "else" ~> expr)
+    | Match("match" ~> basic,
         "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> expr)
     )
-    | Assert("assert" ~> expr, ";" ~> expr)
-    | Forall( "forall" ~> ident, option(atomic(":" ~> typeParser)), "::" ~> expr)
-    | Call(atomic(ident <~ "("), (sepBy(expr, ",") <~ ")", many("(" ~> sepBy(expr, ",") <~ ")")).zipped((x, xs) => x :: xs))
+    | FunctionCall(atomic(ident <~ "("), (sepBy(basic, ",") <~ ")", many("(" ~> sepBy(basic, ",") <~ ")")).zipped((x, xs) => x :: xs))
+    | Forall("forall" ~> ident, option(atomic(":" ~> typeParser)), "::" ~> basic)
+    | Exists("exists" ~> ident, option(atomic(":" ~> typeParser)), "::" ~> basic)
     | SeqIndex(atomic(ident <~ "["), ((index <~ "]"), many("[" ~> index <~ "]")).zipped((i, is) => i :: is))
-    | Set("{" ~> sepBy(expr, ",") <~ "}")
-    | Seq("[" ~> sepBy(expr, ",") <~ "]")
-    | Lambda(atomic(lvalue <~ "=>"), expr)
+    | Set("{" ~> sepBy(basic, ",") <~ "}")
+    | Seq("[" ~> sepBy(basic, ",") <~ "]")
+    | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
+    | lambda
+
+lazy val expr = (endBy(endlessSpecial, ";"), basic).zipped {
+    case (Nil, e) => List(e)
+    case (es, e) => es :+ e
+}
+
+lazy val endlessSpecial: Parsley[Expr] = 
+    Let(atomic("var" ~> lvalue <~ ":="), basic)
+    | atomic(MethodCall(atomic(ident <~ "("), sepBy(basic, ",") <~ ")") <~ lookAhead(";"))
+    | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> basic)
+    | Assert("assert" ~> basic)
 
 lazy val lvalue =
     "(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")"

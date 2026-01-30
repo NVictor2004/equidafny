@@ -1,6 +1,6 @@
 package parsers.structure
 
-import parsley.templates.{PureParserBridge1, PureParserBridge2, PureParserBridge3, PureParserBridge4}
+import parsley.templates.{PureParserBridge1, PureParserBridge2, PureParserBridge3}
 
 // Creating the Expression data structure
 sealed trait Expr
@@ -23,6 +23,8 @@ case class Cardinality(expr: Expr) extends Expr
 object Cardinality extends PureParserBridge1[Expr, Cardinality]
 case class Tuple(elements: List[Expr]) extends Expr
 object Tuple extends PureParserBridge1[List[Expr], Tuple]
+case class Brackets(expr: Expr) extends Expr
+object Brackets extends PureParserBridge1[Expr, Brackets]
 
 // Operator Expressions
 case class Iff(left: Expr, right: Expr) extends Expr
@@ -79,18 +81,22 @@ case class Not(expr: Expr) extends Expr
 object Not extends PureParserBridge1[Expr, Not]
 
 // Higher-level Expressions
-case class Cond(cond: Expr, thenBranch: Expr, elseBranch: Expr) extends Expr
-object Cond extends PureParserBridge3[Expr, Expr, Expr, Cond]
-case class Call(name: String, args: List[List[Expr]]) extends Expr
-object Call extends PureParserBridge2[String, List[List[Expr]], Call]
+case class Cond(cond: Expr, thenBranch: List[Expr], elseBranch: List[Expr]) extends Expr
+object Cond extends PureParserBridge3[Expr, List[Expr], List[Expr], Cond]
+case class FunctionCall(name: String, args: List[List[Expr]]) extends Expr
+object FunctionCall extends PureParserBridge2[String, List[List[Expr]], FunctionCall]
+case class MethodCall(name: String, args: List[Expr]) extends Expr
+object MethodCall extends PureParserBridge2[String, List[Expr], MethodCall]
+case class LambdaCall(lambda: Lambda, args: List[Expr]) extends Expr
+object LambdaCall extends PureParserBridge2[Lambda, List[Expr], LambdaCall]
 
-case class Let(left: List[(String, Option[Type])], right: Expr, in: Expr) extends Expr
-object Let extends PureParserBridge3[List[(String, Option[Type])], Expr, Expr, Let]
-case class LetOrFail(left: String, leftType: Option[Type], right: Expr, in: Expr) extends Expr
-object LetOrFail extends PureParserBridge4[String, Option[Type], Expr, Expr, LetOrFail]
+case class Let(left: List[(String, Option[Type])], right: Expr) extends Expr
+object Let extends PureParserBridge2[List[(String, Option[Type])], Expr, Let]
+case class LetOrFail(left: String, leftType: Option[Type], right: Expr) extends Expr
+object LetOrFail extends PureParserBridge3[String, Option[Type], Expr, LetOrFail]
 
-case class Match(expr: Expr, cases: List[(Pattern, Expr)]) extends Expr
-object Match extends PureParserBridge2[Expr, List[(Pattern, Expr)], Match]
+case class Match(expr: Expr, cases: List[(Pattern, List[Expr])]) extends Expr
+object Match extends PureParserBridge2[Expr, List[(Pattern, List[Expr])], Match]
 
 sealed trait Index
 case class ExprIndex(value: Expr) extends Index
@@ -104,12 +110,14 @@ case class SeqIndex(name: String, indexes: List[Index]) extends Expr
 object SeqIndex extends PureParserBridge2[String, List[Index], SeqIndex]
 case class Set(elements: List[Expr]) extends Expr
 object Set extends PureParserBridge1[List[Expr], Set]
-case class Assert(expr: Expr, rem: Expr) extends Expr
+case class Assert(expr: Expr) extends Expr
+object Assert extends PureParserBridge1[Expr, Assert]
 case class Seq(elements: List[Expr]) extends Expr
 object Seq extends PureParserBridge1[List[Expr], Seq]
-object Assert extends PureParserBridge2[Expr, Expr, Assert]
-case class Lambda(lvalues: List[(String, Option[Type])], body: Expr) extends Expr
-object Lambda extends PureParserBridge2[List[(String, Option[Type])], Expr, Lambda]
+case class Lambda(lvalues: List[(String, Option[Type])], body: List[Expr]) extends Expr
+object Lambda extends PureParserBridge2[List[(String, Option[Type])], List[Expr], Lambda]
 
 case class Forall(variable: String, varType: Option[Type], body: Expr) extends Expr
 object Forall extends PureParserBridge3[String, Option[Type], Expr, Forall]
+case class Exists(variable: String, varType: Option[Type], body: Expr) extends Expr
+object Exists extends PureParserBridge3[String, Option[Type], Expr, Exists]

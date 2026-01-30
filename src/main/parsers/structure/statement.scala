@@ -14,5 +14,7 @@ case class AssertStmt(expr: Expr) extends Stmt
 object AssertStmt extends PureParserBridge1[Expr, AssertStmt]
 case class LetStmt(left: List[String], right: Expr) extends Stmt
 object LetStmt extends PureParserBridge2[List[String], Expr, LetStmt]
+case class LetOrFailStmt(left: String, right: Expr) extends Stmt
+object LetOrFailStmt extends PureParserBridge2[String, Expr, LetOrFailStmt] 
 case class BlockStmt(stmts: List[Stmt]) extends Stmt
 object BlockStmt extends PureParserBridge1[List[Stmt], BlockStmt]
