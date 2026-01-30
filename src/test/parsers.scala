@@ -6,7 +6,8 @@ import parsers.program.program
 
 class ParserTestSuite extends AnyFlatSpec {
   val scalaPath = os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
-  val scalaExamples = os.walk(scalaPath).filter(os.isFile)
+  val scalaDirectories = os.list(scalaPath).filter(_.baseName != "incomplete")
+  val scalaExamples = scalaDirectories.flatMap(os.list(_))
 
   for (example <- scalaExamples) {
     example.baseName should "be parsed correctly" in {
