@@ -21,7 +21,7 @@ import parsers.types.typeParser
 lazy val expr: Parsley[Expr] =
 precedence(
     endless,
-    Ident(atomic(ident <~ notFollowedBy("(" | "["))),
+    Ident(ident, many("." ~> ident)),
     literal,
     "(" ~> expr <~ ")"
 )(

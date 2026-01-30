@@ -6,8 +6,8 @@ import parsley.templates.{PureParserBridge1, PureParserBridge2, PureParserBridge
 sealed trait Expr
 
 // Literals
-case class Ident(name: String) extends Expr
-object Ident extends PureParserBridge1[String, Ident]
+case class Ident(name: String, suffixes: List[String]) extends Expr
+object Ident extends PureParserBridge2[String, List[String], Ident]
 case class BoolLiteral(value: Boolean) extends Expr
 object BoolLiteral extends PureParserBridge1[Boolean, BoolLiteral]
 case class CharLiteral(value: Int) extends Expr
