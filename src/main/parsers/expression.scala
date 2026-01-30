@@ -3,7 +3,8 @@ package parsers.expression
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
 import parsley.Parsley.{atomic, notFollowedBy, many}
-import parsley.combinator.sepBy
+import parsley.combinator.{sepBy, option}
+import parsley.syntax.zipped.*
 
 import scala.language.implicitConversions
 
@@ -11,6 +12,7 @@ import parsers.structure.*
 import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.pattern.pattern
+import parsers.types.typeParser
 
 // TODO: ==> and <== should not be interchangeable
 // TODO: Within each group, different operators should not associate
@@ -46,7 +48,7 @@ precedence(
     RightShift from ">>",
     ),
     Ops(InfixL)(
-    Eq from "==",
+    Eq from atomic("==" <~ notFollowedBy(">")),
     Neq from "!=",
     LTE from atomic("<=" <~ notFollowedBy("=>")),
     GTE from ">=",  
@@ -83,19 +85,27 @@ lazy val literal: Parsley[Expr] =
     | Cardinality("|" ~> expr <~ "|")
     | Tuple("(" ~> sepBy(expr, ",") <~ ")")
 
+lazy val index = 
+    StartSubIndex(atomic(expr <~ ".."))
+    | UpdateIndex(atomic(expr <~ ":="), expr)
+    | ExprIndex(expr)
+
 lazy val endless: Parsley[Expr] = 
     Cond("if" ~> expr, "then" ~> expr, "else" ~> expr)
-    | Let("var" ~> lvalue, ":=" ~> expr, ";" ~> expr)
+    | Let(atomic("var" ~> lvalue <~ ":="), expr, ";" ~> expr)
+    | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> expr, ";" ~> expr)
     | Match("match" ~> expr,
         "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> expr)
     )
     | Assert("assert" ~> expr, ";" ~> expr)
-    | Call(atomic(ident <~ "("), sepBy(expr, ",") <~ ")")
-    | SeqIndex(atomic(ident <~ "["), expr <~ "]")
+    | Forall( "forall" ~> ident, option(atomic(":" ~> typeParser)), "::" ~> expr)
+    | Call(atomic(ident <~ "("), (sepBy(expr, ",") <~ ")", many("(" ~> sepBy(expr, ",") <~ ")")).zipped((x, xs) => x :: xs))
+    | SeqIndex(atomic(ident <~ "["), ((index <~ "]"), many("[" ~> index <~ "]")).zipped((i, is) => i :: is))
     | Set("{" ~> sepBy(expr, ",") <~ "}")
+    | Seq("[" ~> sepBy(expr, ",") <~ "]")
     | Lambda(atomic(lvalue <~ "=>"), expr)
 
 lazy val lvalue =
-    "(" ~> sepBy(ident, ",") <~ ")"
-    | ident.map(List(_))
+    "(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")"
+    | ident.map(i => List((i, None)))

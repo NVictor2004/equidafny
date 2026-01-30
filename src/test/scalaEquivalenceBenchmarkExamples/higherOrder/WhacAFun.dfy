@@ -72,12 +72,7 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A)
   requires (n >= 0)
   ensures (repeat1(n, f) == repeat2(n, f))
 {
-  if (n == 0) {
-    assert forall a: A :: repeat1(n, f)(a) == repeat2(n, f)(a);
-    assert forall a: A :: (repeat1(n, f))(a) == (repeat2(n, f))(a);
-  } else {
-    assert forall a: A :: repeat1(n, f)(a) == repeat2(n, f)(a);
-  }
+  assert forall a: A :: repeat1(n, f)(a) == repeat2(n, f)(a);
 }
 
 function repeat3<A>(n: int, f: A -> A): A -> A
@@ -94,10 +89,5 @@ lemma equivalenceRepeat13<A>(n: int, f: A -> A)
   requires (n >= 0)
   ensures (repeat1(n, f) == repeat3(n, f))
 {
-  if (n == 0) {
-    assert forall a: A :: repeat1(n, f)(a) == repeat3(n, f)(a);
-    assert forall a: A :: (repeat1(n, f))(a) == (repeat3(n, f))(a);
-  } else {
-    assert forall a: A :: repeat1(n, f)(a) == repeat3(n, f)(a);
-  }
+  assert forall a: A :: repeat1(n, f)(a) == repeat3(n, f)(a);
 }
