@@ -10,8 +10,8 @@ import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.structure.*
 
-private lazy val domainType: Parsley[Type] = 
-    ("int" as TypeInt)
+private lazy val domainType: Parsley[Type] =
+  ("int" as TypeInt)
     | ("bool" as TypeBool)
     | ("string" as TypeString)
     | ("char" as TypeChar)

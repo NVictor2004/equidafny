@@ -14,7 +14,7 @@ class ParserTestSuite extends AnyFlatSpec {
       val output = program.parse(os.read(example))
       output match {
         case Failure(msg) => fail(msg)
-        case _ =>
+        case _            =>
       }
     }
   }

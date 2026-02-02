@@ -11,7 +11,7 @@ import parsers.lexer.implicits.implicitSymbol
 import parsers.expression.basic
 
 lazy val spec = many(
-    Requires("requires" ~> basic)
+  Requires("requires" ~> basic)
     | Ensures("ensures" ~> basic)
     | Decreases("decreases" ~> sepBy(basic, ","))
 )

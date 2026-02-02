@@ -12,16 +12,17 @@ import parsers.lexer.implicits.implicitSymbol
 import parsers.expression.basic
 import parsers.pattern.pattern
 
-
 lazy val block = BlockStmt("{" ~> many(stmt) <~ "}")
 
 private lazy val elseBlock: Parsley[CondStmt | BlockStmt] = block | condStmt
-private lazy val condStmt: Parsley[CondStmt] = CondStmt("if" ~> basic, block, option("else" ~> elseBlock))
+private lazy val condStmt: Parsley[CondStmt] =
+  CondStmt("if" ~> basic, block, option("else" ~> elseBlock))
 
-private lazy val stmt: Parsley[Stmt] = 
-    CallStmt(ident, "(" ~> sepBy(basic, ",") <~ ")" <~ ";")
-    | MatchStmt("match" ~> basic,
-        "{" ~> many("case" ~> (pattern <~ "=>") <~> many(stmt)) <~ "}"
+private lazy val stmt: Parsley[Stmt] =
+  CallStmt(ident, "(" ~> sepBy(basic, ",") <~ ")" <~ ";")
+    | MatchStmt(
+      "match" ~> basic,
+      "{" ~> many("case" ~> (pattern <~ "=>") <~> many(stmt)) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> many(stmt))
     )
     | AssertStmt("assert" ~> basic <~ ";")
@@ -31,5 +32,5 @@ private lazy val stmt: Parsley[Stmt] =
     | block
 
 private lazy val lvalue =
-    "(" ~> sepBy(ident, ",") <~ ")"
+  "(" ~> sepBy(ident, ",") <~ ")"
     | ident.map(List(_))

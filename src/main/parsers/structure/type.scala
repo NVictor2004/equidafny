@@ -13,7 +13,8 @@ object SeqType extends PureParserBridge1[Type, SeqType]
 case class SetType(elementType: Type) extends Type
 object SetType extends PureParserBridge1[Type, SetType]
 case class NamedType(name: String, generics: Option[List[Type]]) extends Type
-object NamedType extends PureParserBridge2[String, Option[List[Type]], NamedType]
+object NamedType
+    extends PureParserBridge2[String, Option[List[Type]], NamedType]
 case class TupleType(elements: List[Type]) extends Type
 object TupleType extends PureParserBridge1[List[Type], TupleType]
 case class ArrowType(from: Type, to: Type) extends Type

@@ -11,7 +11,7 @@ import parsers.lexer.implicits.implicitSymbol
 import parsers.expression.literal
 
 lazy val pattern: Parsley[Pattern] =
-    ("_" as UnNamed)
+  ("_" as UnNamed)
     | Basic(ident, option("(" ~> sepBy(pattern, ",") <~ ")"))
     | Constant(literal)
     | PatternTuple("(" ~> sepBy(pattern, ",") <~ ")")

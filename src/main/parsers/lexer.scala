@@ -10,6 +10,96 @@ import parsley.syntax.character.stringLift
 
 import scala.language.implicitConversions
 
+private val HardKeywordSet = Set(
+  "abstract",
+  "allocated",
+  "as",
+  "assert",
+  "assume",
+  "bool",
+  "break",
+  "by",
+  "calc",
+  "case",
+  "char",
+  "class",
+  "codatatype",
+  "const",
+  "constructor",
+  "continue",
+  "datatype",
+  "decreases",
+  "else",
+  "ensures",
+  "exists",
+  "expect",
+  "export",
+  "extends",
+  "false",
+  "for",
+  "forall",
+  "fresh",
+  "function",
+  "ghost",
+  "if",
+  "imap",
+  "import",
+  "in",
+  "include",
+  "int",
+  "invariant",
+  "is",
+  "iset",
+  "iterator",
+  "label",
+  "lemma",
+  "map",
+  "match",
+  "method",
+  "modifies",
+  "modify",
+  "module",
+  "multiset",
+  "nameonly",
+  "nat",
+  "new",
+  "newtype",
+  "null",
+  "object",
+  "object?",
+  "old",
+  "opaque",
+  "opened",
+  "ORDINAL",
+  "predicate",
+  "print",
+  "provides",
+  "reads",
+  "real",
+  "refines",
+  "requires",
+  "return",
+  "returns",
+  "reveal",
+  "reveals",
+  "seq",
+  "set",
+  "static",
+  "string",
+  "then",
+  "this",
+  "trait",
+  "true",
+  "twostate",
+  "type",
+  "unchanged",
+  "var",
+  "while",
+  "witness",
+  "yield",
+  "yields"
+)
+
 lazy val lexer = Lexer(desc)
 
 lazy val integer = lexer.lexeme.integer.number
@@ -24,44 +114,25 @@ def fully[A](p: Parsley[A]): Parsley[A] = lexer.fully(p)
 
 private val desc: LexicalDesc = LexicalDesc.plain.copy(
   nameDesc = NameDesc.plain.copy(
-    identifierStart = Basic(c => c.isLetter || c == '\'' || c == '_' || c == '?'),
-    identifierLetter = Basic(c => c.isLetterOrDigit || c == '\'' || c == '_' || c == '?'),
+    identifierStart =
+      Basic(c => c.isLetter || c == '\'' || c == '_' || c == '?'),
+    identifierLetter =
+      Basic(c => c.isLetterOrDigit || c == '\'' || c == '_' || c == '?')
   ),
-
   spaceDesc = SpaceDesc.plain.copy(
     lineCommentStart = "//",
     multiLineCommentStart = "/*",
     multiLineCommentEnd = "*/"
   ),
-
   symbolDesc = SymbolDesc(
     caseSensitive = true,
-    hardKeywords = Set("abstract", "allocated", "as", "assert", "assume",
-    "bool", "break", "by",
-    "calc", "case", "char", "class", "codatatype",
-    "const", "constructor", "continue",
-    "datatype", "decreases",
-    "else", "ensures", "exists", "expect", "export", "extends",
-    "false", "for", "forall", "fresh", "function", "ghost",
-    "if", "imap", "import", "in", "include",
-    "int", "invariant", "is", "iset", "iterator",
-    "label", "lemma", "map", "match", "method",
-    "modifies", "modify", "module", "multiset",
-    "nameonly", "nat", "new", "newtype", "null",
-    "object", "object?", "old", "opaque", "opened", "ORDINAL",
-    "predicate", "print", "provides",
-    "reads", "real", "refines", "requires", "return",
-    "returns", "reveal", "reveals",
-    "seq", "set", "static", "string",
-    "then", "this", "trait", "true", "twostate", "type",
-    "unchanged", "var", "while", "witness",
-    "yield", "yields"),
-    hardOperators = Set(),
+    hardKeywords = HardKeywordSet,
+    hardOperators = Set()
   ),
-
   textDesc = TextDesc.plain.copy(
-    graphicCharacter =
-      Unicode(c => c != '\'' && c != '\"' && c != '\\' && c != '\r' && c != '\n'),
+    graphicCharacter = Unicode(c =>
+      c != '\'' && c != '\"' && c != '\\' && c != '\r' && c != '\n'
+    ),
 
     // TODO: Add support for Unicode characters
     escapeSequences = EscapeDesc.plain.copy(
@@ -71,16 +142,17 @@ private val desc: LexicalDesc = LexicalDesc.plain.copy(
         "r" -> '\r',
         "t" -> '\t',
         "0" -> '\u0000'
-      ),
+      )
     )
   ),
-
   numericDesc = NumericDesc.plain.copy(
-    literalBreakChar = BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),
+    literalBreakChar =
+      BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),
     leadingDotAllowed = true,
     trailingDotAllowed = true,
     integerNumbersCanBeOctal = false,
     hexadecimalLeads = Set('x'),
-    decimalExponentDesc = ExponentDesc.Supported(false, Set('e'), 10, Optional, true),
-  ),
+    decimalExponentDesc =
+      ExponentDesc.Supported(false, Set('e'), 10, Optional, true)
+  )
 )
