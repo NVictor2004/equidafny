@@ -10,6 +10,65 @@ import parsley.syntax.character.stringLift
 
 import scala.language.implicitConversions
 
+lazy val lexer = Lexer(desc)
+
+lazy val integer = lexer.lexeme.integer.number
+lazy val real = lexer.lexeme.real.number
+lazy val ident = lexer.lexeme.names.identifier
+lazy val char = lexer.lexeme.character.fullUtf16
+lazy val string = lexer.lexeme.string.fullUtf16
+lazy val bool = lexer.lexeme(("true" as true) | ("false" as false))
+lazy val implicits = lexer.lexeme.symbol.implicits
+
+def fully[A](p: Parsley[A]): Parsley[A] = lexer.fully(p)
+
+private val IdentSpecialChars = Set('\'', '_', '?')
+private val LiteralEscapeChars = Set('\'', '\"', '\\')
+private val EscapeCharMapping: Map[String, Int] = Map(
+  "n" -> '\n',
+  "r" -> '\r',
+  "t" -> '\t',
+  "0" -> '\u0000'
+)
+private val IllegalGraphicChars: Set[Int] = Set('\'', '\"', '\\', '\r', '\n')
+
+private val desc: LexicalDesc = LexicalDesc.plain.copy(
+  nameDesc = NameDesc.plain.copy(
+    identifierStart = Basic(c => c.isLetter || IdentSpecialChars.contains(c)),
+    identifierLetter =
+      Basic(c => c.isLetterOrDigit || IdentSpecialChars.contains(c))
+  ),
+  spaceDesc = SpaceDesc.plain.copy(
+    lineCommentStart = "//",
+    multiLineCommentStart = "/*",
+    multiLineCommentEnd = "*/"
+  ),
+  symbolDesc = SymbolDesc(
+    caseSensitive = true,
+    hardKeywords = HardKeywordSet,
+    hardOperators = Set()
+  ),
+  textDesc = TextDesc.plain.copy(
+    graphicCharacter = Unicode(c => !IllegalGraphicChars.contains(c)),
+
+    // TODO: Add support for Unicode characters
+    escapeSequences = EscapeDesc.plain.copy(
+      literals = LiteralEscapeChars,
+      mapping = EscapeCharMapping
+    )
+  ),
+  numericDesc = NumericDesc.plain.copy(
+    literalBreakChar =
+      BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),
+    leadingDotAllowed = true,
+    trailingDotAllowed = true,
+    integerNumbersCanBeOctal = false,
+    hexadecimalLeads = Set('x'),
+    decimalExponentDesc =
+      ExponentDesc.Supported(false, Set('e'), 10, Optional, true)
+  )
+)
+
 private val HardKeywordSet = Set(
   "abstract",
   "allocated",
@@ -98,61 +157,4 @@ private val HardKeywordSet = Set(
   "witness",
   "yield",
   "yields"
-)
-
-lazy val lexer = Lexer(desc)
-
-lazy val integer = lexer.lexeme.integer.number
-lazy val real = lexer.lexeme.real.number
-lazy val ident = lexer.lexeme.names.identifier
-lazy val char = lexer.lexeme.character.fullUtf16
-lazy val string = lexer.lexeme.string.fullUtf16
-lazy val bool = lexer.lexeme(("true" as true) | ("false" as false))
-lazy val implicits = lexer.lexeme.symbol.implicits
-
-def fully[A](p: Parsley[A]): Parsley[A] = lexer.fully(p)
-
-private val desc: LexicalDesc = LexicalDesc.plain.copy(
-  nameDesc = NameDesc.plain.copy(
-    identifierStart =
-      Basic(c => c.isLetter || c == '\'' || c == '_' || c == '?'),
-    identifierLetter =
-      Basic(c => c.isLetterOrDigit || c == '\'' || c == '_' || c == '?')
-  ),
-  spaceDesc = SpaceDesc.plain.copy(
-    lineCommentStart = "//",
-    multiLineCommentStart = "/*",
-    multiLineCommentEnd = "*/"
-  ),
-  symbolDesc = SymbolDesc(
-    caseSensitive = true,
-    hardKeywords = HardKeywordSet,
-    hardOperators = Set()
-  ),
-  textDesc = TextDesc.plain.copy(
-    graphicCharacter = Unicode(c =>
-      c != '\'' && c != '\"' && c != '\\' && c != '\r' && c != '\n'
-    ),
-
-    // TODO: Add support for Unicode characters
-    escapeSequences = EscapeDesc.plain.copy(
-      literals = Set('\'', '\"', '\\'),
-      mapping = Map(
-        "n" -> '\n',
-        "r" -> '\r',
-        "t" -> '\t',
-        "0" -> '\u0000'
-      )
-    )
-  ),
-  numericDesc = NumericDesc.plain.copy(
-    literalBreakChar =
-      BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),
-    leadingDotAllowed = true,
-    trailingDotAllowed = true,
-    integerNumbersCanBeOctal = false,
-    hexadecimalLeads = Set('x'),
-    decimalExponentDesc =
-      ExponentDesc.Supported(false, Set('e'), 10, Optional, true)
-  )
 )
