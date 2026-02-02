@@ -2,7 +2,6 @@ package parsers.structure
 
 import parsley.templates.{PureParserBridge1, PureParserBridge2, PureParserBridge3}
 
-// Creating the Expression data structure
 sealed trait Expr
 
 // Literals
@@ -79,6 +78,10 @@ case class Neg(expr: Expr) extends Expr
 object Neg extends PureParserBridge1[Expr, Neg]
 case class Not(expr: Expr) extends Expr
 object Not extends PureParserBridge1[Expr, Not]
+case class Forall(variable: String, varType: Option[Type], body: Expr) extends Expr
+object Forall extends PureParserBridge3[String, Option[Type], Expr, Forall]
+case class Exists(variable: String, varType: Option[Type], body: Expr) extends Expr
+object Exists extends PureParserBridge3[String, Option[Type], Expr, Exists]
 
 // Higher-level Expressions
 case class Cond(cond: Expr, thenBranch: List[Expr], elseBranch: List[Expr]) extends Expr
@@ -89,25 +92,12 @@ case class MethodCall(name: String, args: List[Expr]) extends Expr
 object MethodCall extends PureParserBridge2[String, List[Expr], MethodCall]
 case class LambdaCall(lambda: Lambda, args: List[Expr]) extends Expr
 object LambdaCall extends PureParserBridge2[Lambda, List[Expr], LambdaCall]
-
 case class Let(left: List[(String, Option[Type])], right: Expr) extends Expr
 object Let extends PureParserBridge2[List[(String, Option[Type])], Expr, Let]
 case class LetOrFail(left: String, leftType: Option[Type], right: Expr) extends Expr
 object LetOrFail extends PureParserBridge3[String, Option[Type], Expr, LetOrFail]
-
 case class Match(expr: Expr, cases: List[(Pattern, List[Expr])]) extends Expr
 object Match extends PureParserBridge2[Expr, List[(Pattern, List[Expr])], Match]
-
-sealed trait Index
-case class ExprIndex(value: Expr) extends Index
-object ExprIndex extends PureParserBridge1[Expr, ExprIndex]
-case class StartSubIndex(value: Expr) extends Index
-object StartSubIndex extends PureParserBridge1[Expr, StartSubIndex]
-case class UpdateIndex(left: Expr, right: Expr) extends Index
-object UpdateIndex extends PureParserBridge2[Expr, Expr, UpdateIndex]
-
-case class SeqIndex(name: String, indexes: List[Index]) extends Expr
-object SeqIndex extends PureParserBridge2[String, List[Index], SeqIndex]
 case class Set(elements: List[Expr]) extends Expr
 object Set extends PureParserBridge1[List[Expr], Set]
 case class Assert(expr: Expr) extends Expr
@@ -116,8 +106,5 @@ case class Seq(elements: List[Expr]) extends Expr
 object Seq extends PureParserBridge1[List[Expr], Seq]
 case class Lambda(lvalues: List[(String, Option[Type])], body: List[Expr]) extends Expr
 object Lambda extends PureParserBridge2[List[(String, Option[Type])], List[Expr], Lambda]
-
-case class Forall(variable: String, varType: Option[Type], body: Expr) extends Expr
-object Forall extends PureParserBridge3[String, Option[Type], Expr, Forall]
-case class Exists(variable: String, varType: Option[Type], body: Expr) extends Expr
-object Exists extends PureParserBridge3[String, Option[Type], Expr, Exists]
+case class SeqIndex(name: String, indexes: List[Index]) extends Expr
+object SeqIndex extends PureParserBridge2[String, List[Index], SeqIndex]

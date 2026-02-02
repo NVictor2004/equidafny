@@ -13,6 +13,7 @@ import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.pattern.pattern
 import parsers.types.typeParser
+import parsers.index.index
 
 // TODO: ==> and <== should not be interchangeable
 // TODO: Within each group, different operators should not associate
@@ -20,7 +21,7 @@ import parsers.types.typeParser
 
 lazy val basic: Parsley[Expr] =
 precedence(
-    endlessBasic,
+    basicHigher,
     Ident(ident, many("." ~> ident)),
     literal,
     Brackets("(" ~> basic <~ ")")
@@ -85,14 +86,9 @@ lazy val literal: Parsley[Expr] =
     | Cardinality("|" ~> basic <~ "|")
     | Tuple("(" ~> sepBy(basic, ",") <~ ")")
 
-lazy val index = 
-    StartSubIndex(atomic(basic <~ ".."))
-    | UpdateIndex(atomic(basic <~ ":="), basic)
-    | ExprIndex(basic)
-
 lazy val lambda = Lambda(atomic(lvalue <~ "=>"), expr)
 
-lazy val endlessBasic = 
+lazy val basicHigher = 
     Cond("if" ~> basic, "then" ~> expr, "else" ~> expr)
     | Match("match" ~> basic,
         "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
@@ -107,12 +103,12 @@ lazy val endlessBasic =
     | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
     | lambda
 
-lazy val expr = (endBy(endlessSpecial, ";"), basic).zipped {
+lazy val expr = (endBy(specialHigher, ";"), basic).zipped {
     case (Nil, e) => List(e)
     case (es, e) => es :+ e
 }
 
-lazy val endlessSpecial: Parsley[Expr] = 
+lazy val specialHigher: Parsley[Expr] = 
     Let(atomic("var" ~> lvalue <~ ":="), basic)
     | atomic(MethodCall(atomic(ident <~ "("), sepBy(basic, ",") <~ ")") <~ lookAhead(";"))
     | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> basic)
