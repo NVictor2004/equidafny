@@ -3,108 +3,112 @@ package parsers.structure
 import parsley.templates.{PureParserBridge1, PureParserBridge2, PureParserBridge3}
 
 sealed trait Expr
+sealed trait BasicExpr extends Expr
+sealed trait ExtendedExpr extends Expr
 
 // Literals
-case class Ident(name: String, suffixes: List[String]) extends Expr
+case class Ident(name: String, suffixes: List[String]) extends BasicExpr
 object Ident extends PureParserBridge2[String, List[String], Ident]
-case class BoolLiteral(value: Boolean) extends Expr
+case class BoolLiteral(value: Boolean) extends BasicExpr
 object BoolLiteral extends PureParserBridge1[Boolean, BoolLiteral]
-case class CharLiteral(value: Int) extends Expr
+case class CharLiteral(value: Int) extends BasicExpr
 object CharLiteral extends PureParserBridge1[Int, CharLiteral]
-case class IntLiteral(value: BigInt) extends Expr
+case class IntLiteral(value: BigInt) extends BasicExpr
 object IntLiteral extends PureParserBridge1[BigInt, IntLiteral]
-case class StringLiteral(value: String) extends Expr
+case class StringLiteral(value: String) extends BasicExpr
 object StringLiteral extends PureParserBridge1[String, StringLiteral]
-case class RealLiteral(value: BigDecimal) extends Expr
+case class RealLiteral(value: BigDecimal) extends BasicExpr
 object RealLiteral extends PureParserBridge1[BigDecimal, RealLiteral]
-case object Null extends Expr
-case class Cardinality(expr: Expr) extends Expr
-object Cardinality extends PureParserBridge1[Expr, Cardinality]
-case class Tuple(elements: List[Expr]) extends Expr
-object Tuple extends PureParserBridge1[List[Expr], Tuple]
-case class Brackets(expr: Expr) extends Expr
-object Brackets extends PureParserBridge1[Expr, Brackets]
+case object Null extends BasicExpr
+case class Cardinality(expr: BasicExpr) extends BasicExpr
+object Cardinality extends PureParserBridge1[BasicExpr, Cardinality]
+case class Tuple(elements: List[BasicExpr]) extends BasicExpr
+object Tuple extends PureParserBridge1[List[BasicExpr], Tuple]
+case class Brackets(expr: BasicExpr) extends BasicExpr
+object Brackets extends PureParserBridge1[BasicExpr, Brackets]
 
 // Operator Expressions
-case class Iff(left: Expr, right: Expr) extends Expr
-object Iff extends PureParserBridge2[Expr, Expr, Iff]
-case class LeftImplies(left: Expr, right: Expr) extends Expr
-object LeftImplies extends PureParserBridge2[Expr, Expr, LeftImplies]
-case class RightImplies(left: Expr, right: Expr) extends Expr
-object RightImplies extends PureParserBridge2[Expr, Expr, RightImplies]
-case class BoolAnd(left: Expr, right: Expr) extends Expr
-object BoolAnd extends PureParserBridge2[Expr, Expr, BoolAnd]
-case class BoolOr(left: Expr, right: Expr) extends Expr
-object BoolOr extends PureParserBridge2[Expr, Expr, BoolOr]
-case class Eq(left: Expr, right: Expr) extends Expr
-object Eq extends PureParserBridge2[Expr, Expr, Eq]
-case class Neq(left: Expr, right: Expr) extends Expr
-object Neq extends PureParserBridge2[Expr, Expr, Neq]
-case class LT(left: Expr, right: Expr) extends Expr
-object LT extends PureParserBridge2[Expr, Expr, LT]
-case class LTE(left: Expr, right: Expr) extends Expr
-object LTE extends PureParserBridge2[Expr, Expr, LTE]
-case class GT(left: Expr, right: Expr) extends Expr
-object GT extends PureParserBridge2[Expr, Expr, GT]
-case class GTE(left: Expr, right: Expr) extends Expr
-object GTE extends PureParserBridge2[Expr, Expr, GTE]
-case class In(left: Expr, right: Expr) extends Expr
-object In extends PureParserBridge2[Expr, Expr, In]
-case class NotIn(left: Expr, right: Expr) extends Expr
-object NotIn extends PureParserBridge2[Expr, Expr, NotIn]
-case class Disjoint(left: Expr, right: Expr) extends Expr
-object Disjoint extends PureParserBridge2[Expr, Expr, Disjoint]
-case class LeftShift(left: Expr, right: Expr) extends Expr
-object LeftShift extends PureParserBridge2[Expr, Expr, LeftShift]
-case class RightShift(left: Expr, right: Expr) extends Expr
-object RightShift extends PureParserBridge2[Expr, Expr, RightShift]
-case class Add(left: Expr, right: Expr) extends Expr
-object Add extends PureParserBridge2[Expr, Expr, Add]
-case class Sub(left: Expr, right: Expr) extends Expr
-object Sub extends PureParserBridge2[Expr, Expr, Sub]
-case class Mul(left: Expr, right: Expr) extends Expr
-object Mul extends PureParserBridge2[Expr, Expr, Mul]
-case class Div(left: Expr, right: Expr) extends Expr
-object Div extends PureParserBridge2[Expr, Expr, Div]
-case class Mod(left: Expr, right: Expr) extends Expr
-object Mod extends PureParserBridge2[Expr, Expr, Mod]
-case class BitOr(left: Expr, right: Expr) extends Expr
-object BitOr extends PureParserBridge2[Expr, Expr, BitOr]
-case class BitAnd(left: Expr, right: Expr) extends Expr
-object BitAnd extends PureParserBridge2[Expr, Expr, BitAnd]
-case class BitXor(left: Expr, right: Expr) extends Expr
-object BitXor extends PureParserBridge2[Expr, Expr, BitXor]
-case class Neg(expr: Expr) extends Expr
-object Neg extends PureParserBridge1[Expr, Neg]
-case class Not(expr: Expr) extends Expr
-object Not extends PureParserBridge1[Expr, Not]
-case class Forall(variable: String, varType: Option[Type], body: Expr) extends Expr
-object Forall extends PureParserBridge3[String, Option[Type], Expr, Forall]
-case class Exists(variable: String, varType: Option[Type], body: Expr) extends Expr
-object Exists extends PureParserBridge3[String, Option[Type], Expr, Exists]
+case class Iff(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Iff extends PureParserBridge2[BasicExpr, BasicExpr, Iff]
+case class LeftImplies(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object LeftImplies extends PureParserBridge2[BasicExpr, BasicExpr, LeftImplies]
+case class RightImplies(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object RightImplies extends PureParserBridge2[BasicExpr, BasicExpr, RightImplies]
+case class BoolAnd(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object BoolAnd extends PureParserBridge2[BasicExpr, BasicExpr, BoolAnd]
+case class BoolOr(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object BoolOr extends PureParserBridge2[BasicExpr, BasicExpr, BoolOr]
+case class Eq(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Eq extends PureParserBridge2[BasicExpr, BasicExpr, Eq]
+case class Neq(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Neq extends PureParserBridge2[BasicExpr, BasicExpr, Neq]
+case class LT(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object LT extends PureParserBridge2[BasicExpr, BasicExpr, LT]
+case class LTE(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object LTE extends PureParserBridge2[BasicExpr, BasicExpr, LTE]
+case class GT(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object GT extends PureParserBridge2[BasicExpr, BasicExpr, GT]
+case class GTE(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object GTE extends PureParserBridge2[BasicExpr, BasicExpr, GTE]
+case class In(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object In extends PureParserBridge2[BasicExpr, BasicExpr, In]
+case class NotIn(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object NotIn extends PureParserBridge2[BasicExpr, BasicExpr, NotIn]
+case class Disjoint(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Disjoint extends PureParserBridge2[BasicExpr, BasicExpr, Disjoint]
+case class LeftShift(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object LeftShift extends PureParserBridge2[BasicExpr, BasicExpr, LeftShift]
+case class RightShift(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object RightShift extends PureParserBridge2[BasicExpr, BasicExpr, RightShift]
+case class Add(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Add extends PureParserBridge2[BasicExpr, BasicExpr, Add]
+case class Sub(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Sub extends PureParserBridge2[BasicExpr, BasicExpr, Sub]
+case class Mul(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Mul extends PureParserBridge2[BasicExpr, BasicExpr, Mul]
+case class Div(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Div extends PureParserBridge2[BasicExpr, BasicExpr, Div]
+case class Mod(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object Mod extends PureParserBridge2[BasicExpr, BasicExpr, Mod]
+case class BitOr(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object BitOr extends PureParserBridge2[BasicExpr, BasicExpr, BitOr]
+case class BitAnd(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object BitAnd extends PureParserBridge2[BasicExpr, BasicExpr, BitAnd]
+case class BitXor(left: BasicExpr, right: BasicExpr) extends BasicExpr
+object BitXor extends PureParserBridge2[BasicExpr, BasicExpr, BitXor]
+case class Neg(expr: BasicExpr) extends BasicExpr
+object Neg extends PureParserBridge1[BasicExpr, Neg]
+case class Not(expr: BasicExpr) extends BasicExpr
+object Not extends PureParserBridge1[BasicExpr, Not]
+case class Forall(variable: String, varType: Option[Type], body: BasicExpr) extends BasicExpr
+object Forall extends PureParserBridge3[String, Option[Type], BasicExpr, Forall]
+case class Exists(variable: String, varType: Option[Type], body: BasicExpr) extends BasicExpr
+object Exists extends PureParserBridge3[String, Option[Type], BasicExpr, Exists]
 
-// Higher-level Expressions
-case class Cond(cond: Expr, thenBranch: List[Expr], elseBranch: List[Expr]) extends Expr
+// Basic Higher-level Expressions
+case class Cond(cond: Expr, thenBranch: List[Expr], elseBranch: List[Expr]) extends BasicExpr
 object Cond extends PureParserBridge3[Expr, List[Expr], List[Expr], Cond]
-case class FunctionCall(name: String, args: List[List[Expr]]) extends Expr
-object FunctionCall extends PureParserBridge2[String, List[List[Expr]], FunctionCall]
-case class MethodCall(name: String, args: List[Expr]) extends Expr
-object MethodCall extends PureParserBridge2[String, List[Expr], MethodCall]
-case class LambdaCall(lambda: Lambda, args: List[Expr]) extends Expr
-object LambdaCall extends PureParserBridge2[Lambda, List[Expr], LambdaCall]
-case class Let(left: List[(String, Option[Type])], right: Expr) extends Expr
-object Let extends PureParserBridge2[List[(String, Option[Type])], Expr, Let]
-case class LetOrFail(left: String, leftType: Option[Type], right: Expr) extends Expr
-object LetOrFail extends PureParserBridge3[String, Option[Type], Expr, LetOrFail]
-case class Match(expr: Expr, cases: List[(Pattern, List[Expr])]) extends Expr
+case class FunctionCall(name: String, args: List[List[BasicExpr]]) extends BasicExpr
+object FunctionCall extends PureParserBridge2[String, List[List[BasicExpr]], FunctionCall]
+case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
+object LambdaCall extends PureParserBridge2[Lambda, List[BasicExpr], LambdaCall]
+case class Match(expr: Expr, cases: List[(Pattern, List[Expr])]) extends BasicExpr
 object Match extends PureParserBridge2[Expr, List[(Pattern, List[Expr])], Match]
-case class Set(elements: List[Expr]) extends Expr
-object Set extends PureParserBridge1[List[Expr], Set]
-case class Assert(expr: Expr) extends Expr
-object Assert extends PureParserBridge1[Expr, Assert]
-case class Seq(elements: List[Expr]) extends Expr
-object Seq extends PureParserBridge1[List[Expr], Seq]
-case class Lambda(lvalues: List[(String, Option[Type])], body: List[Expr]) extends Expr
+case class Set(elements: List[BasicExpr]) extends BasicExpr
+object Set extends PureParserBridge1[List[BasicExpr], Set]
+case class Seq(elements: List[BasicExpr]) extends BasicExpr
+object Seq extends PureParserBridge1[List[BasicExpr], Seq]
+case class Lambda(lvalues: List[(String, Option[Type])], body: List[Expr]) extends BasicExpr
 object Lambda extends PureParserBridge2[List[(String, Option[Type])], List[Expr], Lambda]
-case class SeqIndex(name: String, indexes: List[Index]) extends Expr
+case class SeqIndex(name: String, indexes: List[Index]) extends BasicExpr
 object SeqIndex extends PureParserBridge2[String, List[Index], SeqIndex]
+
+// Extended Higher-level Expressions
+case class MethodCall(name: String, args: List[BasicExpr]) extends ExtendedExpr
+object MethodCall extends PureParserBridge2[String, List[BasicExpr], MethodCall]
+case class Let(left: List[(String, Option[Type])], right: BasicExpr) extends ExtendedExpr
+object Let extends PureParserBridge2[List[(String, Option[Type])], BasicExpr, Let]
+case class LetOrFail(left: String, leftType: Option[Type], right: BasicExpr) extends ExtendedExpr
+object LetOrFail extends PureParserBridge3[String, Option[Type], BasicExpr, LetOrFail]
+case class Assert(expr: BasicExpr) extends ExtendedExpr
+object Assert extends PureParserBridge1[BasicExpr, Assert]

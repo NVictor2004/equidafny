@@ -19,7 +19,7 @@ import parsers.index.index
 // TODO: Within each group, different operators should not associate
 // TODO: Parentheses need to be used
 
-lazy val basic: Parsley[Expr] =
+lazy val basic: Parsley[BasicExpr] =
 precedence(
     basicHigher,
     Ident(ident, many("." ~> ident)),
@@ -78,7 +78,7 @@ precedence(
 
 // TODO: Something was wrong with the bool parser here
 // TODO: move literal back up in the precedence atom list to see
-lazy val literal: Parsley[Expr] =
+lazy val literal: Parsley[BasicExpr] =
     BoolLiteral(bool) 
     | ("null" as Null)
     | IntLiteral(integer)
@@ -103,12 +103,12 @@ private lazy val basicHigher =
     | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
     | lambda
 
-lazy val expr = (endBy(specialHigher, ";"), basic).zipped {
+lazy val expr = (endBy(extendedHigher, ";"), basic).zipped {
     case (Nil, e) => List(e)
     case (es, e) => es :+ e
 }
 
-private lazy val specialHigher: Parsley[Expr] = 
+private lazy val extendedHigher: Parsley[Expr] = 
     Let(atomic("var" ~> lvalue <~ ":="), basic)
     | atomic(MethodCall(atomic(ident <~ "("), sepBy(basic, ",") <~ ")") <~ lookAhead(";"))
     | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> basic)
