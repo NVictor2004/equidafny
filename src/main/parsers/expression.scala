@@ -78,7 +78,7 @@ precedence(
 
 // TODO: Something was wrong with the bool parser here
 // TODO: move literal back up in the precedence atom list to see
-lazy val literal: Parsley[BasicExpr] =
+lazy val literal =
     BoolLiteral(bool) 
     | ("null" as Null)
     | IntLiteral(integer)
@@ -103,12 +103,9 @@ private lazy val basicHigher =
     | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
     | lambda
 
-lazy val expr = (endBy(extendedHigher, ";"), basic).zipped {
-    case (Nil, e) => List(e)
-    case (es, e) => es :+ e
-}
+lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
-private lazy val extendedHigher: Parsley[Expr] = 
+private lazy val extendedHigher: Parsley[ExtendedExpr] = 
     Let(atomic("var" ~> lvalue <~ ":="), basic)
     | atomic(MethodCall(atomic(ident <~ "("), sepBy(basic, ",") <~ ")") <~ lookAhead(";"))
     | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> basic)

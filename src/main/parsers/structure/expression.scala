@@ -6,6 +6,10 @@ sealed trait Expr
 sealed trait BasicExpr extends Expr
 sealed trait ExtendedExpr extends Expr
 
+// Main expression block data structure
+case class ExprBlock(extendedExprs: List[ExtendedExpr], basicExpr: BasicExpr)
+object ExprBlock extends PureParserBridge2[List[ExtendedExpr], BasicExpr, ExprBlock]
+
 // Literals
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr
 object Ident extends PureParserBridge2[String, List[String], Ident]
@@ -86,20 +90,20 @@ case class Exists(variable: String, varType: Option[Type], body: BasicExpr) exte
 object Exists extends PureParserBridge3[String, Option[Type], BasicExpr, Exists]
 
 // Basic Higher-level Expressions
-case class Cond(cond: Expr, thenBranch: List[Expr], elseBranch: List[Expr]) extends BasicExpr
-object Cond extends PureParserBridge3[Expr, List[Expr], List[Expr], Cond]
+case class Cond(cond: Expr, thenBranch: ExprBlock, elseBranch: ExprBlock) extends BasicExpr
+object Cond extends PureParserBridge3[Expr, ExprBlock, ExprBlock, Cond]
 case class FunctionCall(name: String, args: List[List[BasicExpr]]) extends BasicExpr
 object FunctionCall extends PureParserBridge2[String, List[List[BasicExpr]], FunctionCall]
 case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
 object LambdaCall extends PureParserBridge2[Lambda, List[BasicExpr], LambdaCall]
-case class Match(expr: Expr, cases: List[(Pattern, List[Expr])]) extends BasicExpr
-object Match extends PureParserBridge2[Expr, List[(Pattern, List[Expr])], Match]
+case class Match(expr: Expr, cases: List[(Pattern, ExprBlock)]) extends BasicExpr
+object Match extends PureParserBridge2[Expr, List[(Pattern, ExprBlock)], Match]
 case class Set(elements: List[BasicExpr]) extends BasicExpr
 object Set extends PureParserBridge1[List[BasicExpr], Set]
 case class Seq(elements: List[BasicExpr]) extends BasicExpr
 object Seq extends PureParserBridge1[List[BasicExpr], Seq]
-case class Lambda(lvalues: List[(String, Option[Type])], body: List[Expr]) extends BasicExpr
-object Lambda extends PureParserBridge2[List[(String, Option[Type])], List[Expr], Lambda]
+case class Lambda(lvalues: List[(String, Option[Type])], body: ExprBlock) extends BasicExpr
+object Lambda extends PureParserBridge2[List[(String, Option[Type])], ExprBlock, Lambda]
 case class SeqIndex(name: String, indexes: List[Index]) extends BasicExpr
 object SeqIndex extends PureParserBridge2[String, List[Index], SeqIndex]
 
