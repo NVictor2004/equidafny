@@ -14,21 +14,21 @@ import parsers.expression.expr
 import parsers.statement.block
 import parsers.lexer.fully
 
-lazy val gOption =
+private lazy val gOption =
     ("==" as Equals)
     | ("!new" as NotNew)
 
-lazy val generics = option("<" ~> sepBy(ident <~> option("(" ~> gOption <~ ")"), ",") <~ ">")
-lazy val parameter = Parameter(ident, ":" ~> typeParser)
-lazy val parameters = sepBy(parameter, ",")
-lazy val declaredType = DeclaredType(ident, option("(" ~> parameters <~ ")"))
-lazy val function = Function(
-    "function" ~> ident, generics, "(" ~> parameters <~ ")", ":" ~> typeParser, spec, "{" ~> expr <~ "}"
+private lazy val generics = option("<" ~> sepBy(ident <~> option("(" ~> gOption <~ ")"), ",") <~ ">")
+private lazy val parameter = Parameter(ident, ":" ~> typeParser)
+private lazy val parameters = "(" ~> sepBy(parameter, ",") <~ ")"
+private lazy val declaredType = DeclaredType(ident, option(parameters))
+private lazy val function = Function(
+    "function" ~> ident, generics, parameters, ":" ~> typeParser, spec, "{" ~> expr <~ "}"
     )
-lazy val ghostFunction = GhostFunction(
-    "ghost" ~> "function" ~> ident, generics, "(" ~> parameters <~ ")", ":" ~> typeParser, spec, "{" ~> expr <~ "}"
+private lazy val ghostFunction = GhostFunction(
+    "ghost" ~> "function" ~> ident, generics, parameters, ":" ~> typeParser, spec, "{" ~> expr <~ "}"
     )
-lazy val lemma = Lemma("lemma" ~> ident, generics, "(" ~> parameters <~ ")", spec, option(block))
-lazy val datatype = Datatype("datatype" ~> ident, generics, "=" ~> sepBy(declaredType, "|"))
+private lazy val lemma = Lemma("lemma" ~> ident, generics, parameters, spec, option(block))
+private lazy val datatype = Datatype("datatype" ~> ident, generics, "=" ~> sepBy(declaredType, "|"))
 
 lazy val program = fully(many(datatype | function | ghostFunction | lemma))

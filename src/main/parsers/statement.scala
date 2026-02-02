@@ -14,18 +14,22 @@ import parsers.pattern.pattern
 
 
 lazy val block = BlockStmt("{" ~> many(stmt) <~ "}")
-lazy val elseBlock: Parsley[CondStmt | BlockStmt] = block | condStmt
-lazy val condStmt: Parsley[CondStmt] = CondStmt("if" ~> basic, block, option("else" ~> elseBlock))
-lazy val call = CallStmt(ident, "(" ~> sepBy(basic, ",") <~ ")" <~ ";")
-lazy val matchStmt: Parsley[MatchStmt] = MatchStmt("match" ~> basic,
+
+private lazy val elseBlock: Parsley[CondStmt | BlockStmt] = block | condStmt
+private lazy val condStmt: Parsley[CondStmt] = CondStmt("if" ~> basic, block, option("else" ~> elseBlock))
+
+private lazy val stmt: Parsley[Stmt] = 
+    CallStmt(ident, "(" ~> sepBy(basic, ",") <~ ")" <~ ";")
+    | MatchStmt("match" ~> basic,
         "{" ~> many("case" ~> (pattern <~ "=>") <~> many(stmt)) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> many(stmt))
     )
-lazy val assertStmt = AssertStmt("assert" ~> basic <~ ";")
-lazy val letStmt = LetStmt(atomic("var" ~> lvalue <~ ":="), basic <~ ";")
-lazy val letOrFailStmt = LetOrFailStmt("var" ~> ident <~ ":|", basic <~ ";")
-lazy val stmt: Parsley[Stmt] = condStmt | call | matchStmt | assertStmt | letStmt | block | letOrFailStmt
+    | AssertStmt("assert" ~> basic <~ ";")
+    | LetStmt(atomic("var" ~> lvalue <~ ":="), basic <~ ";")
+    | LetOrFailStmt("var" ~> ident <~ ":|", basic <~ ";")
+    | condStmt
+    | block
 
-lazy val lvalue =
+private lazy val lvalue =
     "(" ~> sepBy(ident, ",") <~ ")"
     | ident.map(List(_))

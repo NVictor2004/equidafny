@@ -24,6 +24,8 @@ precedence(
     basicHigher,
     Ident(ident, many("." ~> ident)),
     literal,
+    Cardinality("|" ~> basic <~ "|"),
+    Tuple("(" ~> sepBy(basic, ",") <~ ")"),
     Brackets("(" ~> basic <~ ")")
 )(
     Ops(Prefix)(
@@ -83,12 +85,10 @@ lazy val literal: Parsley[Expr] =
     | RealLiteral(real)
     | CharLiteral(char)
     | StringLiteral(string)
-    | Cardinality("|" ~> basic <~ "|")
-    | Tuple("(" ~> sepBy(basic, ",") <~ ")")
 
-lazy val lambda = Lambda(atomic(lvalue <~ "=>"), expr)
+private lazy val lambda = Lambda(atomic(lvalue <~ "=>"), expr)
 
-lazy val basicHigher = 
+private lazy val basicHigher = 
     Cond("if" ~> basic, "then" ~> expr, "else" ~> expr)
     | Match("match" ~> basic,
         "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
@@ -108,12 +108,12 @@ lazy val expr = (endBy(specialHigher, ";"), basic).zipped {
     case (es, e) => es :+ e
 }
 
-lazy val specialHigher: Parsley[Expr] = 
+private lazy val specialHigher: Parsley[Expr] = 
     Let(atomic("var" ~> lvalue <~ ":="), basic)
     | atomic(MethodCall(atomic(ident <~ "("), sepBy(basic, ",") <~ ")") <~ lookAhead(";"))
     | LetOrFail("var" ~> ident, option(atomic(":" ~> typeParser)), ":|" ~> basic)
     | Assert("assert" ~> basic)
 
-lazy val lvalue =
+private lazy val lvalue =
     "(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")"
     | ident.map(i => List((i, None)))

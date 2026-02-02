@@ -22,7 +22,7 @@ lazy val implicits = lexer.lexeme.symbol.implicits
 
 def fully[A](p: Parsley[A]): Parsley[A] = lexer.fully(p)
 
-val desc: LexicalDesc = LexicalDesc.plain.copy(
+private val desc: LexicalDesc = LexicalDesc.plain.copy(
   nameDesc = NameDesc.plain.copy(
     identifierStart = Basic(c => c.isLetter || c == '\'' || c == '_' || c == '?'),
     identifierLetter = Basic(c => c.isLetterOrDigit || c == '\'' || c == '_' || c == '?'),
