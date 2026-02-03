@@ -118,7 +118,7 @@ lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 private lazy val extendedHigher: Parsley[ExtendedExpr] =
   Let(atomic("var" ~> lvalue <~ ":="), basic)
     | atomic(
-      MethodCall(atomic(ident <~ "("), sepBy(basic, ",") <~ ")") <~ lookAhead(
+      MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
         ";"
       )
     )
