@@ -2,9 +2,8 @@ package parsers.expression
 
 import parsley.Parsley
 import parsley.expr.{precedence, Ops, Prefix, InfixL, InfixR}
-import parsley.Parsley.{atomic, notFollowedBy, many, lookAhead}
+import parsley.Parsley.{atomic, notFollowedBy, many, some, lookAhead}
 import parsley.combinator.{sepBy, option, endBy}
-import parsley.syntax.zipped.*
 
 import scala.language.implicitConversions
 
@@ -22,11 +21,7 @@ import parsers.index.index
 lazy val basic: Parsley[BasicExpr] =
   precedence(
     basicHigher,
-    Ident(ident, many("." ~> ident)),
-    literal,
-    Cardinality("|" ~> basic <~ "|"),
-    Brackets(atomic("(" ~> basic <~ ")")),
-    Tuple("(" ~> sepBy(basic, ",") <~ ")")
+    literal
   )(
     Ops(Prefix)(
       Not from "!",
@@ -95,12 +90,6 @@ private lazy val basicHigher =
       "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> expr)
     )
-    | FunctionCall(
-      atomic(ident <~ "("),
-      (sepBy(basic, ",") <~ ")", many("(" ~> sepBy(basic, ",") <~ ")")).zipped(
-        (x, xs) => x :: xs
-      )
-    )
     | Forall(
       "forall" ~> ident,
       option(atomic(":" ~> typeParser)),
@@ -111,14 +100,18 @@ private lazy val basicHigher =
       option(atomic(":" ~> typeParser)),
       "::" ~> basic
     )
-    | SeqIndex(
-      atomic(ident <~ "["),
-      ((index <~ "]"), many("[" ~> index <~ "]")).zipped((i, is) => i :: is)
-    )
     | Set("{" ~> sepBy(basic, ",") <~ "}")
     | Seq("[" ~> sepBy(basic, ",") <~ "]")
+    | Cardinality("|" ~> basic <~ "|")
     | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
     | lambda
+    | ident <**> (
+      some("(" ~> sepBy(basic, ",") <~ ")").map(args => FunctionCall(_: String, args))
+      | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
+      | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
+    )
+    | Brackets(atomic("(" ~> basic <~ ")"))
+    | Tuple("(" ~> sepBy(basic, ",") <~ ")")
 
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
