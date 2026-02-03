@@ -13,6 +13,7 @@ how exactly does symdiff work
 scala subset specify
 
 change first example to be more impressive, tail recursion?, more intentional differences, rather than moving things around
+use the max example, approaching list from both ends
 describe how lemma works
 
 formal definition of program equivalence
@@ -26,3 +27,4 @@ profiling: time taken in each stage, your code dafny boogie z3, what happens for
 environmental impact
 Any AI use?
 still mention soundness done by dafny
+appendix: short diff between my dafny and actual dafny
