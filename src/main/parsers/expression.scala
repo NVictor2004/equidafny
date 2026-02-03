@@ -25,8 +25,8 @@ lazy val basic: Parsley[BasicExpr] =
     Ident(ident, many("." ~> ident)),
     literal,
     Cardinality("|" ~> basic <~ "|"),
-    Tuple("(" ~> sepBy(basic, ",") <~ ")"),
-    Brackets("(" ~> basic <~ ")")
+    Brackets(atomic("(" ~> basic <~ ")")),
+    Tuple("(" ~> sepBy(basic, ",") <~ ")")
   )(
     Ops(Prefix)(
       Not from "!",
