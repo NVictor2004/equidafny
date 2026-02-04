@@ -44,21 +44,17 @@ def translateTopLevel(
     toplevel: Parsers.TopLevel
 ): (List[Datatype], List[Function], List[GhostFunction], List[Lemma]) =
   toplevel match {
-    case Parsers.Datatype(name, generic, types) =>
-      (
-        Datatype(
+    case Parsers.Datatype(name, generic, types) => {
+      val item = Datatype(
           name,
           translateGeneric(generic),
           types.map(translateDeclaredType)
-        ) :: acc.data,
-        acc.functions,
-        acc.ghostFunctions,
-        acc.lemmas
-      )
-    case Parsers.Function(name, generic, params, returnType, specs, body) =>
-      (
-        acc.data,
-        Function(
+        )
+      (item :: acc.data, acc.functions, acc.ghostFunctions, acc.lemmas)
+    }
+      
+    case Parsers.Function(name, generic, params, returnType, specs, body) => {
+      val item = Function(
           name,
           translateGeneric(generic),
           params.map { case Parsers.Parameter(name, paramType) =>
@@ -67,48 +63,40 @@ def translateTopLevel(
           translateType(returnType),
           specs.map(translateSpec),
           translateExpr(body)
-        ) :: acc.functions,
-        acc.ghostFunctions,
-        acc.lemmas
-      )
+        )
+      (acc.data, item :: acc.functions, acc.ghostFunctions, acc.lemmas)
+    }
     case Parsers.GhostFunction(
-          name,
-          generic,
-          params,
-          returnType,
-          specs,
-          body
-        ) =>
-      (
-        acc.data,
-        acc.functions,
-        GhostFunction(
-          name,
-          translateGeneric(generic),
-          params.map { case Parsers.Parameter(name, paramType) =>
-            Parameter(name, translateType(paramType))
-          },
-          translateType(returnType),
-          specs.map(translateSpec),
-          translateExpr(body)
-        ) :: acc.ghostFunctions,
-        acc.lemmas
+      name,
+      generic,
+      params,
+      returnType,
+      specs,
+      body
+    ) => {
+      val item = GhostFunction(
+      name,
+      translateGeneric(generic),
+      params.map { case Parsers.Parameter(name, paramType) =>
+        Parameter(name, translateType(paramType))
+      },
+      translateType(returnType),
+      specs.map(translateSpec),
+      translateExpr(body)
       )
-    case Parsers.Lemma(name, generic, params, specs, body) =>
-      (
-        acc.data,
-        acc.functions,
-        acc.ghostFunctions,
-        Lemma(
-          name,
-          translateGeneric(generic),
-          params.map { case Parsers.Parameter(name, paramType) =>
-            Parameter(name, translateType(paramType))
-          },
-          specs.map(translateSpec),
-          body.map { case Parsers.BlockStmt(stmts) =>
-            translateBlockStmt(stmts)
-          }
-        ) :: acc.lemmas
-      )
+      (acc.data, acc.functions, item :: acc.ghostFunctions, acc.lemmas)
+    }
+    case Parsers.Lemma(name, generic, params, specs, body) => {
+      val item = Lemma(
+        name,
+        translateGeneric(generic),
+        params.map { case Parsers.Parameter(name, paramType) =>
+          Parameter(name, translateType(paramType))
+        },
+        specs.map(translateSpec),
+        body.map { case Parsers.BlockStmt(stmts) =>
+          translateBlockStmt(stmts)
+        })
+      (acc.data, acc.functions, acc.ghostFunctions, item :: acc.lemmas)
+    }
   }
