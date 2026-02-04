@@ -99,18 +99,18 @@ case class Exists(variable: String, varType: Option[Type], body: BasicExpr)
 object Exists extends PureParserBridge3[String, Option[Type], BasicExpr, Exists]
 
 // Basic Higher-level Expressions
-case class Cond(cond: Expr, thenBranch: ExprBlock, elseBranch: ExprBlock)
+case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
-object Cond extends PureParserBridge3[Expr, ExprBlock, ExprBlock, Cond]
+object Cond extends PureParserBridge3[BasicExpr, ExprBlock, ExprBlock, Cond]
 case class FunctionCall(name: String, args: List[List[BasicExpr]])
     extends BasicExpr
 object FunctionCall
     extends PureParserBridge2[String, List[List[BasicExpr]], FunctionCall]
 case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
 object LambdaCall extends PureParserBridge2[Lambda, List[BasicExpr], LambdaCall]
-case class Match(expr: Expr, cases: List[(Pattern, ExprBlock)])
+case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)])
     extends BasicExpr
-object Match extends PureParserBridge2[Expr, List[(Pattern, ExprBlock)], Match]
+object Match extends PureParserBridge2[BasicExpr, List[(Pattern, ExprBlock)], Match]
 case class Set(elements: List[BasicExpr]) extends BasicExpr
 object Set extends PureParserBridge1[List[BasicExpr], Set]
 case class Seq(elements: List[BasicExpr]) extends BasicExpr

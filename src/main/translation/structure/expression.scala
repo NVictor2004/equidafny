@@ -53,12 +53,12 @@ case class Exists(variable: String, varType: Option[Type], body: BasicExpr)
     extends BasicExpr
 
 // Basic Higher-level Expressions
-case class Cond(cond: Expr, thenBranch: ExprBlock, elseBranch: ExprBlock)
+case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
 case class FunctionCall(name: String, args: List[List[BasicExpr]])
     extends BasicExpr
 case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
-case class Match(expr: Expr, cases: List[(Pattern, ExprBlock)])
+case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)])
     extends BasicExpr
 case class Set(elements: List[BasicExpr]) extends BasicExpr
 case class Seq(elements: List[BasicExpr]) extends BasicExpr
