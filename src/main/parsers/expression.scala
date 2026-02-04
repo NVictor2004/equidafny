@@ -106,9 +106,11 @@ private lazy val basicHigher =
     | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
     | lambda
     | ident <**> (
-      some("(" ~> sepBy(basic, ",") <~ ")").map(args => FunctionCall(_: String, args))
-      | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
-      | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
+      some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
+        FunctionCall(_: String, args)
+      )
+        | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
+        | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
     | Brackets(atomic("(" ~> basic <~ ")"))
     | Tuple("(" ~> sepBy(basic, ",") <~ ")")

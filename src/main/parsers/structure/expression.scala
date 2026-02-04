@@ -17,8 +17,6 @@ object ExprBlock
     extends PureParserBridge2[List[ExtendedExpr], BasicExpr, ExprBlock]
 
 // Literals
-case class Ident(name: String, suffixes: List[String]) extends LiteralExpr
-object Ident extends PureParserBridge2[String, List[String], Ident]
 case class BoolLiteral(value: Boolean) extends LiteralExpr
 object BoolLiteral extends PureParserBridge1[Boolean, BoolLiteral]
 case class CharLiteral(value: Int) extends LiteralExpr
@@ -30,12 +28,6 @@ object StringLiteral extends PureParserBridge1[String, StringLiteral]
 case class RealLiteral(value: BigDecimal) extends LiteralExpr
 object RealLiteral extends PureParserBridge1[BigDecimal, RealLiteral]
 case object Null extends LiteralExpr
-case class Cardinality(expr: BasicExpr) extends LiteralExpr
-object Cardinality extends PureParserBridge1[BasicExpr, Cardinality]
-case class Tuple(elements: List[BasicExpr]) extends LiteralExpr
-object Tuple extends PureParserBridge1[List[BasicExpr], Tuple]
-case class Brackets(expr: BasicExpr) extends LiteralExpr
-object Brackets extends PureParserBridge1[BasicExpr, Brackets]
 
 // Operator Expressions
 case class Iff(left: BasicExpr, right: BasicExpr) extends BasicExpr
@@ -99,6 +91,14 @@ case class Exists(variable: String, varType: Option[Type], body: BasicExpr)
 object Exists extends PureParserBridge3[String, Option[Type], BasicExpr, Exists]
 
 // Basic Higher-level Expressions
+case class Ident(name: String, suffixes: List[String]) extends BasicExpr
+object Ident extends PureParserBridge2[String, List[String], Ident]
+case class Cardinality(expr: BasicExpr) extends BasicExpr
+object Cardinality extends PureParserBridge1[BasicExpr, Cardinality]
+case class Tuple(elements: List[BasicExpr]) extends BasicExpr
+object Tuple extends PureParserBridge1[List[BasicExpr], Tuple]
+case class Brackets(expr: BasicExpr) extends BasicExpr
+object Brackets extends PureParserBridge1[BasicExpr, Brackets]
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
 object Cond extends PureParserBridge3[BasicExpr, ExprBlock, ExprBlock, Cond]
@@ -110,7 +110,8 @@ case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
 object LambdaCall extends PureParserBridge2[Lambda, List[BasicExpr], LambdaCall]
 case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)])
     extends BasicExpr
-object Match extends PureParserBridge2[BasicExpr, List[(Pattern, ExprBlock)], Match]
+object Match
+    extends PureParserBridge2[BasicExpr, List[(Pattern, ExprBlock)], Match]
 case class Set(elements: List[BasicExpr]) extends BasicExpr
 object Set extends PureParserBridge1[List[BasicExpr], Set]
 case class Seq(elements: List[BasicExpr]) extends BasicExpr

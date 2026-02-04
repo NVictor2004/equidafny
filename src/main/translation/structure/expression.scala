@@ -9,16 +9,12 @@ sealed trait ExtendedExpr extends Expr
 case class ExprBlock(extendedExprs: List[ExtendedExpr], basicExpr: BasicExpr)
 
 // Literals
-case class Ident(name: String, suffixes: List[String]) extends LiteralExpr
 case class BoolLiteral(value: Boolean) extends LiteralExpr
 case class CharLiteral(value: Int) extends LiteralExpr
 case class IntLiteral(value: BigInt) extends LiteralExpr
 case class StringLiteral(value: String) extends LiteralExpr
 case class RealLiteral(value: BigDecimal) extends LiteralExpr
 case object Null extends LiteralExpr
-case class Cardinality(expr: BasicExpr) extends LiteralExpr
-case class Tuple(elements: List[BasicExpr]) extends LiteralExpr
-case class Brackets(expr: BasicExpr) extends LiteralExpr
 
 // Operator Expressions
 case class Iff(left: BasicExpr, right: BasicExpr) extends BasicExpr
@@ -53,6 +49,10 @@ case class Exists(variable: String, varType: Option[Type], body: BasicExpr)
     extends BasicExpr
 
 // Basic Higher-level Expressions
+case class Ident(name: String, suffixes: List[String]) extends BasicExpr
+case class Cardinality(expr: BasicExpr) extends BasicExpr
+case class Tuple(elements: List[BasicExpr]) extends BasicExpr
+case class Brackets(expr: BasicExpr) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
 case class FunctionCall(name: String, args: List[List[BasicExpr]])
