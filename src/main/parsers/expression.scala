@@ -73,7 +73,7 @@ lazy val basic: Parsley[BasicExpr] =
 
 // TODO: Something was wrong with the bool parser here
 // TODO: move literal back up in the precedence atom list to see
-lazy val literal =
+lazy val literal: Parsley[LiteralExpr] =
   BoolLiteral(bool)
     | ("null" as Null)
     | IntLiteral(integer)

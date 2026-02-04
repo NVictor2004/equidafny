@@ -8,6 +8,7 @@ import parsley.templates.{
 
 sealed trait Expr
 sealed trait BasicExpr extends Expr
+sealed trait LiteralExpr extends BasicExpr
 sealed trait ExtendedExpr extends Expr
 
 // Main expression block data structure
@@ -16,24 +17,24 @@ object ExprBlock
     extends PureParserBridge2[List[ExtendedExpr], BasicExpr, ExprBlock]
 
 // Literals
-case class Ident(name: String, suffixes: List[String]) extends BasicExpr
+case class Ident(name: String, suffixes: List[String]) extends LiteralExpr
 object Ident extends PureParserBridge2[String, List[String], Ident]
-case class BoolLiteral(value: Boolean) extends BasicExpr
+case class BoolLiteral(value: Boolean) extends LiteralExpr
 object BoolLiteral extends PureParserBridge1[Boolean, BoolLiteral]
-case class CharLiteral(value: Int) extends BasicExpr
+case class CharLiteral(value: Int) extends LiteralExpr
 object CharLiteral extends PureParserBridge1[Int, CharLiteral]
-case class IntLiteral(value: BigInt) extends BasicExpr
+case class IntLiteral(value: BigInt) extends LiteralExpr
 object IntLiteral extends PureParserBridge1[BigInt, IntLiteral]
-case class StringLiteral(value: String) extends BasicExpr
+case class StringLiteral(value: String) extends LiteralExpr
 object StringLiteral extends PureParserBridge1[String, StringLiteral]
-case class RealLiteral(value: BigDecimal) extends BasicExpr
+case class RealLiteral(value: BigDecimal) extends LiteralExpr
 object RealLiteral extends PureParserBridge1[BigDecimal, RealLiteral]
-case object Null extends BasicExpr
-case class Cardinality(expr: BasicExpr) extends BasicExpr
+case object Null extends LiteralExpr
+case class Cardinality(expr: BasicExpr) extends LiteralExpr
 object Cardinality extends PureParserBridge1[BasicExpr, Cardinality]
-case class Tuple(elements: List[BasicExpr]) extends BasicExpr
+case class Tuple(elements: List[BasicExpr]) extends LiteralExpr
 object Tuple extends PureParserBridge1[List[BasicExpr], Tuple]
-case class Brackets(expr: BasicExpr) extends BasicExpr
+case class Brackets(expr: BasicExpr) extends LiteralExpr
 object Brackets extends PureParserBridge1[BasicExpr, Brackets]
 
 // Operator Expressions
