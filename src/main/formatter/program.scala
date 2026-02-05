@@ -12,7 +12,7 @@ import scala.annotation.tailrec
 case class Formatter(writer: PrintWriter) {
     def print(str: String): Unit = writer.print(str)
     def println(str: String): Unit = writer.println(str)
-    def format(str: String, args: Any*): Unit = writer.format(str, args)
+    def format(str: String, args: Object*): Unit = writer.format(str, args*)
     def close(): Unit = writer.close()
 }
 

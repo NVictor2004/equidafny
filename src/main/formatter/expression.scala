@@ -8,8 +8,8 @@ import formatter.pattern.formatPattern
 import formatter.index.formatIndex
 
 def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit = literal match {
-    case BoolLiteral(value) => writer.format("%b", value)
-    case CharLiteral(value) => writer.format("'%c'", value)
+    case BoolLiteral(value) => writer.print(value.toString())
+    case CharLiteral(value) => writer.format("'%s'", value.toString())
     case IntLiteral(value) => writer.print(value.toString)
     case StringLiteral(value) => writer.format("\"%s\"", value)
     case RealLiteral(value) => writer.format("%f", value)
