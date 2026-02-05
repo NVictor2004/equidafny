@@ -6,10 +6,9 @@ import parsley.templates.{
   PureParserBridge3
 }
 
-sealed trait Expr
-sealed trait BasicExpr extends Expr
+sealed trait BasicExpr
 sealed trait LiteralExpr extends BasicExpr
-sealed trait ExtendedExpr extends Expr
+sealed trait ExtendedExpr
 
 // Main expression block data structure
 case class ExprBlock(extendedExprs: List[ExtendedExpr], basicExpr: BasicExpr)
