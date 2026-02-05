@@ -1,8 +1,8 @@
-package translation.expression
+package formatter.statement
 
 import translation.structure.*
 import formatter.program.Formatter
-import formatter.expression.formatBasicExpr
+import formatter.expression.{formatBasicExpr, formatBasicExprList}
 import formatter.pattern.formatPattern
 
 def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
@@ -15,7 +15,12 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
             formatStmt(block)
         })
     }
-    case CallStmt(name, args) => writer.format("%s%s;", name, args.map(formatBasicExpr).mkString("(", ", ", ")"))
+    case CallStmt(name, args) => {
+        writer.format("%s", name)
+        writer.print("(")
+        formatBasicExprList(args)
+        writer.print(")")
+    }
     case MatchStmt(expr, cases) => {
         writer.print("match ")
         formatBasicExpr(expr)

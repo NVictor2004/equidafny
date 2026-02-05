@@ -1,4 +1,4 @@
-package formatter.Index
+package formatter.index
 
 import formatter.expression.formatBasicExpr
 import formatter.program.Formatter

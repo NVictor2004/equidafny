@@ -1,7 +1,13 @@
 package formatter.program
 
 import translation.structure.*
+import formatter.types.formatType
+import formatter.specification.formatSpec
+import formatter.expression.formatExpr
+import formatter.statement.formatStmt
+
 import java.io.{File, PrintWriter}
+import scala.annotation.tailrec
 
 case class Formatter(writer: PrintWriter) {
     def print(str: String): Unit = writer.print(str)
@@ -40,10 +46,135 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
     })
     
     writer.print(" = ")
-    writer.println(types.map(formatDeclaredType).mkString(" | "))
+    types match {
+        case Nil => {}
+        case head :: tail => {
+            formatDeclaredType(head)
+            tail.foreach(declaredType => {
+                writer.print(" | ")
+                formatDeclaredType(declaredType)
+            })
+        }
+    }
+    writer.println("")
 }
 
-def formatDeclaredType(declaredType: DeclaredType)(using writer: Formatter): Unit = ???
-def formatFunction(function: Function)(using writer: Formatter): Unit = ???
-def formatGhostFunction(ghostFunction: GhostFunction)(using writer: Formatter): Unit = ???
-def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = ???
+@tailrec
+def formatParameterList(params: List[Parameter])(using writer: Formatter): Unit = params match {
+    case Nil => {}
+    case head :: tail => {
+        val Parameter(paramName, paramType) = head
+        writer.format("%s :", paramName)
+        formatType(paramType)
+        writer.print(", ")
+        formatParameterList(tail)
+        }
+    }
+
+def formatDeclaredType(declaredType: DeclaredType)(using writer: Formatter): Unit = {
+    val DeclaredType(name, typeParams) = declaredType
+    writer.print(name)
+    typeParams.foreach(params => {
+        writer.print("(")
+        formatParameterList(params)
+        writer.print(")")
+    })
+}
+
+def formatGenericList(generic: List[(String, Option[GOption])])(using writer: Formatter): Unit = {
+    generic match {
+        case Nil => {}
+        case head :: tail => {
+            val (typeName, gOption) = head
+            writer.format("%s", typeName)
+            gOption.foreach {
+                case Equals => writer.print("(==)")
+                case NotNew => writer.print("(!new)")
+            }
+            writer.print(", ")
+            formatGenericList(tail)
+        }
+    }
+}
+
+def formatFunction(function: Function)(using writer: Formatter): Unit = {
+    val Function(name, generic, params, returnType, specs, body) = function
+
+    writer.format("function %s", name)
+
+    generic.foreach(typeList => {
+        writer.print("<")
+        formatGenericList(typeList)
+        writer.print(">")
+    })
+
+    writer.print("(")
+    formatParameterList(params)
+    writer.print(")")
+
+    writer.print(": ")
+    formatType(returnType)
+
+    specs.foreach(spec => {
+        formatSpec(spec)
+        writer.println("")
+    })
+
+    writer.println("{")
+    formatExpr(body)
+    writer.println("}")
+}
+def formatGhostFunction(ghostFunction: GhostFunction)(using writer: Formatter): Unit = {
+    val GhostFunction(name, generic, params, returnType, specs, body) = ghostFunction
+
+    writer.format("ghost function %s", name)
+
+    generic.foreach(typeList => {
+        writer.print("<")
+        formatGenericList(typeList)
+        writer.print(">")
+    })
+
+    writer.print("(")
+    formatParameterList(params)
+    writer.print(")")
+
+    writer.print(": ")
+    formatType(returnType)
+
+    specs.foreach(spec => {
+        formatSpec(spec)
+        writer.println("")
+    })
+
+    writer.println("{")
+    formatExpr(body)
+    writer.println("}")
+}
+
+def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
+    val Lemma(name, generic, params, specs, body) = lemma
+
+    writer.format("lemma %s", name)
+
+    generic.foreach(typeList => {
+        writer.print("<")
+        formatGenericList(typeList)
+        writer.print(">")
+    })
+
+    writer.print("(")
+    formatParameterList(params)
+    writer.print(")")
+
+    specs.foreach(spec => {
+        formatSpec(spec)
+        writer.println("")
+    })
+
+    body.foreach(block => {
+        writer.println("{")
+        formatStmt(block)
+        writer.println("}")
+    })
+}
