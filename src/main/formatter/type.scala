@@ -9,18 +9,39 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
     case TypeString => writer.print("string")
     case TypeChar => writer.print("char")
     case TypeNat => writer.print("nat")
-    case SeqType(elementType) =>
-        writer.format("seq<%s>", formatType(elementType))
-    case SetType(elementType) =>
-        writer.format("set<%s>", formatType(elementType))
+    case SeqType(elementType) => {
+        writer.print("seq<")
+        formatType(elementType)
+        writer.print(">")
+    }
+    case SetType(elementType) => {
+        writer.print("set<")
+        formatType(elementType)
+        writer.print(">")
+    }
     case NamedType(name, generics) => {
         writer.print(name)
-        generics.foreach(genericList =>
-            writer.print(genericList.map(formatType).mkString("(", ", ", ")"))
-        )
+        generics.foreach(formatTypeList)
     }
-    case TupleType(elements) =>
-        writer.print(elements.map(formatType).mkString("(", ", ", ")"))
-    case ArrowType(from, to) =>
-        writer.format("%s -> %s", formatType(from), formatType(to))
+    case TupleType(elements) => formatTypeList(elements)
+    case ArrowType(from, to) => {
+        formatType(from)
+        writer.print(" -> ")
+        formatType(to)
+    }
+}
+
+def formatTypeList(types: List[Type])(using writer: Formatter): Unit = {
+    writer.print("(")
+    types match {
+        case Nil => {}
+        case head :: tail => {
+            formatType(head)
+            tail.foreach(t => {
+                writer.print(", ")
+                formatType(t)
+            })
+        }
+    }
+    writer.print(")")
 }
