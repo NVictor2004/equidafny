@@ -18,6 +18,7 @@ def formatPatternList(patterns: List[Pattern])(using writer: Formatter): Unit = 
     writer.print("(")
     patterns match {
         case Nil => {}
+        case head :: Nil => formatPattern(head)
         case head :: tail => {
             formatPattern(head)
             tail.foreach(pattern => {

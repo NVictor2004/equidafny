@@ -6,6 +6,7 @@ import translation.structure.*
 import formatter.program.Formatter
 import formatter.pattern.formatPattern
 import formatter.index.formatIndex
+import formatter.types.formatType
 
 def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit = literal match {
     case BoolLiteral(value) => writer.print(value.toString())
@@ -19,6 +20,7 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit = literal
 @tailrec
 def formatBasicExprList(exprs: List[BasicExpr])(using writer: Formatter): Unit = exprs match {
     case Nil => {}
+    case head :: Nil => formatBasicExpr(head)
     case head :: tail => {
         formatBasicExpr(head)
         writer.print(", ")
@@ -158,13 +160,19 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit = expr match
     }
     case Forall(variable, varType, body) => {
         writer.format("forall %s", variable)
-        varType.foreach(t => writer.format(": %s", t))
+        varType.foreach(t => {
+            writer.print(": ")
+            formatType(t)
+        })
         writer.print(" :: ")
         formatBasicExpr(body)
     }
     case Exists(variable, varType, body) => {
         writer.format("exists %s", variable)
-        varType.foreach(t => writer.format(": %s", t))
+        varType.foreach(t => {
+            writer.print(": ")
+            formatType(t)
+        })
         writer.print(" :: ")
         formatBasicExpr(body)
     }
@@ -220,6 +228,7 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit = expr match
             formatPattern(pattern)
             writer.print(" => ")
             formatExpr(block)
+            writer.println("")
         })
         writer.println("}")
     }
@@ -240,14 +249,22 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit = expr match
             case head :: tail => {
                 val (varName, varType) = head
                 writer.format("%s", varName)
-                varType.foreach(t => writer.format(": %s", t))
+                varType.foreach(t => {
+                    writer.print(": ")
+                    formatType(t)
+                })
                 tail.foreach((varName, varType) => {
                     writer.print(", ")
                     writer.format("%s", varName)
-                    varType.foreach(t => writer.format(": %s", t))
+                    varType.foreach(t => {
+                        writer.print(": ")
+                        formatType(t)
+                    })
                 })
             }
         }
+        writer.print(") => ")
+        formatExpr(body)
     }
     case SeqIndex(name, indexes) => {
         writer.format("%s", name)
@@ -274,15 +291,31 @@ def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit = expr
         writer.print("var ")
         left match {
             case Nil => {}
-            case head :: tail => {
+            case head :: Nil => {
                 val (varName, varType) = head
                 writer.format("%s", varName)
-                varType.foreach(t => writer.format(": %s", t))
+                varType.foreach(t => {
+                    writer.print(": ")
+                    formatType(t)
+                })
+            }
+            case head :: tail => {
+                writer.print("(")
+                val (varName, varType) = head
+                writer.format("%s", varName)
+                varType.foreach(t => {
+                    writer.print(": ")
+                    formatType(t)
+                })
                 tail.foreach((varName, varType) => {
                     writer.print(", ")
                     writer.format("%s", varName)
-                    varType.foreach(t => writer.format(": %s", t))
+                    varType.foreach(t => {
+                        writer.print(": ")
+                        formatType(t)
+                    })
                 })
+                writer.print(")")
             }
         }
         writer.print(" := ")
@@ -290,7 +323,10 @@ def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit = expr
     }
     case LetOrFail(left, leftType, right) => {
         writer.format("var %s", left)
-        leftType.foreach(t => writer.format(": %s", t))
+        leftType.foreach(t => {
+            writer.print(": ")
+            formatType(t)
+        })
         writer.print(" :| ")
         formatBasicExpr(right)
     }

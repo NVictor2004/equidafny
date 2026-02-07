@@ -62,6 +62,11 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
 @tailrec
 def formatParameterList(params: List[Parameter])(using writer: Formatter): Unit = params match {
     case Nil => {}
+    case head :: Nil => {
+        val Parameter(paramName, paramType) = head
+        writer.format("%s :", paramName)
+        formatType(paramType)
+    }
     case head :: tail => {
         val Parameter(paramName, paramType) = head
         writer.format("%s :", paramName)
@@ -84,6 +89,14 @@ def formatDeclaredType(declaredType: DeclaredType)(using writer: Formatter): Uni
 def formatGenericList(generic: List[(String, Option[GOption])])(using writer: Formatter): Unit = {
     generic match {
         case Nil => {}
+        case head :: Nil => {
+            val (typeName, gOption) = head
+            writer.format("%s", typeName)
+            gOption.foreach {
+                case Equals => writer.print("(==)")
+                case NotNew => writer.print("(!new)")
+            }
+        }
         case head :: tail => {
             val (typeName, gOption) = head
             writer.format("%s", typeName)
@@ -115,6 +128,8 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
     writer.print(": ")
     formatType(returnType)
 
+    writer.println("")
+
     specs.foreach(spec => {
         formatSpec(spec)
         writer.println("")
@@ -142,6 +157,8 @@ def formatGhostFunction(ghostFunction: GhostFunction)(using writer: Formatter): 
     writer.print(": ")
     formatType(returnType)
 
+    writer.println("")
+
     specs.foreach(spec => {
         formatSpec(spec)
         writer.println("")
@@ -166,6 +183,8 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
     writer.print("(")
     formatParameterList(params)
     writer.print(")")
+
+    writer.println("")
 
     specs.foreach(spec => {
         formatSpec(spec)

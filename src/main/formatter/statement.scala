@@ -20,6 +20,7 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
         writer.print("(")
         formatBasicExprList(args)
         writer.print(")")
+        writer.print(";")
     }
     case MatchStmt(expr, cases) => {
         writer.print("match ")

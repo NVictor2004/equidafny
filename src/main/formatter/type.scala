@@ -21,9 +21,17 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
     }
     case NamedType(name, generics) => {
         writer.print(name)
-        generics.foreach(formatTypeList)
+        generics.foreach( types => {
+            writer.print("<")
+            formatTypeList(types)
+            writer.print(">")
+        })
     }
-    case TupleType(elements) => formatTypeList(elements)
+    case TupleType(elements) => {
+        writer.print("(")
+        formatTypeList(elements)
+        writer.print(")")
+    }
     case ArrowType(from, to) => {
         formatType(from)
         writer.print(" -> ")
@@ -32,9 +40,9 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
 }
 
 def formatTypeList(types: List[Type])(using writer: Formatter): Unit = {
-    writer.print("(")
     types match {
         case Nil => {}
+        case head :: Nil => formatType(head)
         case head :: tail => {
             formatType(head)
             tail.foreach(t => {
@@ -43,5 +51,4 @@ def formatTypeList(types: List[Type])(using writer: Formatter): Unit = {
             })
         }
     }
-    writer.print(")")
 }
