@@ -2,17 +2,24 @@
  
 \section{Dafny}\label{sec:dafny}
 
+\footnote{simple example in each thing in the intro, maybe same example, specification is optional}
+\footnote{formal definition of program equivalence}
+
 Dafny is a popular program verifier, under active development by Amazon \cite{leinoDafnyAutomaticProgram2010}. It is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants. This allows Dafny's verifier to automatically prove theorems and that programs match their specifications. Dafny can also be compiled into a variety of other languages, including C\#, Java and Python, allowing verified programs to be integrated easily into existing codebases.
 
 Dafny's program verification heavily relies on Boogie \cite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \cite{10.1007/978-3-540-78800-3_24}. 
 
 \section{SymDiff}
 
+\footnote{how exactly does symdiff work, more details}
+
 SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
 
 SymDiff can also be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focussed on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
 
 \section{Stainless}
+
+\footnote{scala subset specify}
 
 Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. Stainless performs these verifications by passing each part of the program through a series of transformations, until it can be used by the Inox solver \parencite{EpfllaraInox2026}. However, an important restriction of Stainless is that it only supports a subset of Scala's features.
 

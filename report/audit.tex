@@ -1,5 +1,14 @@
 \chapter{Technical Audit}\label{chp:audit}
 
+\footnote{technical audit can go in the background}
+\footnote{also look at broken / incorrect examples and see equivalence, they should be}
+\footnote{change first example to be more impressive, tail recursion?, more intentional differences, rather than moving things around; use the max example, approaching list from both ends}
+
+\footnote{describe how lemmas in Dafny work}
+
+\footnote{comparing Lists and seqs, wrong examples}
+\footnote{highlighting important parts of examples}
+
 Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically. Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
 
 \begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
