@@ -47,5 +47,5 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
     formatBasicExpr(right)
     writer.print(";")
   }
-  case BlockStmt(stmts) => formatBrackets("{", formatList(stmts, formatStmt), "}")
+  case BlockStmt(stmts) => formatBrackets("{", stmts.foreach(formatStmt), "}")
 }
