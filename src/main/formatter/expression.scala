@@ -3,6 +3,7 @@ package formatter.expression
 import scala.annotation.tailrec
 
 import translation.structure.*
+import translation.structure.BinaryOperator.*
 import formatter.program.Formatter
 import formatter.pattern.formatPattern
 import formatter.index.formatIndex
@@ -30,128 +31,41 @@ def formatBasicExprList(exprs: List[BasicExpr])(using writer: Formatter): Unit =
     }
   }
 
+private def formatOperator(operator: BinaryOperator): String =
+  operator match {
+    case Iff         => "<==>"
+    case LeftImplies => "<=="
+    case RightImplies => "==>"
+    case BoolAnd      => "&&"
+    case BoolOr       => "||"
+    case Eq           => "=="
+    case Neq          => "!="
+    case LT           => "<"
+    case LTE          => "<="
+    case GT           => ">"
+    case GTE          => ">="
+    case In           => "in"
+    case NotIn        => "!in"
+    case Disjoint     => "!!"
+    case LeftShift     => "<<"
+    case RightShift     => ">>"
+    case Add           => "+"
+    case Sub           => "-"
+    case Mul           => "*"
+    case Div           => "/"
+    case Mod           => "%"
+    case BitOr         => "|"
+    case BitAnd        => "&"
+    case BitXor        => "^"
+  }
+
 def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
   expr match {
     case expr: LiteralExpr => formatLiteral(expr)
-    case Iff(l, r)         => {
-      formatBasicExpr(l)
-      writer.print(" <==> ")
-      formatBasicExpr(r)
-    }
-    case LeftImplies(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" <== ")
-      formatBasicExpr(r)
-    }
-    case RightImplies(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" ==> ")
-      formatBasicExpr(r)
-    }
-    case BoolAnd(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" && ")
-      formatBasicExpr(r)
-    }
-    case BoolOr(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" || ")
-      formatBasicExpr(r)
-    }
-    case Eq(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" == ")
-      formatBasicExpr(r)
-    }
-    case Neq(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" != ")
-      formatBasicExpr(r)
-    }
-    case LT(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" < ")
-      formatBasicExpr(r)
-    }
-    case LTE(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" <= ")
-      formatBasicExpr(r)
-    }
-    case GT(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" > ")
-      formatBasicExpr(r)
-    }
-    case GTE(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" >= ")
-      formatBasicExpr(r)
-    }
-    case In(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" in ")
-      formatBasicExpr(r)
-    }
-    case NotIn(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" !in ")
-      formatBasicExpr(r)
-    }
-    case Disjoint(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" !! ")
-      formatBasicExpr(r)
-    }
-    case LeftShift(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" << ")
-      formatBasicExpr(r)
-    }
-    case RightShift(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" >> ")
-      formatBasicExpr(r)
-    }
-    case Add(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" + ")
-      formatBasicExpr(r)
-    }
-    case Sub(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" - ")
-      formatBasicExpr(r)
-    }
-    case Mul(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" * ")
-      formatBasicExpr(r)
-    }
-    case Div(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" / ")
-      formatBasicExpr(r)
-    }
-    case Mod(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" % ")
-      formatBasicExpr(r)
-    }
-    case BitOr(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" | ")
-      formatBasicExpr(r)
-    }
-    case BitAnd(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" & ")
-      formatBasicExpr(r)
-    }
-    case BitXor(l, r) => {
-      formatBasicExpr(l)
-      writer.print(" ^ ")
-      formatBasicExpr(r)
+    case Binary(operator, left, right) => {
+      formatBasicExpr(left)
+      writer.print(s" ${formatOperator(operator)} ")
+      formatBasicExpr(right)
     }
     case Neg(e) => {
       writer.print("-")

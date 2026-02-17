@@ -15,31 +15,14 @@ case class StringLiteral(value: String) extends LiteralExpr
 case class RealLiteral(value: BigDecimal) extends LiteralExpr
 case object Null extends LiteralExpr
 
+enum BinaryOperator {
+    case Iff, LeftImplies, RightImplies, BoolAnd, BoolOr, Eq, Neq, LT, LTE, GT, GTE,
+        In, NotIn, Disjoint, LeftShift, RightShift, Add, Sub, Mul, Div, Mod,
+        BitOr, BitAnd, BitXor
+}
+
 // Operator Expressions
-case class Iff(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class LeftImplies(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class RightImplies(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class BoolAnd(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class BoolOr(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Eq(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Neq(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class LT(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class LTE(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class GT(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class GTE(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class In(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class NotIn(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Disjoint(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class LeftShift(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class RightShift(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Add(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Sub(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Mul(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Div(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Mod(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class BitOr(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class BitAnd(left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class BitXor(left: BasicExpr, right: BasicExpr) extends BasicExpr
+case class Binary(operator: BinaryOperator, left: BasicExpr, right: BasicExpr) extends BasicExpr
 case class Neg(expr: BasicExpr) extends BasicExpr
 case class Not(expr: BasicExpr) extends BasicExpr
 case class Forall(variable: String, varType: Option[Type], body: BasicExpr)
