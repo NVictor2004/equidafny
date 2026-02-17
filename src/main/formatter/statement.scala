@@ -1,7 +1,7 @@
 package formatter.statement
 
 import translation.structure.*
-import formatter.formatter.{Formatter, formatList}
+import formatter.formatter.*
 import formatter.expression.formatBasicExpr
 import formatter.pattern.formatPattern
 
@@ -17,9 +17,7 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
   }
   case CallStmt(name, args) => {
     writer.format("%s", name)
-    writer.print("(")
-    formatList(args, formatBasicExpr)
-    writer.print(")")
+    formatBrackets("(", formatList(args, formatBasicExpr), ")")
     writer.print(";")
   }
   case MatchStmt(expr, cases) => {
@@ -30,7 +28,7 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
       writer.print("case ")
       formatPattern(pattern)
       writer.print(" =>")
-      stmts.foreach(formatStmt(_))
+      stmts.foreach(formatStmt)
     })
     writer.println("}")
   }
@@ -49,9 +47,5 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
     formatBasicExpr(right)
     writer.print(";")
   }
-  case BlockStmt(stmts) => {
-    writer.println("{")
-    stmts.foreach(formatStmt(_))
-    writer.println("}")
-  }
+  case BlockStmt(stmts) => formatBrackets("{", formatList(stmts, formatStmt), "}")
 }

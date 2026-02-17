@@ -2,7 +2,7 @@ package formatter.expression
 
 import translation.structure.*
 import translation.structure.BinaryOperator.*
-import formatter.formatter.{Formatter, formatList}
+import formatter.formatter.*
 import formatter.pattern.formatPattern
 import formatter.index.formatIndex
 import formatter.types.formatType
@@ -83,21 +83,9 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       writer.format(name)
       suffixes.foreach(s => writer.format(".%s", s))
     }
-    case Cardinality(e) => {
-      writer.print("|")
-      formatBasicExpr(e)
-      writer.print("|")
-    }
-    case Tuple(es) => {
-      writer.print("(")
-      formatList(es, formatBasicExpr)
-      writer.print(")")
-    }
-    case Brackets(e) => {
-      writer.print("(")
-      formatBasicExpr(e)
-      writer.print(")")
-    }
+    case Cardinality(e) => formatBrackets("|", formatBasicExpr(e), "|")
+    case Tuple(es) => formatBrackets("(", formatList(es, formatBasicExpr), ")")
+    case Brackets(e) => formatBrackets("(", formatBasicExpr(e), ")")
     case Cond(cond, thenBranch, elseBranch) => {
       writer.print("if ")
       formatBasicExpr(cond)
@@ -108,19 +96,11 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
     case FunctionCall(name, args) => {
       writer.format("%s", name)
-      args.foreach(argList => {
-        writer.print("(")
-        formatList(argList, formatBasicExpr)
-        writer.print(")")
-      })
+      args.foreach(argList => formatBrackets("(", formatList(argList, formatBasicExpr), ")"))
     }
     case LambdaCall(lambda, args) => {
-      writer.print("(")
-      formatBasicExpr(lambda)
-      writer.print(")")
-      writer.print("(")
-      formatList(args, formatBasicExpr)
-      writer.print(")")
+      formatBrackets("(", formatBasicExpr(lambda), ")")
+      formatBrackets("(", formatList(args, formatBasicExpr), ")")
     }
     case Match(expr, cases) => {
       writer.print("match ")
@@ -135,47 +115,16 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       })
       writer.println("}")
     }
-    case Set(es) => {
-      writer.print("{")
-      formatList(es, formatBasicExpr)
-      writer.print("}")
-    }
-    case Seq(es) => {
-      writer.print("[")
-      formatList(es, formatBasicExpr)
-      writer.print("]")
-    }
+    case Set(es) => formatBrackets("{", formatList(es, formatBasicExpr), "}")
+    case Seq(es) => formatBrackets("[", formatList(es, formatBasicExpr), "]")
     case Lambda(lvalues, body) => {
-      writer.print("(")
-      lvalues match {
-        case Nil          => {}
-        case head :: tail => {
-          val (varName, varType) = head
-          writer.format("%s", varName)
-          varType.foreach(t => {
-            writer.print(": ")
-            formatType(t)
-          })
-          tail.foreach((varName, varType) => {
-            writer.print(", ")
-            writer.format("%s", varName)
-            varType.foreach(t => {
-              writer.print(": ")
-              formatType(t)
-            })
-          })
-        }
-      }
-      writer.print(") => ")
+      formatBrackets("(", formatList(lvalues, formatLValue), ")")
+      writer.print(" => ")
       formatExpr(body)
     }
     case SeqIndex(name, indexes) => {
       writer.format("%s", name)
-      indexes.foreach(index => {
-        writer.print("[")
-        formatIndex(index)
-        writer.print("]")
-      })
+      indexes.foreach(index => formatBrackets("[", formatIndex(index), "]"))
     }
   }
 
@@ -187,40 +136,14 @@ def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit =
     }
     case MethodCall(name, args) => {
       writer.format("%s", name)
-      writer.print("(")
-      formatList(args, formatBasicExpr)
-      writer.print(")")
+      formatBrackets("(", formatList(args, formatBasicExpr), ")")
     }
     case Let(left, right) => {
       writer.print("var ")
       left match {
         case Nil         => {}
-        case head :: Nil => {
-          val (varName, varType) = head
-          writer.format("%s", varName)
-          varType.foreach(t => {
-            writer.print(": ")
-            formatType(t)
-          })
-        }
-        case head :: tail => {
-          writer.print("(")
-          val (varName, varType) = head
-          writer.format("%s", varName)
-          varType.foreach(t => {
-            writer.print(": ")
-            formatType(t)
-          })
-          tail.foreach((varName, varType) => {
-            writer.print(", ")
-            writer.format("%s", varName)
-            varType.foreach(t => {
-              writer.print(": ")
-              formatType(t)
-            })
-          })
-          writer.print(")")
-        }
+        case head :: Nil => formatLValue(head)
+        case lvalues => formatBrackets("(", formatList(lvalues, formatLValue), ")")
       }
       writer.print(" := ")
       formatBasicExpr(right)
@@ -243,4 +166,13 @@ def formatExpr(expr: ExprBlock)(using writer: Formatter): Unit = {
     writer.println(";")
   })
   formatBasicExpr(basicExpr)
+}
+
+private def formatLValue(lvalue: (String, Option[Type]))(using writer: Formatter): Unit = {
+  val (varName, varType) = lvalue
+  writer.format("%s", varName)
+  varType.foreach(t => {
+    writer.print(": ")
+    formatType(t)
+  })
 }

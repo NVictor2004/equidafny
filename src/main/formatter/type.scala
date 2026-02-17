@@ -1,7 +1,7 @@
 package formatter.types
 
 import translation.structure.*
-import formatter.formatter.{Formatter, formatList}
+import formatter.formatter.*
 
 def formatType(t: Type)(using writer: Formatter): Unit = t match {
   case TypeInt              => writer.print("int")
@@ -10,28 +10,19 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
   case TypeChar             => writer.print("char")
   case TypeNat              => writer.print("nat")
   case SeqType(elementType) => {
-    writer.print("seq<")
-    formatType(elementType)
-    writer.print(">")
+    writer.print("seq")
+    formatBrackets("<", formatType(elementType), ">")
   }
   case SetType(elementType) => {
-    writer.print("set<")
-    formatType(elementType)
-    writer.print(">")
+    writer.print("set")
+    formatBrackets("<", formatType(elementType), ">")
   }
   case NamedType(name, generics) => {
     writer.print(name)
-    generics.foreach(types => {
-      writer.print("<")
-      formatList(types, formatType)
-      writer.print(">")
-    })
+    generics.foreach(types => formatBrackets("<", formatList(types, formatType), ">"))
   }
-  case TupleType(elements) => {
-    writer.print("(")
-    formatList(elements, formatType)
-    writer.print(")")
-  }
+  case TupleType(elements) => 
+    formatBrackets("(", formatList(elements, formatType), ")")
   case ArrowType(from, to) => {
     formatType(from)
     writer.print(" -> ")

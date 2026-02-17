@@ -1,7 +1,7 @@
 package formatter.pattern
 
 import translation.structure.*
-import formatter.formatter.{Formatter, formatList}
+import formatter.formatter.*
 import formatter.expression.formatLiteral
 
 def formatPattern(pattern: Pattern)(using writer: Formatter): Unit =
@@ -9,16 +9,9 @@ def formatPattern(pattern: Pattern)(using writer: Formatter): Unit =
     case UnNamed             => writer.format("_")
     case Basic(name, values) => {
       writer.format(name)
-      values.foreach(list => {
-        writer.print("(")
-        formatList(list, formatPattern)
-        writer.print(")")
-      })
+      values.foreach(list => formatBrackets("(", formatList(list, formatPattern), ")"))
     }
     case Constant(value)        => formatLiteral(value)
-    case PatternTuple(elements) => {
-      writer.print("(")
-      formatList(elements, formatPattern)
-      writer.print(")")
-    }
+    case PatternTuple(elements) => 
+      formatBrackets("(", formatList(elements, formatPattern), ")")
   }

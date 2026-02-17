@@ -8,6 +8,7 @@ import formatter.statement.formatStmt
 import formatter.formatter.{Formatter, formatList}
 
 import java.io.{File, PrintWriter}
+import formatter.formatter.formatBrackets
 
 def formatProgram(program: Program, outputFilename: String): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
@@ -26,23 +27,10 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
 
   writer.format("datatype %s", name)
 
-  generic.foreach(typeList => {
-    writer.print("<")
-    formatList(typeList, formatGeneric)
-    writer.print(">")
-  })
+  generic.foreach(typeList => formatBrackets("<", formatList(typeList, formatGeneric), ">"))
 
   writer.print(" = ")
-  types match {
-    case Nil          => {}
-    case head :: tail => {
-      formatDeclaredType(head)
-      tail.foreach(declaredType => {
-        writer.print(" | ")
-        formatDeclaredType(declaredType)
-      })
-    }
-  }
+  formatList(types, formatDeclaredType, " | ")
   writer.println("")
 }
 
@@ -57,11 +45,9 @@ def formatDeclaredType(
 )(using writer: Formatter): Unit = {
   val DeclaredType(name, typeParams) = declaredType
   writer.print(name)
-  typeParams.foreach(params => {
-    writer.print("(")
-    formatList(params, formatParameter)
-    writer.print(")")
-  })
+  typeParams.foreach(params => 
+    formatBrackets("(", formatList(params, formatParameter), ")")
+  )
 }
 
 private def formatGeneric(generic: (String, Option[GOption]))(using writer: Formatter): Unit = {
@@ -76,21 +62,13 @@ private def formatGeneric(generic: (String, Option[GOption]))(using writer: Form
 def formatFunction(function: Function)(using writer: Formatter): Unit = {
   val Function(ghost, name, generic, params, returnType, specs, body) = function
 
-  if (ghost) {
-    writer.print("ghost ")
-  }
+  if (ghost) writer.print("ghost ")
 
   writer.format("function %s", name)
 
-  generic.foreach(typeList => {
-    writer.print("<")
-    formatList(typeList, formatGeneric)
-    writer.print(">")
-  })
+  generic.foreach(typeList => formatBrackets("<", formatList(typeList, formatGeneric), ">"))
 
-  writer.print("(")
-  formatList(params, formatParameter)
-  writer.print(")")
+  formatBrackets("(", formatList(params, formatParameter), ")")
 
   writer.print(": ")
   formatType(returnType)
@@ -102,9 +80,7 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
     writer.println("")
   })
 
-  writer.println("{")
-  formatExpr(body)
-  writer.println("}")
+  formatBrackets("{", formatExpr(body), "}")
 }
 
 def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
@@ -112,15 +88,9 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
 
   writer.format("lemma %s", name)
 
-  generic.foreach(typeList => {
-    writer.print("<")
-    formatList(typeList, formatGeneric)
-    writer.print(">")
-  })
+  generic.foreach(typeList => formatBrackets("<", formatList(typeList, formatGeneric), ">"))
 
-  writer.print("(")
-  formatList(params, formatParameter)
-  writer.print(")")
+  formatBrackets("(", formatList(params, formatParameter), ")")
 
   writer.println("")
 
@@ -129,9 +99,5 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
     writer.println("")
   })
 
-  body.foreach(block => {
-    writer.println("{")
-    formatStmt(block)
-    writer.println("}")
-  })
+  body.foreach(block => formatBrackets("{", formatStmt(block), "}"))
 }
