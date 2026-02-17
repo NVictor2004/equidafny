@@ -1,7 +1,7 @@
 package formatter.types
 
 import translation.structure.*
-import formatter.program.Formatter
+import formatter.formatter.Formatter
 
 def formatType(t: Type)(using writer: Formatter): Unit = t match {
   case TypeInt              => writer.print("int")

@@ -1,7 +1,7 @@
 package formatter.pattern
 
 import translation.structure.*
-import formatter.program.Formatter
+import formatter.formatter.Formatter
 import formatter.expression.formatLiteral
 
 def formatPattern(pattern: Pattern)(using writer: Formatter): Unit =

@@ -1,10 +1,8 @@
 package formatter.expression
 
-import scala.annotation.tailrec
-
 import translation.structure.*
 import translation.structure.BinaryOperator.*
-import formatter.program.Formatter
+import formatter.formatter.{Formatter, formatList}
 import formatter.pattern.formatPattern
 import formatter.index.formatIndex
 import formatter.types.formatType
@@ -17,18 +15,6 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
     case StringLiteral(value) => writer.format("\"%s\"", value)
     case RealLiteral(value)   => writer.format("%f", value)
     case Null                 => writer.format("null")
-  }
-
-@tailrec
-def formatBasicExprList(exprs: List[BasicExpr])(using writer: Formatter): Unit =
-  exprs match {
-    case Nil          => {}
-    case head :: Nil  => formatBasicExpr(head)
-    case head :: tail => {
-      formatBasicExpr(head)
-      writer.print(", ")
-      formatBasicExprList(tail)
-    }
   }
 
 private def formatOperator(operator: BinaryOperator): String =
@@ -104,7 +90,7 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
     case Tuple(es) => {
       writer.print("(")
-      formatBasicExprList(es)
+      formatList(es, formatBasicExpr)
       writer.print(")")
     }
     case Brackets(e) => {
@@ -124,7 +110,7 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       writer.format("%s", name)
       args.foreach(argList => {
         writer.print("(")
-        formatBasicExprList(argList)
+        formatList(argList, formatBasicExpr)
         writer.print(")")
       })
     }
@@ -133,7 +119,7 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       formatBasicExpr(lambda)
       writer.print(")")
       writer.print("(")
-      formatBasicExprList(args)
+      formatList(args, formatBasicExpr)
       writer.print(")")
     }
     case Match(expr, cases) => {
@@ -151,12 +137,12 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
     case Set(es) => {
       writer.print("{")
-      formatBasicExprList(es)
+      formatList(es, formatBasicExpr)
       writer.print("}")
     }
     case Seq(es) => {
       writer.print("[")
-      formatBasicExprList(es)
+      formatList(es, formatBasicExpr)
       writer.print("]")
     }
     case Lambda(lvalues, body) => {
@@ -202,7 +188,7 @@ def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit =
     case MethodCall(name, args) => {
       writer.format("%s", name)
       writer.print("(")
-      formatBasicExprList(args)
+      formatList(args, formatBasicExpr)
       writer.print(")")
     }
     case Let(left, right) => {

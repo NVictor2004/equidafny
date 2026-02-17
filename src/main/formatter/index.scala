@@ -1,7 +1,7 @@
 package formatter.index
 
 import formatter.expression.formatBasicExpr
-import formatter.program.Formatter
+import formatter.formatter.Formatter
 import translation.structure.*
 
 def formatIndex(index: Index)(using writer: Formatter): Unit = index match {

@@ -5,16 +5,10 @@ import formatter.types.formatType
 import formatter.specification.formatSpec
 import formatter.expression.formatExpr
 import formatter.statement.formatStmt
+import formatter.formatter.Formatter
 
 import java.io.{File, PrintWriter}
 import scala.annotation.tailrec
-
-case class Formatter(writer: PrintWriter) {
-  def print(str: String): Unit = writer.print(str)
-  def println(str: String): Unit = writer.println(str)
-  def format(str: String, args: Object*): Unit = writer.format(str, args*)
-  def close(): Unit = writer.close()
-}
 
 def formatProgram(program: Program, outputFilename: String): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
