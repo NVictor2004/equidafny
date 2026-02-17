@@ -9,14 +9,7 @@ case class Datatype(
 
 case class Parameter(name: String, paramType: Type)
 case class Function(
-    name: String,
-    generic: Option[List[(String, Option[GOption])]],
-    params: List[Parameter],
-    returnType: Type,
-    specs: List[Spec],
-    body: ExprBlock
-)
-case class GhostFunction(
+    ghost: Boolean,
     name: String,
     generic: Option[List[(String, Option[GOption])]],
     params: List[Parameter],
@@ -35,7 +28,6 @@ case class Lemma(
 case class Program(
     datatypes: List[Datatype],
     functions: List[Function],
-    ghostFunctions: List[GhostFunction],
     lemmas: List[Lemma]
 )
 

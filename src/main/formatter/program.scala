@@ -19,11 +19,10 @@ case class Formatter(writer: PrintWriter) {
 def formatProgram(program: Program, outputFilename: String): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
 
-  val Program(datatypes, functions, ghostFunctions, lemmas) = program
+  val Program(datatypes, functions, lemmas) = program
 
   datatypes.foreach(formatDatatype)
   functions.foreach(formatFunction)
-  ghostFunctions.foreach(formatGhostFunction)
   lemmas.foreach(formatLemma)
 
   writer.close()
@@ -121,41 +120,13 @@ def formatGenericList(
 }
 
 def formatFunction(function: Function)(using writer: Formatter): Unit = {
-  val Function(name, generic, params, returnType, specs, body) = function
+  val Function(ghost, name, generic, params, returnType, specs, body) = function
+
+  if (ghost) {
+    writer.print("ghost ")
+  }
 
   writer.format("function %s", name)
-
-  generic.foreach(typeList => {
-    writer.print("<")
-    formatGenericList(typeList)
-    writer.print(">")
-  })
-
-  writer.print("(")
-  formatParameterList(params)
-  writer.print(")")
-
-  writer.print(": ")
-  formatType(returnType)
-
-  writer.println("")
-
-  specs.foreach(spec => {
-    formatSpec(spec)
-    writer.println("")
-  })
-
-  writer.println("{")
-  formatExpr(body)
-  writer.println("}")
-}
-def formatGhostFunction(
-    ghostFunction: GhostFunction
-)(using writer: Formatter): Unit = {
-  val GhostFunction(name, generic, params, returnType, specs, body) =
-    ghostFunction
-
-  writer.format("ghost function %s", name)
 
   generic.foreach(typeList => {
     writer.print("<")

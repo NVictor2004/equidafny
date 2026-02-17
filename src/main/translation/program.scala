@@ -8,9 +8,9 @@ import translation.specification.translateSpec
 import translation.statement.translateBlockStmt
 
 def translateProgram(prog: List[Parsers.TopLevel]): Program = {
-  val (data, functions, ghostFunctions, lemmas) =
-    prog.foldLeft((Nil, Nil, Nil, Nil))(translateTopLevel)
-  Program(data, functions, ghostFunctions, lemmas)
+  val (data, functions, lemmas) =
+    prog.foldLeft((Nil, Nil, Nil))(translateTopLevel)
+  Program(data, functions, lemmas)
 }
 
 def translateDeclaredType(decl: Parsers.DeclaredType): DeclaredType =
@@ -38,11 +38,10 @@ def translateTopLevel(
     acc: (
         data: List[Datatype],
         functions: List[Function],
-        ghostFunctions: List[GhostFunction],
         lemmas: List[Lemma]
     ),
     toplevel: Parsers.TopLevel
-): (List[Datatype], List[Function], List[GhostFunction], List[Lemma]) =
+): (List[Datatype], List[Function], List[Lemma]) =
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
       val item = Datatype(
@@ -50,11 +49,12 @@ def translateTopLevel(
         translateGeneric(generic),
         types.map(translateDeclaredType)
       )
-      (item :: acc.data, acc.functions, acc.ghostFunctions, acc.lemmas)
+      (item :: acc.data, acc.functions, acc.lemmas)
     }
 
     case Parsers.Function(name, generic, params, returnType, specs, body) => {
       val item = Function(
+        false,
         name,
         translateGeneric(generic),
         params.map { case Parsers.Parameter(name, paramType) =>
@@ -64,7 +64,7 @@ def translateTopLevel(
         specs.map(translateSpec),
         translateExpr(body)
       )
-      (acc.data, item :: acc.functions, acc.ghostFunctions, acc.lemmas)
+      (acc.data, item :: acc.functions, acc.lemmas)
     }
     case Parsers.GhostFunction(
           name,
@@ -74,7 +74,8 @@ def translateTopLevel(
           specs,
           body
         ) => {
-      val item = GhostFunction(
+      val item = Function(
+        true,
         name,
         translateGeneric(generic),
         params.map { case Parsers.Parameter(name, paramType) =>
@@ -84,7 +85,7 @@ def translateTopLevel(
         specs.map(translateSpec),
         translateExpr(body)
       )
-      (acc.data, acc.functions, item :: acc.ghostFunctions, acc.lemmas)
+      (acc.data, item :: acc.functions, acc.lemmas)
     }
     case Parsers.Lemma(name, generic, params, specs, body) => {
       val item = Lemma(
@@ -98,6 +99,6 @@ def translateTopLevel(
           translateBlockStmt(stmts)
         }
       )
-      (acc.data, acc.functions, acc.ghostFunctions, item :: acc.lemmas)
+      (acc.data, acc.functions, item :: acc.lemmas)
     }
   }
