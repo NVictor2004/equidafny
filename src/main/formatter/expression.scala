@@ -2,6 +2,8 @@ package formatter.expression
 
 import translation.structure.*
 import translation.structure.BinaryOperator.*
+import translation.structure.UnaryOperator.*
+import translation.structure.Quantifier.*
 import formatter.formatter.*
 import formatter.pattern.formatPattern
 import formatter.index.formatIndex
@@ -17,7 +19,7 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
     case Null                 => writer.format("null")
   }
 
-private def formatOperator(operator: BinaryOperator): String =
+private def formatBinaryOperator(operator: BinaryOperator): String =
   operator match {
     case Iff         => "<==>"
     case LeftImplies => "<=="
@@ -45,33 +47,32 @@ private def formatOperator(operator: BinaryOperator): String =
     case BitXor        => "^"
   }
 
+private def formatUnaryOperator(operator: UnaryOperator): String =
+  operator match {
+    case Neg => "-"
+    case Not => "!"
+  }
+
+private def formatQuantifier(quantifier: Quantifier): String =
+  quantifier match {
+    case Forall => "forall"
+    case Exists => "exists"
+  }
+
 def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
   expr match {
     case expr: LiteralExpr => formatLiteral(expr)
     case Binary(operator, left, right) => {
       formatBasicExpr(left)
-      writer.print(s" ${formatOperator(operator)} ")
+      writer.print(s" ${formatBinaryOperator(operator)} ")
       formatBasicExpr(right)
     }
-    case Neg(e) => {
-      writer.print("-")
+    case Unary(operator, e) => {
+      writer.print(formatUnaryOperator(operator))
       formatBasicExpr(e)
     }
-    case Not(e) => {
-      writer.print("!")
-      formatBasicExpr(e)
-    }
-    case Forall(variable, varType, body) => {
-      writer.format("forall %s", variable)
-      varType.foreach(t => {
-        writer.print(": ")
-        formatType(t)
-      })
-      writer.print(" :: ")
-      formatBasicExpr(body)
-    }
-    case Exists(variable, varType, body) => {
-      writer.format("exists %s", variable)
+    case Quantified(quantifier, variable, varType, body) => {
+      writer.format("%s %s", formatQuantifier(quantifier), variable)
       varType.foreach(t => {
         writer.print(": ")
         formatType(t)

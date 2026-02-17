@@ -21,13 +21,18 @@ enum BinaryOperator {
         BitOr, BitAnd, BitXor
 }
 
+enum UnaryOperator {
+    case Neg, Not
+}
+
+enum Quantifier {
+    case Forall, Exists
+}
+
 // Operator Expressions
 case class Binary(operator: BinaryOperator, left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Neg(expr: BasicExpr) extends BasicExpr
-case class Not(expr: BasicExpr) extends BasicExpr
-case class Forall(variable: String, varType: Option[Type], body: BasicExpr)
-    extends BasicExpr
-case class Exists(variable: String, varType: Option[Type], body: BasicExpr)
+case class Unary(operator: UnaryOperator, expr: BasicExpr) extends BasicExpr
+case class Quantified(quantifier: Quantifier, variable: String, varType: Option[Type], body: BasicExpr)
     extends BasicExpr
 
 // Basic Higher-level Expressions

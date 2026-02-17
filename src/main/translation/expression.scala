@@ -7,6 +7,8 @@ import translation.types.translateType
 import translation.pattern.translatePattern
 import translation.index.translateIndex
 import translation.structure.BinaryOperator.*
+import translation.structure.UnaryOperator.*
+import translation.structure.Quantifier.*
 
 def translateExpr(expr: Parsers.ExprBlock): ExprBlock = {
   val extendedExprs = expr.extendedExprs.map(translateExtendedExpr)
@@ -83,12 +85,12 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
     Binary(BitAnd, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.BitXor(l, r) =>
     Binary(BitXor, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Neg(e)                          => Neg(translateBasicExpr(e))
-  case Parsers.Not(e)                          => Not(translateBasicExpr(e))
+  case Parsers.Neg(e)                          => Unary(Neg,translateBasicExpr(e))
+  case Parsers.Not(e)                          => Unary(Not,translateBasicExpr(e))
   case Parsers.Forall(variable, varType, body) =>
-    Forall(variable, varType.map(translateType), translateBasicExpr(body))
+    Quantified(Forall, variable, varType.map(translateType), translateBasicExpr(body))
   case Parsers.Exists(variable, varType, body) =>
-    Exists(variable, varType.map(translateType), translateBasicExpr(body))
+    Quantified(Exists, variable, varType.map(translateType), translateBasicExpr(body))
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(
       translateBasicExpr(cond),
