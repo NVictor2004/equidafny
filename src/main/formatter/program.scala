@@ -5,10 +5,9 @@ import formatter.types.formatType
 import formatter.specification.formatSpec
 import formatter.expression.formatExpr
 import formatter.statement.formatStmt
-import formatter.formatter.Formatter
+import formatter.formatter.{Formatter, formatList}
 
 import java.io.{File, PrintWriter}
-import scala.annotation.tailrec
 
 def formatProgram(program: Program, outputFilename: String): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
@@ -28,18 +27,9 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   writer.format("datatype %s", name)
 
   generic.foreach(typeList => {
-    val genericOutput = typeList
-      .map((t, o) => {
-        val g = o
-          .map {
-            case Equals => "=="
-            case NotNew => "!new"
-          }
-          .getOrElse("")
-        s"$t$g"
-      })
-      .mkString("<", ", ", ">")
-    writer.print(genericOutput)
+    writer.print("<")
+    formatList(typeList, formatGeneric)
+    writer.print(">")
   })
 
   writer.print(" = ")
@@ -56,23 +46,10 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   writer.println("")
 }
 
-@tailrec
-def formatParameterList(
-    params: List[Parameter]
-)(using writer: Formatter): Unit = params match {
-  case Nil         => {}
-  case head :: Nil => {
-    val Parameter(paramName, paramType) = head
-    writer.format("%s :", paramName)
-    formatType(paramType)
-  }
-  case head :: tail => {
-    val Parameter(paramName, paramType) = head
-    writer.format("%s :", paramName)
-    formatType(paramType)
-    writer.print(", ")
-    formatParameterList(tail)
-  }
+private def formatParameter(parameter: Parameter)(using writer: Formatter): Unit = {
+  val Parameter(name, paramType) = parameter
+  writer.format("%s :", name)
+  formatType(paramType)
 }
 
 def formatDeclaredType(
@@ -82,34 +59,17 @@ def formatDeclaredType(
   writer.print(name)
   typeParams.foreach(params => {
     writer.print("(")
-    formatParameterList(params)
+    formatList(params, formatParameter)
     writer.print(")")
   })
 }
 
-def formatGenericList(
-    generic: List[(String, Option[GOption])]
-)(using writer: Formatter): Unit = {
-  generic match {
-    case Nil         => {}
-    case head :: Nil => {
-      val (typeName, gOption) = head
-      writer.format("%s", typeName)
-      gOption.foreach {
-        case Equals => writer.print("(==)")
-        case NotNew => writer.print("(!new)")
-      }
-    }
-    case head :: tail => {
-      val (typeName, gOption) = head
-      writer.format("%s", typeName)
-      gOption.foreach {
-        case Equals => writer.print("(==)")
-        case NotNew => writer.print("(!new)")
-      }
-      writer.print(", ")
-      formatGenericList(tail)
-    }
+private def formatGeneric(generic: (String, Option[GOption]))(using writer: Formatter): Unit = {
+  val (typeName, gOption) = generic
+  writer.format("%s", typeName)
+  gOption.foreach {
+    case Equals => writer.print("(==)")
+    case NotNew => writer.print("(!new)")
   }
 }
 
@@ -124,12 +84,12 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
 
   generic.foreach(typeList => {
     writer.print("<")
-    formatGenericList(typeList)
+    formatList(typeList, formatGeneric)
     writer.print(">")
   })
 
   writer.print("(")
-  formatParameterList(params)
+  formatList(params, formatParameter)
   writer.print(")")
 
   writer.print(": ")
@@ -154,12 +114,12 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
 
   generic.foreach(typeList => {
     writer.print("<")
-    formatGenericList(typeList)
+    formatList(typeList, formatGeneric)
     writer.print(">")
   })
 
   writer.print("(")
-  formatParameterList(params)
+  formatList(params, formatParameter)
   writer.print(")")
 
   writer.println("")
