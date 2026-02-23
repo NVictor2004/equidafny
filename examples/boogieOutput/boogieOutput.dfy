@@ -1,32 +1,31 @@
 // Based on examples from Dragana's paper
 
-// Defining isSortedR
-// This is the reference solution
-// Requires a clause to prove termination
-function loop(p: int, l: seq<int>): bool
-  decreases l
+// Reference solution
+function maxR(l: seq<int>): int
 {
-  if |l| == 0 then true
-  else p <= l[0] && loop(l[0], l[1..])
+  if |l| == 0 then -1
+  else if |l| == 1 then l[0]
+  else
+    var m := maxR(l[1..]);
+    if l[0] > m then l[0] else m
 }
 
-function isSortedR(l: seq<int>): bool
-{
-  if |l| == 0 then true
-  else loop(l[0], l[1..])
-}
-
-// Defining isSortedB
-function isSortedB(l: seq<int>): bool
+// Defining maxC
+function maxC(l: seq<int>): int
   decreases |l|
 {
-  if |l| == 0 then true
-  else if |l| == 1 then isSortedB([])
-  else l[0] <= l[1] && isSortedB(l[1..])
+  if |l| == 0 then -1
+  else if |l| == 1 then l[0]
+  else
+    var a := l[0];
+    var b := l[1];
+    if a > b then
+      maxC([l[0]] + l[2..])
+    else
+      maxC(l[1..])
 }
 
-// Proving equivalence of both functions
-// Dafny can prove this automatically
-lemma isSortedEquivalence(l: seq<int>)
-  ensures isSortedR(l) == isSortedB(l)
+lemma maxEquivalence(l: seq<int>)
+  ensures maxC(l) == maxR(l)
+  decreases |l|
 {}
