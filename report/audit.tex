@@ -474,32 +474,34 @@ lemma equivalence_solution2_uniq2(lst: List<int>)
 
 \footnote{Fix this missing lst:isSortedB reference}
 
-Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB|, described in \Cref{lst:isSortedB}, can be converted into the following imperative method:
+Recursive functions can be converted into their iterative versions. For example, here is a recursive implementation of a function \lstinline|isSortedB| to determine whether a sequence of integers is sorted in non-decreasing order:
+\begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
+function isSortedB(l: seq<int>): bool
+  decreases |l|
+{
+  if |l| == 0 then true
+  else if |l| == 1 then isSortedB([])
+  else l[0] <= l[1] && isSortedB(l[1..])
+}
+\end{lstlisting}
+%
+This implementation can be converted into the following imperative method. It is not an exact conversion from the recursive version, to make better use of imperative features. The postcondition states that the method will output a boolean equivalent to whether each element in the sequence is less than or equal to the next element. If this can be proven, then the sequence must be sorted in non-decreasing order. The variable \lstinline|index| together with the invariant in the \lstinline|while| loop are used to keep track of which sequence elements have been checked so far.
 \begin{lstlisting}[caption=\lstinline|isSortedBI| Method]
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
-  var currentL := l;
+  var index := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == l[|l| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |l| - |currentL| ==>
-                          (i < |l| - 1 ==> l[i] <= l[i+1])
+  while index < |l| - 1
+    invariant forall i :: 0 <= i < index ==> (i < |l| - 1 ==> l[i] <= l[i+1])
   {
-    if |currentL| == 0 {
-        return true;
-    } else if |currentL| == 1 {
-        currentL := [];
-    } else {
-        var x := currentL[0];
-        var y := currentL[1];
-        if x > y {
-            return false;
-        }
-        currentL := currentL[1..];
+    if l[index] > l[index + 1] {
+        return false;
     }
+    index := index + 1;
   }
+
+  return true;
 }
 \end{lstlisting}
 %
@@ -511,34 +513,28 @@ These specifications can be very difficult to write correctly. Additionally, jus
 
 As described by \textcite{lahiriDifferentialAssertionChecking2013}, one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
-For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function versions can be found in \Cref{lst:isSortedR,lst:isSortedB} respectively). First, the imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|:
+For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function version of \lstinline|isSortedR| can be found in \Cref{lst:isSortedR}). The imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|. As above, the methods are not an exact conversion from their recursive counterparts. Additionally, the methods operate on sequences instead of lists, so I can use Dafny's built-in indexing and slicing features: 
 \begin{lstlisting}[caption=\lstinline|isSortedRI| Method with \lstinline|loopI| Helper Method]
 method loopI(p: int, l: seq<int>) returns (res: bool)
-  ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) &&
-                    (|l| > 0 ==> p <= l[0]))
+  ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
 {
   var currentP := p;
-  var currentL := l;
+  var next := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == l[|l| - |currentL| .. ]
-    invariant currentP == if |l| == |currentL| then p
-                          else l[|l| - |currentL| - 1]
-    invariant |l| > |currentL| ==> p <= l[0]
-    invariant forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1]
+  while next < |l|
+    invariant next <= |l|
+    invariant currentP == if next == 0 then p else l[next - 1]
+    invariant next > 0 ==> p <= l[0]
+    invariant forall i :: 0 <= i < next - 1 ==> l[i] <= l[i+1]
   {
-    if |currentL| == 0 {
-        return true;
-    } else {
-        var x := currentL[0];
-        if currentP > x {
-            return false;
-        }
-        currentP := x;
-        currentL := currentL[1..];
+    if currentP > l[next] {
+        return false;
     }
+    currentP := l[next];
+    next := next + 1;
   }
+
+  return true;
 }
 
 method isSortedRI(l: seq<int>) returns (res: bool)
@@ -547,9 +543,7 @@ method isSortedRI(l: seq<int>) returns (res: bool)
   if |l| == 0 {
     return true;
   } else {
-    var x := l[0];
-    var xs := l[1..];
-    var result := loopI(x, xs);
+    var result := loopI(l[0], l[1..]);
     return result;
   }
 }
@@ -557,10 +551,7 @@ method isSortedRI(l: seq<int>) returns (res: bool)
 %
 These methods can be used to construct a product program as follows, using the definition of \lstinline|loopI| given above:
 \begin{lstlisting}[caption=Product Program for \lstinline|isSortedBI| and \lstinline|isSortedRI| using \lstinline|loopI|]
-method isSortedBI_RI_Equivalence(
-  lb: seq<int>,
-  lr: seq<int>
-) returns (rres: bool, bres: bool)
+method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool, bres: bool)
   requires lb == lr
   ensures rres == bres
 {
@@ -572,42 +563,33 @@ method isSortedBI_RI_Equivalence(
   if |lr| == 0 {
     rout := true;
   } else {
-    var x := lr[0];
-    var xs := lr[1..];
-    var result := loopI(x, xs);
+    var result := loopI(lr[0], lr[1..]);
     rout := result;
   }
 
   // Computing isSortedBI
-  var currentL := lb;
+  var index := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == lb[|lb| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |lb| - |currentL| ==>
-                          (i < |lb| - 1 ==> lb[i] <= lb[i+1])
+  while index < |lb| - 1
+    invariant forall i :: 0 <= i < index ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
   {
-    if |currentL| == 0 {
-      bout := true;
-      break;
-    } else if |currentL| == 1 {
-      currentL := [];
-    } else {
-      var x := currentL[0];
-      var y := currentL[1];
-      if x > y {
-        bout := false;
-        break;
-      }
-      currentL := currentL[1..];
+    if lb[index] > lb[index + 1] {
+        return rout, false;
     }
+
+    index := index + 1;
   }
+
+  bout := true;
 
   // Returning the results
   return rout, bout;
 }
 \end{lstlisting}
 %
+
+\footnote{Can you autogen these product programs? maybe without the invariants?}
+
 The specification of this product program ensures that, since Dafny is able to verify this method, \lstinline|isSortedBI| and \lstinline|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \lstinline|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
 
 \subsubsection{Equivalence of Methods and Functions}
@@ -617,25 +599,19 @@ A similar problem to that discussed above is proving the equivalence of a method
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res == isSortedB(l)
 {
-  var currentL := l;
+  var index := 0;
 
-  while true
-    decreases |currentL|
-    invariant isSortedB(currentL) == isSortedB(l)
+  while index < |l| - 1
+    invariant index <= |l|
+    invariant isSortedB(l[index..]) == isSortedB(l)
   {
-    if |currentL| == 0 {
-        return true;
-    } else if |currentL| == 1 {
-        currentL := [];
-    } else {
-        var x := currentL[0];
-        var y := currentL[1];
-        if x > y {
-            return false;
-        }
-        currentL := currentL[1..];
+    if l[index] > l[index + 1] {
+        return false;
     }
+    index := index + 1;
   }
+
+  return true;
 }
 \end{lstlisting}
 %
