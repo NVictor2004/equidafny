@@ -1,6 +1,8 @@
 \chapter{Background}\label{chp:background}
+
+\section{Current State of the art tools}
  
-\section{Dafny}\label{sec:dafny}
+\subsection{Dafny}\label{sec:dafny}
 
 \footnote{simple example in each thing in the intro, maybe same example, specification is optional}
 \footnote{formal definition of program equivalence}
@@ -9,7 +11,44 @@ Dafny is a popular program verifier, under active development by Amazon \cite{le
 
 Dafny's program verification heavily relies on Boogie \cite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \cite{10.1007/978-3-540-78800-3_24}. 
 
-\section{SymDiff}
+Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
+
+\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
+function loop(p: int, l: seq<int>): bool
+  decreases l
+{
+  if |l| == 0 then true
+  else p <= l[0] && loop(l[0], l[1..])
+}
+
+function isSortedR(l: seq<int>): bool
+{
+  if |l| == 0 then true
+  else loop(l[0], l[1..])
+}
+\end{lstlisting}
+%
+The second is as follows:
+\begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
+function isSortedB(l: seq<int>): bool
+  decreases |l|
+{
+  if |l| == 0 then true
+  else if |l| == 1 then isSortedB([])
+  else l[0] <= l[1] && isSortedB(l[1..])
+}
+\end{lstlisting}
+%
+To prove the equivalence of these two functions, we can define the following lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedR| and \lstinline|isSortedB|]
+lemma isSortedEquivalence(l: seq<int>)
+  ensures isSortedR(l) == isSortedB(l)
+{}
+\end{lstlisting}
+%
+Thus, Dafny is capable of proving that these functions are equivalent. As described in \Cref{sec:dafny}, this is achieved by translating the Dafny program into Boogie. For this example, this results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function, and ends with the translation of the equivalence lemma, taking only around 50 lines of code. Therefore, the Dafny programming language is highly expressive, allowing users to define functions in a concise manner. Meanwhile, the Dafny program verifier is capable of proving the equivalence of some functions without much effort on the user's part.
+
+\subsection{SymDiff}
 
 \footnote{how exactly does symdiff work, more details}
 
@@ -17,7 +56,7 @@ SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnos
 
 SymDiff can also be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focussed on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
 
-\section{Stainless}
+\subsection{Stainless}
 
 \footnote{scala subset specify}
 
@@ -25,6 +64,6 @@ Stainless is a verification framework that verifies that Scala programs obey the
 
 One part of Stainless's functionality that is especially relevant to this work is its equivalence checker \parencite{IntroductionStainless091,milovancevicProvingDisprovingEquivalence2023}. Its ability to automatically generate equivalence lemmas for helper functions and to match many functions at once will make it a great inspiration for the rest of this project.  
 
-\section{KLEE}
+\subsection{KLEE}
 
-KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For each path, KLEE maintains the set of conditions needed for that path to have been taken, thus, if the path ends in an error, KLEE can use those conditions to generate a single test case that will create the error. Therefore, KLEE is a powerful tool, especially when working on program equivalence, however, one of its main limitations is that the number of possible paths to keep track of can grow exponentially large when it is working with programs containing many loops and branches. 
+KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For each path, KLEE maintains the set of conditions needed for that path to have been taken, thus, if the path ends in an error, KLEE can use those conditions to generate a single test case that will create the error. Therefore, KLEE is a powerful tool, especially when working on program equivalence, however, one of its main limitations is that the number of possible paths to keep track of can grow exponentially large when it is working with programs containing many loops and branches.

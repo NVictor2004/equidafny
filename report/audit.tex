@@ -1,6 +1,5 @@
-\chapter{Technical Audit}\label{chp:audit}
+\section{Dafny: Technical Audit}\label{sec:audit}
 
-\footnote{technical audit can go in the background}
 \footnote{also look at broken / incorrect examples and see equivalence, they should be}
 \footnote{change first example to be more impressive, tail recursion?, more intentional differences, rather than moving things around; use the max example, approaching list from both ends}
 
@@ -9,44 +8,7 @@
 \footnote{comparing Lists and seqs, wrong examples}
 \footnote{highlighting important parts of examples}
 
-Dafny is a powerful tool for proving program equivalence. It is often able to prove that two given functions are equivalent fully automatically. Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two examples attempt to check whether a list is sorted. The first is as follows, involving a helper function \lstinline|loop| and the main function \lstinline|isSortedR|:
-
-\begin{lstlisting}[caption=\lstinline|isSortedR| function with \lstinline|loop| helper function, label=lst:isSortedR]
-function loop(p: int, l: seq<int>): bool
-  decreases l
-{
-  if |l| == 0 then true
-  else p <= l[0] && loop(l[0], l[1..])
-}
-
-function isSortedR(l: seq<int>): bool
-{
-  if |l| == 0 then true
-  else loop(l[0], l[1..])
-}
-\end{lstlisting}
-%
-The second is as follows:
-\begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
-function isSortedB(l: seq<int>): bool
-  decreases |l|
-{
-  if |l| == 0 then true
-  else if |l| == 1 then isSortedB([])
-  else l[0] <= l[1] && isSortedB(l[1..])
-}
-\end{lstlisting}
-%
-To prove the equivalence of these two functions, we can define the following lemma:
-\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedR| and \lstinline|isSortedB|]
-lemma isSortedEquivalence(l: seq<int>)
-  ensures isSortedR(l) == isSortedB(l)
-{}
-\end{lstlisting}
-%
-Thus, Dafny is capable of proving that these functions are equivalent. As described in \Cref{sec:dafny}, this is achieved by translating the Dafny program into Boogie. For this example, this results in a file almost 3500 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function, and ends with the translation of the equivalence lemma, taking only around 50 lines of code. Therefore, the Dafny programming language is highly expressive, allowing users to define functions in a concise manner. Meanwhile, the Dafny program verifier is capable of proving the equivalence of some functions without much effort on the user's part.
-
-However, there are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In the rest of this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
+There are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
 The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. I converted all of their tests into Dafny functions, and proved their equivalence. Many of these tests consisted of more than 2 functions, each in their own file. For these cases, I concatenated all of these functions into a single Dafny file to form a single test, and proved the equivalence of each function with a single function, thus proving, through the transitivity of equivalence, that all of these functions were pairwise equivalent. This resulted in a total of 62 tests.
 
@@ -83,14 +45,14 @@ Using these tests, I have attempted to characterise the cases where Dafny requir
 
 The following sections describe each type of limitation that I have identified. Each section contains at least one example to clearly demonstrate the limitation being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. 
 
-\section{Necessary Datastructures}
+\subsection{Necessary Datastructures}
 
 I will require the following definition of a list data structure:
 \begin{lstlisting}[caption=List Data Structure]
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
-\section{Incorrect Counterexamples}\label{sec:counterexamples} 
+\subsection{Incorrect Counterexamples}\label{sec:counterexamples} 
 An example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedA| Function]
 function leq(cur: int, next: int): bool
@@ -143,7 +105,7 @@ Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| a
 
 As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, due to the Z3 solver being incomplete.
 
-\section{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
+\subsection{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
 
 The example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedC| Function]
@@ -227,7 +189,7 @@ Dafny must verify that \lstinline|pos - 1| is a valid index for \lstinline|adjLi
 
 Therefore, to prove the equivalence of two functions that both use helper functions, the user must first prove the equivalence of the helper functions, and then explicitly call the corresponding lemmas within the main equivalence lemma, ensuring that all required conditions are met at the call site. 
 
-\section{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
+\subsection{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
 
 Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two equivalent functions \lstinline|limit3_1| and \lstinline|limit3_2|:
 \begin{lstlisting}[caption=\lstinline|limit3_1| and \lstinline|limit3_2| Functions]
@@ -298,7 +260,7 @@ lemma equivalence(n: int, flag: bool)
 %
 Thus, this is another example of where Dafny can prove the equivalence of two functions, but only after the user provides helper lemmas that would be difficult for Dafny to automatically generate.
 
-\section{Explicitly enforcing induction to prove lemmas}\label{sec:induction}
+\subsection{Explicitly enforcing induction to prove lemmas}\label{sec:induction}
 
 Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, here are the two equivalent functions \lstinline|leVraiSculpteurDeNuage| and \lstinline|leVraiSculpteurDeNuageM|:
 \begin{lstlisting}[caption=\lstinline|leVraiSculpteurDeNuage| and \lstinline|leVraiSculpteurDeNuageM| Functions]
@@ -360,7 +322,7 @@ lemma equivalenceLeVraiSculpteurDeNuage<A, B, C>(
 %
 Therefore, in many cases Dafny is able to infer the correct induction method automatically, however, it sometimes requires the user to explicitly provide it themselves.
 
-\section{Providing Variants to prove termination}\label{sec:termination}
+\subsection{Providing Variants to prove termination}\label{sec:termination}
 
 Here, I provide two implementations of a function to find the maximum element in a sequence of integers. The first is as follows:
 \begin{lstlisting}[caption=\lstinline|maxR| Function]
@@ -481,7 +443,7 @@ lemma equivalence_solution2_uniq2(lst: List<int>)
 %
 Thus, if lemmas or assertions are needed to prove termination of at least one of the functions being compared, the user must explicitly copy them into the equivalence lemma as well. 
 
-\section{Equivalence of Imperative Methods}\label{sec:imperative-equivalence}
+\subsection{Equivalence of Imperative Methods}\label{sec:imperative-equivalence}
 
 Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB|, described in \Cref{lst:isSortedB}, can be converted into the following imperative method:
 \begin{lstlisting}[caption=\lstinline|isSortedBI| Method]
@@ -516,7 +478,7 @@ Proving the equivalence of imperative methods cannot be achieved directly throug
 
 These specifications can be very difficult to write correctly. Additionally, just proving that the methods' postconditions are equivalent is not sufficient to prove the equivalence of the methods themselves, as the postconditions may not fully capture the behaviour of the methods. 
 
-\subsection{Proving Equivalence of Imperative Methods using Product Programs}
+\subsubsection{Proving Equivalence of Imperative Methods using Product Programs}
 
 As described by \textcite{lahiriDifferentialAssertionChecking2013}, one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
@@ -619,7 +581,7 @@ method isSortedBI_RI_Equivalence(
 %
 The specification of this product program ensures that, since Dafny is able to verify this method, \lstinline|isSortedBI| and \lstinline|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \lstinline|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
 
-\subsection{Equivalence of Methods and Functions}
+\subsubsection{Equivalence of Methods and Functions}
 
 A similar problem to that discussed above is proving the equivalence of a method and a function. In this case, the user does not need to write a postcondition for the method, since the function can be called directly within the specification. The user still needs to provide loop invariants and variants for the method, however, these do not need to be as complicated as those detailed above, as again, they can be defined in terms of the function. For example, the function \lstinline|isSortedB| defined in \Cref{lst:isSortedB} can be proven to be equivalent with the following imperative method:
 \begin{lstlisting}[caption=\lstinline|isSortedBI| Method with simplified specifications]
@@ -650,7 +612,7 @@ method isSortedBI(l: seq<int>) returns (res: bool)
 %
 Thus, the necessary specifications can be greatly simplified if they are defined in terms of the function the method is being compared to.
 
-\section{Equivalence of Higher-Order Functions}\label{sec:higher-order}
+\subsection{Equivalence of Higher-Order Functions}\label{sec:higher-order}
 
 Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two equivalent functions \lstinline|andThen1| and \lstinline|andThen2|:
 \begin{lstlisting}[caption=\lstinline|andThen1| and \lstinline|andThen2| Functions]
