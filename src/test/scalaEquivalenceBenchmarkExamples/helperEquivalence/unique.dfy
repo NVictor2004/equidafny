@@ -79,5 +79,4 @@ lemma uniqEquivalenceHelper(l: List<int>, r: List<int>)
 
 lemma findEquivalence(l: List<int>, n: int)
   ensures find(l, n) == isin(n, l)
-{
-}
+{}

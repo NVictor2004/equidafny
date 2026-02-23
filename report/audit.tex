@@ -131,6 +131,99 @@ As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multip
 
 \subsection{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
 
+For this example, I will provide two solutions to the problem of reducing a list down its unique elements. Both solutions each require two helper functions, where each of the three pairs of functions across the two solutions are equivalent. The first pair of functions are \lstinline|isin| and \lstinline|find|. These functions determine whether a given element is in a list:
+\begin{lstlisting}[caption=\lstinline|isin| and \lstinline|find| Functions]
+function find(lst: List<int>, n: int): bool
+{
+  match lst
+  case Nil => false
+  case Cons(hd, tl) => n == hd || find(tl, n)
+}
+
+function isin(a: int, lst: List<int>): bool
+{
+  match lst
+  case Nil => false
+  case Cons(hd, tl) => a == hd || isin(a, tl)
+}
+\end{lstlisting}
+%
+Dafny requires that these helper functions are explicitly proven equivalent to be able to prove that the main functions are equivalent. Therefore, the user must write the following equivalence lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isin| and \lstinline|find|]
+lemma findEquivalence(l: List<int>, n: int)
+  ensures find(l, n) == isin(n, l)
+{}
+\end{lstlisting}
+%
+\textcite{milovancevicProvingDisprovingEquivalence2023} were able to automatically generate these helper lemmas by preprocessing the two solutions to find helper functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas such as the one above can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
+
+The second pair of functions are \lstinline|unique| and \lstinline|distinct|. These functions take two lists as input, and compute the unique elements of their union:
+
+\begin{lstlisting}[caption=\lstinline|unique| and \lstinline|distinct| Functions]
+function unique(l: List<int>, r: List<int>): List<int>
+{
+  match l
+  case Nil => r
+  case Cons(hd, tl) =>
+    if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil)))
+    else unique(tl, r)
+}
+
+function distinct(a: List<int>, b: List<int>): List<int>
+  decreases b
+{
+  match b
+  case Nil => a
+  case Cons(hd, tl) =>
+    if isin(hd, a) then distinct(a, tl)
+    else distinct(append(a, Cons(hd, Nil)), tl)
+}
+\end{lstlisting}
+%
+
+To prove their equivalence, the user must write the following equivalence lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|unique| and \lstinline|distinct|]
+lemma uniqEquivalenceHelper(l: List<int>, r: List<int>)
+  ensures unique(l, r) == distinct(r, l)
+{
+  match l
+  case Nil => {}
+  case Cons(hd, tl) => findEquivalence(r, hd);
+}
+\end{lstlisting}
+%
+
+Therefore, since the proof of the equivalence of \lstinline|unique| and \lstinline|distinct| relies on the equivalence of \lstinline|find| and \lstinline|isin|, the user must explicitly call the equivalence lemma for the helper functions, with the correct arguments, within the main equivalence lemma (as demonstrated above). 
+
+In addition, this lemma cannot be so easily generated using the method described above, as the arguments of \lstinline|unique| and \lstinline|distinct| have the same types, but are used in different ways. Therefore, to successfully generate this lemma, the functions themselves must be processed to identify how each argument is used.
+
+Finally, the third pair of functions \lstinline|uniqR| and \lstinline|uniqA| to find the unique elements of a list are as follows:
+
+\begin{lstlisting}[caption=\lstinline|uniqR| and \lstinline|uniqA| Functions]
+function uniqR(lst: List<int>): List<int>
+{
+  unique(lst, Nil)
+}
+
+function uniqA(lst: List<int>): List<int>
+{
+  distinct(Nil, lst)
+}
+\end{lstlisting}
+%
+These functions can be proven equivalent using the following equivalence lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|uniqR| and \lstinline|uniqA|]
+lemma uniqEquivalence(l: List<int>)
+  ensures uniqR(l) == uniqA(l)
+{
+  uniqEquivalenceHelper(l, Nil);
+}
+\end{lstlisting}
+%
+As demonstrated above, any necessary helper equivalence lemmas must be explicitly called by the user, with the correct arguments.
+
+\footnote{Add more stuff here for argument matching for the chk function}
+
 The example is as follows:
 \begin{lstlisting}[caption=\lstinline|isSortedC| Function]
 function chk(l: List<int>, p: int, a: bool): bool
@@ -164,11 +257,7 @@ lemma isSortedEquivalence(l: List<int>)
 }
 \end{lstlisting}
 %
-Therefore, for Dafny to verify the equivalence of the main functions \lstinline|isSortedC| and \lstinline|isSortedR|, it must also verify the equivalence of its helper functions \lstinline|chk| and \lstinline|loop|. This means that the user must provide additional helper lemmas to prove the equivalence of these helper functions. 
-
-\textcite{milovancevicProvingDisprovingEquivalence2023} solved this problem by preprocessing the two programs being compared to find helper functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
-
-Additionally, the user must explicitly call these helper lemmas, with the correct arguments, within the main equivalence lemma (as demonstrated above). Sometimes, these helper lemmas can only be called when specific conditions are met. To demonstrate this second point, I will provide two implementations of a function to determine whether a given adjacency list is valid. They are as follows:
+Sometimes, these helper lemmas can only be called when specific conditions are met. To demonstrate this second point, I will provide two implementations of a function to determine whether a given adjacency list is valid. They are as follows:
 \begin{lstlisting}[caption=\lstinline|validAdjListM| and \lstinline|validAdjList| Functions]
 function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
   requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
