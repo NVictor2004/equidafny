@@ -5,25 +5,22 @@ method loopI(p: int, l: seq<int>) returns (res: bool)
   ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
 {
   var currentP := p;
-  var currentL := l;
+  var next := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == l[|l| - |currentL| .. ]
-    invariant currentP == if |l| == |currentL| then p else l[|l| - |currentL| - 1]
-    invariant |l| > |currentL| ==> p <= l[0]
-    invariant forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1]
+  while next < |l|
+    invariant next <= |l|
+    invariant currentP == if next == 0 then p else l[next - 1]
+    invariant next > 0 ==> p <= l[0]
+    invariant forall i :: 0 <= i < next - 1 ==> l[i] <= l[i+1]
   {
-    if |currentL| == 0 {
-      return true;
-    } else {
-      if currentP > currentL[0] {
+    if currentP > l[next] {
         return false;
-      }
-      currentP := currentL[0];
-      currentL := currentL[1..];
     }
+    currentP := l[next];
+    next := next + 1;
   }
+
+  return true;
 }
 
 method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool, bres: bool)
@@ -43,24 +40,19 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
   }
 
   // Computing isSortedBI
-  var currentL := lb;
+  var index := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == lb[|lb| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |lb| - |currentL| ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
+  while index < |lb| - 1
+    invariant forall i :: 0 <= i < index ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
   {
-    if |currentL| <= 1 {
-      bout := true;
-      break;
-    } else {
-      if currentL[0] > currentL[1] {
-        bout := false;
-        break;
-      }
-      currentL := currentL[1..];
+    if lb[index] > lb[index + 1] {
+        return rout, false;
     }
+
+    index := index + 1;
   }
+
+  bout := true;
 
   // Returning the results
   return rout, bout;
@@ -82,51 +74,47 @@ method isSortedBI_RI_Equivalence_Full(lb: seq<int>, lr: seq<int>) returns (rres:
     var xs := lr[1..];
 
     // Computing loopI
-    var result: bool;
     var currentP := x;
-    var currentL := xs;
+    var next := 0;
+    var broken := false;
 
-    while true
-      decreases |currentL|
-      invariant currentL == xs[|xs| - |currentL| .. ]
-      invariant currentP == if |xs| == |currentL| then x else xs[|xs| - |currentL| - 1]
-      invariant |xs| > |currentL| ==> x <= xs[0]
-      invariant forall i :: 0 <= i < |xs| - |currentL| - 1 ==> xs[i] <= xs[i+1]
+    while next < |xs|
+      invariant next <= |xs|
+      invariant currentP == if next == 0 then x else xs[next - 1]
+      invariant next > 0 ==> x <= xs[0]
+      invariant forall i :: 0 <= i < next - 1 ==> xs[i] <= xs[i+1]
     {
-      if |currentL| == 0 {
-        result := true;
-        break;
-      } else {
-        if currentP > currentL[0] {
-          result := false;
+      if currentP > xs[next] {
+          rout := false;
+          broken := true;
           break;
-        }
-        currentP := currentL[0];
-        currentL := currentL[1..];
       }
+      currentP := xs[next];
+      next := next + 1;
     }
 
-    rout := result;
+    if !broken {
+        rout := true;
+    }
   }
 
   // Computing isSortedBI
-  var currentL := lb;
+  var index := 0;
+  var broken := false;
 
-  while true
-    decreases |currentL|
-    invariant currentL == lb[|lb| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |lb| - |currentL| ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
+  while index < |lb| - 1
+    invariant forall i :: 0 <= i < index ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
   {
-    if |currentL| <= 1 {
-      bout := true;
-      break;
-    } else {
-      if currentL[0] > currentL[1] {
+    if lb[index] > lb[index + 1] {
         bout := false;
+        broken := true;
         break;
-      }
-      currentL := currentL[1..];
     }
+    index := index + 1;
+  }
+
+  if !broken {
+    bout := true;
   }
 
   // Returning the results

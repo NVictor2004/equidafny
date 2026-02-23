@@ -11,19 +11,17 @@ function isSortedB(l: seq<int>): bool
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res == isSortedB(l)
 {
-  var currentL := l;
+  var index := 0;
 
-  while true
-    decreases |currentL|
-    invariant isSortedB(currentL) == isSortedB(l)
+  while index < |l| - 1
+    invariant index <= |l|
+    invariant isSortedB(l[index..]) == isSortedB(l)
   {
-    if |currentL| <= 1 {
-        return true;
-    } else {
-        if currentL[0] > currentL[1] {
-            return false;
-        }
-        currentL := currentL[1..];
+    if l[index] > l[index + 1] {
+        return false;
     }
+    index := index + 1;
   }
+
+  return true;
 }

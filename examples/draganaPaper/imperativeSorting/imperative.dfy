@@ -7,25 +7,22 @@ method loopI(p: int, l: seq<int>) returns (res: bool)
   ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
 {
   var currentP := p;
-  var currentL := l;
+  var next := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == l[|l| - |currentL| .. ]
-    invariant currentP == if |l| == |currentL| then p else l[|l| - |currentL| - 1]
-    invariant |l| > |currentL| ==> p <= l[0]
-    invariant forall i :: 0 <= i < |l| - |currentL| - 1 ==> l[i] <= l[i+1]
+  while next < |l|
+    invariant next <= |l|
+    invariant currentP == if next == 0 then p else l[next - 1]
+    invariant next > 0 ==> p <= l[0]
+    invariant forall i :: 0 <= i < next - 1 ==> l[i] <= l[i+1]
   {
-    if |currentL| == 0 {
-        return true;
-    } else {
-        if currentP > currentL[0] {
-            return false;
-        }
-        currentP := currentL[0];
-        currentL := currentL[1..];
+    if currentP > l[next] {
+        return false;
     }
+    currentP := l[next];
+    next := next + 1;
   }
+
+  return true;
 }
 
 method isSortedRI(l: seq<int>) returns (res: bool)
@@ -44,23 +41,18 @@ method isSortedRI(l: seq<int>) returns (res: bool)
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
-  var currentL := l;
-  var i := 0;
+  var index := 0;
 
-  while true
-    decreases |currentL|
-    invariant currentL == l[|l| - |currentL| .. ]
-    invariant forall i :: 0 <= i < |l| - |currentL| ==> (i < |l| - 1 ==> l[i] <= l[i+1])
+  while index < |l| - 1
+    invariant forall i :: 0 <= i < index ==> (i < |l| - 1 ==> l[i] <= l[i+1])
   {
-    if |currentL| <= 1 {
-        return true;
-    } else {
-        if currentL[i] > currentL[i+1] {
-            return false;
-        }
-        currentL := currentL[1..];
+    if l[index] > l[index + 1] {
+        return false;
     }
+    index := index + 1;
   }
+
+  return true;
 }
 
 // Defining isSortedC
