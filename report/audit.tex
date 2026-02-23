@@ -2,7 +2,6 @@
 
 \footnote{also look at broken / incorrect examples and see equivalence, they should be}
 
-\footnote{comparing Lists and seqs, wrong examples}
 \footnote{highlighting important parts of examples}
 \footnote{any limitations that only arise with more complex data structures?}
 
@@ -193,7 +192,7 @@ lemma uniqEquivalenceHelper(l: List<int>, r: List<int>)
 \end{lstlisting}
 %
 
-Therefore, since the proof of the equivalence of \lstinline|unique| and \lstinline|distinct| relies on the equivalence of \lstinline|find| and \lstinline|isin|, the user must explicitly call the equivalence lemma for the helper functions, with the correct arguments, within the main equivalence lemma (as demonstrated above). 
+Therefore, since the proof of the equivalence of \lstinline|unique| and \lstinline|distinct| relies on the equivalence of \lstinline|find| and \lstinline|isin|, the user must explicitly call the equivalence lemma for the helper functions. This lemma must be called with the correct arguments and under the correct conditions, within the main equivalence lemma (as demonstrated above).
 
 In addition, this lemma cannot be so easily generated using the method described above, as the arguments of \lstinline|unique| and \lstinline|distinct| have the same types, but are used in different ways. Therefore, to successfully generate this lemma, the functions themselves must be processed to identify how each argument is used.
 
@@ -220,91 +219,12 @@ lemma uniqEquivalence(l: List<int>)
 }
 \end{lstlisting}
 %
-As demonstrated above, any necessary helper equivalence lemmas must be explicitly called by the user, with the correct arguments.
 
-\footnote{Add more stuff here for argument matching for the chk function}
-
-The example is as follows:
-\begin{lstlisting}[caption=\lstinline|isSortedC| Function]
-function chk(l: List<int>, p: int, a: bool): bool
-{
-  match l
-  case Nil => a
-  case Cons(x, xs) => x >= p && chk(xs, x, a)
-}
-
-function isSortedC(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, xs) => chk(Cons(x, xs), x, true)
-}
-\end{lstlisting}
-%
-This example is equivalent to the reference solution detailed in \Cref{lst:isSortedR}, however, Dafny requires a helper lemma to prove this:
-\begin{lstlisting}[caption=Equivalence Lemma with Helper for \lstinline|isSortedC| and \lstinline|isSortedR|]
-lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
-  decreases xs
-  ensures chk(xs, x, true) == loop(x, xs)
-{}
-
-lemma isSortedEquivalence(l: List<int>)
-  ensures isSortedC(l) == isSortedR(l)
-{
-  match l
-  case Nil => {}
-  case Cons(x, xs) => isSortedEquivalenceHelper(x, xs);
-}
-\end{lstlisting}
-%
-Sometimes, these helper lemmas can only be called when specific conditions are met. To demonstrate this second point, I will provide two implementations of a function to determine whether a given adjacency list is valid. They are as follows:
-\begin{lstlisting}[caption=\lstinline|validAdjListM| and \lstinline|validAdjList| Functions]
-function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
-  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
-  decreases(pos) {
-  if pos == 0 then
-   true
-  else
-    validListM(adjList[pos - 1], N) && validAdjListM(adjList, N, pos - 1)
-  }
-
-function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
-  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
-  decreases(pos) {
-  if (pos == 0) then 
-    true
-  else if (validAdjList(adjList, N, pos - 1)) then
-    validList(N, adjList[pos - 1])
-  else
-    false
-  }
-\end{lstlisting}
-%
-The definitions of \lstinline|validListM| and \lstinline|validList| are irrelevant for this example, so I will omit them. All that is required is that they are equivalent:
-\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|validListM| and \lstinline|validList|]
-lemma equivalenceValidList(l: List<int>, N: int)
-  requires (N >= 1)
-  ensures (validList(N, l) <==> validListM(l, N))
-{}
-\end{lstlisting}
-%
-Dafny can now use this lemma to prove the equivalence of \lstinline|validAdjListM| and \lstinline|validAdjList|, but only if it is used when a specific condition is met:
-\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|validAdjListM| and \lstinline|validAdjList|]
-lemma equivalenceValidAdjList(adjList: seq<List<int>>, N: int, pos: int)
-  requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
-  ensures (validAdjList(adjList, N, pos) <==> validAdjListM(adjList, N, pos))
-{
-  if pos > 0 {equivalenceValidList(adjList[pos - 1], N);}
-}
-\end{lstlisting}
-%
-Dafny must verify that \lstinline|pos - 1| is a valid index for \lstinline|adjList| before the lemma \lstinline|equivalenceValidList| can be called. Therefore, the lemma can only be called under the condition that \lstinline|pos > 0|.
-
-Therefore, to prove the equivalence of two functions that both use helper functions, the user must first prove the equivalence of the helper functions, and then explicitly call the corresponding lemmas within the main equivalence lemma, ensuring that all required conditions are met at the call site. 
+Therefore, to prove the equivalence of two functions that both use helper functions, the user must first prove the equivalence of the helper functions, and then explicitly call the corresponding lemmas within the main equivalence lemma, ensuring that all required conditions are met at the call site.
 
 \subsection{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
 
-Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two equivalent functions \lstinline|limit3_1| and \lstinline|limit3_2|:
+Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two functions \lstinline|limit3_1| and \lstinline|limit3_2|, which attempt to compute the triangular number of a given integer \lstinline|n| (the functions return \lstinline|n| when n is negative):
 \begin{lstlisting}[caption=\lstinline|limit3_1| and \lstinline|limit3_2| Functions]
 function limit3_1(n: int): int {
   if (n <= 1) then n
@@ -320,7 +240,8 @@ function limit3_2(n: int): int {
 }
 \end{lstlisting}
 %
-The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|limit3_2| function, where it will either output \lstinline|n + r| or \lstinline|r|, depending on whether \lstinline|r >= 0|. However, we can prove that \lstinline|r| is always strictly positive in this case, thus \lstinline|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
+The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|limit3_2| function, where it will either output \lstinline|n + r| or \lstinline|r|, depending on whether \lstinline|r >= 0|. However, to reach this \lstinline|else| branch, we know that \lstinline|n| must be greater than or equal to 2, so \lstinline|n - 1| must be at least 1. Therefore, \lstinline|limit3_2(n-1)| will output a triangular number, which must be non-negative. This means that we should be able to prove that \lstinline|r| is always non-negative, so \lstinline|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
+
 \begin{lstlisting}[caption=Auxiliary and Equivalence Lemmas for the \lstinline|limit3_1| and \lstinline|limit3_2| Functions]
 lemma equivalenceLimit3_Helper(n: int)
   requires n >= 1
@@ -334,7 +255,7 @@ lemma equivalenceLimit3(n: int)
 }
 \end{lstlisting}
 %
-Therefore, Dafny is able to prove the equivalence of these two functions, but only after the user provides a helper lemma that would be difficult for Dafny to automatically generate. Here is another, more complicated example. Consider the following two equivalent functions \lstinline|m1| and \lstinline|m2|:
+Therefore, Dafny is able to prove the equivalence of these two functions, but only after the user provides a helper lemma that would be difficult for Dafny to automatically generate. Here is another, more complicated example. Consider the following two functions \lstinline|m1| and \lstinline|m2|, which output the fibonnaci number of a given integer \lstinline|n|. However, both functions contain an extra boolean argument: 
 \begin{lstlisting}[caption=\lstinline|m1| and \lstinline|m2| Functions]
 function m1(n: int, flag: bool): int {
   if (n < 1) then 0
@@ -354,7 +275,8 @@ function m2(n: int, mode: bool): int {
 }
 \end{lstlisting}
 %
-The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|m2| function, where it will output one of two different expressions depending on the value of \lstinline|mode|. Because of this, Dafny requires an auxiliary lemma to prove equivalence:
+The first function does not use the boolean argument at all/ The second function uses it in the \lstinline|else| branch to either compute the standard fibonacci expression \lstinline|m2(n-1, !mode) + m2(n-2, !mode)|, or the expression with the \lstinline|m2(n-1, !mode)| call unrolled once (\lstinline|m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)|). Dafny only requires assistance in proving that the unrolled function call in \lstinline|m2| is equivalent to the standard fibonacci expression. Therefore, the user must provide the following auxiliary lemma:
+
 \begin{lstlisting}[caption=Auxiliary Lemma for \lstinline|m2|]
 lemma m2_equivalence_fib(n: int)
   requires n >= 2
