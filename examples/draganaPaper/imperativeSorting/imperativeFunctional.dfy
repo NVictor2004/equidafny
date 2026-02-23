@@ -17,14 +17,10 @@ method isSortedBI(l: seq<int>) returns (res: bool)
     decreases |currentL|
     invariant isSortedB(currentL) == isSortedB(l)
   {
-    if |currentL| == 0 {
+    if |currentL| <= 1 {
         return true;
-    } else if |currentL| == 1 {
-        currentL := [];
     } else {
-        var x := currentL[0];
-        var y := currentL[1];
-        if x > y {
+        if currentL[0] > currentL[1] {
             return false;
         }
         currentL := currentL[1..];

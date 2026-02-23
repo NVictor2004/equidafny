@@ -19,11 +19,10 @@ method loopI(p: int, l: seq<int>) returns (res: bool)
     if |currentL| == 0 {
         return true;
     } else {
-        var x := currentL[0];
-        if currentP > x {
+        if currentP > currentL[0] {
             return false;
         }
-        currentP := x;
+        currentP := currentL[0];
         currentL := currentL[1..];
     }
   }
@@ -35,9 +34,7 @@ method isSortedRI(l: seq<int>) returns (res: bool)
   if |l| == 0 {
     return true;
   } else {
-    var x := l[0];
-    var xs := l[1..];
-    var result := loopI(x, xs);
+    var result := loopI(l[0], l[1..]);
     return result;
   }
 }
@@ -48,20 +45,17 @@ method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
 {
   var currentL := l;
+  var i := 0;
 
   while true
     decreases |currentL|
     invariant currentL == l[|l| - |currentL| .. ]
     invariant forall i :: 0 <= i < |l| - |currentL| ==> (i < |l| - 1 ==> l[i] <= l[i+1])
   {
-    if |currentL| == 0 {
+    if |currentL| <= 1 {
         return true;
-    } else if |currentL| == 1 {
-        currentL := [];
     } else {
-        var x := currentL[0];
-        var y := currentL[1];
-        if x > y {
+        if currentL[i] > currentL[i+1] {
             return false;
         }
         currentL := currentL[1..];
@@ -88,13 +82,11 @@ method chkI(l: seq<int>, p: int, a: bool) returns (res: bool)
     if |currentL| == 0 {
       return a;
     } else {
-      var x := currentL[0];
-      var xs := currentL[1..];
-      if x < currentP {
+      if currentL[0] < currentP {
           return false;
       }
-      currentL := xs;
-      currentP := x;
+      currentP := currentL[0];
+      currentL := currentL[1..];
     }
   }
 }
@@ -105,8 +97,7 @@ method isSortedCI(l: seq<int>) returns (res: bool)
     if |l| == 0 {
         return true;
     } else {
-        var x := l[0];
-        var result := chkI(l, x, true);
+        var result := chkI(l, l[0], true);
         return result;
     }
 }

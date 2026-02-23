@@ -409,7 +409,7 @@ function mySub(x: int, y: int): int
 }
 \end{lstlisting}
 %
-These two functions use the same variant to prove termination, and are equivalent if the arguments are matched correctly. Therefore, Dafny is able to prove their equivalence as follows, but only if the user explicitly copies the variant from one of the two functions:
+The variants of these two functions are equivalent when the arguments are matched correctly. Therefore, Dafny is able to prove their equivalence as follows, but only if the user explicitly provides a variant with the same structure as those from the two functions, with the correct arguments:
 
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|sub| and \lstinline|mySub|]
 lemma equivalenceSub(x: int, y: int)
@@ -441,14 +441,14 @@ function uniq2(lst: List<int>): List<int>
 }
 \end{lstlisting}
 %
-The definitions of \lstinline|drop_2| and \lstinline|drop| are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
+The functions \lstinline|drop_2| and \lstinline|drop| are helper functions that remove all occurrences of an integer from a list of integers. The definitions of these functions are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|drop_2| and \lstinline|drop|]
 lemma equivalenceDrop(a: int, lst: List<int>)
   ensures (drop(a, lst) == drop_2(lst, a))
 {}
 \end{lstlisting}
 %
-\lstinline|solution_2| and \lstinline|uniq2| also use helper lemmas \lstinline|lemM| and \lstinline|lem2| respectively to prove termination. These lemmas are equivalent, so I will only provide \lstinline|lem2|:
+To prove termination, Dafny requires the lists inputted into the recursive calls to \lstinline|solution_2| and \lstinline|uniq2| to be `smaller' than the lists provided in the original calls. Therefore, the outputs of \lstinline|drop_2| and \lstinline|drop| must be `smaller' than the original lists. Dafny cannot infer this by itself, therefore, the user must explicitly provide lemmas. \lstinline|solution_2| and \lstinline|uniq2| use the lemmas \lstinline|lemM| and \lstinline|lem2| respectively for this purpose. These lemmas are equivalent, so I will only provide \lstinline|lem2|. For this example, it is sufficient to prove one list is `smaller' than another by using their lengths:
 \begin{lstlisting}[caption=\lstinline|lem2| Helper Lemma]
 lemma lem2(a: int, lst: List<int>)
   ensures length(drop(a, lst)) <= length(lst)
@@ -469,9 +469,10 @@ lemma equivalence_solution2_uniq2(lst: List<int>)
 }
 \end{lstlisting}
 %
-Thus, if lemmas or assertions are needed to prove termination of at least one of the functions being compared, the user must explicitly copy them into the equivalence lemma as well. 
 
 \subsection{Equivalence of Imperative Methods}\label{sec:imperative-equivalence}
+
+\footnote{Fix this missing lst:isSortedB reference}
 
 Recursive functions can be converted into their iterative versions. For example, the recursive implementation of \lstinline|isSortedB|, described in \Cref{lst:isSortedB}, can be converted into the following imperative method:
 \begin{lstlisting}[caption=\lstinline|isSortedBI| Method]

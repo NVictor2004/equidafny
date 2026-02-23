@@ -17,11 +17,10 @@ method loopI(p: int, l: seq<int>) returns (res: bool)
     if |currentL| == 0 {
       return true;
     } else {
-      var x := currentL[0];
-      if currentP > x {
+      if currentP > currentL[0] {
         return false;
       }
-      currentP := x;
+      currentP := currentL[0];
       currentL := currentL[1..];
     }
   }
@@ -39,9 +38,7 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
   if |lr| == 0 {
     rout := true;
   } else {
-    var x := lr[0];
-    var xs := lr[1..];
-    var result := loopI(x, xs);
+    var result := loopI(lr[0], lr[1..]);
     rout := result;
   }
 
@@ -53,15 +50,11 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
     invariant currentL == lb[|lb| - |currentL| .. ]
     invariant forall i :: 0 <= i < |lb| - |currentL| ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
   {
-    if |currentL| == 0 {
+    if |currentL| <= 1 {
       bout := true;
       break;
-    } else if |currentL| == 1 {
-      currentL := [];
     } else {
-      var x := currentL[0];
-      var y := currentL[1];
-      if x > y {
+      if currentL[0] > currentL[1] {
         bout := false;
         break;
       }
@@ -104,12 +97,11 @@ method isSortedBI_RI_Equivalence_Full(lb: seq<int>, lr: seq<int>) returns (rres:
         result := true;
         break;
       } else {
-        var x := currentL[0];
-        if currentP > x {
+        if currentP > currentL[0] {
           result := false;
           break;
         }
-        currentP := x;
+        currentP := currentL[0];
         currentL := currentL[1..];
       }
     }
@@ -125,15 +117,11 @@ method isSortedBI_RI_Equivalence_Full(lb: seq<int>, lr: seq<int>) returns (rres:
     invariant currentL == lb[|lb| - |currentL| .. ]
     invariant forall i :: 0 <= i < |lb| - |currentL| ==> (i < |lb| - 1 ==> lb[i] <= lb[i+1])
   {
-    if |currentL| == 0 {
+    if |currentL| <= 1 {
       bout := true;
       break;
-    } else if |currentL| == 1 {
-      currentL := [];
     } else {
-      var x := currentL[0];
-      var y := currentL[1];
-      if x > y {
+      if currentL[0] > currentL[1] {
         bout := false;
         break;
       }
