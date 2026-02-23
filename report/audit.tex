@@ -514,6 +514,9 @@ These specifications can be very difficult to write correctly. Additionally, jus
 As described by \textcite{lahiriDifferentialAssertionChecking2013}, one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
 For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function version of \lstinline|isSortedR| can be found in \Cref{lst:isSortedR}). The imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|. As above, the methods are not an exact conversion from their recursive counterparts. Additionally, the methods operate on sequences instead of lists, so I can use Dafny's built-in indexing and slicing features: 
+
+\footnote{Explain this function too}
+
 \begin{lstlisting}[caption=\lstinline|isSortedRI| Method with \lstinline|loopI| Helper Method]
 method loopI(p: int, l: seq<int>) returns (res: bool)
   ensures res <==> ((forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1]) && (|l| > 0 ==> p <= l[0]))
