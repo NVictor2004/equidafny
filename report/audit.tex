@@ -1,12 +1,10 @@
 \section{Dafny: Technical Audit}\label{sec:audit}
 
 \footnote{also look at broken / incorrect examples and see equivalence, they should be}
-\footnote{change first example to be more impressive, tail recursion?, more intentional differences, rather than moving things around; use the max example, approaching list from both ends}
-
-\footnote{describe how lemmas in Dafny work}
 
 \footnote{comparing Lists and seqs, wrong examples}
 \footnote{highlighting important parts of examples}
+\footnote{any limitations that only arise with more complex data structures?}
 
 There are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
@@ -53,8 +51,28 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{lstlisting}
 
 \subsection{Incorrect Counterexamples}\label{sec:counterexamples} 
-An example is as follows:
-\begin{lstlisting}[caption=\lstinline|isSortedA| Function]
+In this example, I will provide two functions that attempt to determine whether a list of integers is sorted in non-decreasing order. The first function is as follows, involving the main function \lstinline|isSortedR| and a helper function \lstinline|loop|:
+
+\begin{lstlisting}[caption=\lstinline|isSortedR| and \lstinline|loop| Functions, label=lst:isSortedR]
+function loop(p: int, l: List<int>): bool
+  decreases l
+{
+  match l
+  case Nil => true
+  case Cons(x, xs) => p <= x && loop(x, xs)
+}
+
+function isSortedR(l: List<int>): bool
+{
+  match l
+  case Nil => true
+  case Cons(x, xs) => loop(x, xs)
+}
+\end{lstlisting}
+%
+The second function is as follows, involving the main function \lstinline|isSortedA| and helper functions \lstinline|iter| and \lstinline|leq|:
+
+\begin{lstlisting}[caption=\lstinline|isSortedA| function and \lstinline|iter| and \lstinline|leq| helper functions]
 function leq(cur: int, next: int): bool
 {
   cur < next
@@ -77,13 +95,16 @@ function isSortedA(l: List<int>): bool
 }
 \end{lstlisting}
 %
-This solution is non-equivalent to the reference solution detailed in \Cref{lst:isSortedR}, as it uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
+These functions are not equivalent, as \lstinline|isSortedA| uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isSortedA| and \lstinline|isSortedR|]
 lemma isSortedEquivalence(l: List<int>)
   ensures isSortedA(l) == isSortedR(l)
 {}
 \end{lstlisting}
 %
+
+\footnote{Why does it provide an incorrect counter example?}
+
 However, it incorrectly provides \lstinline|Cons(-38, Cons(7681, Nil))| as a counterexample. I extended the above proof to include and use a helper lemma, as shown below:
 \begin{lstlisting}[caption=Equivalence Lemma with Helper for \lstinline|isSortedA| and \lstinline|isSortedR|]
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
@@ -101,7 +122,10 @@ lemma isSortedEquivalence(l: List<int>)
 }
 \end{lstlisting}
 %
-Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, this is not the simplest counterexample possible, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
+
+\footnote{Possible extension: fixing counter examples? is this something I can do something about?}
+
+Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, though this is the simplest counterexample in terms of list length, it is not the simplest example in terms of the integers used, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
 
 As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, due to the Z3 solver being incomplete.
 

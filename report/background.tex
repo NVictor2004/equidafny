@@ -43,8 +43,7 @@ function maxC(l: seq<int>): int
 }
 \end{lstlisting}
 %
-The main difficulty with proving the equivalence of these two functions is that they approach the problem in opposite ways: the first function processes the list from the end to the start, while the second processes
-it from the start to the end. However, despite this, Dafny is able to prove equivalence with almost no help from the user:
+The main difficulty with proving the equivalence of these two functions is that they approach the problem in opposite ways: the first function processes the list from the end to the start, while the second processes it from the start to the end. However, despite this, Dafny is able to prove equivalence with almost no help from the user using this lemma:
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|maxR| and \lstinline|maxC|]
 lemma maxEquivalence(l: seq<int>)
   ensures maxC(l) == maxR(l)
@@ -52,7 +51,9 @@ lemma maxEquivalence(l: seq<int>)
 {}
 \end{lstlisting}
 %
-Thus, Dafny is capable of proving that these functions are equivalent. For this example, the Boogie translation resulted in a file almost 3350 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function, and ends with the translation of the equivalence lemma, taking only around 50 lines of code. Therefore, the Dafny programming language is highly expressive, allowing users to define functions in a concise manner. Meanwhile, the Dafny program verifier is capable of proving the equivalence of some functions without much effort on the user's part.
+This lemma states that, for any sequence of integers \lstinline|l|, the function calls \lstinline|maxC(l)| and \lstinline|maxR(l)| return the same output. Therefore, by proving this lemma, Dafny can prove that these functions are equivalent. However, in this case, Dafny requires the user to explicitly provide the length of the sequence \lstinline|l| as a variant to prove termination (this lemma is proven using induction).
+
+For this example, the Boogie translation resulted in a file almost 3350 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function, and ends with the translation of the equivalence lemma, taking only around 50 lines of code. Therefore, the Dafny programming language is highly expressive, allowing users to define functions in a concise manner. Meanwhile, the Dafny program verifier is capable of proving function equivalence, but it sometimes requires user assistance.
 
 \subsection{SymDiff}
 
