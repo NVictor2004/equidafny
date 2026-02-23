@@ -34,9 +34,7 @@ function maxC(l: seq<int>): int
   if |l| == 0 then -1
   else if |l| == 1 then l[0]
   else
-    var a := l[0];
-    var b := l[1];
-    if a > b then
+    if l[0] > l[1] then
       maxC([l[0]] + l[2..])
     else
       maxC(l[1..])

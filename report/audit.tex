@@ -297,69 +297,64 @@ Thus, this is another example of where Dafny can prove the equivalence of two fu
 
 \subsection{Explicitly enforcing induction to prove lemmas}\label{sec:induction}
 
-Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, here are the two equivalent functions \lstinline|leVraiSculpteurDeNuage| and \lstinline|leVraiSculpteurDeNuageM|:
-\begin{lstlisting}[caption=\lstinline|leVraiSculpteurDeNuage| and \lstinline|leVraiSculpteurDeNuageM| Functions]
-function leVraiSculpteurDeNuageM<A, B, C>(
-  a: A, b: B, c: C, fuel: int, i1: int,
-  i2: int, i3: int, a2b: A -> B, b2c: B -> C, c2a: C -> A
-): (int, int, int)
-  requires (fuel >= 0)
-  decreases(fuel) {
-  if (fuel == 0) then (i1, i2, i3)
-  else
-    var (ii1, ii2, ii3) := mixmashM(i1, i2, i3);
-    leVraiSculpteurDeNuageM(
-      c2a(c), a2b(a), b2c(b), fuel - 1, ii1, ii2, ii3, a2b, b2c, c2a
-    )
+Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, consider the two functions \lstinline|binSumM| and \lstinline|binSum1|. These functions compute the sum of two binary numbers and a carry bit, where the bits are represented as booleans, and the binary numbers are represented as lists of bits, in order of least significant to most significant. The \lstinline|binSum1| function computes the sum by listing every possible form of input, while the \lstinline|binSumM| function simplifies this by using the carry bit in a more complicated way. The functions are as follows: 
+
+\begin{lstlisting}[caption=\lstinline|binSumM| and \lstinline|binSum1| Functions]
+function binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
+  decreases length(l1) + length(l2)
+{
+  match (l1, l2, c)
+    case (Nil, Nil, _) => Nil
+    case (Cons(true, t1), Cons(false, t2), false) => Cons(true, binSum1(t1, t2, false))
+    case (Cons(true, t1), Cons(false, t2), true) => Cons(false, binSum1(t1, t2, true))
+    case (Cons(false, t1), Cons(true, t2), false) => Cons(true, binSum1(t1, t2, false))
+    case (Cons(false, t1), Cons(true, t2), true) => Cons(false, binSum1(t1, t2, true))
+    case (Cons(false, t1), Cons(false, t2), false) => Cons(false, binSum1(t1, t2, false))
+    case (Cons(false, t1), Cons(false, t2), true) => Cons(true, binSum1(t1, t2, false))
+    case (Cons(true, t1), Cons(true, t2), false) => Cons(false, binSum1(t1, t2, true))
+    case (Cons(true, t1), Cons(true, t2), true) => Cons(true, binSum1(t1, t2, true))
+    case (Cons(true, t1), Nil, true) => Cons(false, binSum1(t1, Nil, true))
+    case (Cons(true, t1), Nil, false) => Cons(true, binSum1(t1, Nil, false))
+    case (Cons(false, t1), Nil, true) => Cons(true, binSum1 (t1, Nil, false))
+    case (Cons(false, t1), Nil, false) => Cons(false, binSum1(t1, Nil, false))
+    case (Nil, Cons(true, t1), true) => Cons(false, binSum1(t1, Nil, true))
+    case (Nil, Cons(true, t1), false) => Cons(true, binSum1(t1, Nil, false))
+    case (Nil, Cons(false, t1), true) => Cons(true, binSum1(t1, Nil, false))
+    case (Nil, Cons(false, t1), false) => Cons(false, binSum1(t1, Nil, false))
 }
 
-function leVraiSculpteurDeNuage<A, B, C>(
-  b2c: B -> C, b: B, c: C, fuel: int, a2b: A -> B,
-  i2: int, a: A, i3: int, i1: int, c2a: C -> A): (int, int, int)
-  requires (fuel >= 0)
-  decreases(fuel) {
-  if (fuel == 0) then (i1, i2, i3)
-  else
-    var (ii1, ii2, ii3) := mixmash(i2, i3, i1);
-    leVraiSculpteurDeNuage(
-      b2c, a2b(a), b2c(b), fuel - 1, a2b, ii2, c2a(c), ii3, ii1, c2a
-    )
-}
-\end{lstlisting}
-%
-The definitions of \lstinline|mixmashM| and \lstinline|mixmash| are irrelevant for this example, so I will omit them. All that is required is that they are equivalent:
-\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|mixmashM| and \lstinline|mixmash|]
-lemma equivalenceMixmash(i1: int, i2: int, i3: int)
-  ensures (mixmash(i2, i3, i1) == mixmashM(i1, i2, i3))
-  decreases (if (i2 <= 0) then -i2 else i2)
-{}
-\end{lstlisting}
-%
-Using this lemma, Dafny can now prove the equivalence of the two functions, but only if the user explicitly calls the same lemma recursively:
-\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|leVraiSculpteurDeNuageM| and \lstinline|leVraiSculpteurDeNuage|]
-lemma equivalenceLeVraiSculpteurDeNuage<A, B, C>(
-  b2c: B -> C, b: B, c: C, fuel: int, a2b: A -> B,
-  i2: int, a: A, i3: int, i1: int, c2a: C -> A
-)
-  requires (fuel >= 0)
-  ensures (leVraiSculpteurDeNuage(b2c, b, c, fuel, a2b, i2, a, i3, i1, c2a) ==
-           leVraiSculpteurDeNuageM(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a))
+function binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
+  decreases length(l1) + length(l2)
 {
-  if (fuel > 0) {
-    equivalenceMixmash(i1, i2, i3);
-    var (ii1, ii2, ii3) := mixmash(i2, i3, i1);
-    equivalenceLeVraiSculpteurDeNuage(
-      b2c, a2b(a), b2c(b), fuel - 1, a2b, ii2, c2a(c), ii3, ii1, c2a
-    );
-  }
+  match (l1, l2)
+    case (Nil, Nil) => Nil
+    case (Cons(true, t1), Cons(false, t2)) => Cons(!c, binSumM(t1, t2, c))
+    case (Cons(false, t1), Cons(true, t2)) => Cons(!c, binSumM(t1, t2, c))
+    case (Cons(false, t1), Cons(false, t2)) => Cons(c, binSumM(t1, t2, false))
+    case (Cons(true, t1), Cons(true, t2)) => Cons(c, binSumM(t1, t2, true))
+    case (Cons(true, t1), Nil) => Cons(!c, binSumM(t1, Nil, c))
+    case (Cons(false, t1), Nil) => Cons(c, binSumM(t1, Nil, false))
+    case (Nil, Cons(true, t2)) => Cons(!c, binSumM(t2, Nil, c))
+    case (Nil, Cons(false, t2)) => Cons(c, binSumM(t2, Nil, false))
 }
 \end{lstlisting}
 %
-Therefore, in many cases Dafny is able to infer the correct induction method automatically, however, it sometimes requires the user to explicitly provide it themselves.
+
+Dafny can prove the equivalence of these two functions, but only if the user explicitly calls the same lemma recursively:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|binSumM| and \lstinline|binSum1|]
+lemma equivalenceBinSum(l1: List<bool>, l2: List<bool>, c: bool)
+  ensures binSum1(l1, l2, c) == binSumM(l1, l2, c)
+  decreases length(l1) + length(l2)
+{
+  match (l1, l2)
+    case (Cons(_, t1), Cons(_, t2)) => equivalenceBinSum(t1, t2, c);
+    case _ => 
+}
+\end{lstlisting}
 
 \subsection{Providing Variants to prove termination}\label{sec:termination}
 
-Here, I provide two implementations of a function to find the maximum element in a sequence of integers. The first is as follows:
+Here, I provide two implementations of a function to find the maximum element in a sequence of integers. These are the same functions as listed in \Cref{sec:dafny}. The first is as follows:
 \begin{lstlisting}[caption=\lstinline|maxR| Function]
 function maxR(l: seq<int>): int
 {
@@ -379,16 +374,14 @@ function maxC(l: seq<int>): int
   if |l| == 0 then -1
   else if |l| == 1 then l[0]
   else
-    var a := l[0];
-    var b := l[1];
-    if a > b then
+    if l[0] > l[1] then
       maxC([l[0]] + l[2..])
     else
       maxC(l[1..])
 }
 \end{lstlisting}
 %
-The main difficulty with proving the equivalence of these two functions is that they approach the problem in opposite ways: the first function processes the list from the end to the start, while the second processes it from the start to the end. However, despite this, Dafny is able to prove equivalence with almost no help from the user:
+As described in \Cref{sec:dafny}, these two functions process the list in opposite directions, but Dafny is able to prove equivalence with almost no help from the user:
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|maxC| and \lstinline|maxR|]
 lemma maxEquivalence(l: seq<int>)
   ensures maxC(l) == maxR(l)
