@@ -472,8 +472,6 @@ lemma equivalence_solution2_uniq2(lst: List<int>)
 
 \subsection{Equivalence of Imperative Methods}\label{sec:imperative-equivalence}
 
-\footnote{Fix this missing lst:isSortedB reference}
-
 Recursive functions can be converted into their iterative versions. For example, here is a recursive implementation of a function \lstinline|isSortedB| to determine whether a sequence of integers is sorted in non-decreasing order:
 \begin{lstlisting}[caption=\lstinline|isSortedB| Function, label=lst:isSortedB]
 function isSortedB(l: seq<int>): bool
@@ -485,7 +483,7 @@ function isSortedB(l: seq<int>): bool
 }
 \end{lstlisting}
 %
-This implementation can be converted into the following imperative method. It is not an exact conversion from the recursive version, to make better use of imperative features. The postcondition states that the method will output a boolean equivalent to whether each element in the sequence is less than or equal to the next element. If this can be proven, then the sequence must be sorted in non-decreasing order. The variable \lstinline|index| together with the invariant in the \lstinline|while| loop are used to keep track of which sequence elements have been checked so far.
+This implementation can be converted into the following imperative method. It is not an exact conversion from the recursive version, to make better use of imperative features. Both the function and the method use sequences, so that I can use Dafny's built-in indexing and slicing features. The method's postcondition states that it will output a boolean equivalent to whether each element in the sequence is less than or equal to the next element. If this can be proven, then the sequence must be sorted in non-decreasing order. The variable \lstinline|index| together with the invariant in the \lstinline|while| loop are used to keep track of which sequence elements have been checked so far.
 \begin{lstlisting}[caption=\lstinline|isSortedBI| Method]
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
@@ -513,7 +511,7 @@ These specifications can be very difficult to write correctly. Additionally, jus
 
 As described by \textcite{lahiriDifferentialAssertionChecking2013}, one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
-For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function version of \lstinline|isSortedR| can be found in \Cref{lst:isSortedR}). The imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|. As above, the methods are not an exact conversion from their recursive counterparts. Additionally, the methods operate on sequences instead of lists, so I can use Dafny's built-in indexing and slicing features: 
+For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function version of \lstinline|isSortedR| can be found in \Cref{lst:isSortedR}). The imperative version of \lstinline|isSortedR| is as follows, requiring a helper function \lstinline|loopI|. As above, the methods are not an exact conversion from their recursive counterparts. Additionally, the \lstinline|isSortedR| function operates on Lists, so I have converted it to use sequences instead:
 
 \footnote{Explain this function too}
 
