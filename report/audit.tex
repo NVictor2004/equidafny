@@ -622,7 +622,7 @@ Thus, the necessary specifications can be greatly simplified if they are defined
 
 \subsection{Equivalence of Higher-Order Functions}\label{sec:higher-order}
 
-Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two equivalent functions \lstinline|andThen1| and \lstinline|andThen2|:
+Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two functions \lstinline|andThen1| and \lstinline|andThen2|, which compute function composition:
 \begin{lstlisting}[caption=\lstinline|andThen1| and \lstinline|andThen2| Functions]
 function andThen1<A, B, C>(f: A -> B, g: B -> C): A -> C { a => g(f(a)) }
 function andThen2<A, B, C>(ff: A -> B, gg: B -> C): A -> C { aa => gg(ff(aa)) }
@@ -635,7 +635,7 @@ lemma equivalenceAndThen<A, B, C>(f: A -> B, g: B -> C)
 {}
 \end{lstlisting}
 %
-Here are two more such functions \lstinline|flip1| and \lstinline|flip2|:
+Here are two more such functions \lstinline|flip1| and \lstinline|flip2|, which each take a binary function as input, and output a function that computes the same output, but with the arguments flipped:
 \begin{lstlisting}[caption=\lstinline|flip1| and \lstinline|flip2| Functions]
 function flip1<A, B, C>(f: (A, B) -> C): (B, A) -> C {
   (b, a) => f(a, b)
@@ -661,4 +661,7 @@ lemma equivalenceFlip<A, B, C>(f: (A, B) -> C)
 {}
 \end{lstlisting}
 %
+
+\footnote{Where does the limitation truly lie, any patterns to what it can/cannot prove?}
+
 Therefore, Dafny is able to prove the equivalence of some higher-order functions. However, it struggles with others, despite being able to prove that the outputted functions give the same output for the same inputs.

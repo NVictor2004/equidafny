@@ -13,8 +13,6 @@ The following table summarises the current development plan, broken down into mi
 
 If I have time remaining once all the project and evaluation milestones are completed, I plan to further extend our tool to handle the remaining limitations relating to Dafny functions identified in \Cref{sec:audit}. This includes removing the necessity for the user to explicitly define induction schemes to prove lemmas (\Cref{sec:induction}) and implementing the ability to prove user-provided auxiliary lemmas (\Cref{sec:auxiliary-lemmas}).
 
-\footnote{lemmas optional to necessary or core, generating and using in main lemma}
-
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |c|c|c|c| }
@@ -29,11 +27,11 @@ If I have time remaining once all the project and evaluation milestones are comp
     \hline
     4 & \nameref{para:variants} & 09/03/2026 & Optional \\
     \hline
-    5 & \nameref{para:helper-axioms} & 16/03/2026 & Optional \\
+    5 & \nameref{para:helper-axioms} & 16/03/2026 & Necessary \\
     \hline
-    6 & \nameref{para:calling-lemmas-main} & 23/03/2026 & Optional \\
+    6 & \nameref{para:calling-lemmas-main} & 23/03/2026 & Necessary \\
     \hline
-    7 & \nameref{para:calling-lemmas-helper} & 26/03/2026 & Optional \\
+    7 & \nameref{para:calling-lemmas-helper} & 26/03/2026 & Necessary \\
     \hline
     8 & \nameref{para:multiple-solutions} & 02/04/2026 & Optional \\
     \hline
@@ -47,7 +45,7 @@ If I have time remaining once all the project and evaluation milestones are comp
   \caption{Summary of the current development plan}
 \end{table}
 
-\paragraph{Building the basic structure}\label{para:basic-structure} This milestone involves creating the skeleton of the tool. It should be able to take in Dafny files and a JSON configuration file. The Dafny files will contain the two functions being compared and an equivalence lemma without any user assistance. The tool will simply combine these files together, call the Dafny verifier on the resulting file, and return its output. Equivalence lemmas with no user assistance are used here to provide an evaluation baseline for the evaluation of the remaining milestones. 
+\paragraph{Building the basic structure}\label{para:basic-structure} This milestone involves creating the skeleton of the tool. It should be able to take in Dafny files and a JSON configuration file. The Dafny files will contain the two functions being compared, their associated helper functions and an equivalence lemma without any user assistance. The JSON file will be used to specify which are the main functions to be tested for equivalence. The tool will combine the Dafny files together, call the Dafny verifier on the resulting file, and return its output. Equivalence lemmas with no user assistance are used here to provide an evaluation baseline for the evaluation of the remaining milestones. 
 
 \paragraph{Creating a CI script for Continuous Testing and Evaluation}\label{para:ci-scripts} At each milestone, evaluation data must be generated and collected (see \Cref{sec:evaluation-plan} for more details on this). This milestone involves creating a script to collect this data, and setting up a GitLab CI pipeline to automatically run this script on every merge. Once this is done, evaluation data should be collected for the previous milestone. Then, the equivalence lemmas should be replaced with lemmas that include all the user assistance that Dafny requires, followed by a recollection of the evaluation data, to serve as another baseline for the remaining milestones. 
 
@@ -63,11 +61,13 @@ If I have time remaining once all the project and evaluation milestones are comp
 
 \paragraph{Proving Equivalence with one of a number of solutions}\label{para:multiple-solutions} In certain cases, including those described by \textcite{milovancevicProvingDisprovingEquivalence2023}, the user may wish to prove the equivalence of a function with any one of a number of possible other functions. This milestone involves implementing this. 
 
+\footnote{Are these not just added to the Dafny code input, seems trivial to support? For the auxiliary lemmas milestone}
+
 \paragraph{Allowing the user to provide Auxiliary Lemmas as Axioms}\label{para:auxiliary-axioms} In certain cases, the user will need to provide auxiliary lemmas to help Dafny prove equivalence. These lemmas are specific to each individual scenario, and so automatic generation is out of scope for this project. Therefore, a reasonable alterative is to allow the user to provide auxiliary lemmas, which can then be called in the main equivalence lemma. These auxiliary lemmas will be added as axioms, as it would be difficult to prove them automatically. The burden of ensuring these lemmas are correct will be on the user. This milestone will involve implementing this.
 
 \paragraph{Proving equivalence of higher order functions}\label{para:higher-order} When proving the equivalence of functions that output lambda functions, these functions are equivalent if the lambda functions output the same values for the same inputs. This can be proven through a universal quantification over the domain of the lambda functions. This milestone involves implementing this functionality. 
 
-\paragraph{Writing the Final Report}\label{para:final-report-project} Throughout development, I will add to the Final Report as I go along; this milestone involves completing the technical chapters in it.
+\paragraph{Writing the Final Report}\label{para:final-report-project} Throughout development, I will add to the Final Report as I go along; this milestone involves completing the technical and evaluation chapters in it.
 
 \section{Evaluation Plan}\label{sec:evaluation-plan}
 
@@ -76,7 +76,8 @@ If I have time remaining once all the project and evaluation milestones are comp
 
 In a similar manner to \Cref{sec:project-plan}, here is a table summarising the current evaluation plan, broken down into milestones.
 
-\footnote{metric scoring for how much help is needed}
+\footnote{metric scoring for how much help is needed, to measure level of user assistance, different kinds of user annotations have different difficulty levels to the user}
+\footnote{Also need system profiling somewhere}
 
 \begin{table}[ht]
   \centering
@@ -92,8 +93,6 @@ In a similar manner to \Cref{sec:project-plan}, here is a table summarising the 
     \hline
     4 & \nameref{para:benchmark-comparison} & 11/05/2026 & Necessary \\
     \hline
-    5 & \nameref{para:final-report-eval} & 05/06/2026 & Necessary \\
-    \hline
   \end{tabular}
   \caption{Summary of the current evaluation plan}
 \end{table}
@@ -107,5 +106,3 @@ In a similar manner to \Cref{sec:project-plan}, here is a table summarising the 
 \footnote{Which C / Java program equivalence checker?}
 
 \paragraph{Benchmark Comparison}\label{para:benchmark-comparison} In this milestone, I will compare the results of our tool on our evaluation testsuite with the results from the original Dafny verifier, to demonstrate the improvements made. I will also compare our tool with Stainless on the subset of our testsuite that originated from their equivalence tests, to demonstrate how our tool compares with other state-of-the-art program verifiers. 
-
-\paragraph{Writing the Final Report}\label{para:final-report-eval} Throughout development, I will add to the Final Report as I go along; this milestone involves completing the evaluation chapters in it.
