@@ -92,43 +92,6 @@ lemma equivalenceUnfoldingSorted1<State, Elem>(start: State,
   equivalenceGo1(start, next, leq, Nil, max);
 }
 
-// CANDIDATE 2
-
-function insertSorted2<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
-  decreases(xs) {
-  match xs {
-    case Nil => Cons(t, Nil)
-    case Cons(hd, tl) =>
-      if (leq(t, hd)) then Cons(t, xs)
-      else Cons(hd, insertSorted2(t, leq, tl))
-  }
-}
-
-function go2<State, Elem>(s: State, next: State -> Option<(Elem, State)>, leq: (Elem, Elem) -> bool, xs: List<Elem>, fuel: int): List<Elem>
-  decreases(if (fuel <= 0) then 0 else fuel) {
-  if (fuel <= 0) then xs
-  else match next(s) {
-    case Some((t, nxtS)) =>
-      go2(nxtS, next, leq, insertSorted2(t, leq, xs), fuel - 1)
-    case None() => xs
-  }
-}
-
-function unfoldingSorted2<State, Elem>(start: State,
-                                 next: State -> Option<(Elem, State)>, // oops, should be State, Elem not Elem, State
-                                 leq: (Elem, Elem) -> bool,
-                                 max: int): List<Elem> {
-  go2(start, next, leq, Nil, max)
-}
-
-// Cannot be proven due to type mismatch in `next` function
-lemma equivalenceUnfoldingSorted2<State, Elem>(start: State,
-                                         next: State -> Option<(Elem, State)>,
-                                         leq: (Elem, Elem) -> bool,
-                                         max: int)
-  // ensures (unfoldingSorted2(start, next, leq, max) == unfoldingSortedM(start, next, leq, max))
-{}
-
 // CANDIDATE 3
 
 // Incorrect, this is an append
