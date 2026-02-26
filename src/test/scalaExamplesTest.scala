@@ -12,19 +12,17 @@ import org.scalatest.ParallelTestExecution
 
 import ujson.*
 
-private val scalaPath =
+private val jsonPath =
   os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
 private val outputPath = os.pwd / "src" / "test" / "out"
-private val scalaDirectories =
-  os.list(scalaPath).filter(_.baseName != "incomplete")
-private val scalaExamples =
-  scalaDirectories.flatMap(os.list(_)).filter(_.ext == "json")
+private val dafnyPath = os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples"
+private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
-  scalaExamples.foreach(jsonPath =>
-    jsonPath.last should "be parsed and formatted correctly" in {
-      val config = ujson.read(os.read(jsonPath))
-      val scalaFile = jsonPath / os.up / config("file").str
+  scalaExamples.foreach(jsonExample =>
+    jsonExample.last should "be parsed and formatted correctly" in {
+      val config = ujson.read(os.read(jsonExample))
+      val scalaFile = dafnyPath / config("file").str
 
       val output = program.parse(os.read(scalaFile))
 
