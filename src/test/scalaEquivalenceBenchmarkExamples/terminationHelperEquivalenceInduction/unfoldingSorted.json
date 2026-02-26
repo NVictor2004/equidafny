@@ -1,11 +1,11 @@
 {
   "file": "unfoldingSorted.dfy",
-  "model": "unfoldingSorted",
+  "model": "unfoldingSortedM",
   "candidates": [
-    "unfoldingSorted",
-    "unfoldingSorted",
-    "unfoldingSorted",
-    "unfoldingSorted",
-    "unfoldingSorted"
+    "unfoldingSorted1",
+    "unfoldingSorted2",
+    "unfoldingSorted3",
+    "unfoldingSorted4",
+    "unfoldingSorted5"
   ]
 }

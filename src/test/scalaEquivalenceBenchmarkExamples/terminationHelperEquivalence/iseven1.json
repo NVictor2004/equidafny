@@ -1,7 +1,7 @@
 {
   "file": "iseven1.dfy",
-  "model": "isEvenTopLvl",
+  "model": "isEvenTopLvlM",
   "candidates": [
-    "isEvenTopLvl"
+    "isEvenTopLvl1"
   ]
 }

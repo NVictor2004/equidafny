@@ -1,7 +1,7 @@
 {
   "file": "max3.dfy",
-  "model": "max",
+  "model": "maxM",
   "candidates": [
-    "max"
+    "max1"
   ]
 }

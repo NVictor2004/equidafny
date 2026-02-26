@@ -1,6 +1,6 @@
 {
   "file": "cloudSculpting.dfy",
-  "model": "sculpteurDeNuage",
+  "model": "sculpteurDeNuageM",
   "candidates": [
     "sculpteurDeNuage"
   ]

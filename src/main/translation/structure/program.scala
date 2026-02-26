@@ -27,7 +27,9 @@ case class Lemma(
 
 case class Program(
     datatypes: List[Datatype],
-    functions: List[Function],
+    modelFunction: Function,
+    candidateFunctions: List[Function],
+    helperFunctions: List[Function],
     lemmas: List[Lemma]
 )
 

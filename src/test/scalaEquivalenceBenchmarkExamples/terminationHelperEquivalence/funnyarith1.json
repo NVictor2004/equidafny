@@ -1,7 +1,7 @@
 {
   "file": "funnyarith1.dfy",
-  "model": "eval",
+  "model": "evalM",
   "candidates": [
-    "eval"
+    "eval1"
   ]
 }

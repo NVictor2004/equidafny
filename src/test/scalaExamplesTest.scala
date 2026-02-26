@@ -31,7 +31,7 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
         case Success(data) => data
       }
 
-      val translatedOutput = translateProgram(parsedOutput)
+      val translatedOutput = translateProgram(parsedOutput, config)
       val outputFilePath = outputPath / scalaFile.last
       formatProgram(translatedOutput, outputFilePath.toString)
 

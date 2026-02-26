@@ -1,7 +1,7 @@
 {
   "file": "sigma.dfy",
-  "model": "sigma",
+  "model": "sigmaM",
   "candidates": [
-    "sigma"
+    "sigma1"
   ]
 }

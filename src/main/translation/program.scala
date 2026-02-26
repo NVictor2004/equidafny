@@ -7,10 +7,32 @@ import translation.types.translateType
 import translation.specification.translateSpec
 import translation.statement.translateBlockStmt
 
-def translateProgram(prog: List[Parsers.TopLevel]): Program = {
+import ujson.Value
+
+def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
   val (data, functions, lemmas) =
     prog.foldLeft((Nil, Nil, Nil))(translateTopLevel)
-  Program(data, functions, lemmas)
+
+  val modelFunctionName = config("model").str
+  val candidateFunctionNames = config("candidates").arr.map(_.str)
+
+  val modelFunction = functions.find(_.name == modelFunctionName).getOrElse(
+    throw new Exception(s"Model function ${modelFunctionName} not found")
+  )
+
+  val candidateFunctions = functions.filter(function => candidateFunctionNames.contains(function.name))
+
+  if (candidateFunctions.length != candidateFunctionNames.length) {
+    val foundNames = candidateFunctions.map(_.name).toSet
+    val missingNames = candidateFunctionNames.filterNot(foundNames.contains)
+    throw new Exception(s"Candidate functions not found: ${missingNames.mkString(", ")}")
+  }
+
+  val helperFunctions = functions.filterNot(function =>
+    function.name == modelFunctionName || candidateFunctionNames.contains(function.name)
+  )
+
+  Program(data, modelFunction, candidateFunctions, helperFunctions, lemmas)
 }
 
 def translateDeclaredType(decl: Parsers.DeclaredType): DeclaredType =

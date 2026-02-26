@@ -1,7 +1,7 @@
 {
   "file": "binSum.dfy",
-  "model": "binSum",
+  "model": "binSumM",
   "candidates": [
-    "binSum"
+    "binSum1"
   ]
 }

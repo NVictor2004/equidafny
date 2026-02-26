@@ -1,7 +1,7 @@
 {
   "file": "foolproof.dfy",
-  "model": "funnyZip",
+  "model": "funnyZipM",
   "candidates": [
-    "funnyZip"
+    "funnyZip1"
   ]
 }

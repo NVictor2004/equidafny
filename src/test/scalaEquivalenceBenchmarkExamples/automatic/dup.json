@@ -1,11 +1,11 @@
 {
   "file": "dup.dfy",
-  "model": "dup",
+  "model": "dupM",
   "candidates": [
-    "dup",
-    "dup",
-    "dup",
-    "dup",
-    "dup"
+    "dup1",
+    "dup2",
+    "dup3",
+    "dup4",
+    "dup5"
   ]
 }
