@@ -16,7 +16,8 @@ import ujson.*
 private val jsonPath =
   os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
 private val outputPath = os.pwd / "src" / "test" / "output"
-private val dafnyPath = os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples"
+private val dafnyPath =
+  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples"
 private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
 private val VerifiedDirs = Set("automatic")
@@ -41,7 +42,8 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
       formatProgram(equivalenceOutput, outputFilePath.toString)
 
       val directoryName = (jsonExample / os.up).last
-      val action = if (VerifiedDirs.contains(directoryName)) "verify" else "resolve"
+      val action =
+        if (VerifiedDirs.contains(directoryName)) "verify" else "resolve"
 
       val result =
         proc("dafny", action, "--allow-warnings", outputFilePath.toString)
