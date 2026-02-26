@@ -14,14 +14,16 @@ private def functionEquivalence(model: Function, candidate: Function): (Lemma, L
         s"${candidate.name}Equivalence",
         candidate.generic,
         candidate.params,
-        List(Ensures(
+        candidate.specs ++
+        List(
+            Ensures(
             Binary(
                 Eq,
                 FunctionCall(model.name, List(candidate.params.map(p => Ident(p.name, Nil)))),
                 FunctionCall(candidate.name, List(candidate.params.map(p => Ident(p.name, Nil))))
             )
         )),
-        None
+        Some(BlockStmt(Nil))
     )
     (equiv, Nil)
 }
