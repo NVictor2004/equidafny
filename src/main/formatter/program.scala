@@ -21,7 +21,7 @@ def formatProgram(program: Program, outputFilename: String, auxiliary: Boolean =
   helperFunctions.foreach(formatFunction)
   mainLemma.foreach(formatLemma)
   helperLemmas.foreach(formatLemma)
-  
+
   if (auxiliary) auxiliaryLemmas.foreach(formatLemma)
 
   writer.close()
@@ -31,21 +31,19 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   val Datatype(name, generic, types) = datatype
 
   writer.format("datatype %s", name)
-
   generic.foreach(typeList =>
     formatBrackets("<", formatList(typeList, formatGeneric), ">")
   )
-
   writer.print(" = ")
   formatList(types, formatDeclaredType, " | ")
-  writer.println("")
+  writer.print("\n\n")
 }
 
 private def formatParameter(
     parameter: Parameter
 )(using writer: Formatter): Unit = {
   val Parameter(name, paramType) = parameter
-  writer.format("%s :", name)
+  writer.format("%s: ", name)
   formatType(paramType)
 }
 
@@ -76,13 +74,10 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
   if (ghost) writer.print("ghost ")
 
   writer.format("function %s", name)
-
   generic.foreach(typeList =>
     formatBrackets("<", formatList(typeList, formatGeneric), ">")
   )
-
   formatBrackets("(", formatList(params, formatParameter), ")")
-
   writer.print(": ")
   formatType(returnType)
 
@@ -94,17 +89,17 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
   })
 
   formatBrackets("{", formatExpr(body), "}")
+
+  writer.print("\n\n")
 }
 
 def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
   val Lemma(name, generic, params, specs, body) = lemma
 
   writer.format("lemma %s", name)
-
   generic.foreach(typeList =>
     formatBrackets("<", formatList(typeList, formatGeneric), ">")
   )
-
   formatBrackets("(", formatList(params, formatParameter), ")")
 
   writer.println("")
@@ -115,4 +110,6 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
   })
 
   body.foreach(block => formatBrackets("{", formatStmt(block), "}"))
+
+  writer.print("\n\n")
 }

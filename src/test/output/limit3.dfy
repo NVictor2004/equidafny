@@ -1,6 +1,11 @@
-function limit3_1(n :int): int
-{if (n <= 1) then n else n + limit3_1(n - 1)}function limit3_2(n :int): int
+function limit3_1(n: int): int
+{if (n <= 1) then n else n + limit3_1(n - 1)}
+
+function limit3_2(n: int): int
 {if (n <= 1) then n else var r := limit3_2(n - 1);
-if (r >= 0) then n + r else r}lemma limit3_2Equivalence(n :int)
+if (r >= 0) then n + r else r}
+
+lemma limit3_2Equivalence(n: int)
 ensures limit3_1(n) == limit3_2(n)
 {{}}
+

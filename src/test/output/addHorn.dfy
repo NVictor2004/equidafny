@@ -1,8 +1,13 @@
-function add_horn_1(i :int, j :int): int
+function add_horn_1(i: int, j: int): int
 requires (i >= 0)
-{if (i == 0) then j else add_horn_1(i - 1, j + 1)}function add_horn_2(i :int, j :int): int
+{if (i == 0) then j else add_horn_1(i - 1, j + 1)}
+
+function add_horn_2(i: int, j: int): int
 requires (i >= 0)
-{if (i == 0) then j else if (i == 1) then j + 1 else add_horn_2(i - 1, j + 1)}lemma add_horn_2Equivalence(i :int, j :int)
+{if (i == 0) then j else if (i == 1) then j + 1 else add_horn_2(i - 1, j + 1)}
+
+lemma add_horn_2Equivalence(i: int, j: int)
 requires (i >= 0)
 ensures add_horn_1(i, j) == add_horn_2(i, j)
 {{}}
+

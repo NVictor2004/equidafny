@@ -1,48 +1,70 @@
-datatype List<T> = Nil | Cons(head :T, tail :List<T>)
-function isSortedR(l :List<int>): bool
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+
+function isSortedR(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(x, xs) => loop(x, xs)
 }
-}function isSortedA(l :List<int>): bool
+}
+
+function isSortedA(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(_, Nil) => true
 case Cons(x, Cons(y, ys)) => x <= y && iter(Cons(y, ys))
 }
-}function isSortedC(l :List<int>): bool
+}
+
+function isSortedC(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(x, xs) => chk(Cons(x, xs), x, true)
 }
-}function isSortedB(l :List<int>): bool
+}
+
+function isSortedB(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(x, Nil) => isSortedB(Nil)
 case Cons(x, Cons(y, ys)) => x <= y && isSortedB(Cons(y, ys))
 }
-}function iter(l :List<int>): bool
+}
+
+function iter(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(x, Nil) => true
 case Cons(x, Cons(y, ys)) => leq(x, y) && iter(Cons(y, ys))
 }
-}function leq(cur :int, next :int): bool
-{cur < next}function chk(l :List<int>, p :int, a :bool): bool
+}
+
+function leq(cur: int, next: int): bool
+{cur < next}
+
+function chk(l: List<int>, p: int, a: bool): bool
 {match l {
 case Nil => a
 case Cons(x, xs) => x >= p && chk(xs, x, a)
 }
-}function loop(p :int, l :List<int>): bool
+}
+
+function loop(p: int, l: List<int>): bool
 decreases l
 {match l {
 case Nil => true
 case Cons(x, xs) => p <= x && loop(x, xs)
 }
-}lemma isSortedAEquivalence(l :List<int>)
+}
+
+lemma isSortedAEquivalence(l: List<int>)
 ensures isSortedR(l) == isSortedA(l)
-{{}}lemma isSortedCEquivalence(l :List<int>)
+{{}}
+
+lemma isSortedCEquivalence(l: List<int>)
 ensures isSortedR(l) == isSortedC(l)
-{{}}lemma isSortedBEquivalence(l :List<int>)
+{{}}
+
+lemma isSortedBEquivalence(l: List<int>)
 ensures isSortedR(l) == isSortedB(l)
 {{}}
+

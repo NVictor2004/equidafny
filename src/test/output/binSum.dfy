@@ -1,5 +1,6 @@
-datatype List<T> = Nil | Cons(head :T, tail :List<T>)
-function binSumM(l1 :List<bool>, l2 :List<bool>, c :bool): List<bool>
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+
+function binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
 decreases length(l1) + length(l2)
 {match (l1, l2) {
 case (Nil, Nil) => Nil
@@ -12,7 +13,9 @@ case (Cons(false, t1), Nil) => Cons(c, binSumM(t1, Nil, false))
 case (Nil, Cons(true, t2)) => Cons(!c, binSumM(t2, Nil, c))
 case (Nil, Cons(false, t2)) => Cons(c, binSumM(t2, Nil, false))
 }
-}function binSum1(l1 :List<bool>, l2 :List<bool>, c :bool): List<bool>
+}
+
+function binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
 decreases length(l1) + length(l2)
 {match (l1, l2, c) {
 case (Nil, Nil, _) => Cons(false, Nil)
@@ -33,19 +36,28 @@ case (Nil, Cons(true, t1), false) => Cons(true, binSum1(t1, Nil, false))
 case (Nil, Cons(false, t1), true) => Cons(true, binSum1(t1, Nil, false))
 case (Nil, Cons(false, t1), false) => Cons(false, binSum1(t1, Nil, false))
 }
-}function listToInt(l :List<bool>): int
+}
+
+function listToInt(l: List<bool>): int
 {match l {
 case Nil => 0
 case Cons(true, tl) => 1 + 2 * listToInt(tl)
 case Cons(false, tl) => 2 * listToInt(tl)
 }
-}function norm(l1 :List<bool>, l2 :List<bool>, c :bool, res :List<bool>): int
-{listToInt(res)}function length<T>(l :List<T>): nat
+}
+
+function norm(l1: List<bool>, l2: List<bool>, c: bool, res: List<bool>): int
+{listToInt(res)}
+
+function length<T>(l: List<T>): nat
 {match l {
 case Nil => 0
 case Cons(_, t) => 1 + length(t)
 }
-}lemma binSum1Equivalence(l1 :List<bool>, l2 :List<bool>, c :bool)
+}
+
+lemma binSum1Equivalence(l1: List<bool>, l2: List<bool>, c: bool)
 decreases length(l1) + length(l2)
 ensures binSumM(l1, l2, c) == binSum1(l1, l2, c)
 {{}}
+
