@@ -10,7 +10,7 @@ import formatter.formatter.{Formatter, formatList}
 import java.io.{File, PrintWriter}
 import formatter.formatter.formatBrackets
 
-def formatProgram(program: Program, outputFilename: String): Unit = {
+def formatProgram(program: Program, outputFilename: String, auxiliary: Boolean = false): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
 
   val Program(datatypes, modelFunction, candidateFunctions, helperFunctions, mainLemma, helperLemmas, auxiliaryLemmas) = program
@@ -21,7 +21,8 @@ def formatProgram(program: Program, outputFilename: String): Unit = {
   helperFunctions.foreach(formatFunction)
   mainLemma.foreach(formatLemma)
   helperLemmas.foreach(formatLemma)
-  auxiliaryLemmas.foreach(formatLemma)
+  
+  if (auxiliary) auxiliaryLemmas.foreach(formatLemma)
 
   writer.close()
 }
