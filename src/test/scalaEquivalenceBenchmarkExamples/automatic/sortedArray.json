@@ -1,0 +1,7 @@
+{
+  "file": "sortedArray.dfy",
+  "model": "isSortedArrayM",
+  "candidates": [
+    "isSortedArray"
+  ]
+}

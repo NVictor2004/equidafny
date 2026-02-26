@@ -1,0 +1,7 @@
+{
+  "file": "factorial.dfy",
+  "model": "fact14_1",
+  "candidates": [
+    "fact14_2"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "file": "sigma.dfy",
+  "model": "sigma",
+  "candidates": [
+    "sigma"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "file": "fibonacci.dfy",
+  "model": "f1",
+  "candidates": [
+    "f2"
+  ]
+}

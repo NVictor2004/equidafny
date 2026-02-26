@@ -1,0 +1,7 @@
+{
+  "file": "arrayHeap.dfy",
+  "model": "childrenAreHeapsM",
+  "candidates": [
+    "childrenAreHeaps"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "file": "valid2DLength.dfy",
+  "model": "valid2DLengthM",
+  "candidates": [
+    "valid2DLength"
+  ]
+}

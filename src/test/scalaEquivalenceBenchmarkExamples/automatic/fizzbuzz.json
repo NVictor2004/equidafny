@@ -1,0 +1,7 @@
+{
+  "file": "fizzbuzz.dfy",
+  "model": "fizzBuzz2",
+  "candidates": [
+    "fizzBuzz1"
+  ]
+}

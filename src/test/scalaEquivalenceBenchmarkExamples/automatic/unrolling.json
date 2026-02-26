@@ -1,0 +1,7 @@
+{
+  "file": "unrolling.dfy",
+  "model": "fact13_1",
+  "candidates": [
+    "fact13_2"
+  ]
+}

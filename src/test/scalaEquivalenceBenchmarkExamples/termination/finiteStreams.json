@@ -1,0 +1,7 @@
+{
+  "file": "finiteStreams.dfy",
+  "model": "finiteM",
+  "candidates": [
+    "finite"
+  ]
+}

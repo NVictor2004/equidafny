@@ -1,0 +1,7 @@
+{
+  "file": "iseven3.dfy",
+  "model": "isEven1",
+  "candidates": [
+    "isEven2"
+  ]
+}

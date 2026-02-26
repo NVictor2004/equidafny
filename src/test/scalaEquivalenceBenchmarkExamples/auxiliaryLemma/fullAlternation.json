@@ -1,0 +1,7 @@
+{
+  "file": "fullAlternation.dfy",
+  "model": "m1",
+  "candidates": [
+    "m2"
+  ]
+}

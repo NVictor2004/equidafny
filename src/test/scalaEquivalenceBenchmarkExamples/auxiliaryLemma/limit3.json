@@ -1,0 +1,7 @@
+{
+  "file": "limit3.dfy",
+  "model": "limit3_1",
+  "candidates": [
+    "limit3_2"
+  ]
+}

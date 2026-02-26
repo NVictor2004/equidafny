@@ -1,0 +1,7 @@
+{
+  "file": "addHorn.dfy",
+  "model": "add_horn_1",
+  "candidates": [
+    "add_horn_2"
+  ]
+}

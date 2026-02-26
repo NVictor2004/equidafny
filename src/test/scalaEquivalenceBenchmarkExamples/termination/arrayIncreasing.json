@@ -1,0 +1,7 @@
+{
+  "file": "arrayIncreasing.dfy",
+  "model": "validLengthIncreasingM",
+  "candidates": [
+    "validLengthIncreasing"
+  ]
+}

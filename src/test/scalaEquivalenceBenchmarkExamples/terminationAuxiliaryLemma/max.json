@@ -1,0 +1,8 @@
+{
+  "file": "max.dfy",
+  "model": "maxR",
+  "candidates": [
+    "maxC",
+    "maxT"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "file": "maxHeapify.dfy",
+  "model": "maxHeapifyM",
+  "candidates": [
+    "maxHeapify"
+  ]
+}

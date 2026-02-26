@@ -1,0 +1,7 @@
+{
+  "file": "inlining.dfy",
+  "model": "inlining_1",
+  "candidates": [
+    "inlining_2"
+  ]
+}
