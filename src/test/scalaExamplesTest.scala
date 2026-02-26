@@ -15,7 +15,8 @@ private val scalaPath =
 private val outputPath = os.pwd / "src" / "test" / "out"
 private val scalaDirectories =
   os.list(scalaPath).filter(_.baseName != "incomplete")
-private val scalaExamples = scalaDirectories.flatMap(os.list(_))
+private val scalaExamples =
+  scalaDirectories.flatMap(os.list(_)).filter(_.ext == "dfy")
 
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
   scalaExamples.foreach(example =>

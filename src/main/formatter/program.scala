@@ -27,14 +27,18 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
 
   writer.format("datatype %s", name)
 
-  generic.foreach(typeList => formatBrackets("<", formatList(typeList, formatGeneric), ">"))
+  generic.foreach(typeList =>
+    formatBrackets("<", formatList(typeList, formatGeneric), ">")
+  )
 
   writer.print(" = ")
   formatList(types, formatDeclaredType, " | ")
   writer.println("")
 }
 
-private def formatParameter(parameter: Parameter)(using writer: Formatter): Unit = {
+private def formatParameter(
+    parameter: Parameter
+)(using writer: Formatter): Unit = {
   val Parameter(name, paramType) = parameter
   writer.format("%s :", name)
   formatType(paramType)
@@ -45,12 +49,14 @@ def formatDeclaredType(
 )(using writer: Formatter): Unit = {
   val DeclaredType(name, typeParams) = declaredType
   writer.print(name)
-  typeParams.foreach(params => 
+  typeParams.foreach(params =>
     formatBrackets("(", formatList(params, formatParameter), ")")
   )
 }
 
-private def formatGeneric(generic: (String, Option[GOption]))(using writer: Formatter): Unit = {
+private def formatGeneric(
+    generic: (String, Option[GOption])
+)(using writer: Formatter): Unit = {
   val (typeName, gOption) = generic
   writer.format("%s", typeName)
   gOption.foreach {
@@ -66,7 +72,9 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
 
   writer.format("function %s", name)
 
-  generic.foreach(typeList => formatBrackets("<", formatList(typeList, formatGeneric), ">"))
+  generic.foreach(typeList =>
+    formatBrackets("<", formatList(typeList, formatGeneric), ">")
+  )
 
   formatBrackets("(", formatList(params, formatParameter), ")")
 
@@ -88,7 +96,9 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
 
   writer.format("lemma %s", name)
 
-  generic.foreach(typeList => formatBrackets("<", formatList(typeList, formatGeneric), ">"))
+  generic.foreach(typeList =>
+    formatBrackets("<", formatList(typeList, formatGeneric), ">")
+  )
 
   formatBrackets("(", formatList(params, formatParameter), ")")
 

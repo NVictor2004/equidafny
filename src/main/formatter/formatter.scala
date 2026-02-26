@@ -10,14 +10,18 @@ case class Formatter(writer: PrintWriter) {
   def close(): Unit = writer.close()
 }
 
-def formatBrackets(open: String, middle: => Unit, close: String)(using writer: Formatter): Unit = {
+def formatBrackets(open: String, middle: => Unit, close: String)(using
+    writer: Formatter
+): Unit = {
   writer.print(open)
   middle
   writer.print(close)
 }
 
 @tailrec
-def formatList[A](list: List[A], formatElement: A => Unit, sep: String = ", ")(using writer: Formatter): Unit = {
+def formatList[A](list: List[A], formatElement: A => Unit, sep: String = ", ")(
+    using writer: Formatter
+): Unit = {
   list match {
     case Nil          => {}
     case head :: Nil  => formatElement(head)
@@ -28,4 +32,3 @@ def formatList[A](list: List[A], formatElement: A => Unit, sep: String = ", ")(u
     }
   }
 }
-

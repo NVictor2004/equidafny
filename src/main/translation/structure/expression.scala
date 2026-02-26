@@ -16,24 +16,30 @@ case class RealLiteral(value: BigDecimal) extends LiteralExpr
 case object Null extends LiteralExpr
 
 enum BinaryOperator {
-    case Iff, LeftImplies, RightImplies, BoolAnd, BoolOr, Eq, Neq, LT, LTE, GT, GTE,
-        In, NotIn, Disjoint, LeftShift, RightShift, Add, Sub, Mul, Div, Mod,
-        BitOr, BitAnd, BitXor
+  case Iff, LeftImplies, RightImplies, BoolAnd, BoolOr, Eq, Neq, LT, LTE, GT,
+    GTE,
+    In, NotIn, Disjoint, LeftShift, RightShift, Add, Sub, Mul, Div, Mod,
+    BitOr, BitAnd, BitXor
 }
 
 enum UnaryOperator {
-    case Neg, Not
+  case Neg, Not
 }
 
 enum Quantifier {
-    case Forall, Exists
+  case Forall, Exists
 }
 
 // Operator Expressions
-case class Binary(operator: BinaryOperator, left: BasicExpr, right: BasicExpr) extends BasicExpr
-case class Unary(operator: UnaryOperator, expr: BasicExpr) extends BasicExpr
-case class Quantified(quantifier: Quantifier, variable: String, varType: Option[Type], body: BasicExpr)
+case class Binary(operator: BinaryOperator, left: BasicExpr, right: BasicExpr)
     extends BasicExpr
+case class Unary(operator: UnaryOperator, expr: BasicExpr) extends BasicExpr
+case class Quantified(
+    quantifier: Quantifier,
+    variable: String,
+    varType: Option[Type],
+    body: BasicExpr
+) extends BasicExpr
 
 // Basic Higher-level Expressions
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr

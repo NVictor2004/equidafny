@@ -50,7 +50,8 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
   case Parsers.Brackets(e)           => Brackets(translateBasicExpr(e))
-  case Parsers.Iff(l, r) => Binary(Iff, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Iff(l, r)             =>
+    Binary(Iff, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.LeftImplies(l, r) =>
     Binary(LeftImplies, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.RightImplies(l, r) =>
@@ -59,13 +60,20 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
     Binary(BoolAnd, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.BoolOr(l, r) =>
     Binary(BoolOr, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Eq(l, r)    => Binary(Eq, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Neq(l, r)   => Binary(Neq, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.LT(l, r)    => Binary(LT, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.LTE(l, r)   => Binary(LTE, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.GT(l, r)    => Binary(GT, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.GTE(l, r)   => Binary(GTE, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.In(l, r)    => Binary(In, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Eq(l, r) =>
+    Binary(Eq, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Neq(l, r) =>
+    Binary(Neq, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.LT(l, r) =>
+    Binary(LT, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.LTE(l, r) =>
+    Binary(LTE, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.GT(l, r) =>
+    Binary(GT, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.GTE(l, r) =>
+    Binary(GTE, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.In(l, r) =>
+    Binary(In, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.NotIn(l, r) =>
     Binary(NotIn, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Disjoint(l, r) =>
@@ -74,23 +82,38 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
     Binary(LeftShift, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.RightShift(l, r) =>
     Binary(RightShift, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Add(l, r)   => Binary(Add, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Sub(l, r)   => Binary(Sub, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Mul(l, r)   => Binary(Mul, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Div(l, r)   => Binary(Div, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Mod(l, r)   => Binary(Mod, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Add(l, r) =>
+    Binary(Add, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Sub(l, r) =>
+    Binary(Sub, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Mul(l, r) =>
+    Binary(Mul, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Div(l, r) =>
+    Binary(Div, translateBasicExpr(l), translateBasicExpr(r))
+  case Parsers.Mod(l, r) =>
+    Binary(Mod, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.BitOr(l, r) =>
     Binary(BitOr, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.BitAnd(l, r) =>
     Binary(BitAnd, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.BitXor(l, r) =>
     Binary(BitXor, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Neg(e)                          => Unary(Neg,translateBasicExpr(e))
-  case Parsers.Not(e)                          => Unary(Not,translateBasicExpr(e))
+  case Parsers.Neg(e) => Unary(Neg, translateBasicExpr(e))
+  case Parsers.Not(e) => Unary(Not, translateBasicExpr(e))
   case Parsers.Forall(variable, varType, body) =>
-    Quantified(Forall, variable, varType.map(translateType), translateBasicExpr(body))
+    Quantified(
+      Forall,
+      variable,
+      varType.map(translateType),
+      translateBasicExpr(body)
+    )
   case Parsers.Exists(variable, varType, body) =>
-    Quantified(Exists, variable, varType.map(translateType), translateBasicExpr(body))
+    Quantified(
+      Exists,
+      variable,
+      varType.map(translateType),
+      translateBasicExpr(body)
+    )
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(
       translateBasicExpr(cond),

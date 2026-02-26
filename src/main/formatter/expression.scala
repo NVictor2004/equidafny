@@ -21,8 +21,8 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
 
 private def formatBinaryOperator(operator: BinaryOperator): String =
   operator match {
-    case Iff         => "<==>"
-    case LeftImplies => "<=="
+    case Iff          => "<==>"
+    case LeftImplies  => "<=="
     case RightImplies => "==>"
     case BoolAnd      => "&&"
     case BoolOr       => "||"
@@ -35,16 +35,16 @@ private def formatBinaryOperator(operator: BinaryOperator): String =
     case In           => "in"
     case NotIn        => "!in"
     case Disjoint     => "!!"
-    case LeftShift     => "<<"
-    case RightShift     => ">>"
-    case Add           => "+"
-    case Sub           => "-"
-    case Mul           => "*"
-    case Div           => "/"
-    case Mod           => "%"
-    case BitOr         => "|"
-    case BitAnd        => "&"
-    case BitXor        => "^"
+    case LeftShift    => "<<"
+    case RightShift   => ">>"
+    case Add          => "+"
+    case Sub          => "-"
+    case Mul          => "*"
+    case Div          => "/"
+    case Mod          => "%"
+    case BitOr        => "|"
+    case BitAnd       => "&"
+    case BitXor       => "^"
   }
 
 private def formatUnaryOperator(operator: UnaryOperator): String =
@@ -61,7 +61,7 @@ private def formatQuantifier(quantifier: Quantifier): String =
 
 def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
   expr match {
-    case expr: LiteralExpr => formatLiteral(expr)
+    case expr: LiteralExpr             => formatLiteral(expr)
     case Binary(operator, left, right) => {
       formatBasicExpr(left)
       writer.print(s" ${formatBinaryOperator(operator)} ")
@@ -97,7 +97,9 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
     case FunctionCall(name, args) => {
       writer.format("%s", name)
-      args.foreach(argList => formatBrackets("(", formatList(argList, formatBasicExpr), ")"))
+      args.foreach(argList =>
+        formatBrackets("(", formatList(argList, formatBasicExpr), ")")
+      )
     }
     case LambdaCall(lambda, args) => {
       formatBrackets("(", formatBasicExpr(lambda), ")")
@@ -144,7 +146,8 @@ def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit =
       left match {
         case Nil         => {}
         case head :: Nil => formatLValue(head)
-        case lvalues => formatBrackets("(", formatList(lvalues, formatLValue), ")")
+        case lvalues     =>
+          formatBrackets("(", formatList(lvalues, formatLValue), ")")
       }
       writer.print(" := ")
       formatBasicExpr(right)
@@ -169,7 +172,9 @@ def formatExpr(expr: ExprBlock)(using writer: Formatter): Unit = {
   formatBasicExpr(basicExpr)
 }
 
-private def formatLValue(lvalue: (String, Option[Type]))(using writer: Formatter): Unit = {
+private def formatLValue(
+    lvalue: (String, Option[Type])
+)(using writer: Formatter): Unit = {
   val (varName, varType) = lvalue
   writer.format("%s", varName)
   varType.foreach(t => {

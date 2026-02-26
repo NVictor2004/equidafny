@@ -19,9 +19,11 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
   }
   case NamedType(name, generics) => {
     writer.print(name)
-    generics.foreach(types => formatBrackets("<", formatList(types, formatType), ">"))
+    generics.foreach(types =>
+      formatBrackets("<", formatList(types, formatType), ">")
+    )
   }
-  case TupleType(elements) => 
+  case TupleType(elements) =>
     formatBrackets("(", formatList(elements, formatType), ")")
   case ArrowType(from, to) => {
     formatType(from)
