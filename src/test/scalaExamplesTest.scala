@@ -19,6 +19,8 @@ private val outputPath = os.pwd / "src" / "test" / "output"
 private val dafnyPath = os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples"
 private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
+private val VerifiedDirs = Set("automatic")
+
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
   scalaExamples.foreach(jsonExample =>
     jsonExample.last should "be parsed and formatted correctly" in {
@@ -38,8 +40,11 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
       val outputFilePath = outputPath / scalaFile.last
       formatProgram(equivalenceOutput, outputFilePath.toString)
 
+      val directoryName = (jsonExample / os.up).last
+      val action = if (VerifiedDirs.contains(directoryName)) "verify" else "resolve"
+
       val result =
-        proc("dafny", "resolve", "--allow-warnings", outputFilePath.toString)
+        proc("dafny", action, "--allow-warnings", outputFilePath.toString)
           .call()
       result.exitCode match {
         case 0    =>

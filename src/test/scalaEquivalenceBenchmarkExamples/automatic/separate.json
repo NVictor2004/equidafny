@@ -1,8 +1,0 @@
-{
-  "file": "separate.dfy",
-  "model": "separateM",
-  "candidates": [
-    "separate1",
-    "separate2"
-  ]
-}
