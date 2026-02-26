@@ -13,13 +13,15 @@ import formatter.formatter.formatBrackets
 def formatProgram(program: Program, outputFilename: String): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
 
-  val Program(datatypes, modelFunction, candidateFunctions, helperFunctions, lemmas) = program
+  val Program(datatypes, modelFunction, candidateFunctions, helperFunctions, mainLemma, helperLemmas, auxiliaryLemmas) = program
 
   datatypes.foreach(formatDatatype)
   formatFunction(modelFunction)
   candidateFunctions.foreach(formatFunction)
   helperFunctions.foreach(formatFunction)
-  lemmas.foreach(formatLemma)
+  mainLemma.foreach(formatLemma)
+  helperLemmas.foreach(formatLemma)
+  auxiliaryLemmas.foreach(formatLemma)
 
   writer.close()
 }

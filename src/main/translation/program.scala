@@ -32,7 +32,7 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     function.name == modelFunctionName || candidateFunctionNames.contains(function.name)
   )
 
-  Program(data, modelFunction, candidateFunctions, helperFunctions, lemmas)
+  Program(data, modelFunction, candidateFunctions, helperFunctions, None, Nil, lemmas)
 }
 
 def translateDeclaredType(decl: Parsers.DeclaredType): DeclaredType =

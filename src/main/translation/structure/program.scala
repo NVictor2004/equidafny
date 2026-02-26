@@ -30,7 +30,9 @@ case class Program(
     modelFunction: Function,
     candidateFunctions: List[Function],
     helperFunctions: List[Function],
-    lemmas: List[Lemma]
+    mainLemma: Option[Lemma],
+    helperLemmas: List[Lemma],
+    auxiliaryLemmas: List[Lemma]
 )
 
 sealed trait GOption
