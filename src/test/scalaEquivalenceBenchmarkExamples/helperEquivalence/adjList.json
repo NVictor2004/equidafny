@@ -1,5 +1,5 @@
 {
-  "file": "adjlist.dfy",
+  "file": "adjList.dfy",
   "model": "validAdjListM",
   "candidates": [
     "validAdjList"
