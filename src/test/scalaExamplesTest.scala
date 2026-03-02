@@ -17,7 +17,7 @@ private val jsonPath =
   os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
 private val outputPath = os.pwd / "src" / "test" / "output"
 private val dafnyPath =
-  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples"
+  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp"
 private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
 private val VerifiedDirs = Set("automatic")

@@ -12,8 +12,7 @@ import formatter.formatter.formatBrackets
 
 def formatProgram(
     program: Program,
-    outputFilename: String,
-    auxiliary: Boolean = false
+    outputFilename: String
 ): Unit = {
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
 
@@ -33,8 +32,7 @@ def formatProgram(
   helperFunctions.foreach(formatFunction)
   mainLemma.foreach(formatLemma)
   helperLemmas.foreach(formatLemma)
-
-  if (auxiliary) auxiliaryLemmas.foreach(formatLemma)
+  auxiliaryLemmas.foreach(formatLemma)
 
   writer.close()
 }
