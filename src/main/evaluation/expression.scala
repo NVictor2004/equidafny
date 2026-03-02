@@ -2,42 +2,31 @@ package evaluation.expression
 
 import translation.structure.*
 
-final val NullLiteralCost = 1
-final val RealLiteralCost = 1
-final val StringLiteralCost = 1
-final val IntLiteralCost = 1
-final val CharLiteralCost = 1
-final val BoolLiteralCost = 1
-
-final val BinaryOperatorCost = 1
-final val UnaryOperatorCost = 1
-final val QuantifiedCost = 1
-final val IdentCost = 1
-final val IdentSuffixCost = 1
-final val CardinalityCost = 1
-final val TupleCost = 1
-final val BracketsCost = 1
-
-final val MethodCallCost = 1
+import evaluation.pattern.evaluatePattern
+import evaluation.index.evaluateIndex
+import evaluation.config.*
 
 def evaluateBasicExpr(expr: BasicExpr): Int = expr match {
   case lit: LiteralExpr       => evaluateLiteralExpr(lit)
   case Binary(_, left, right) =>
     BinaryOperatorCost + evaluateBasicExpr(left) + evaluateBasicExpr(right)
   case Unary(_, expr)            => UnaryOperatorCost + evaluateBasicExpr(expr)
-  case Quantified(_, _, _, body) => QuantifiedCost + evaluateBasicExpr(body)
+  case Quantified(_, _, varType, body) => QuantifiedCost + varType.fold(0)(_ => TypeCost) + evaluateBasicExpr(body)
   case Ident(_, suffixes) => IdentCost + suffixes.length * IdentSuffixCost
   case Cardinality(expr)  => CardinalityCost + evaluateBasicExpr(expr)
   case Tuple(elements)    => TupleCost + elements.map(evaluateBasicExpr).sum
   case Brackets(expr)     => BracketsCost + evaluateBasicExpr(expr)
-  case Cond(cond, thenBranch, elseBranch) => ???
-  case FunctionCall(name, args)           => ???
-  case LambdaCall(lambda, args)           => ???
-  case Match(expr, cases)                 => ???
-  case Set(elements)                      => ???
-  case Seq(elements)                      => ???
-  case Lambda(lvalues, body)              => ???
-  case SeqIndex(name, indexes)            => ???
+  case Cond(cond, thenBranch, elseBranch) => 
+    CondCost + evaluateBasicExpr(cond) + evaluateExprBlock(thenBranch) + evaluateExprBlock(elseBranch)
+  case FunctionCall(_, args)           => CallCost + args.flatMap(_.map(evaluateBasicExpr)).sum
+  case LambdaCall(lambda, args)           => LambdaCallCost + evaluateBasicExpr(lambda) + args.map(evaluateBasicExpr).sum
+  case Match(expr, cases)                 => 
+    MatchCost + evaluateBasicExpr(expr) + cases.map((pattern, block) => evaluatePattern(pattern) + evaluateExprBlock(block)).sum
+  case Set(elements)                      => SetConstructionCost + elements.map(evaluateBasicExpr).sum
+  case Seq(elements)                      => SeqConstructionCost + elements.map(evaluateBasicExpr).sum
+  case Lambda(lvalues, body)              => 
+    LambdaCost + lvalues.map(_._2.fold(0)(_ => TypeCost)).sum + evaluateExprBlock(body)
+  case SeqIndex(_, indexes)            => SeqIndexCost + indexes.map(evaluateIndex).sum
 }
 
 def evaluateLiteralExpr(expr: LiteralExpr): Int = expr match {
@@ -49,4 +38,14 @@ def evaluateLiteralExpr(expr: LiteralExpr): Int = expr match {
   case Null             => NullLiteralCost
 }
 
-def evaluateExtendedExpr(expr: ExtendedExpr): Int = ???
+private def evaluateExtendedExpr(expr: ExtendedExpr): Int = expr match {
+  case MethodCall(_, args) => CallCost + args.map(evaluateBasicExpr).sum
+  case Let(left, right) => LetCost + left.map(_._2.fold(0)(_ => TypeCost)).sum + evaluateBasicExpr(right)
+  case LetOrFail(_, leftType, right) => LetOrFailCost + leftType.fold(0)(_ => TypeCost) + evaluateBasicExpr(right)
+  case Assert(expr) => AssertCost + evaluateBasicExpr(expr)
+}
+
+private def evaluateExprBlock(expr: ExprBlock): Int = {
+  val ExprBlock(extendedExprs, basic) = expr
+  extendedExprs.map(evaluateExtendedExpr).sum + evaluateBasicExpr(basic)
+}
