@@ -1,0 +1,21 @@
+
+stages:
+  - build
+  - test
+  - format
+
+build-job:
+  stage: build
+  script:
+    - scala compile .
+
+test-job:
+  stage: test
+  script:
+    - scala test .
+
+format-job:
+  stage: format
+  script:
+    - scala fmt --check .
+
