@@ -1,0 +1,14 @@
+package evaluation.pattern
+
+import translation.structure.*
+import evaluation.expression.evaluateLiteralExpr
+import evaluation.config.*
+
+def evaluatePattern(pattern: Pattern): Int = pattern match {
+  case UnNamed          => UnNamedPatternCost
+  case Constant(value)  => ConstantPatternCost + evaluateLiteralExpr(value)
+  case Basic(_, values) =>
+    BasicPatternCost + values.fold(0)(_.map(evaluatePattern).sum)
+  case PatternTuple(elements) =>
+    PatternTupleCost + elements.map(evaluatePattern).sum
+}
