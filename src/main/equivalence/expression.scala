@@ -2,10 +2,12 @@ package equivalence.expression
 
 import translation.structure.*
 
-def convertExprBlock(block: ExprBlock): List[Stmt] = {
+def convertExprBlock(currentName: String, block: ExprBlock): (List[Stmt], List[Stmt]) = {
     val ExprBlock(extended, basic) = block
-    extended.map(convertExtendedExpr) ++ convertBasicExpr(basic)
+    (extended.map(convertExtendedExpr), convertBasicExpr(currentName, basic))
 }
+
+def concat(a: (List[Stmt], List[Stmt])): List[Stmt] = a._1 ++ a._2
 
 private def convertExtendedExpr(expr: ExtendedExpr): Stmt = expr match {
     case MethodCall(name, args) => CallStmt(name, List(args))
@@ -14,25 +16,32 @@ private def convertExtendedExpr(expr: ExtendedExpr): Stmt = expr match {
     case Assert(expr) => AssertStmt(expr)
 }
 
-private def convertBasicExpr(expr: BasicExpr): List[Stmt] = expr match {
+private def convertBasicExpr(currentName: String, expr: BasicExpr): List[Stmt] = expr match {
     case _: LiteralExpr => Nil
-    case Binary(_, left, right) => convertBasicExpr(left) ++ convertBasicExpr(right)
-    case Unary(_, expr) => convertBasicExpr(expr)
-    case Quantified(_, _, _, body) => convertBasicExpr(body)
+    case Binary(_, left, right) => convertBasicExpr(currentName, left) ++ convertBasicExpr(currentName, right)
+    case Unary(_, expr) => convertBasicExpr(currentName, expr)
+    case Quantified(_, _, _, body) => convertBasicExpr(currentName, body)
     case Ident(name, suffixes) => Nil
-    case Cardinality(expr) => convertBasicExpr(expr)
-    case Tuple(elements) => elements.flatMap(convertBasicExpr)
-    case Brackets(expr) => convertBasicExpr(expr)
-    case Cond(cond, thenBranch, elseBranch) => List(
-        CondStmt(cond, BlockStmt(convertExprBlock(thenBranch)), Some(BlockStmt(convertExprBlock(thenBranch))))
-    )
-    case FunctionCall(name, args) => List(CallStmt(name, args))
-    case LambdaCall(lambda, args) => args.flatMap(convertBasicExpr)
+    case Cardinality(expr) => convertBasicExpr(currentName, expr)
+    case Tuple(elements) => elements.flatMap(convertBasicExpr(currentName, _))
+    case Brackets(expr) => convertBasicExpr(currentName, expr)
+    case Cond(cond, thenBranch, elseBranch) => {
+        val convertedThen = concat(convertExprBlock(currentName, thenBranch))
+        val convertedElse = concat(convertExprBlock(currentName, elseBranch))
+
+        if (convertedThen.isEmpty && convertedElse.isEmpty) {
+            convertBasicExpr(currentName, cond)
+        } else {
+            List(CondStmt(cond, BlockStmt(convertedThen), Some(BlockStmt(convertedElse))))
+        }
+    }
+    case FunctionCall(name, args) => if currentName == name then Nil else List(CallStmt(name, args))
+    case LambdaCall(lambda, args) => args.flatMap(convertBasicExpr(currentName, _))
     case Match(expr, cases) => List(
-        MatchStmt(expr, cases.map((pattern, block) => (pattern, convertExprBlock(block))))
+        MatchStmt(expr, cases.map((pattern, block) => (pattern, concat(convertExprBlock(currentName, block)))))
         )
-    case Set(elements) => elements.flatMap(convertBasicExpr)
-    case Seq(elements) => elements.flatMap(convertBasicExpr)
-    case Lambda(_, body) => convertExprBlock(body)
-    case SeqIndex(_, indexes) => ???
+    case Set(elements) => elements.flatMap(convertBasicExpr(currentName, _))
+    case Seq(elements) => elements.flatMap(convertBasicExpr(currentName, _))
+    case Lambda(_, body) => concat(convertExprBlock(currentName, body))
+    case SeqIndex(_, indexes) => Nil // TODO
 }

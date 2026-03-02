@@ -3,6 +3,8 @@ package equivalence.program
 import translation.structure.*
 import translation.structure.BinaryOperator.*
 
+import equivalence.expression.convertExprBlock
+
 def programEquivalence(program: Program): Program = {
   val data = program.candidateFunctions.map(
     functionEquivalence(program.modelFunction, _)
@@ -17,7 +19,9 @@ private def functionEquivalence(
     model: Function,
     candidate: Function
 ): (Lemma, List[Lemma]) = {
-  // Generate empty equivalence lemma for now
+  val modelStmts = convertExprBlock(model.name, model.body)
+  val candStmts = convertExprBlock(candidate.name, candidate.body)
+
   val equiv = Lemma(
     s"${candidate.name}Equivalence",
     candidate.generic,
