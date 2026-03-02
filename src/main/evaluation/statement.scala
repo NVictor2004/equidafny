@@ -11,7 +11,7 @@ def evaluateStatement(stmt: Stmt): Double = stmt match {
     CondCost + evaluateStatement(thenBranch) + elseBranch.fold(0.0)(
       evaluateStatement
     )
-  case CallStmt(_, args)      => CallCost + args.map(evaluateBasicExpr).sum
+  case CallStmt(_, args)      => CallCost + args.flatMap(_.map(evaluateBasicExpr)).sum
   case MatchStmt(expr, cases) =>
     MatchCost + evaluateBasicExpr(expr) + cases
       .map((pattern, stmts) =>

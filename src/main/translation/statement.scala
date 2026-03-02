@@ -13,7 +13,7 @@ def translateStmt(stmt: Parsers.Stmt): Stmt = stmt match {
       elseBranch.map(translateElseBranch)
     )
   case Parsers.CallStmt(name, args) =>
-    CallStmt(name, args.map(translateBasicExpr))
+    CallStmt(name, List(args.map(translateBasicExpr)))
   case Parsers.MatchStmt(expr, cases) =>
     MatchStmt(
       translateBasicExpr(expr),
