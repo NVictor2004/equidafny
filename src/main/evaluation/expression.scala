@@ -6,12 +6,12 @@ import evaluation.pattern.evaluatePattern
 import evaluation.index.evaluateIndex
 import evaluation.config.*
 
-def evaluateBasicExpr(expr: BasicExpr): Int = expr match {
+def evaluateBasicExpr(expr: BasicExpr): Double = expr match {
   case lit: LiteralExpr       => evaluateLiteralExpr(lit)
   case Binary(_, left, right) =>
     BinaryOperatorCost + evaluateBasicExpr(left) + evaluateBasicExpr(right)
   case Unary(_, expr)            => UnaryOperatorCost + evaluateBasicExpr(expr)
-  case Quantified(_, _, varType, body) => QuantifiedCost + varType.fold(0)(_ => TypeCost) + evaluateBasicExpr(body)
+  case Quantified(_, _, varType, body) => QuantifiedCost + varType.fold(0.0)(_ => TypeCost) + evaluateBasicExpr(body)
   case Ident(_, suffixes) => IdentCost + suffixes.length * IdentSuffixCost
   case Cardinality(expr)  => CardinalityCost + evaluateBasicExpr(expr)
   case Tuple(elements)    => TupleCost + elements.map(evaluateBasicExpr).sum
@@ -25,11 +25,11 @@ def evaluateBasicExpr(expr: BasicExpr): Int = expr match {
   case Set(elements)                      => SetConstructionCost + elements.map(evaluateBasicExpr).sum
   case Seq(elements)                      => SeqConstructionCost + elements.map(evaluateBasicExpr).sum
   case Lambda(lvalues, body)              => 
-    LambdaCost + lvalues.map(_._2.fold(0)(_ => TypeCost)).sum + evaluateExprBlock(body)
+    LambdaCost + lvalues.map(_._2.fold(0.0)(_ => TypeCost)).sum + evaluateExprBlock(body)
   case SeqIndex(_, indexes)            => SeqIndexCost + indexes.map(evaluateIndex).sum
 }
 
-def evaluateLiteralExpr(expr: LiteralExpr): Int = expr match {
+def evaluateLiteralExpr(expr: LiteralExpr): Double = expr match {
   case _: BoolLiteral   => BoolLiteralCost
   case _: CharLiteral   => CharLiteralCost
   case _: IntLiteral    => IntLiteralCost
@@ -38,14 +38,14 @@ def evaluateLiteralExpr(expr: LiteralExpr): Int = expr match {
   case Null             => NullLiteralCost
 }
 
-private def evaluateExtendedExpr(expr: ExtendedExpr): Int = expr match {
+private def evaluateExtendedExpr(expr: ExtendedExpr): Double = expr match {
   case MethodCall(_, args) => CallCost + args.map(evaluateBasicExpr).sum
-  case Let(left, right) => LetCost + left.map(_._2.fold(0)(_ => TypeCost)).sum + evaluateBasicExpr(right)
-  case LetOrFail(_, leftType, right) => LetOrFailCost + leftType.fold(0)(_ => TypeCost) + evaluateBasicExpr(right)
+  case Let(left, right) => LetCost + left.map(_._2.fold(0.0)(_ => TypeCost)).sum + evaluateBasicExpr(right)
+  case LetOrFail(_, leftType, right) => LetOrFailCost + leftType.fold(0.0)(_ => TypeCost) + evaluateBasicExpr(right)
   case Assert(expr) => AssertCost + evaluateBasicExpr(expr)
 }
 
-private def evaluateExprBlock(expr: ExprBlock): Int = {
+private def evaluateExprBlock(expr: ExprBlock): Double = {
   val ExprBlock(extendedExprs, basic) = expr
   extendedExprs.map(evaluateExtendedExpr).sum + evaluateBasicExpr(basic)
 }

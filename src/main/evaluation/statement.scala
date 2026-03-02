@@ -5,10 +5,10 @@ import evaluation.expression.evaluateBasicExpr
 import evaluation.pattern.evaluatePattern
 import evaluation.config.*
 
-def evaluateStatement(stmt: Stmt): Int = stmt match {
+def evaluateStatement(stmt: Stmt): Double = stmt match {
   case AssertStmt(expr) => AssertCost + evaluateBasicExpr(expr)
   case CondStmt(cond, thenBranch, elseBranch) =>
-    CondCost + evaluateStatement(thenBranch) + elseBranch.fold(0)(
+    CondCost + evaluateStatement(thenBranch) + elseBranch.fold(0.0)(
       evaluateStatement
     )
   case CallStmt(_, args)      => CallCost + args.map(evaluateBasicExpr).sum
