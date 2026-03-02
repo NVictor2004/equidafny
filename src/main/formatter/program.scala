@@ -106,7 +106,14 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
 def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
   val Lemma(name, generic, params, specs, body) = lemma
 
-  writer.format("lemma %s", name)
+  writer.print("lemma ")
+
+  if (body == None) {
+    writer.print("{:axiom} ")
+  }
+
+  writer.format("%s", name)
+
   generic.foreach(typeList =>
     formatBrackets("<", formatList(typeList, formatGeneric), ">")
   )
