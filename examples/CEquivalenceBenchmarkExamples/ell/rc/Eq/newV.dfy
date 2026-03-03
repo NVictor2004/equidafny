@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double snippet (double x, double y) {
     double ERRTOL=0.0012;
     double TINY=1.69e-38;

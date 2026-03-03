@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double bessi0(double x);
 double snippet(double n, double x) {
         double ACC=2.0;

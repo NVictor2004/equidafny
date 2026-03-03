@@ -1,4 +1,3 @@
-#include <stdio.h>
 typedef struct oldV {
     int x;
     long y;

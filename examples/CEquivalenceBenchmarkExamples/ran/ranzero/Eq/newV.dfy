@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdbool.h>
 double snippet (int idum) {//idum is a global variable
         int IA=16807;
         int IM=2147483647;

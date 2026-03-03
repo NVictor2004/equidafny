@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 int snippet(int x, int y) {
         int result = 0; 
         int path = 0;

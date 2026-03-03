@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double ran1(double idum);
 double snippet (double ia, double idumx, double idum) {
         idum = idumx;

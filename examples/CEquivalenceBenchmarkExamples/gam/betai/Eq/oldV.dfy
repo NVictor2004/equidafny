@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double gammln(double xx);
 double betacf(double a, double b, double x);
  double snippet(double a, double b, double x) {

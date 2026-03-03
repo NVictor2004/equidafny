@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double bessy0(double x);
 double bessy1(double x);
 double bessj0(double x);

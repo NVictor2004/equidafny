@@ -1,6 +1,3 @@
-#include <math.h>
-#include <string.h>
-#include <stdbool.h>
 double longBitsToDoubleC(long x);
 long doubleToRawLongBits(double x);
 double snippet (double x ) {

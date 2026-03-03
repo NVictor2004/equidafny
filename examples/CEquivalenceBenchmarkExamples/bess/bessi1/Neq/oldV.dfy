@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double snippet(double x) {
         double ax = 0;
         double ans = 0;

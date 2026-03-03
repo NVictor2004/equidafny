@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double bessj0(double x);
 double bessj1(double x);
 double snippet(double n, double x) {

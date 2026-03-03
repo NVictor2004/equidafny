@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double chebev_c1d(double a, double b,int m, double x);
 double ai;
 double bi;

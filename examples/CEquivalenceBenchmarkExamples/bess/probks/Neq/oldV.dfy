@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double snippet (double alam) {
         double EPS1=1.0e-6;
         double EPS2=1.0e-16;

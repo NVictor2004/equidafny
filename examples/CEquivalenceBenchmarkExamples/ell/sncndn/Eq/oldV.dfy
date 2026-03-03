@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double sn, cn, dn;
 void snippet(double uu, double emmc) {
         const double CA = 1.0e-8;

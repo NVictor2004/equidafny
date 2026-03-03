@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double bessk0(double x);
 double bessk1(double x);
 double bessi0(double x);

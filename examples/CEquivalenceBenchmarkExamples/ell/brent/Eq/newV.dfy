@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double SQR(double a);
 double SIGN(double a, double b);
 double MAX(double a, double b);

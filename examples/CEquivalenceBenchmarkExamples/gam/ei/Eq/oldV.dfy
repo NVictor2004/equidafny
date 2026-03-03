@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double snippet (double x) {
 		int MAXIT=2;
 		double EULER=0.577215664901533;

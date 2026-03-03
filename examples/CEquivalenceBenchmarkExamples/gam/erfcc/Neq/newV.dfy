@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double snippet (double x) {
     double t =0;
     double z =0;

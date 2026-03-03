@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double normAngle(double angle) ;
 double snippet (double x0, double y0, double gspeed, double x1, double y1, double x2, double y2, double dt) {
     double twoPi = M_PI * 2;

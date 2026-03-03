@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double bessi0(double x);
 double snippet (double x) {
         double y = 0;

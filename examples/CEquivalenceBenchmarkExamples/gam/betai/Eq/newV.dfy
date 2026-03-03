@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double gammln(double xx);
 double betacf(double a, double b, double x);
 bool checkCond(double a, double b, double x);

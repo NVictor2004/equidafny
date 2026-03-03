@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double snippet(int x, int y) {
         if (x*x*x > 0){
             if(y==10)//change

@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double snippet(double x) {
         double axRenamed = 0;//change
         double ans = 0;

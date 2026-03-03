@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double snippet (int l, int m, double x) {
     int i=0;
     int ll=0;

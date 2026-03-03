@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 typedef struct oldV {
 	 double real;
 	 double imag;

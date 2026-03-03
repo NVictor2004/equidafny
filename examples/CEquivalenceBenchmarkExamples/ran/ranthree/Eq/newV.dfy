@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdbool.h>
 double snippet(int idum){//&idum
 		int inext = 0,inextp = 0;
 		int iff=0;

@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double snippet (double a,double b,double x) {
     int MAXIT=100;
     double EPS=1e-14;

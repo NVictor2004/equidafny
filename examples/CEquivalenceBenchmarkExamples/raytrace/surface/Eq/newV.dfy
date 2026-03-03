@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 typedef struct Vector3DClass {
     float x, y, z;
 }Vector3D;

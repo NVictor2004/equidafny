@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdbool.h>
 double snippet(int idum){//&idum
 		const int IM1=2147483563,IM2=2147483399;
 		const int IA1=40014,IA2=40692,IQ1=53668,IQ2=52774;

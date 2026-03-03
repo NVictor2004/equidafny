@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 int julday( int mmj,  int idj,  int iyyyj);
 int snippet (int IYBEG) {
         int IYEND=IYBEG+1;

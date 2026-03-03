@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double ran1(double idum);
 double snippet ( int idumx,int idum) {//idum is a global var
         idum = idumx;

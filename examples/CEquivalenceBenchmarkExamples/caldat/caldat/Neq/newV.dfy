@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 int mm,id,iyyy;
 void caldat( int julian){
 		const int IGREG=2299161;

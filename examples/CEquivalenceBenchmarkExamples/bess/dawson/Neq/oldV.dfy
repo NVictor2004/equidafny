@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double SIGN(double a, double b);
 double SQR(double a);
 double snippet(double x) {

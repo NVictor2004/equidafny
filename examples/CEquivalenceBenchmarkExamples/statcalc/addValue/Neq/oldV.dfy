@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double sum = 0;
 double sumOfSquares = 0;
 double mean = 0;

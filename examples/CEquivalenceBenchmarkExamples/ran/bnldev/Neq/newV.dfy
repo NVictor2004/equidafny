@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double gammln(double xx);
 double ran1(double idum);
 double snippet (double pp,  int n, int idumx, int idum) {//idum is global Var

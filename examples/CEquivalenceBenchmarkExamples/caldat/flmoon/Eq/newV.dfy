@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
  int jd = 0;
  double frac = 0.0;
  int mm,id,iyyy;

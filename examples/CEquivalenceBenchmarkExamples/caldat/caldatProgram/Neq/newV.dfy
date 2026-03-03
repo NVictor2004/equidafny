@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <math.h>
 double julday( double mmj,  double idj,  double iyyyj);
  int jd = 0;
  double frac = 0.0;

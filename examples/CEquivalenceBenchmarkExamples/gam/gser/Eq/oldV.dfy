@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double sn, cn, dn;
 double gammln(double xx);
 double snippet (double a, double x,double gamser) {

@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
 double snippet(double xx) {
         int j=0;
         double x = 0.0;
