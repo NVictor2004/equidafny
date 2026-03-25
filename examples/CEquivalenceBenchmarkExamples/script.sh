@@ -16,13 +16,18 @@
 
 # perl -0777 -pi -e 's/typedef struct (\w+) \{([\s\S]*?)\}\s*(\w+)\s*;/ "datatype $3 = $1(" . ($2 =~ s|(\w+)\s+(\w+);|$2: $1,|gmr) . ")" /ge' $1
 
-EqOrNeq=$(filename "$1")
+EqOrNeq=$(basename "$1")
 dir=$(dirname "$1")
 testType=$(basename "$dir")
 
-concatFile="$1/$testType_$EqOrNeq.dfy"
+concatFile="$1/$testType-$EqOrNeq.dfy"
 
-echo "// oldV.dfy \n" > $concatFile
+echo '// oldV.dfy' > $concatFile
+echo >> $concatFile
 cat "$1/oldV.dfy" >> $concatFile
-echo "\n\n// newV.dfy \n" >> $concatFile
+
+echo >> $concatFile
+
+echo '// newV.dfy' >> $concatFile
+echo >> $concatFile
 cat "$1/newV.dfy" >> $concatFile
