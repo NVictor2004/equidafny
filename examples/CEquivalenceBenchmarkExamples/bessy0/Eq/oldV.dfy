@@ -1,4 +1,3 @@
-function bessj0(x: double): double;
 function snippet(x: double): double {
         double z = 0;
         double xx = 0;

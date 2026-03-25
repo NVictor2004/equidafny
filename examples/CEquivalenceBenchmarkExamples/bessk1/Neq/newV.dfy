@@ -1,4 +1,3 @@
-function bessi1(x: double): double;
 function snippet(x: double): double {
         double y =0;
         double ans =0;

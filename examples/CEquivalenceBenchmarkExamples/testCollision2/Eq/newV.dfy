@@ -5,7 +5,6 @@ typedef struct newV {
     int z;
 }ejhash;
 
-function checkCond(o1: ejhash, o2: ejhash): bool;
 
 ejhash constructor(int x, long y, int z) {
 		ejhash obj;

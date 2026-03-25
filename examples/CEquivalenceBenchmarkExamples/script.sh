@@ -5,6 +5,6 @@
 # filename="${filename%.*}"
 # path=$(dirname "$1")
 
-# sed -i '/^#include/d' $1
+sed -i '/^function.*;$/d' $1
 
-perl -pi -e 's/bool (\w+)\s*\((.*?)\)/ "function $1(" . ($2 =~ s|(\w+)\s+(\w+)|$2: $1|gr) . "): bool" /ge' $1
+# perl -pi -e 's/bool (\w+)\s*\((.*?)\)/ "function $1(" . ($2 =~ s|(\w+)\s+(\w+)|$2: $1|gr) . "): bool" /ge' $1

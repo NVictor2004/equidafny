@@ -1,4 +1,3 @@
-function SQR(a: double): double;
 function snippet(a: double, b: double): double {
         double absa = 0;
         double absb = 0;

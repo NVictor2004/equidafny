@@ -1,4 +1,3 @@
-function normAngle(angle: double): double ;
 function snippet(x0: double, y0: double, gspeed: double, x1: double, y1: double, x2: double, y2: double, dt: double): double {
     double twoPi = M_PI * 2;
     double deg = M_PI / 180;
