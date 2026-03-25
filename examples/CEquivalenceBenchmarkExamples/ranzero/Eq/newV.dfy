@@ -8,11 +8,11 @@ method snippet(idum: int) returns (res: double) {//idum is a global variable
         var k: int := 0;
         var ans: double := 0.0;
         idum *= MASK;
-        k=idum/IQ;
-        idum=IA*(idum-(idum/IQ)*IQ)-IR*k;//change
+        var k := idum/IQ;
+        var idum := IA*(idum-(idum/IQ)*IQ)-IR*k;//change
         if (idum < 0)
             idum += IM;
-        ans=AM*idum;
+        var ans := AM*idum;
         //idum *= MASK;//change
         return ans;
     }

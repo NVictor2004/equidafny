@@ -9,8 +9,8 @@ method main(void) returns (res: int) {
 	var z: int := foo(x,y);
 	if (!z) {
 		var tmp: int := y;
-		  y=x;
-		  x=tmp;
+		  var y := x;
+		  var x := tmp;
 	  }
 	return y;
 }

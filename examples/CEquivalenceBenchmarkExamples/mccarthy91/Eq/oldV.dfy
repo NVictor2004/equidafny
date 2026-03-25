@@ -1,11 +1,11 @@
 method f(a: int) returns (res: int) {
   int r;
-  r = 0;
+  var r := 0;
   if (a > 100) {
-    r = a - 10;
+    var r := a - 10;
   } else {
-    r = f(a + 11);
-    r = f(r);
+    var r := f(a + 11);
+    var r := f(r);
   }
   return r;
 }

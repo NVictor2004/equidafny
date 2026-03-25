@@ -3,22 +3,22 @@ method snippet(x: int, y: int) returns (res: int) {
         var path: int := 0;
         if (x > 0) {
             if (y == x * x) {
-                path = 1;
+                var path := 1;
             }
             else {
-                path = 2;
+                var path := 2;
             }
             if (y > 8) {
                 if (path == 1)
-                    result = 3;
+                    var result := 3;
                 if (path == 2)
-                    result = 13;
+                    var result := 13;
             }
             else {
                 if (path == 1)
-                    result = 4;
+                    var result := 4;
                 if (path == 2)
-                    result = 14;
+                    var result := 14;
             }
         }
         return result;

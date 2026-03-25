@@ -5,15 +5,15 @@ typedef struct oldV {
 }ejhash;
 ejhash constructor(int x, long y, int z) {
 		ejhash obj;
-	    obj.x = x;
-	    obj.y = y;
-	    obj.z = z;
+	    obj.var x := x;
+	    obj.var y := y;
+	    obj.var z := z;
 		return obj;
 }
 method hashCode(ejhash obj) returns (res: int) {
     var h: int := obj.x;
-	h = h * 31 + (int) (obj.y ^ (obj.y >> 32));
-	h = h * 31 + obj.z;
+	var h := h * 31 + (int) (obj.y ^ (obj.y >> 32));
+	var h := h * 31 + obj.z;
 	return h;
 }
 method testCollision2(y1: long, z1: int,y2: long, z2: int) returns (res: Unit) {

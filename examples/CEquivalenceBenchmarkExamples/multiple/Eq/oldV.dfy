@@ -2,7 +2,7 @@ method lib(x: int) returns (res: int) {
 	return x % 5;
 }
 method client(x: int) returns (res: int){
-	x = x*5*6;
+	var x := x*5*6;
 	if (lib(x)==0){
 		return 1;
 	}else{

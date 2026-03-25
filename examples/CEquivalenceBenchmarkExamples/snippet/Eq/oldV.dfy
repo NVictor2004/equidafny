@@ -11,8 +11,8 @@ method snippet(x0: double, y0: double, gspeed: double, x1: double, y1: double, x
         instHdg += twoPi;
     if (instHdg > 2 * M_PI)
         instHdg += twoPi;
-    dx = x1 - x2;
-    dy = y1 - y2;
+    var dx := x1 - x2;
+    var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return 0.0;
     var instHdg0: double := 90 * deg - tan(dy/dx);

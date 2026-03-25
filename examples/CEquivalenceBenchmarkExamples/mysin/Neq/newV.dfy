@@ -27,22 +27,22 @@ method snippet(x: double ) returns (res: double) {
     var X_EPS: double := (double)1e-4;
     var l_x: long := doubleToRawLongBits(x);
 
-    md_b_sign = (int) ((l_x >> 63) & 1);
-    xexp = (int)((l_x >> 52) & 0x7FF);
+    var md_b_sign := (int) ((l_x >> 63) & 1);
+    var xexp := (int)((l_x >> 52) & 0x7FF);
     var xexp0: int := (int)((l_x >> 52) & 0x7FF);
-    md_b_m2 = (int)(l_x & 0xFFFFFFFF);
-    md_b_m1 = (int)((l_x >> 31) & 0xFFFFF); 
+    var md_b_m2 := (int)(l_x & 0xFFFFFFFF);
+    var md_b_m1 := (int)((l_x >> 31) & 0xFFFFF); 
     if (IEEE_MAX == xexp){
       if( md_b_m1 >0 || md_b_m2 >0  ){
-        retval = x;
+        var retval := x;
       }else{
-        retval = 0;
+        var retval := 0;
       }
       return retval;
     }
     else if (0 == xexp){
       if( md_b_m1>0 || md_b_m2>0 ){
-        x2 = x*x;
+        var x2 := x*x;
         return x - x2;
       }
       else{
@@ -55,10 +55,10 @@ method snippet(x: double ) returns (res: double) {
       return x*(1.0-x*x*1.0/6.0);
     }
     if (md_b_sign == 2){//change
-      x = -x;
-      sign = 1;
+      var x := -x;
+      var sign := 1;
     }
-    x_org = x;
+    var x_org := x;
     if (xexp <= (IEEE_BIAS + IEEE_MANT)){
       var xm: double := 0.0 ;
       var x3: double := 0.0;
@@ -70,11 +70,11 @@ method snippet(x: double ) returns (res: double) {
       var bot2: int := 0;
       var xn_d: double := 0.0;
       var md: double := 0.0; // should be bit union
-      xm = floor(x * _2_pi_hi + half);
-      xn_d = xm + mag52;
+      var xm := floor(x * _2_pi_hi + half);
+      var xn_d := xm + mag52;
       var l_xn: long := doubleToRawLongBits(xn_d);
       var xn_m2: int := (int)(l_xn & 0xFFFFFFFF);
-      bot2 = xn_m2 & 3;
+      var bot2 := xn_m2 & 3;
 
       var l_x1: long := doubleToRawLongBits(xm);
       var md_b_sign1: int := (int) ((l_x1 >> 63) & 1);
@@ -82,56 +82,56 @@ method snippet(x: double ) returns (res: double) {
       var md_b_m21: int := (int)(l_x1 & 0xFFFFFFFF);
       var md_b_m11: int := (int)((l_x1 >> 31) & 0xFFFFF);
       l_x1 &= (long)0xFC000000L;
-      a1 = longBitsToDoubleC(l_x1);
-      a2 = xm - a1;
-      x3 = (xm)*(pi2_hi);
-      x4 = (((a1*pi2_hi_hi-x3)+a1*pi2_hi_lo)+pi2_hi_hi*a2)+a2*pi2_hi_lo;;
-      x5 = (xm)*(pi2_lo);
-      x6 = (((a1*pi2_lo_hi-x5)+a1*pi2_lo_lo)+pi2_lo_hi*a2)+a2*pi2_lo_lo;;
-      x = ((((x - x3) - x4) - x5) - x6) - xm*pi2_lo2;
+      var a1 := longBitsToDoubleC(l_x1);
+      var a2 := xm - a1;
+      var x3 := (xm)*(pi2_hi);
+      var x4 := (((a1*pi2_hi_hi-x3)+a1*pi2_hi_lo)+pi2_hi_hi*a2)+a2*pi2_hi_lo;;
+      var x5 := (xm)*(pi2_lo);
+      var x6 := (((a1*pi2_lo_hi-x5)+a1*pi2_lo_lo)+pi2_lo_hi*a2)+a2*pi2_lo_lo;;
+      var x := ((((x - x3) - x4) - x5) - x6) - xm*pi2_lo2;
 
       if (x < 0.0) {
-        x = -x;
+        var x := -x;
         if (sign ==1)
-          sign = 0;
+          var sign := 0;
         else
-          sign = 1;
+          var sign := 1;
       }
       if( x < 0.0 ){
-        x = pi2_hi + x;
+        var x := pi2_hi + x;
       }else{
-        x = pi2_hi - x;
+        var x := pi2_hi - x;
       }
       if (x >= 0.0) {//change
-        x = -x;
+        var x := -x;
       }else{
 
         //sign ^= 1;
         if (sign ==1)
-          sign = 0;
+          var sign := 0;
         else
-          sign = 1;
+          var sign := 1;
       }
 
       if (sign ==1)
-        sign = 0;
+        var sign := 0;
       else
-        sign = 1;
+        var sign := 1;
 
       if( x < 0.0 ){
-        x = pi2_hi + x;
+        var x := pi2_hi + x;
       }else{
-        x = pi2_hi - x;
+        var x := pi2_hi - x;
       }
     }else {
-      retval = 0.0;
+      var retval := 0.0;
       if (sign == 1)
-        retval = -retval;
+        var retval := -retval;
       return retval;
     }
-    x = x * _2_pi_hi;
+    var x := x * _2_pi_hi;
     if (x > X_EPS){
-      x2 = x*x;
+      var x2 := x*x;
       x *= (((((((-0.64462136749e-9*(x2) + -0.359880911703133e-5)*(x2) +
               0.16044116846982831e-3)*(x2) + -0.468175413106023168e-2)*(x2) + 0.7969262624561800806e-1)*(x2) +
               -0.64596409750621907082)*(x2) + -0.64596409750621907082)*(x2) + -0.64596409750621907082);
@@ -141,7 +141,7 @@ method snippet(x: double ) returns (res: double) {
     }
 
     if (sign == 1 || sign == 0 )//change
-    x = -x;
+    var x := -x;
 
     return x;
 

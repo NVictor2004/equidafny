@@ -16,13 +16,13 @@ method snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int,
     var intent_not_known: int := 0;
     var alt_sep: int := 0;
     if(High_Confidence==1 && (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF))
-      enabled = 1;
+      var enabled := 1;
     else
-      enabled = 0;
+      var enabled := 0;
     if(Other_Capability == TCAS_TA)
-      tcas_equipped = 1;
+      var tcas_equipped := 1;
     else
-      tcas_equipped = 0;
+      var tcas_equipped := 0;
     if(checkCond1(Two_of_Three_Reports_Valid, Other_RAC, NO_INTENT))//change
       intent_not_known += 1;
     else
@@ -30,29 +30,29 @@ method snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int,
     alt_sep += UNRESOLVED;
     if (enabled==1 && ((tcas_equipped==1 && intent_not_known==1)  || tcas_equipped==0)){
       if ((Non_Crossing_Biased_Climb(Climb_Inhibit, Alt_Layer_Value,Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation, Up_Separation)==1&& Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation,  Up_Separation )==1))
-        need_upward_RA = 1;
+        var need_upward_RA := 1;
       else
-        need_upward_RA = 0;
+        var need_upward_RA := 0;
       if((Non_Crossing_Biased_Descend(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability,  Down_Separation,  Up_Separation)==1&& Own_Above_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation )==1))
-        need_downward_RA = 1;
+        var need_downward_RA := 1;
       else
-        need_downward_RA = 0;
+        var need_downward_RA := 0;
       if (checkCond2(need_upward_RA, need_downward_RA))//change
-        alt_sep = UNRESOLVED;
+        var alt_sep := UNRESOLVED;
       else if (need_upward_RA==1)
-        alt_sep = UPWARD_RA;
+        var alt_sep := UPWARD_RA;
       else if (need_downward_RA==1)
-        alt_sep = DOWNWARD_RA;
+        var alt_sep := DOWNWARD_RA;
       else
-        alt_sep = UNRESOLVED;
+        var alt_sep := UNRESOLVED;
     }
     return alt_sep;
   }
   method checkCond1(Two_of_Three_Reports_Valid: int, Other_RAC: int, NO_INTENT: int) returns (res: bool){
-    var Two_of_Three_Reports_Valid: return := =1 && Other_RAC == NO_INTENT;
+    var Two_of_Three_Reports_Valid: return := =1 && var Other_RAC := = NO_INTENT;
   }
   method checkCond2(need_upward_RA: int, need_downward_RA: int) returns (res: bool){
-    var need_upward_RA: return := =1 && need_downward_RA==1;
+    var need_upward_RA: return := =1 && var need_downward_RA := =1;
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 method Non_Crossing_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
@@ -72,7 +72,7 @@ method Non_Crossing_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other
     int upward_crossing_situation;
     int result;
 
-    upward_preferred = (Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation) > Down_Separation)?1:0;
+    var upward_preferred := (Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation) > Down_Separation)?1:0;
     if (upward_preferred!=0){
       result = (!(Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation )==1) ||
               ((Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation )==1) && (!(Down_Separation >= ALIM(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation)))))?1:0;
@@ -117,7 +117,7 @@ method Non_Crossing_Biased_Descend(Climb_Inhibit: int, Alt_Layer_Value: int, Oth
     int upward_crossing_situation;
     int result;
 
-    upward_preferred = (Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation) > Down_Separation)?1:0;
+    var upward_preferred := (Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation) > Down_Separation)?1:0;
 
     if (upward_preferred!=0){
       result = (Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation)==1 &&
@@ -160,7 +160,7 @@ method Inhibit_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Trac
     var UNRESOLVED: int := 0;
     var UPWARD_RA: int := 1;
     var DOWNWARD_RA: int := 2;
-    return ((Climb_Inhibit==1)?  Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
+    return ((var Climb_Inhibit := =1)?  Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 method ALIM(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){

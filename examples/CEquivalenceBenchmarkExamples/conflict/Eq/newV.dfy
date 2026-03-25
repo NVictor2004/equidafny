@@ -5,7 +5,7 @@ method snippet(psi1: double, vA: double, vC: double, xC0: double, yC0: double, p
     var signA: double := 1;
     var signC: double := 1;
     if (psiA < 0) {
-      signA = -1;
+      var signA := -1;
     }
     var rA: double := pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
     var rC: double := pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
@@ -21,13 +21,13 @@ method snippet(psi1: double, vA: double, vC: double, xC0: double, yC0: double, p
     var minsep: double := 0;
     minsep +=10;//change
     if (d < dmin) {
-      dmin = d;
+      var dmin := d;
     }
     if (dmin < dmst) {
-      minsep = dmin;
+      var minsep := dmin;
     }
     else {
-      minsep = dmst;
+      var minsep := dmst;
     }
     return minsep;
   }

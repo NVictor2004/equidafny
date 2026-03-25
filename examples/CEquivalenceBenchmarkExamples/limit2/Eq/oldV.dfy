@@ -1,11 +1,11 @@
 method f(n: int) returns (res: int) {
   int r;
-  r = 0;
+  var r := 0;
   if (n <= 0) {
-    r = n;
+    var r := n;
   } else {
-    r = f(n - 1);
-    r = n + r;
+    var r := f(n - 1);
+    var r := n + r;
   }
   return r;
 }

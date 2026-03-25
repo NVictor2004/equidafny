@@ -1,6 +1,6 @@
 method snippet(a: double, b: double) returns (res: double) {
         if (b >= 0){
-            a = -a;//change:inserted
+            var a := -a;//change:inserted
             if (a >= 0)
                 return a;
             else

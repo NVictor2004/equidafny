@@ -15,9 +15,9 @@ method snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int,
         var upward_crossing_situation: int := 0;
         var result: int := 0 ;
         if(Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt, Own_Tracked_Alt, Two_of_Three_Reports_Valid, need_upward_RA, need_downward_RA, Other_RAC, High_Confidence, Own_Tracked_Alt_Rate, Cur_Vertical_Sep, Other_Capability, Down_Separation, Up_Separation) > Down_Separation)
-            upward_preferred = 1;
+            var upward_preferred := 1;
         else
-            upward_preferred = 0;
+            var upward_preferred := 0;
         if (upward_preferred != 0) {
             if((Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt, Own_Tracked_Alt, Two_of_Three_Reports_Valid, need_upward_RA, need_downward_RA, Other_RAC, High_Confidence, Own_Tracked_Alt_Rate, Cur_Vertical_Sep, Other_Capability, Down_Separation, Up_Separation) == 1) && (Cur_Vertical_Sep >= MINSEP) && (Down_Separation >= ALIM(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt, Own_Tracked_Alt, Two_of_Three_Reports_Valid, need_upward_RA, need_downward_RA, Other_RAC, High_Confidence, Own_Tracked_Alt_Rate, Cur_Vertical_Sep, Other_Capability, Down_Separation, Up_Separation)))
                 return  1;//change
@@ -75,7 +75,7 @@ method Inhibit_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Trac
 		var UNRESOLVED: int := 0;
 		var UPWARD_RA: int := 1;
 		var DOWNWARD_RA: int := 2;
-		return ((Climb_Inhibit==1)?  Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
+		return ((var Climb_Inhibit := =1)?  Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 method ALIM(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){

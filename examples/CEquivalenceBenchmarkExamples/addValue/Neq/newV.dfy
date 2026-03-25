@@ -10,6 +10,6 @@ method addValue(val: double) returns (res: Unit)
   var currentVal: double := val;
   sum += currentVal;
   sumOfSquares += currentVal * currentVal;
-  mean = sum / count;
-  deviation = sqrt( (sumOfSquares * count) - (mean * mean) );//change
+  var mean := sum / count;
+  var deviation := sqrt( (sumOfSquares * count) - (mean * mean) );//change
 }

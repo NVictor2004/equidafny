@@ -5,22 +5,22 @@ typedef struct newV {
 }ejhash;
 ejhash constructor(int x, long y, int z) {
 		ejhash obj;
-	    obj.x = x;
-	    obj.y = y;
-	    obj.z = z;
+	    obj.var x := x;
+	    obj.var y := y;
+	    obj.var z := z;
 		return obj;
 }
 method hashCode(ejhash obj) returns (res: int) {
     //var h: int := x;//change
     var h: int := obj.x * 31 + (int) (obj.y ^ (obj.y >> 32));//change
-	h = h * 31 + obj.z;
+	var h := h * 31 + obj.z;
 	return h;
 }
 method testCollision1(x1: int, y1: long, z1: int,x2: int, y2: long, z2: int) returns (res: Unit) {
 	    var o1: ejhash := constructor(x1, y1, z1);
 	    var o2: ejhash := constructor(x2, y2, z2);
 	    if (hashCode(o1) == hashCode(o2)) {
-            x1=x2;//change
+            var x1 := x2;//change
 	        printf("%s\n","Solved hash collision 1");
 	    }
 }
@@ -45,7 +45,7 @@ method testCollision3(y1: long, y2: long) returns (res: Unit) {
 method testCollision4(x1: int, y1: long, z1: int) returns (res: Unit) {
 	    var o1: ejhash := constructor(1234, 6454505372016058754, 3141);
 	    var o2: ejhash := constructor(x1, y1, z1);
-		x1=z1;//change		
+		var x1 := z1;//change		
 	    if (hashCode(o1) == hashCode(o2)) {
 	        printf("%s\n","Solved hash collision 4");
 	    }
