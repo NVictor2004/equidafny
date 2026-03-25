@@ -9,4 +9,6 @@
 
 # perl -pi -e 's/bool (\w+)\s*\((.*?)\)/ "function $1(" . ($2 =~ s|(\w+)\s+(\w+)|$2: $1|gr) . "): bool" /ge' $1
 
-sed -i -E 's/([a-zA-Z0-9_]+)\s*=\s*(.*);/var \1 := \2;/' $1
+# sed -i -E 's/([a-zA-Z0-9_]+)\s*=\s*(.*);/var \1 := \2;/' $1
+
+sed -i -E 's/function\s+(\w+)\s*\((.*?)\): (\w+)/method \1(\2) returns \(res: \3\)/' $1

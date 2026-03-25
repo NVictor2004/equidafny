@@ -1,4 +1,4 @@
-function g(n: int): int
+method g(n: int) returns (res: int)
 {
   int r;
   r = 0;
@@ -10,7 +10,7 @@ function g(n: int): int
   }
   return r;
 }
-function triangle(n: int): int {
+method triangle(n: int) returns (res: int) {
   int r;
   r = g(n);
   return r;

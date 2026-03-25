@@ -1,4 +1,4 @@
-function snippet(x: int, y: int): int {
+method snippet(x: int, y: int) returns (res: int) {
         var result: int := 0; 
         var path: int := 0;
         if (x > 0) {

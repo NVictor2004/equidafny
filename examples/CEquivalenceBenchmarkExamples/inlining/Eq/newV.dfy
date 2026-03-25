@@ -1,4 +1,4 @@
-function f(x: int): int {
+method f(x: int) returns (res: int) {
   if (x > 1) {
     x = f(x-2);
     x = x + 2;

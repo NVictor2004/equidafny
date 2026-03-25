@@ -1,4 +1,4 @@
-function snippet(mmj: double,  idj: double,  iyyyj: double): double {
+method snippet(mmj: double,  idj: double,  iyyyj: double) returns (res: double) {
         var IGREG: double := 15.0+31.0*(10.0+12.0*1582.0);
         var ja: double := 1.0;
         var jul: double := 0.0;

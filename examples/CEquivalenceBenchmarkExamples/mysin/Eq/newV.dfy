@@ -1,6 +1,6 @@
-function longBitsToDoubleC(x: long): double;
+method longBitsToDoubleC(x: long) returns (res: double);
 long doubleToRawLongBits(double x);
-function snippet(x: double ): double {
+method snippet(x: double ) returns (res: double) {
     var retval: double := 0;
     var x_org: double := 0;
     var x2: double := 0;
@@ -147,7 +147,7 @@ function snippet(x: double ): double {
     return x;
 
   }
-  function longBitsToDoubleC(x: long): double {
+  method longBitsToDoubleC(x: long) returns (res: double) {
     double bits;
     memcpy(&bits, &x, sizeof bits);
     return bits;

@@ -1,4 +1,4 @@
-function f(x: int): int {
+method f(x: int) returns (res: int) {
   int r;
   r = 0;
   if (x < 101) {

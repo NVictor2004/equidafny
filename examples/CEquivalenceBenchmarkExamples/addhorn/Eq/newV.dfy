@@ -1,4 +1,4 @@
-function f(i: int, j: int): int
+method f(i: int, j: int) returns (res: int)
 {
   int r;
   r = 0;

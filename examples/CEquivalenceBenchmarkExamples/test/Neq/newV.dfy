@@ -1,4 +1,4 @@
-function snippet(x: int, y: int): double {
+method snippet(x: int, y: int) returns (res: double) {
         if (x*x*x < 0){//change
             if(x>0 && y==10)
                 return 1000;

@@ -1,4 +1,4 @@
-function snippet(psi1: double, vA: double, vC: double, xC0: double, yC0: double, psiC: double, bank_ang: double, degToRad: double, g: double ): double { //degToRad and g are global vars
+method snippet(psi1: double, vA: double, vC: double, xC0: double, yC0: double, psiC: double, bank_ang: double, degToRad: double, g: double ) returns (res: double) { //degToRad and g are global vars
     var dmin: double := 999;
     var dmst: double := 2;
     var psiA: double := psi1 * degToRad;

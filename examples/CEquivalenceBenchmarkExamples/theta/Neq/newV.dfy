@@ -1,4 +1,4 @@
-const function theta(x1: double, x2: double): double {
+const method theta(x1: double, x2: double) returns (res: double) {
     if(x1 > 0.0) {
       return atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {

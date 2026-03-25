@@ -1,4 +1,4 @@
-function snippet(x: double): double {
+method snippet(x: double) returns (res: double) {
         var y: double := 0;
         var ans: double := 0;
         if (x <= 2.0) {
@@ -10,7 +10,7 @@ function snippet(x: double): double {
             return (1.25331414+y*(0.23498619 +y*(-0.3655620e-1+y*(0.1504268e-1+y*(-0.780353e-2 +y*(0.325614e-2+y*(-0.68245e-3)))))));
         }
 }
-function bessi1(x: double): double{
+method bessi1(x: double) returns (res: double){
         double ax,ans,y;
 
         if ((ax=fabs(x)) < 3.75) {

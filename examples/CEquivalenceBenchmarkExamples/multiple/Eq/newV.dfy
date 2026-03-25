@@ -1,7 +1,7 @@
-function lib(x: int): int {
+method lib(x: int) returns (res: int) {
 	return x % 6;
 }
-function client(x: int): int{
+method client(x: int) returns (res: int){
 	x = x*5*6;
 	if (lib(x)==0){
 		return 1;

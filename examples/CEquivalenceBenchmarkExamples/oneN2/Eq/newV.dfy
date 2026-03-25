@@ -1,10 +1,10 @@
-function lib(x: int): int{
+method lib(x: int) returns (res: int){
 	if (x > 11)//change
 		return 11;
 	else
 		return x-1;//change
 }
-function client(x: int): int{
+method client(x: int) returns (res: int){
 	if (x > lib(x))
 		return x;
 	else

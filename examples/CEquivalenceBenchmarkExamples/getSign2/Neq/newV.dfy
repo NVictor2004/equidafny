@@ -1,9 +1,9 @@
-function lib(x: int): int {
+method lib(x: int) returns (res: int) {
   if (x <= 0)
      return -1;
   else
      return 1;
 }
-function client(x: int): int{
+method client(x: int) returns (res: int){
   return lib(x);
 }
