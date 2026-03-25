@@ -68,9 +68,6 @@ method Non_Crossing_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other
     var UNRESOLVED: int := 0;
     var UPWARD_RA: int := 1;
     var DOWNWARD_RA: int := 2;
-    int upward_preferred;
-    int upward_crossing_situation;
-    int result;
 
     var upward_preferred := (Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation) > Down_Separation)?1:0;
     if (upward_preferred!=0){
@@ -113,9 +110,6 @@ method Non_Crossing_Biased_Descend(Climb_Inhibit: int, Alt_Layer_Value: int, Oth
     var UNRESOLVED: int := 0;
     var UPWARD_RA: int := 1;
     var DOWNWARD_RA: int := 2;
-    int upward_preferred;
-    int upward_crossing_situation;
-    int result;
 
     var upward_preferred := (Inhibit_Biased_Climb(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation) > Down_Separation)?1:0;
 

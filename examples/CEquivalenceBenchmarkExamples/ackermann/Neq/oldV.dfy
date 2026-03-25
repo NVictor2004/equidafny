@@ -1,6 +1,4 @@
 method f(m: int, n: int) returns (res: int) {
-  int r;
-  int x;
   var x := 0;
   var r := 0;
   if (m == 0) {

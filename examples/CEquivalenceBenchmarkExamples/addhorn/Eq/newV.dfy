@@ -1,6 +1,5 @@
 method f(i: int, j: int) returns (res: int)
 {
-  int r;
   var r := 0;
   if (i == 0) {
     var r := j;

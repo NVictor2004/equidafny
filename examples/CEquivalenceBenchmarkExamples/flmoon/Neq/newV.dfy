@@ -4,7 +4,6 @@
 method flmoon( n: int,  nph: int) returns (res: Unit)
 {
 		const var RAD: double := 3.141592653589793238/180.0;
-		int i;
 		double am,as,c,t,t2,xtra;
 		var c := n+nph/4.0;
 		var t := c/1236.85;

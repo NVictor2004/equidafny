@@ -1,5 +1,4 @@
 method f(x: int) returns (res: int) {
-  int r;
   var r := 0;
   if (x < 101) {
     var r := f(11 + x);
