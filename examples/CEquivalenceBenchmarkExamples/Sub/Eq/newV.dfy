@@ -1,4 +1,4 @@
-method foo(a: int, b: int) returns (res: int) {
+method new_foo(a: int, b: int) returns (res: int) {
 	var c: int := b-a;
 	return c;
 }
