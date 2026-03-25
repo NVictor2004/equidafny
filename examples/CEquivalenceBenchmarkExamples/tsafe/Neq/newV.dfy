@@ -1,5 +1,5 @@
-double normAngle(double angle) ;
-double conflict (double psi1, double vA, double vC, double xC0, double yC0, double psiC, double bank_ang, double degToRad, double g ) { //degToRad and g are global vars
+function normAngle(angle: double): double ;
+function conflict(psi1: double, vA: double, vC: double, xC0: double, yC0: double, psiC: double, bank_ang: double, degToRad: double, g: double ): double { //degToRad and g are global vars
     double dmin = 999;
     double dmst = 2;
     double psiA = psi1 * degToRad;
@@ -31,7 +31,7 @@ double conflict (double psi1, double vA, double vC, double xC0, double yC0, doub
     }
     return minsep;
   }
-double snippet (double x0, double y0, double gspeed, double x1, double y1, double x2, double y2, double dt) {
+function snippet(x0: double, y0: double, gspeed: double, x1: double, y1: double, x2: double, y2: double, dt: double): double {
     double twoPi = M_PI * 2;
     double deg = M_PI / 180;
     double gacc = 32.0;
@@ -57,7 +57,7 @@ double snippet (double x0, double y0, double gspeed, double x1, double y1, doubl
     double phi = tan((hdg_diff * gspeed)/(gacc * dt));
     return phi / deg;
   }
-double normAngle(double angle) {
+function normAngle(angle: double): double {
 		double twoPi = M_PI * 2; 
 		if (angle < -M_PI) {
 		    return angle + M_PI ;//change

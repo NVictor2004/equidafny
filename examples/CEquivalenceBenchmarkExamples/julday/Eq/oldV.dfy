@@ -1,4 +1,4 @@
-double snippet(double mmj,  double idj,  double iyyyj) {
+function snippet(mmj: double,  idj: double,  iyyyj: double): double {
         double IGREG=15.0+31.0*(10.0+12.0*1582.0);
         double ja =1.0;
         double jul=0.0;

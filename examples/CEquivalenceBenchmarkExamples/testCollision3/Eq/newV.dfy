@@ -10,13 +10,13 @@ ejhash constructor(int x, long y, int z) {
 	    obj.z = z;
 		return obj;
 }
-int hashCode(ejhash obj) {
+function hashCode(ejhash obj): int {
     int h = obj.x;
 	h = h * 31 + (int) (obj.y ^ (obj.y >> 32));
 	h = h * 31 + obj.z;
 	return h;
 }
-void testCollision3(long y1, long y2) {
+function testCollision3(y1: long, y2: long): Unit {
 		int z = 3141;//change
 	    ejhash o1 = constructor(1234, y1, z);//change
 	    ejhash o2 = constructor(5678, y2, z);//change

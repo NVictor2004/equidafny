@@ -1,4 +1,4 @@
-int f(int n) {
+function f(n: int): int {
   int r;
   r = 0;
   if (n <= 1) {

@@ -1,5 +1,5 @@
-double bessi1(double x);
-double snippet (double x) {
+function bessi1(x: double): double;
+function snippet(x: double): double {
         double y =0;
         double ans =0;
         if (x <= 2.0) {
@@ -14,7 +14,7 @@ double snippet (double x) {
         }
         return ans+fabs(y);//change
 }
-double bessi1(double x){
+function bessi1(x: double): double{
         double ax,ans,y;
 
         if ((ax=fabs(x)) < 3.75) {

@@ -1,4 +1,4 @@
-const double theta(double x1, double x2) {
+const function theta(x1: double, x2: double): double {
     if(x1 > 0.0) {
       return atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {
@@ -7,7 +7,7 @@ const double theta(double x1, double x2) {
     x2 = x1 = 10;//change
     return 0.0;
 }
-void wood(double x1, double x2, double x3, double x4) {
+function wood(x1: double, x2: double, x3: double, x4: double): Unit {
       bool condition1 = (10.0 * (x2 - x1 * x1)) == 0.0 && (5.0 - x1) == 0.0;//change
       bool condition2 = (sqrt(64) * (x4 - x3 * x3)) == 0.0 && (2.0 - x3) == 0.0;//change
         if (condition1 && condition2){//change

@@ -1,4 +1,4 @@
-double snippet (double psi1, double vA, double vC, double xC0, double yC0, double psiC, double bank_ang, double degToRad, double g ) { //degToRad and g are global vars
+function snippet(psi1: double, vA: double, vC: double, xC0: double, yC0: double, psiC: double, bank_ang: double, degToRad: double, g: double ): double { //degToRad and g are global vars
     double dmin = 999;
     double dmst = 2;
     double psiA = psi1 * degToRad;

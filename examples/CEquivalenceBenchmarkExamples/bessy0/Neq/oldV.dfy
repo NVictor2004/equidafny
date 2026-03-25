@@ -1,5 +1,5 @@
-double bessj0(double x);
-double snippet (double x) {
+function bessj0(x: double): double;
+function snippet(x: double): double {
         double z = 0;
         double xx = 0;
         double y = 0;
@@ -22,7 +22,7 @@ double snippet (double x) {
         }
         return ans;
 }
-double bessj0(double x){
+function bessj0(x: double): double{
         double ax,z,xx,y,ans,ans1,ans2;
 
         if ((ax=fabs(x)) < 8.0) {

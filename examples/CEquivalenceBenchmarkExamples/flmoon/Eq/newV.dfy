@@ -1,7 +1,7 @@
  int jd = 0;
  double frac = 0.0;
  int mm,id,iyyy;
-void flmoon( int n,  int nph)
+function flmoon( n: int,  nph: int): Unit
 {
 		const double RAD=3.141592653589793238/180.0;
 		int i;

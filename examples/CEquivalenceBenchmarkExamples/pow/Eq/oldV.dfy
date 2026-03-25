@@ -1,4 +1,4 @@
-int snippet(int x, int y) {
+function snippet(x: int, y: int): int {
         int result = 0; 
         int path = 0;
         if (x > 0) {

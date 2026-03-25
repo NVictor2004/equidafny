@@ -1,10 +1,10 @@
-int lib(int x, int y) {
+function lib(x: int, y: int): int {
   if (y == 0) {
     return 0;
   }
   return x / y;
 }
-int client(int c, int d) {
+function client(c: int, d: int): int {
   if (d == 0) {
     return 0;
   }

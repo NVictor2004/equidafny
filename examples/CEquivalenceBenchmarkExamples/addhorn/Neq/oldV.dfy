@@ -1,4 +1,4 @@
-int f(int i, int j)
+function f(i: int, j: int): int
 {
   int r;
   r = 0;

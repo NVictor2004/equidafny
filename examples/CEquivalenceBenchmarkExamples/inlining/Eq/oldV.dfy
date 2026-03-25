@@ -1,4 +1,4 @@
-int f(int x) {
+function f(x: int): int {
   if (x > 0) {
     x = f(x-1);
     x = x + 1;

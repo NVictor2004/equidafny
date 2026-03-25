@@ -1,4 +1,4 @@
-int lib(int x) {
+function lib(x: int): int {
   if (x == 0)
      return 0;
   if (x < 0)
@@ -6,7 +6,7 @@ int lib(int x) {
   else
      return 1;
 }
-int client(int x){
+function client(x: int): int{
   if (x > 0) {
     return lib(x);
   }

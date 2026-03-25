@@ -1,10 +1,10 @@
-int lib(int x) {
+function lib(x: int): int {
   if (x > 11)
     return 11;
   else
     return x - 1;
 }
-int client(int x) {
+function client(x: int): int {
   if (x < -100 || x > 100) {
     return x;
   }

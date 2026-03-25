@@ -1,4 +1,4 @@
-double snippet (int idum) {//idum is a global variable
+function snippet(idum: int): double {//idum is a global variable
         int IA=16807;
         int IM=2147483647;
         int IQ=127773;

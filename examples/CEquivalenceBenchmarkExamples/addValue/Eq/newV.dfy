@@ -3,7 +3,7 @@ double sumOfSquares = 0;
 double mean = 0;
 double deviation = 0;
 int count = 0;
-void addValue(double val)
+function addValue(val: double): Unit
 {
   count++;
   printf("%s\n","stat ");

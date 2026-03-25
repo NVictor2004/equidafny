@@ -1,4 +1,4 @@
-int g(int n)
+function g(n: int): int
 {
   int r;
   r = 0;
@@ -10,7 +10,7 @@ int g(int n)
   }
   return r;
 }
-int triangle(int n) {
+function triangle(n: int): int {
   int r;
   r = g(n);
   return r;

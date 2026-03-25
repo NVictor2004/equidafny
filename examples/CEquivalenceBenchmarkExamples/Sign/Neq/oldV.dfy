@@ -1,4 +1,4 @@
-double snippet(double a, double b) {
+function snippet(a: double, b: double): double {
         if (b >= 0){
             if (a >= 0)
                 return a;

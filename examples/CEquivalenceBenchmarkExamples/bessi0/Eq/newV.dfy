@@ -1,4 +1,4 @@
-double snippet(double x) {
+function snippet(x: double): double {
         double axRenamed = 0;//change
         double ans = 0;
         double y = 0;

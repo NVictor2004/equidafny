@@ -1,5 +1,5 @@
 int mm,id,iyyy;
-void caldat( int julian){
+function caldat( julian: int): Unit{
 		const int IGREG=2299161;
 		int ja,jalpha,jb,jc,jd,je;
 

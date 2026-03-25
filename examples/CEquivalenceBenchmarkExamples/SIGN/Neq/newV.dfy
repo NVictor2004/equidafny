@@ -1,4 +1,4 @@
-double snippet(double a, double b) {
+function snippet(a: double, b: double): double {
         if (b >= 0){
             a = -a;//change:inserted
             if (a >= 0)

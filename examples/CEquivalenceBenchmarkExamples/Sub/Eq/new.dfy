@@ -1,7 +1,7 @@
-int foo(int a, int b) {
+function foo(a: int, b: int): int {
 	int c=b-a;
 	return c;
 }
-int main(void) {
+function main(void): int {
 	return foo(900,5);
 }

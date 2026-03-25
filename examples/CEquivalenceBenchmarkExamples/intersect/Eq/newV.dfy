@@ -72,7 +72,7 @@ Sphere SphereConstructor(Surface s, Vector3D c, float r) {
       obj.radSqr = r*r;
 		  return obj;
 }
-bool intersect(Sphere s, Sphere d) {
+function intersect(s: Sphere, d: Sphere): bool {
   float dxRenamed = s.center.x - d.center.x;//change
   float dy = s.center.y - d.center.y;
   float dz = s.center.z - d.center.z;

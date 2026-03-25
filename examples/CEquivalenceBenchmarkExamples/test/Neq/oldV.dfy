@@ -1,4 +1,4 @@
-double snippet(int x, int y) {
+function snippet(x: int, y: int): double {
         if (x*x*x > 0){
             if(x>0 && y==10)
                 return 1000;

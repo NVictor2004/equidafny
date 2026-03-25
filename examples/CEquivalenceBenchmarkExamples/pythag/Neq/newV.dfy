@@ -1,5 +1,5 @@
-double SQR(double a);
-double snippet (double a, double b) {
+function SQR(a: double): double;
+function snippet(a: double, b: double): double {
         double absa = 0;
         double absb = 0;
         absa=fabs(a);
@@ -14,6 +14,6 @@ double snippet (double a, double b) {
                 return sqrt(1.0 + SQR(absa / absb));//change
         }
 }
-double SQR(double a) {
+function SQR(a: double): double {
         return a*a;
 }

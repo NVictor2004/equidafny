@@ -10,20 +10,20 @@ ejhash constructor(int x, long y, int z) {
 	    obj.z = z;
 		return obj;
 }
-int hashCode(ejhash obj) {
+function hashCode(ejhash obj): int {
     int h = obj.x;
 	h = h * 31 + (int) (obj.y ^ (obj.y >> 32));
 	//h = h * 31 + obj.z;
 	return h;
 }
-void testCollision1(int x1, long y1, int z1,int x2, long y2, int z2) {
+function testCollision1(x1: int, y1: long, z1: int,x2: int, y2: long, z2: int): Unit {
 	    ejhash o1 = constructor(x1, y1, z1);
 	    ejhash o2 = constructor(z2, y2, x2);//change
 	    if (hashCode(o1) == hashCode(o2)) {
 	        printf("%s\n","Solved hash collision 1");
 	    }
 }
-void testCollision2(long y1, int z1,long y2, int z2) {
+function testCollision2(y1: long, z1: int,y2: long, z2: int): Unit {
 	    ejhash o1 = constructor(1, y1, z1);
 	    ejhash o2 = constructor(2, y2, z2);
 	    if (hashCode(o1) == hashCode(o2)) {
@@ -33,14 +33,14 @@ void testCollision2(long y1, int z1,long y2, int z2) {
 			printf("%s\n","Not equal");//change
 		}
 }
-void testCollision3(long y1, long y2) {
+function testCollision3(y1: long, y2: long): Unit {
 	    ejhash o1 = constructor(5678, y1, 3141);//change
 	    ejhash o2 = constructor(5678, y2, 3141);
 	    if (hashCode(o1) == hashCode(o2)) {
 	        printf("%s\n","collision Occures");//change
 	    }
 }
-void testCollision4(int x1, long y1, int z1) {
+function testCollision4(x1: int, y1: long, z1: int): Unit {
 	    ejhash o1 = constructor(1234, 6454505372016058754, 3141);
 	    ejhash o2 = constructor(x1, y1, z1);	
 	    if (hashCode(o1) == hashCode(o2) && y1==z1) {//change
