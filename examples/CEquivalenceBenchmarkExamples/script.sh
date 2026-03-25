@@ -16,8 +16,4 @@
 
 # perl -0777 -pi -e 's/typedef struct (\w+) \{([\s\S]*?)\}\s*(\w+)\s*;/ "datatype $3 = $1(" . ($2 =~ s|(\w+)\s+(\w+);|$2: $1,|gmr) . ")" /ge' $1
 
-EqOrNeq=$(basename "$1")
-dir=$(dirname "$1")
-testType=$(basename "$dir")
-
-mv "$1/C-Desc.json" "$1/$testType-$EqOrNeq.json"
+mv "$1" "."
