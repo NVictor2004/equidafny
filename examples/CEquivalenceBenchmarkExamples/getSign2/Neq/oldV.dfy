@@ -1,4 +1,4 @@
-method lib(x: int) returns (res: int) {
+method old_lib(x: int) returns (res: int) {
   if (x == 0)
      return 0;
   if (x < 0)
@@ -6,6 +6,6 @@ method lib(x: int) returns (res: int) {
   else
      return 1;
 }
-method client(x: int) returns (res: int){
+method old_client(x: int) returns (res: int){
   return lib(x);
 }

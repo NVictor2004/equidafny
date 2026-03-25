@@ -1,4 +1,4 @@
-method snippet(idum: int) returns (res: double) {//idum is a global variable
+method new_snippet(idum: int) returns (res: double) {//idum is a global variable
         var IA: int := 16807;
         var IM: int := 2147483647;
         var IQ: int := 127773;

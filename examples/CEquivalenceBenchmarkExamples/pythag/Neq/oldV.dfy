@@ -1,4 +1,4 @@
-method snippet(a: double, b: double) returns (res: double) {
+method old_snippet(a: double, b: double) returns (res: double) {
         var absa: double := 0;
         var absb: double := 0;
         var absa := fabs(a);
@@ -13,6 +13,6 @@ method snippet(a: double, b: double) returns (res: double) {
                 return absb * sqrt(1.0 + SQR(absa / absb));
         }
 }
-method SQR(a: double) returns (res: double) {
+method old_SQR(a: double) returns (res: double) {
         return a*a;
 }

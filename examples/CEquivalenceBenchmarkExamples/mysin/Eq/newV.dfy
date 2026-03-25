@@ -1,6 +1,6 @@
-method longBitsToDoubleC(x: long) returns (res: double);
+method new_longBitsToDoubleC(x: long) returns (res: double);
 long doubleToRawLongBits(double x);
-method snippet(x: double ) returns (res: double) {
+method new_snippet(x: double ) returns (res: double) {
     var retval: double := 0;
     var x_org: double := 0;
     var x2: double := 0;

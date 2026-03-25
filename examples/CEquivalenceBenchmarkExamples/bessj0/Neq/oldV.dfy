@@ -1,4 +1,4 @@
-method snippet(x: double) returns (res: double) {
+method old_snippet(x: double) returns (res: double) {
         var ax: double := 0;
         var z: double := 0;
         var xx: double := 0;

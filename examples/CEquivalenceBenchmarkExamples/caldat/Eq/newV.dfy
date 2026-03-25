@@ -1,5 +1,5 @@
 int mm,id,iyyy;
-method caldat( julian: int) returns (res: Unit){
+method new_caldat( julian: int) returns (res: Unit){
 		const var IGREG: int := 2299161;
 		int ja,jalpha,jb,jc,jd,je;
 

@@ -1,7 +1,7 @@
  var jd: int := 0;
  var frac: double := 0.0;
  int mm,id,iyyy;
-method flmoon( n: int,  nph: int) returns (res: Unit)
+method old_flmoon( n: int,  nph: int) returns (res: Unit)
 {
 		const var RAD: double := 3.141592653589793238/180.0;
 		double am,as,c,t,t2,xtra;

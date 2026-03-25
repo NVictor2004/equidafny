@@ -1,4 +1,4 @@
-method snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: double) {
+method old_snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: double) {
         var OLEV: int := 600; /* in feets/minute */
         var MAXALTDIFF: int := 600; /* max altitude difference in feet */
         var MINSEP: int := 300; /* min separation in feet */
@@ -32,7 +32,7 @@ method snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int,
         }
         return result;
     }
-method Own_Below_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
+method old_Own_Below_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
 		var OLEV: int := 600; /* in feets/minute */
 		var MAXALTDIFF: int := 600; /* max altitude difference in feet */
 		var MINSEP: int := 300; /* min separation in feet */
@@ -48,7 +48,7 @@ method Own_Below_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_
 		return ((Own_Tracked_Alt <
 				Other_Tracked_Alt)?1:0);
 	}
-method Own_Above_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
+method old_Own_Above_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
 		var OLEV: int := 600; /* in feets/minute */
 		var MAXALTDIFF: int := 600; /* max altitude difference in feet */
 		var MINSEP: int := 300; /* min separation in feet */
@@ -65,7 +65,7 @@ method Own_Above_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_
 				Own_Tracked_Alt)?1:0);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-method Inhibit_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
+method old_Inhibit_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
 		var OLEV: int := 600; /* in feets/minute */
 		var MAXALTDIFF: int := 600; /* max altitude difference in feet */
 		var MINSEP: int := 300; /* min separation in feet */
@@ -81,7 +81,7 @@ method Inhibit_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Trac
 		return ((var Climb_Inhibit := =1)?  Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-method ALIM(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
+method old_ALIM(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){
 		int Positive_RA_Alt_Thresh[4];
 		Positive_RA_Alt_Thresh[0] = 400;
 		Positive_RA_Alt_Thresh[1] = 500;

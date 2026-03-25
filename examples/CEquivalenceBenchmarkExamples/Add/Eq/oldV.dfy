@@ -1,7 +1,7 @@
-method foo(a: int, b: int) returns (res: int) {
+method old_foo(a: int, b: int) returns (res: int) {
 	var c: int := a+b;
 	return c;
 }
-method main(void) returns (res: int) {
+method old_main(void) returns (res: int) {
 	return foo(5,900);
 }

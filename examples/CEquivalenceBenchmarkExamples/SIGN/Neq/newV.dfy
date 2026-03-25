@@ -1,4 +1,4 @@
-method snippet(a: double, b: double) returns (res: double) {
+method new_snippet(a: double, b: double) returns (res: double) {
         if (b >= 0){
             var a := -a;//change:inserted
             if (a >= 0)

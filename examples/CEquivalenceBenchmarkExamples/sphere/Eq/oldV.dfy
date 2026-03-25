@@ -83,7 +83,7 @@ Sphere SphereConstructor(Surface s, Vector3D c, float r) {
       obj.var radSqr := r*r;
 		  return obj;
 }
-method intersect(s: Sphere, d: Sphere) returns (res: bool) {
+method old_intersect(s: Sphere, d: Sphere) returns (res: bool) {
   var dx: float := s.center.x - d.center.x;
   var dy: float := s.center.y - d.center.y;
   var dz: float := s.center.z - d.center.z;

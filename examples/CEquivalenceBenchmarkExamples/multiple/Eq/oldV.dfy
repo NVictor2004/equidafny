@@ -1,7 +1,7 @@
-method lib(x: int) returns (res: int) {
+method old_lib(x: int) returns (res: int) {
 	return x % 5;
 }
-method client(x: int) returns (res: int){
+method old_client(x: int) returns (res: int){
 	var x := x*5*6;
 	if (lib(x)==0){
 		return 1;

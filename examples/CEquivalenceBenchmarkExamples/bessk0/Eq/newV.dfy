@@ -1,4 +1,4 @@
-method snippet(x: double) returns (res: double) {
+method new_snippet(x: double) returns (res: double) {
         var y: double := 0;
         var ans: double := 0;
         var two: double := 2.0;//change
@@ -12,7 +12,7 @@ method snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method bessi0(x: double) returns (res: double) {
+method new_bessi0(x: double) returns (res: double) {
         double ax,ans,y;
 
         if ((ax=fabs(x)) < 3.75) {

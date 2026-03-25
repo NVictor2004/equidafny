@@ -10,13 +10,13 @@ ejhash constructor(int x, long y, int z) {
 	    obj.var z := z;
 		return obj;
 }
-method hashCode(ejhash obj) returns (res: int) {
+method new_hashCode(ejhash obj) returns (res: int) {
     var h: int := obj.x;
 	var h := h * 31 + (int) (obj.y ^ (obj.y >> 32));
 	var h := h * 31 + obj.z;
 	return h;
 }
-method testCollision3(y1: long, y2: long) returns (res: Unit) {
+method new_testCollision3(y1: long, y2: long) returns (res: Unit) {
 	    var o1: ejhash := constructor(5678, y1, 3141);//change
 	    var o2: ejhash := constructor(5678, y2, 3141);
 	    if (hashCode(o1) == hashCode(o2)) {

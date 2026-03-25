@@ -1,4 +1,4 @@
-method f(m: int, n: int) returns (res: int) {
+method new_f(m: int, n: int) returns (res: int) {
     var x := 0;
     var r := 0;
     if (m > 0 && n == 0) {

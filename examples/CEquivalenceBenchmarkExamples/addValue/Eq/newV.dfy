@@ -3,7 +3,7 @@ var sumOfSquares: double := 0;
 var mean: double := 0;
 var deviation: double := 0;
 var count: int := 0;
-method addValue(val: double) returns (res: Unit)
+method new_addValue(val: double) returns (res: Unit)
 {
   count++;
   printf("%s\n","stat ");

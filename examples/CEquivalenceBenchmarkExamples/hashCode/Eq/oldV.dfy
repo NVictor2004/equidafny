@@ -10,7 +10,7 @@ ejhash constructor(int x, long y, int z) {
 	    obj.var z := z;
 		return obj;
 }
-method hashCode(ejhash obj) returns (res: int) {
+method old_hashCode(ejhash obj) returns (res: int) {
     var h: int := obj.x;
 	var h := h * 31 + (int) (obj.y ^ (obj.y >> 32));
 	var h := h * 31 + obj.z;

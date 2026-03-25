@@ -1,4 +1,4 @@
-method snippet(x: int, y: int) returns (res: double) {
+method old_snippet(x: int, y: int) returns (res: double) {
         if (x*x*x > 0){
             if(x>0 && y==10)
                 return 1000;

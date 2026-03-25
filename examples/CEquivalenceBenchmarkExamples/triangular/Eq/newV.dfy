@@ -1,4 +1,4 @@
-method g(n: int, s: int) returns (res: int)
+method new_g(n: int, s: int) returns (res: int)
 {
   var r := 0;
   if (n <= 0) {
@@ -8,7 +8,7 @@ method g(n: int, s: int) returns (res: int)
   }
   return r;
 }
-method triangle(n: int) returns (res: int) {
+method new_triangle(n: int) returns (res: int) {
   var r := g(n, 0);
   return r;
 }

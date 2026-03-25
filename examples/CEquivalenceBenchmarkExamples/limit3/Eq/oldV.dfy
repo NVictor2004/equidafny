@@ -1,4 +1,4 @@
-method f(n: int) returns (res: int) {
+method old_f(n: int) returns (res: int) {
   var r := 0;
   if (n <= 1) {
     var r := n;

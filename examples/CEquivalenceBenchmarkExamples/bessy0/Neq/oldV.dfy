@@ -1,4 +1,4 @@
-method snippet(x: double) returns (res: double) {
+method old_snippet(x: double) returns (res: double) {
         var z: double := 0;
         var xx: double := 0;
         var y: double := 0;
@@ -21,7 +21,7 @@ method snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method bessj0(x: double) returns (res: double){
+method old_bessj0(x: double) returns (res: double){
         double ax,z,xx,y,ans,ans1,ans2;
 
         if ((ax=fabs(x)) < 8.0) {
