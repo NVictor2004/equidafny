@@ -1,13 +1,13 @@
-double sum = 0;
-double sumOfSquares = 0;
-double mean = 0;
-double deviation = 0;
-int count = 0;
+var sum: double := 0;
+var sumOfSquares: double := 0;
+var mean: double := 0;
+var deviation: double := 0;
+var count: int := 0;
 function addValue(val: double): Unit
 {
   count++;
   //printf("%s\n","stat ");
-  double currentVal = val;
+  var currentVal: double := val;
   sum += currentVal;
   sumOfSquares += currentVal * currentVal;
   mean = sum / count;

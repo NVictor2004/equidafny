@@ -1,6 +1,6 @@
 function snippet(a: double, b: double): double {
-        double absa = 0;
-        double absb = 0;
+        var absa: double := 0;
+        var absb: double := 0;
         absa=fabs(a);
         absb=fabs(b);
         if (absa <= absb){//change

@@ -1,6 +1,6 @@
 function foo(a: int, b: int): int {
-	const int d=3;
-	int c=b+a;
+	const var d: int := 3;
+	var c: int := b+a;
 	return c+d;
 }
 function main(void): int {

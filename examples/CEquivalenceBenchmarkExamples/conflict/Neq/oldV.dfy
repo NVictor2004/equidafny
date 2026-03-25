@@ -1,24 +1,24 @@
 function snippet(psi1: double, vA: double, vC: double, xC0: double, yC0: double, psiC: double, bank_ang: double, degToRad: double, g: double ): double { //degToRad and g are global vars
-    double dmin = 999;
-    double dmst = 2;
-    double psiA = psi1 * degToRad;
-    double signA = 1;
-    double signC = 1;
+    var dmin: double := 999;
+    var dmst: double := 2;
+    var psiA: double := psi1 * degToRad;
+    var signA: double := 1;
+    var signC: double := 1;
     if (psiA < 0) {
       signA = -1;
     }
-    double rA = pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
-    double rC = pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
-    double t1 = fabs(psiA) * rA / vA;
-    double dpsiC = signC * t1 * vC/rC;
-    double xA = signA*rA*(1-cos(psiA)); 
-    double yA = rA*signA*sin(psiA);
-    double xC = xC0 + signC*rC* (cos(psiC)-cos(psiC+dpsiC));
-    double yC = yC0 - signC*rC*(sin(psiC)-sin(psiC+dpsiC));
-    double xd1 = xC - xA;
-    double yd1 = yC - yA;
-    double d = sqrt(pow(xd1, 2.0) + pow(yd1, 2.0));
-    double minsep =0;
+    var rA: double := pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
+    var rC: double := pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
+    var t1: double := fabs(psiA) * rA / vA;
+    var dpsiC: double := signC * t1 * vC/rC;
+    var xA: double := signA*rA*(1-cos(psiA)); 
+    var yA: double := rA*signA*sin(psiA);
+    var xC: double := xC0 + signC*rC* (cos(psiC)-cos(psiC+dpsiC));
+    var yC: double := yC0 - signC*rC*(sin(psiC)-sin(psiC+dpsiC));
+    var xd1: double := xC - xA;
+    var yd1: double := yC - yA;
+    var d: double := sqrt(pow(xd1, 2.0) + pow(yd1, 2.0));
+    var minsep: double := 0;
     if (d < dmin) {
       dmin = d;
     }

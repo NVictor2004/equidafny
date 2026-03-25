@@ -1,6 +1,6 @@
 function snippet(x: double): double {
-        double y = 0;
-        double ans = 0;
+        var y: double := 0;
+        var ans: double := 0;
         if (x <= 2.0) {
             y=x*x/4.0;
             ans=(-log(x/2.0)*bessi0(x))+(-0.57721566+y*(0.42278420 +y*(0.23069756+y*(0.3488590e-1+y*(0.262698e-2 +y*(0.10750e-3+y*0.74e-5))))));

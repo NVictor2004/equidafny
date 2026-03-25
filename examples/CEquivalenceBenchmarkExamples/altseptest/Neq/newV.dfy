@@ -1,20 +1,20 @@
 function snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int): int{
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
-    int enabled =0;
-    int tcas_equipped =0;
-    int intent_not_known =0;
-    int alt_sep =0;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
+    var enabled: int := 0;
+    var tcas_equipped: int := 0;
+    var intent_not_known: int := 0;
+    var alt_sep: int := 0;
      if((Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF))//change
       enabled = 1;
     else
@@ -50,18 +50,18 @@ function snippet(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: in
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Non_Crossing_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int): int{
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
     int upward_preferred;
     int upward_crossing_situation;
     int result;
@@ -78,35 +78,35 @@ function Non_Crossing_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Oth
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Own_Below_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int): int{
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
     return ((Own_Tracked_Alt <
             Other_Tracked_Alt)?1:0);
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Non_Crossing_Biased_Descend(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int): int{
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
     int upward_preferred;
     int upward_crossing_situation;
     int result;
@@ -125,35 +125,35 @@ function Non_Crossing_Biased_Descend(Climb_Inhibit: int, Alt_Layer_Value: int, O
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Own_Above_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int): int{
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
     return ((Other_Tracked_Alt <
             Own_Tracked_Alt)?1:0);
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Inhibit_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int): int{
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
     return ((Climb_Inhibit==1)?  Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,17 +163,17 @@ function ALIM(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, 
     Positive_RA_Alt_Thresh[1] = 500;
     Positive_RA_Alt_Thresh[2] = 640;
     Positive_RA_Alt_Thresh[3] = 740;
-    int OLEV = 600; /* in feets/minute */
-    int MAXALTDIFF = 600; /* max altitude difference in feet */
-    int MINSEP = 300; /* min separation in feet */
-    int NOZCROSS = 100; /* in feet */
-    int NO_INTENT = 0;
-    int DO_NOT_CLIMB = 1;
-    int DO_NOT_DESCEND = 2;
-    int TCAS_TA = 1;
-    int OTHER = 2;
-    int UNRESOLVED = 0;
-    int UPWARD_RA = 1;
-    int DOWNWARD_RA = 2;
+    var OLEV: int := 600; /* in feets/minute */
+    var MAXALTDIFF: int := 600; /* max altitude difference in feet */
+    var MINSEP: int := 300; /* min separation in feet */
+    var NOZCROSS: int := 100; /* in feet */
+    var NO_INTENT: int := 0;
+    var DO_NOT_CLIMB: int := 1;
+    var DO_NOT_DESCEND: int := 2;
+    var TCAS_TA: int := 1;
+    var OTHER: int := 2;
+    var UNRESOLVED: int := 0;
+    var UPWARD_RA: int := 1;
+    var DOWNWARD_RA: int := 2;
     return Positive_RA_Alt_Thresh[Alt_Layer_Value];
   }

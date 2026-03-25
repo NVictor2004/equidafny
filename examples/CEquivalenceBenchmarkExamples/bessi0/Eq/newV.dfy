@@ -1,7 +1,7 @@
 function snippet(x: double): double {
-        double axRenamed = 0;//change
-        double ans = 0;
-        double y = 0;
+        var axRenamed: double := 0;//change
+        var ans: double := 0;
+        var y: double := 0;
         axRenamed=fabs(x);//change
         if (axRenamed < 3.75) {//change
             y=x/3.75;

@@ -1,9 +1,9 @@
 function snippet(mmj: double,  idj: double,  iyyyj: double): double {
-        double IGREG=15.0+31.0*(10.0+12.0*1582.0);
-        double ja =1.0;
-        double jul=0.0;
-        double jy=iyyyj;
-        double jm=0.0;
+        var IGREG: double := 15.0+31.0*(10.0+12.0*1582.0);
+        var ja: double := 1.0;
+        var jul: double := 0.0;
+        var jy: double := iyyyj;
+        var jm: double := 0.0;
         if (iyyyj == 0.0) //change
            return 0.0;
         if (jy < 0.0)

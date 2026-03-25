@@ -1,5 +1,5 @@
 function foo(a: int, b: int): int {
-	int c=b+a;
+	var c: int := b+a;
 	return c;
 }
 function main(void): int {

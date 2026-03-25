@@ -1,12 +1,12 @@
 function snippet(x0: double, y0: double, gspeed: double, x1: double, y1: double, x2: double, y2: double, dt: double): double {
-    double twoPi = M_PI * 2;
-    double deg = M_PI / 180;
-    double gacc = 32.0;
-    double dx = x0 - x1;
-    double dy = y0 - y1;
+    var twoPi: double := M_PI * 2;
+    var deg: double := M_PI / 180;
+    var gacc: double := 32.0;
+    var dx: double := x0 - x1;
+    var dy: double := y0 - y1;
     if (dx == 0 && dy == 0)
         return dx;//change
-    double instHdg = 90 * deg - tan(dy/dx);
+    var instHdg: double := 90 * deg - tan(dy/dx);
     if (instHdg < 0.)
         instHdg += twoPi;
     if (instHdg > 2 * M_PI)
@@ -15,17 +15,17 @@ function snippet(x0: double, y0: double, gspeed: double, x1: double, y1: double,
     dy = y1 - y2;
     if (dx == 0 && dy == 0)
         return dy;//change
-    double instHdg0 = 90 * deg - tan(dy/dx);
+    var instHdg0: double := 90 * deg - tan(dy/dx);
     if (instHdg0 < 0.)
         instHdg0 += 360 * deg;
     if (instHdg0 > twoPi)//change
         instHdg0 -= 360 * deg;
-    double hdg_diff = normAngle(instHdg - instHdg0);
-    double phi = tan((hdg_diff * gspeed)/(gacc * dt));
+    var hdg_diff: double := normAngle(instHdg - instHdg0);
+    var phi: double := tan((hdg_diff * gspeed)/(gacc * dt));
     return phi / deg;
   }
 function normAngle(angle: double): double {
-        double twoPi = M_PI * 2;
+        var twoPi: double := M_PI * 2;
         if (angle < -M_PI) {
 			return angle + twoPi;
 		}

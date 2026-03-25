@@ -1,11 +1,11 @@
 function snippet(x: double): double {
-        double ax = 0;
-        double z = 0;
-        double xx = 0;
-        double y = 0;
-        double ans = 0;
-        double ans1 = 0;
-        double ans2 = 0;
+        var ax: double := 0;
+        var z: double := 0;
+        var xx: double := 0;
+        var y: double := 0;
+        var ans: double := 0;
+        var ans1: double := 0;
+        var ans2: double := 0;
         ax=fabs(x);
         if (ax < 8.0) {
             y=x*x;
@@ -14,7 +14,7 @@ function snippet(x: double): double {
             ans=ans1/ans2;
         }
         else {
-            double eight = 8.0; 
+            var eight: double := 8.0; 
             z=eight/ax;//change
             y=(8.0/fabs(x))*(8.0/fabs(x));//change
             xx=ax-2.356194491;

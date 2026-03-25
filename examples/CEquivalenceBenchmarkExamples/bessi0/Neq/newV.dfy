@@ -1,7 +1,7 @@
 function snippet(x: double): double {
-        double ax = 0;
-        double ans = 0;
-        double y = 0;
+        var ax: double := 0;
+        var ans: double := 0;
+        var y: double := 0;
         ax=fabs(x);
         if (ax < 1.75) {//change
             y=x/3.75;

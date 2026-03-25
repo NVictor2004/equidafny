@@ -1,9 +1,9 @@
- int jd = 0;
- double frac = 0.0;
+ var jd: int := 0;
+ var frac: double := 0.0;
  int mm,id,iyyy;
 function flmoon( n: int,  nph: int): Unit
 {
-		const double RAD=3.141592653589793238/180.0;
+		const var RAD: double := 3.141592653589793238/180.0;
 		int i;
 		double am,as,c,t,t2,xtra;
 		c=n+nph/4.0;

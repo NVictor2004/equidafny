@@ -11,14 +11,14 @@ ejhash constructor(int x, long y, int z) {
 		return obj;
 }
 function hashCode(ejhash obj): int {
-    int h = obj.x;
+    var h: int := obj.x;
 	h = h * 31 + (int) (obj.y ^ (obj.y >> 32));
 	h = h * 31 + obj.z;
 	return h;
 }
 function testCollision1(x1: int, y1: long, z1: int,x2: int, y2: long, z2: int): Unit {
-	    ejhash o1 = constructor(x1, y1, z1);
-	    ejhash o2 = constructor(z2, y2, x2);//change
+	    var o1: ejhash := constructor(x1, y1, z1);
+	    var o2: ejhash := constructor(z2, y2, x2);//change
 	    if (hashCode(o1) == hashCode(o2)) {
 	        printf("%s\n","Solved hash collision 1");
 	    }

@@ -1,10 +1,10 @@
 function snippet(x: double): double {
-        double z = 0;
-        double xx = 0;
-        double y = 0;
-        double ans = 0;
-        double ans1= 0;
-        double ans2= 0;
+        var z: double := 0;
+        var xx: double := 0;
+        var y: double := 0;
+        var ans: double := 0;
+        var ans1: double := 0;
+        var ans2: double := 0;
         if (x < 8.0) {
             if(x!=0){
             y=x*x;

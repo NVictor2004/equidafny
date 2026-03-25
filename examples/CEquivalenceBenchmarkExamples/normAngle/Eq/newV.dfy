@@ -1,5 +1,5 @@
 function snippet(angle: double): double {
-		double temp = M_PI * 2; //change
+		var temp: double := M_PI * 2; //change
 		if (angle < -M_PI) {
 			return angle + temp; //change
 		}

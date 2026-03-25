@@ -1,6 +1,6 @@
 function snippet(x: int, y: int): int {
-        int result = 0; 
-        int path = 0;
+        var result: int := 0; 
+        var path: int := 0;
         if (x > 0) {
             if (y == x * x) {
                 path = 1;

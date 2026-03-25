@@ -11,8 +11,8 @@ ejhash constructor(int x, long y, int z) {
 		return obj;
 }
 function hashCode(ejhash obj): int {
-    //int h = x;//change
-    int h = obj.x * 31 + (int) (obj.y ^ (obj.y >> 32));//change
+    //var h: int := x;//change
+    var h: int := obj.x * 31 + (int) (obj.y ^ (obj.y >> 32));//change
 	h = h * 31 + obj.z;
 	return h;
 }

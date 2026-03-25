@@ -1,6 +1,6 @@
 int mm,id,iyyy;
 function caldat( julian: int): Unit{
-		const int IGREG=2299161;
+		const var IGREG: int := 2299161;
 		int ja,jalpha,jb,jc,jd,je;
 
 		if (julian >= IGREG) {

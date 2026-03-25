@@ -1,6 +1,6 @@
 function snippet(x: double): double {
-        double y = 0;
-        double ans = 0;
+        var y: double := 0;
+        var ans: double := 0;
         if (x <= 2.0) {
             y=x*x/4.0;
         }

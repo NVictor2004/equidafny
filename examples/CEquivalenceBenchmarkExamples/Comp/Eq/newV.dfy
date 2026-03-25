@@ -4,11 +4,11 @@ function foo(a: int, b: int): int {
 	return 0;
 }
 function main(void): int {
-	int x=2;
-	int y=3;
-	int z=foo(x,y);
+	var x: int := 2;
+	var y: int := 3;
+	var z: int := foo(x,y);
 	if (z) {
-		int tmp=y;
+		var tmp: int := y;
 		  y=x;
 		  x=tmp;
 	  }

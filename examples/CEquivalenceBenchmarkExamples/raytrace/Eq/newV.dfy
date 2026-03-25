@@ -20,8 +20,8 @@ typedef struct SphereClass {
     float radius;
     float radSqr;
 }Sphere;
-const float TINY = 0.001f;
-const float I255 = 0.00392156f;
+const var TINY: float := 0.001f;
+const var I255: float := 0.00392156f;
 Vector3D Vector3DConstructor(float x, float y, float z) {
       Vector3D obj;
       obj.x = x; obj.y = y; obj.z = z;
@@ -35,7 +35,7 @@ Vector3D Vector3DConstructor2(Vector3D v) {
     return obj;
 }
 Vector3D normalize(Vector3D v){
-  float t = v.x*v.x + v.y*v.y + v.z*v.z;
+  var t: float := v.x*v.x + v.y*v.y + v.z*v.z;
   if (t != 0 && t != 1) 
     t = (float) (1 / sqrt(t));
   v.x *= t;
@@ -70,15 +70,15 @@ Sphere SphereConstructor(Surface s, Vector3D c, float r) {
 	    obj.surface = s;
 	    obj.center = c;
 	    obj.radius = r;
-      float temp = r*r;//change
+      var temp: float := r*r;//change
       obj.radSqr = temp;//change
 		  return obj;
 }
 function intersect(s: Sphere, d: Sphere): bool {
-  float dxRenamed = s.center.x - d.center.x;//change
-  float dy = s.center.y - d.center.y;
-  float dz = s.center.z - d.center.z;
-  float t = s.radSqr - dxRenamed*dxRenamed - dy*dy - dz*dz;//change
+  var dxRenamed: float := s.center.x - d.center.x;//change
+  var dy: float := s.center.y - d.center.y;
+  var dz: float := s.center.z - d.center.z;
+  var t: float := s.radSqr - dxRenamed*dxRenamed - dy*dy - dz*dz;//change
   if (t < 0)
     return false;
   t =(float) sqrt(t);
