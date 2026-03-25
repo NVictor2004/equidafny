@@ -1,11 +1,11 @@
 // oldV.dfy
 
-method old_snippet(mmj: double,  idj: double,  iyyyj: double) returns (res: double) {
-        var IGREG: double := 15.0+31.0*(10.0+12.0*1582.0);
-        var ja: double := 1.0;
-        var jul: double := 0.0;
-        var jy: double := iyyyj;
-        var jm: double := 0.0;
+method old_snippet(mmj: real,  idj: real,  iyyyj: real) returns (res: real) {
+        var IGREG: real := 15.0+31.0*(10.0+12.0*1582.0);
+        var ja: real := 1.0;
+        var jul: real := 0.0;
+        var jy: real := iyyyj;
+        var jm: real := 0.0;
         if (jy == 0.0) 
            return 0.0;
         if (jy < 0.0)
@@ -26,12 +26,12 @@ method old_snippet(mmj: double,  idj: double,  iyyyj: double) returns (res: doub
 }
 // newV.dfy
 
-method new_snippet(mmj: double,  idj: double,  iyyyj: double) returns (res: double) {
-        var IGREG: double := 15.0+31.0*(10.0+12.0*1582.0);
-        var ja: double := 1.0;
-        var jul: double := 0.0;
-        var jy: double := iyyyj;
-        var jm: double := 0.0;
+method new_snippet(mmj: real,  idj: real,  iyyyj: real) returns (res: real) {
+        var IGREG: real := 15.0+31.0*(10.0+12.0*1582.0);
+        var ja: real := 1.0;
+        var jul: real := 0.0;
+        var jy: real := iyyyj;
+        var jm: real := 0.0;
         if (jy == 0.0) 
            return 0.0+ja;//change
         if (jy < 0.0)

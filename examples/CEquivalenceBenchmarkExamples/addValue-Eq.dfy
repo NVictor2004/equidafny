@@ -1,15 +1,15 @@
 // oldV.dfy
 
-var sum: double := 0;
-var sumOfSquares: double := 0;
-var mean: double := 0;
-var deviation: double := 0;
+var sum: real := 0;
+var sumOfSquares: real := 0;
+var mean: real := 0;
+var deviation: real := 0;
 var count: int := 0;
-method old_addValue(val: double) returns (res: Unit)
+method old_addValue(val: real) returns (res: Unit)
 {
   count++;
   printf("%s\n","stat ");
-  var currentVal: double := val;
+  var currentVal: real := val;
   sum += currentVal;
   sumOfSquares += currentVal * currentVal;
   var mean := sum / count;
@@ -17,16 +17,16 @@ method old_addValue(val: double) returns (res: Unit)
 }
 // newV.dfy
 
-var sum: double := 0;
-var sumOfSquares: double := 0;
-var mean: double := 0;
-var deviation: double := 0;
+var sum: real := 0;
+var sumOfSquares: real := 0;
+var mean: real := 0;
+var deviation: real := 0;
 var count: int := 0;
-method new_addValue(val: double) returns (res: Unit)
+method new_addValue(val: real) returns (res: Unit)
 {
   count++;
   printf("%s\n","stat ");
-  //var currentVal: double := val;
+  //var currentVal: real := val;
   sum += val;//change
   sumOfSquares += val * val;//change
   var mean := sum / count;

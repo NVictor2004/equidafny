@@ -1,12 +1,12 @@
 // oldV.dfy
 
-method old_snippet(x: double) returns (res: double) {
-        var z: double := 0;
-        var xx: double := 0;
-        var y: double := 0;
-        var ans: double := 0;
-        var ans1: double := 0;
-        var ans2: double := 0;
+method old_snippet(x: real) returns (res: real) {
+        var z: real := 0;
+        var xx: real := 0;
+        var y: real := 0;
+        var ans: real := 0;
+        var ans1: real := 0;
+        var ans2: real := 0;
         if (x < 8.0) {
             var y := x*x;
             var ans1 := -2957821389.0+y*(7062834065.0+y*(-512359803.6 +y*(10879881.29+y*(-86327.92757+y*228.4622733))));
@@ -23,8 +23,8 @@ method old_snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method old_bessj0(x: double) returns (res: double){
-        double ax,z,xx,y,ans,ans1,ans2;
+method old_bessj0(x: real) returns (res: real){
+        real ax,z,xx,y,ans,ans1,ans2;
 
         if ((ax=fabs(x)) < 8.0) {
             var y := x*x;
@@ -48,13 +48,13 @@ method old_bessj0(x: double) returns (res: double){
 }
 // newV.dfy
 
-method new_snippet(x: double) returns (res: double) {
-        var z: double := 0;
-        var xx: double := 0;
-        var y: double := 0;
-        var ans: double := 0;
-        var ans1: double := 0;
-        var ans2: double := 0;
+method new_snippet(x: real) returns (res: real) {
+        var z: real := 0;
+        var xx: real := 0;
+        var y: real := 0;
+        var ans: real := 0;
+        var ans1: real := 0;
+        var ans2: real := 0;
         if (x < 8.0) {
             var y := x*x;//change: delete the next line
             var ans2 := 40076544269.0+y*(745249964.8+y*(7189466.438 +y*(47447.26470+y*(226.1030244+y*1.0))));
@@ -70,8 +70,8 @@ method new_snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method new_bessj0(x: double) returns (res: double){
-        double ax,z,xx,y,ans,ans1,ans2;
+method new_bessj0(x: real) returns (res: real){
+        real ax,z,xx,y,ans,ans1,ans2;
 
         if ((ax=fabs(x)) < 8.0) {
             var y := x*x;

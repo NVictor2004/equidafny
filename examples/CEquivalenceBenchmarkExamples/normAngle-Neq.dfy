@@ -1,7 +1,7 @@
 // oldV.dfy
 
-method old_snippet(angle: double) returns (res: double) {
-		var twoPi: double := M_PI * 2; 
+method old_snippet(angle: real) returns (res: real) {
+		var twoPi: real := M_PI * 2; 
 		if (angle < -M_PI) {
 			return angle + twoPi;
 		}
@@ -12,8 +12,8 @@ method old_snippet(angle: double) returns (res: double) {
 	}
 // newV.dfy
 
-method new_snippet(angle: double) returns (res: double) {
-		var twoPi: double := M_PI * 2; 
+method new_snippet(angle: real) returns (res: real) {
+		var twoPi: real := M_PI * 2; 
 		if (angle < -M_PI) {
 		    return angle + M_PI ;//change
 		}

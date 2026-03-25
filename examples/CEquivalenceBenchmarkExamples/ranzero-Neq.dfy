@@ -1,14 +1,14 @@
 // oldV.dfy
 
-method old_snippet(idum: int) returns (res: double) {//idum is a global variable
+method old_snippet(idum: int) returns (res: real) {//idum is a global variable
         var IA: int := 16807;
         var IM: int := 2147483647;
         var IQ: int := 127773;
         var IR: int := 2836;
         var MASK: int := 123459876;
-        var AM: double := 1.0/(double)IM;
+        var AM: real := 1.0/(real)IM;
         var k: int := 0;
-        var ans: double := 0.0;
+        var ans: real := 0.0;
         idum *= MASK;
         var k := idum/IQ;
         var idum := IA*(idum-k*IQ)-IR*k;
@@ -21,15 +21,15 @@ method old_snippet(idum: int) returns (res: double) {//idum is a global variable
     }
 // newV.dfy
 
-method new_snippet(idum: int) returns (res: double) {//idum is a global variable
+method new_snippet(idum: int) returns (res: real) {//idum is a global variable
         var IA: int := 16807;
         var IM: int := 2147483647;
         var IQ: int := 127773;
         var IR: int := 2836;
         var MASK: int := 123459876;
-        var AM: double := 1.0/(double)IM;
+        var AM: real := 1.0/(real)IM;
         var k: int := 0;
-        var ans: double := 0.0;
+        var ans: real := 0.0;
         idum *= MASK;
         var k := idum/IQ;
         var idum := IA*(idum-k*IQ)-IR*k;

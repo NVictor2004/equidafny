@@ -1,6 +1,6 @@
 // oldV.dfy
 
-method old_snippet(a: double, b: double) returns (res: double) {
+method old_snippet(a: real, b: real) returns (res: real) {
         if (b >= 0){
             if (a >= 0)
                 return a;
@@ -16,7 +16,7 @@ method old_snippet(a: double, b: double) returns (res: double) {
 }
 // newV.dfy
 
-method new_snippet(a: double, b: double) returns (res: double) {
+method new_snippet(a: real, b: real) returns (res: real) {
         if (a >= 0 && b >= 0)//change
             return a;
         if (a < 0 && b < 0)//change

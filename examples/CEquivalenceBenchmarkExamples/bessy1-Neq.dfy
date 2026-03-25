@@ -1,12 +1,12 @@
 // oldV.dfy
 
-method old_snippet(x: double) returns (res: double) {
-        var z: double := 0;
-        var xx: double := 0;
-        var y: double := 0;
-        var ans: double := 0;
-        var ans1: double := 0;
-        var ans2: double := 0;
+method old_snippet(x: real) returns (res: real) {
+        var z: real := 0;
+        var xx: real := 0;
+        var y: real := 0;
+        var ans: real := 0;
+        var ans1: real := 0;
+        var ans2: real := 0;
         if (x < 8.0) {
             if(x!=0){
             var y := x*x;
@@ -25,8 +25,8 @@ method old_snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method old_bessj1(x: double) returns (res: double){
-        double  ax,z,xx,y,ans,ans1,ans2;
+method old_bessj1(x: real) returns (res: real){
+        real  ax,z,xx,y,ans,ans1,ans2;
 
         if ((ax=fabs(x)) < 8.0) {
             var y := x*x;
@@ -51,13 +51,13 @@ method old_bessj1(x: double) returns (res: double){
 }
 // newV.dfy
 
-method new_snippet(x: double) returns (res: double) {
-        var z: double := 0;
-        var xx: double := 0;
-        var y: double := 0;
-        var ans: double := 0;
-        var ans1: double := 0;
-        var ans2: double := 0;
+method new_snippet(x: real) returns (res: real) {
+        var z: real := 0;
+        var xx: real := 0;
+        var y: real := 0;
+        var ans: real := 0;
+        var ans1: real := 0;
+        var ans2: real := 0;
         if (x > 8.0 ) {//change
             if(x!=0){
             var y := x*x;
@@ -75,8 +75,8 @@ method new_snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method new_bessj1(x: double) returns (res: double){
-        double  ax,z,xx,y,ans,ans1,ans2;
+method new_bessj1(x: real) returns (res: real){
+        real  ax,z,xx,y,ans,ans1,ans2;
 
         if ((ax=fabs(x)) < 8.0) {
             var y := x*x;

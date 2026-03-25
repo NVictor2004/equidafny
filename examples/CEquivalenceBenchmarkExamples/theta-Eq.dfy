@@ -1,6 +1,6 @@
 // oldV.dfy
 
-const method theta(x1: double, x2: double) returns (res: double) {
+const method theta(x1: real, x2: real) returns (res: real) {
     if(x1 > 0.0) {
       return atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {
@@ -10,7 +10,7 @@ const method theta(x1: double, x2: double) returns (res: double) {
 }
 // newV.dfy
 
-const method theta(x1: double, x2: double) returns (res: double) {
+const method theta(x1: real, x2: real) returns (res: real) {
     if(x1 > 0.0) {
       return atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {

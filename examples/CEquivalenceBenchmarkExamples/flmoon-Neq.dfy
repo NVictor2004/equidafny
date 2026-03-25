@@ -1,12 +1,12 @@
 // oldV.dfy
 
  var jd: int := 0;
- var frac: double := 0.0;
+ var frac: real := 0.0;
  int mm,id,iyyy;
 method old_flmoon( n: int,  nph: int) returns (res: Unit)
 {
-		const var RAD: double := 3.141592653589793238/180.0;
-		double am,as,c,t,t2,xtra;
+		const var RAD: real := 3.141592653589793238/180.0;
+		real am,as,c,t,t2,xtra;
 		var c := n+nph/4.0;
 		var t := c/1236.85;
 		var t2 := t*t;
@@ -27,12 +27,12 @@ method old_flmoon( n: int,  nph: int) returns (res: Unit)
 // newV.dfy
 
  var jd: int := 0;
- var frac: double := 0.0;
+ var frac: real := 0.0;
  int mm,id,iyyy;
 method new_flmoon( n: int,  nph: int) returns (res: Unit)
 {
-		const var RAD: double := 3.141592653589793238/180.0;
-		double am,as,c,t,t2,xtra;
+		const var RAD: real := 3.141592653589793238/180.0;
+		real am,as,c,t,t2,xtra;
 		var c := n+nph/4.0;
 		var t := c/1236.85;
 		var t2 := t*t;

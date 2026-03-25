@@ -1,13 +1,13 @@
 // oldV.dfy
 
-method old_snippet(x: double) returns (res: double) {
-        var ax: double := 0;
-        var z: double := 0;
-        var xx: double := 0;
-        var y: double := 0;
-        var ans: double := 0;
-        var ans1: double := 0;
-        var ans2: double := 0;
+method old_snippet(x: real) returns (res: real) {
+        var ax: real := 0;
+        var z: real := 0;
+        var xx: real := 0;
+        var y: real := 0;
+        var ans: real := 0;
+        var ans1: real := 0;
+        var ans2: real := 0;
         var ax := fabs(x);
         if (ax < 8.0) {
             var y := x*x;
@@ -29,14 +29,14 @@ method old_snippet(x: double) returns (res: double) {
 }
 // newV.dfy
 
-method new_snippet(x: double) returns (res: double) {
-        var ax: double := 0;
-        var z: double := 0;
-        var xx: double := 0;
-        var y: double := 0;
-        var ans: double := 0;
-        var ans1: double := 0;
-        var ans2: double := 0;
+method new_snippet(x: real) returns (res: real) {
+        var ax: real := 0;
+        var z: real := 0;
+        var xx: real := 0;
+        var y: real := 0;
+        var ans: real := 0;
+        var ans1: real := 0;
+        var ans2: real := 0;
         var ax := fabs(x);
         if (ax < 8.0) {
             var y := x*x;

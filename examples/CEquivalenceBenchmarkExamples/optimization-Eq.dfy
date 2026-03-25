@@ -1,6 +1,6 @@
 // oldV.dfy
 
-const method theta(x1: double, x2: double) returns (res: double) {
+const method theta(x1: real, x2: real) returns (res: real) {
     if(x1 > 0.0) {
       return atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {
@@ -8,7 +8,7 @@ const method theta(x1: double, x2: double) returns (res: double) {
     }
     return 0.0;
 }
-method wood(x1: double, x2: double, x3: double, x4: double) returns (res: Unit) {
+method wood(x1: real, x2: real, x3: real, x4: real) returns (res: Unit) {
         if ((10.0 * (x2 - x1 * x1)) == 0.0 && (5.0 - x1) == 0.0
             && (sqrt(64) * (x4 - x3 * x3)) == 0.0
             && (2.0 - x3) == 0.0) {
@@ -17,7 +17,7 @@ method wood(x1: double, x2: double, x3: double, x4: double) returns (res: Unit) 
     }
 // newV.dfy
 
-const method theta(x1: double, x2: double) returns (res: double) {
+const method theta(x1: real, x2: real) returns (res: real) {
     if(x1 > 0.0) {
       return atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {
@@ -26,7 +26,7 @@ const method theta(x1: double, x2: double) returns (res: double) {
     var x2 := x1 = 10;//change
     return 0.0;
 }
-method wood(x1: double, x2: double, x3: double, x4: double) returns (res: Unit) {
+method wood(x1: real, x2: real, x3: real, x4: real) returns (res: Unit) {
       var condition1: bool := (10.0 * (x2 - x1 * x1)) == 0.0 && (5.0 - x1) == 0.0;//change
       var condition2: bool := (sqrt(64) * (x4 - x3 * x3)) == 0.0 && (2.0 - x3) == 0.0;//change
         if (condition1 && condition2){//change

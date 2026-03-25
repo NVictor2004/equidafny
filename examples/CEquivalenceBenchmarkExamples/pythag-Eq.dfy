@@ -1,8 +1,8 @@
 // oldV.dfy
 
-method old_snippet(a: double, b: double) returns (res: double) {
-        var absa: double := 0;
-        var absb: double := 0;
+method old_snippet(a: real, b: real) returns (res: real) {
+        var absa: real := 0;
+        var absb: real := 0;
         var absa := fabs(a);
         var absb := fabs(b);
         if (absa > absb){
@@ -15,14 +15,14 @@ method old_snippet(a: double, b: double) returns (res: double) {
                 return absb * sqrt(1.0 + SQR(absa / absb));
         }
 }
-method old_SQR(a: double) returns (res: double) {
+method old_SQR(a: real) returns (res: real) {
         return a*a;
 }
 // newV.dfy
 
-method new_snippet(a: double, b: double) returns (res: double) {
-        var absa: double := 0;
-        var absb: double := 0;
+method new_snippet(a: real, b: real) returns (res: real) {
+        var absa: real := 0;
+        var absb: real := 0;
         var absa := fabs(a);
         var absb := fabs(b);
         if (absa > absb){
@@ -35,6 +35,6 @@ method new_snippet(a: double, b: double) returns (res: double) {
                 return absb;//change
         }
 }
-method new_SQR(a: double) returns (res: double) {
+method new_SQR(a: real) returns (res: real) {
         return a*a;
 }

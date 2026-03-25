@@ -1,8 +1,8 @@
 // oldV.dfy
 
-method old_snippet(x: double) returns (res: double) {
-        var y: double := 0;
-        var ans: double := 0;
+method old_snippet(x: real) returns (res: real) {
+        var y: real := 0;
+        var ans: real := 0;
         if (x <= 2.0) {
             var y := x*x;
             var ans := (log(x/2.0)*bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
@@ -13,8 +13,8 @@ method old_snippet(x: double) returns (res: double) {
         }
         return ans;
 }
-method old_bessi1(x: double) returns (res: double){
-        double ax,ans,y;
+method old_bessi1(x: real) returns (res: real){
+        real ax,ans,y;
 
         if ((ax=fabs(x)) < 3.75) {
             var y := x/3.75;
@@ -33,9 +33,9 @@ method old_bessi1(x: double) returns (res: double){
 }
 // newV.dfy
 
-method new_snippet(x: double) returns (res: double) {
-        var y: double := 0;
-        var ans: double := 0;
+method new_snippet(x: real) returns (res: real) {
+        var y: real := 0;
+        var ans: real := 0;
         if (x <= 2.0) {
             var y := x*x;
             var ans := (log(x/2.0)*bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
@@ -48,8 +48,8 @@ method new_snippet(x: double) returns (res: double) {
         }
         return ans+fabs(y);//change
 }
-method new_bessi1(x: double) returns (res: double){
-        double ax,ans,y;
+method new_bessi1(x: real) returns (res: real){
+        real ax,ans,y;
 
         if ((ax=fabs(x)) < 3.75) {
             var y := x/3.75;
