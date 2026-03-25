@@ -20,14 +20,4 @@ EqOrNeq=$(basename "$1")
 dir=$(dirname "$1")
 testType=$(basename "$dir")
 
-concatFile="$1/$testType-$EqOrNeq.dfy"
-
-echo '// oldV.dfy' > $concatFile
-echo >> $concatFile
-cat "$1/oldV.dfy" >> $concatFile
-
-echo >> $concatFile
-
-echo '// newV.dfy' >> $concatFile
-echo >> $concatFile
-cat "$1/newV.dfy" >> $concatFile
+mv "$1/C-Desc.json" "$1/$testType-$EqOrNeq.json"
