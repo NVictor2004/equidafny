@@ -1,8 +1,8 @@
-typedef struct newV {
-    int x;
-    long y;
-    int z;
-}ejhash;
+datatype ejhash = newV(
+    x: int,
+    y: long,
+    z: int,
+)
 ejhash constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;

@@ -1,25 +1,36 @@
-typedef struct Vector3DClass {
-    float x, y, z;
-}Vector3D;
-typedef struct LightClass {
-    const int AMBIENT;
-    const int DIRECTIONAL;
-    const int POINT ;
-    int lightType;
-    Vector3D lvec;                          
-    float ir, ig, ib; 
-}Light;
-typedef struct SurfaceClass {
-    float ir, ig, ib;  
-    float ka, kd, ks, ns;
-    float kt, kr, nt;
-}Surface;
-typedef struct SphereClass {
-    Surface surface;
-    Vector3D center;
-    float radius;
-    float radSqr;
-}Sphere;
+datatype Vector3D = Vector3DClass(
+    x: float,
+    y: float,
+    z: float
+)
+datatype Light = LightClass(
+    AMBIENT: int,
+    DIRECTIONAL: int,
+    POINT: int,
+    lightType: int,
+    lvec: Vector3D,                          
+    ir: float,
+    ig: float,
+    ib: float
+)
+datatype Surface = SurfaceClass(
+    ir: float,
+    ig: float,
+    ib: float,
+    ka: float,
+    kd: float,
+    ks: float,
+    ns: float,
+    kt: float,
+    kr: float,
+    nt: float
+)
+datatype Sphere = SphereClass(
+    surface: Surface,
+    center: Vector3D,
+    radius: float,
+    radSqr: float
+)
 const var TINY: float := 0.001f;
 const var I255: float := 0.00392156f;
 Vector3D Vector3DConstructor(float x, float y, float z) {
