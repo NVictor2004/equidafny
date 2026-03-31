@@ -103,19 +103,19 @@ case Cons(hd, tl) => if (leq(t, hd)) then Cons(t, xs) else Cons(hd, insertM(tl, 
 
 lemma unfoldingSortedM_unfoldingSorted5_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted5(start, next, leq, max)
-{{}}
+{{loopM_go5_Equivalence(start, next, leq, max, Nil);}}
 
 lemma unfoldingSortedM_unfoldingSorted4_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted4(start, next, leq, max)
-{{}}
+{{loopM_go4_Equivalence(start, next, leq, max, Nil);}}
 
 lemma unfoldingSortedM_unfoldingSorted3_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted3(start, next, leq, max)
-{{}}
+{{loopM_go3_Equivalence(start, next, leq, max, Nil);}}
 
 lemma unfoldingSortedM_unfoldingSorted1_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted1(start, next, leq, max)
-{{}}
+{{loopM_go1_Equivalence(start, next, leq, max, Nil);}}
 
 lemma loopM_go5_Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
 decreases (if (fuel <= 0) then 0 else fuel)

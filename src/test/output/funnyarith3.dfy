@@ -30,7 +30,7 @@ decreases (if (x <= 0) then -x else x)
 
 lemma evalM_eval1_Equivalence(x: int, y: int)
 ensures evalM(x, y) == eval1(x, y)
-{{}}
+{{mul_myMul_Equivalence(x, y);}}
 
 lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)

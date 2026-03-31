@@ -32,9 +32,9 @@ def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: P
                 }
             }
 
-            // val finalStmt = 
+            val finalStmt = CallStmt(lemma.name, calledInModelArgs)
 
-            (lemma :: helperLemmas, finalMapping, Nil)
+            (lemma :: helperLemmas, finalMapping, List(finalStmt))
         }
         case _ => (Nil, List(), Nil)
     }
