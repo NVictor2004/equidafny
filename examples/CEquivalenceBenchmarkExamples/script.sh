@@ -28,7 +28,15 @@
 #       print
 #   }' $1 | sponge $1
 
-sed -i -E 's/(\w+)\s*\/=\s*(.+);/\1 := \1 / \2;/' $1
+sed -i '1i\\' $1
+grep -q "sqrt(" $1 && sed -i '1i function sqrt(x: real): real' $1
+grep -q "fabs(" $1 && sed -i '1i function fabs(x: real): real' $1
+grep -q "exp(" $1 && sed -i '1i function exp(x: real): real' $1
+grep -q "sin(" $1 && sed -i '1i function sin(x: real): real' $1
+grep -q "cos(" $1 && sed -i '1i function cos(x: real): real' $1
+grep -q "log(" $1 && sed -i '1i function log(x: real): real' $1
+
+# sed -i -E 's/(\w+)\s*\/=\s*(.+);/\1 := \1 / \2;/' $1
 # sed -i -E 's/method new_(\w+)\(/method \1(/' $1
 
 # sed -i -E 's/function\s+(\w+)\s*\((.*?)\): (\w+)/method \1(\2) returns \(res: \3\)/' $1

@@ -9,8 +9,8 @@ method old_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: r
     if (psiA < 0) {
       var signA := -1;
     }
-    var rA: real := old_pow(vA, 2.0) / old_tan(bank_ang*degToRad) / g;
-    var rC: real := old_pow(vC, 2.0) / old_tan(bank_ang*degToRad) / g;
+    var rA: real := pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
+    var rC: real := pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
     var t1: real := fabs(psiA) * rA / vA;
     var dpsiC: real := signC * t1 * vC/rC;
     var xA: real := signA*rA*(1-cos(psiA)); 
@@ -43,8 +43,8 @@ method new_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: r
     if (psiA < 0) {
       var signA := -1;
     }
-    var rA: real := new_pow(vA, 2.0) / new_tan(bank_ang*degToRad) / g;
-    var rC: real := new_pow(vC, 2.0) / new_tan(bank_ang*degToRad) / g;
+    var rA: real := pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
+    var rC: real := pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
     var t1: real := fabs(psiA) * rA / vA;
     var dpsiC: real := signC * t1 * vC/rC;
     var xA: real := signA*rA*(1-cos(psiA)); 

@@ -8,7 +8,7 @@ method old_snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: rea
     var dy: real := y0 - y1;
     if (dx == 0 && dy == 0)
         return 0.0;
-    var instHdg: real := 90 * deg - old_tan(dy/dx);
+    var instHdg: real := 90 * deg - tan(dy/dx);
     if (instHdg < 0.)
         instHdg := instHdg + twoPi;
     if (instHdg > 2 * M_PI)
@@ -17,13 +17,13 @@ method old_snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: rea
     var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return 0.0;
-    var instHdg0: real := 90 * deg - old_tan(dy/dx);
+    var instHdg0: real := 90 * deg - tan(dy/dx);
     if (instHdg0 < 0.)
         instHdg0 := instHdg0 + 360 * deg;
     if (instHdg0 > 2 * M_PI)
         instHdg0 -= 360 * deg;
     var hdg_diff: real := old_normAngle(instHdg - instHdg0);
-    var phi: real := old_tan((hdg_diff * gspeed)/(gacc * dt));
+    var phi: real := tan((hdg_diff * gspeed)/(gacc * dt));
     return phi / deg;
   }
 method old_normAngle(angle: real) returns (res: real) {
@@ -46,7 +46,7 @@ method new_snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: rea
     var dy: real := y0 - y1;
     if (dx == 0 )//change:
         return 1.0;//change:
-    var instHdg: real := 90 * deg - new_tan(dy/dx);
+    var instHdg: real := 90 * deg - tan(dy/dx);
     if (instHdg < 0.)
         instHdg := instHdg + twoPi;
     if (instHdg > 4 * M_PI)//change
@@ -55,13 +55,13 @@ method new_snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: rea
     var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return 0.0;
-    var instHdg0: real := 90 * deg - new_tan(dy/dx);
+    var instHdg0: real := 90 * deg - tan(dy/dx);
     if (instHdg0 < 0.)
         instHdg0 := instHdg0 + 360 * deg;
     if (instHdg0 > 2 * M_PI)
         instHdg0 -= 360 * deg;
     var hdg_diff: real := new_normAngle(instHdg - instHdg0);
-    var phi: real := new_tan((hdg_diff * gspeed)/(gacc * dt));
+    var phi: real := tan((hdg_diff * gspeed)/(gacc * dt));
     return phi / deg;
   }
 method new_normAngle(angle: real) returns (res: real) {
