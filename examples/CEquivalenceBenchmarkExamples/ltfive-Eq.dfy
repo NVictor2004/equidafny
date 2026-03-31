@@ -8,9 +8,9 @@ method old_lib(x: int) returns (res: int) {
 }
 method old_client(x: int) returns (res: int){
 	if (x < 0){
-		return -lib((-x)*5)/5;
+		return -old_lib((-x)*5)/5;
 	}else{
-		return lib((x+1)*5)/5 - 1;
+		return old_lib((x+1)*5)/5 - 1;
 	}
 }
 // newV.dfy
@@ -23,8 +23,8 @@ method new_lib(x: int) returns (res: int) {
 }
 method new_client(x: int) returns (res: int){
 	if (x < 0){
-		return -lib((-x)*5)/5;
+		return -new_lib((-x)*5)/5;
 	}else{
-		return lib((x+1)*5)/5 - 1;
+		return new_lib((x+1)*5)/5 - 1;
 	}
 }

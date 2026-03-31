@@ -10,7 +10,7 @@ method old_lib(x: int) returns (res: int) {
 }
 method old_client(x: int) returns (res: int){
   if (x > 0) {
-    return lib(x);
+    return old_lib(x);
   }
   return x;
 }
@@ -24,7 +24,7 @@ method new_lib(x: int) returns (res: int) {
 }
 method new_client(x: int) returns (res: int){
   if (x > 0) {
-    return lib(x);
+    return new_lib(x);
   }
   return x;
 }

@@ -9,8 +9,8 @@ method conflict(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real
     if (psiA < 0) {
       var signA := -1;
     }
-    var rA: real := pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
-    var rC: real := pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
+    var rA: real := old_pow(vA, 2.0) / old_tan(bank_ang*degToRad) / g;
+    var rC: real := old_pow(vC, 2.0) / old_tan(bank_ang*degToRad) / g;
     var t1: real := fabs(psiA) * rA / vA;
     var dpsiC: real := signC * t1 * vC/rC;
     var xA: real := signA*rA*(1-cos(psiA)); 
@@ -40,7 +40,7 @@ method snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y
     var dy: real := y0 - y1;
     if (dx == 0 && dy == 0)
         return 0.0;
-    var instHdg: real := 90 * deg - tan(dy/dx);
+    var instHdg: real := 90 * deg - old_tan(dy/dx);
     if (instHdg < 0.)
         instHdg += twoPi;
     if (instHdg > 2 * M_PI)
@@ -49,13 +49,13 @@ method snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y
     var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return 0.0;
-    var instHdg0: real := 90 * deg - tan(dy/dx);
+    var instHdg0: real := 90 * deg - old_tan(dy/dx);
     if (instHdg0 < 0.)
         instHdg0 += 360 * deg;
     if (instHdg0 > 2 * M_PI)
         instHdg0 -= 360 * deg;
-    var hdg_diff: real := normAngle(instHdg - instHdg0);
-    var phi: real := tan((hdg_diff * gspeed)/(gacc * dt));
+    var hdg_diff: real := old_normAngle(instHdg - instHdg0);
+    var phi: real := old_tan((hdg_diff * gspeed)/(gacc * dt));
     return phi / deg;
   }
 method normAngle(angle: real) returns (res: real) {
@@ -79,8 +79,8 @@ method conflict(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real
     if (psiA < 0) {
       var signA := -1;
     }
-    var rA: real := pow(vA, 2.0) / tan(bank_ang*degToRad) / g;
-    var rC: real := pow(vC, 2.0) / tan(bank_ang*degToRad) / g;
+    var rA: real := new_pow(vA, 2.0) / new_tan(bank_ang*degToRad) / g;
+    var rC: real := new_pow(vC, 2.0) / new_tan(bank_ang*degToRad) / g;
     var t1: real := fabs(psiA) * rA / vA;
     var dpsiC: real := signC * t1 * vC/rC;
     var xA: real := signA*rA*(1-cos(psiA)); 
@@ -110,7 +110,7 @@ method snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y
     var dy: real := y0 - y1;
     if (dx == 0 )//change:
         return 1.0;//change:
-    var instHdg: real := 90 * deg - tan(dy/dx);
+    var instHdg: real := 90 * deg - new_tan(dy/dx);
     if (instHdg < 0.)
         instHdg += twoPi;
     if (instHdg > 4 * M_PI)//change
@@ -119,13 +119,13 @@ method snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y
     var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return 0.0;
-    var instHdg0: real := 90 * deg - tan(dy/dx);
+    var instHdg0: real := 90 * deg - new_tan(dy/dx);
     if (instHdg0 < 0.)
         instHdg0 += 360 * deg;
     if (instHdg0 > 2 * M_PI)
         instHdg0 -= 360 * deg;
-    var hdg_diff: real := normAngle(instHdg - instHdg0);
-    var phi: real := tan((hdg_diff * gspeed)/(gacc * dt));
+    var hdg_diff: real := new_normAngle(instHdg - instHdg0);
+    var phi: real := new_tan((hdg_diff * gspeed)/(gacc * dt));
     return phi / deg;
   }
 method normAngle(angle: real) returns (res: real) {

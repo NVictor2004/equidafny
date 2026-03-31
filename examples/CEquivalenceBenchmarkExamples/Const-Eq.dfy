@@ -5,7 +5,7 @@ method old_foo(a: int, b: int) returns (res: int) {
 	return c+3;
 }
 method old_main(void) returns (res: int) {
-	return foo(5,900);
+	return old_foo(5,900);
 }
 // newV.dfy
 
@@ -15,5 +15,5 @@ method new_foo(a: int, b: int) returns (res: int) {
 	return c+d;
 }
 method new_main(void) returns (res: int) {
-	return foo(5,900);
+	return new_foo(5,900);
 }

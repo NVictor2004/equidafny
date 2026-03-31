@@ -1,11 +1,11 @@
 // oldV.dfy
 
-datatype ejhash = oldV(
+datatype ejhash = old_oldV(
     x: int,
     y: long,
     z: int,
 )
-ejhash constructor(int x, long y, int z) {
+ejhash old_constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;
 	    obj.var y := y;
@@ -20,12 +20,12 @@ method old_hashCode(ejhash obj) returns (res: int) {
 }
 // newV.dfy
 
-datatype ejhash = newV(
+datatype ejhash = new_newV(
     x: int,
     y: long,
     z: int,
 )
-ejhash constructor(int x, long y, int z) {
+ejhash new_constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;
 	    obj.var y := y;

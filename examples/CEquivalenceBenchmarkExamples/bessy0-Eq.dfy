@@ -11,7 +11,7 @@ method old_snippet(x: real) returns (res: real) {
             var y := x*x;
             var ans1 := -2957821389.0+y*(7062834065.0+y*(-512359803.6 +y*(10879881.29+y*(-86327.92757+y*228.4622733))));
             var ans2 := 40076544269.0+y*(745249964.8+y*(7189466.438 +y*(47447.26470+y*(226.1030244+y*1.0))));
-            var ans := (ans1/ans2)+0.636619772*bessj0(x)*log(x);
+            var ans := (ans1/ans2)+0.636619772*old_bessj0(x)*old_log(x);
         }
         else {
             var z := 8.0/x;
@@ -59,7 +59,7 @@ method new_snippet(x: real) returns (res: real) {
             var y := x*x;
             var ans1 := -2957821389.0+y*(7062834065.0+y*(-512359803.6 +y*(10879881.29+y*(-86327.92757+y*228.4622733))));
             var ans2 := 40076544269.0+y*(745249964.8+y*(7189466.438 +y*(47447.26470+y*(226.1030244+y*1.0))));
-            var ans := (ans1/ans2)+0.636619772*bessj0(x)*log(x);
+            var ans := (ans1/ans2)+0.636619772*new_bessj0(x)*new_log(x);
             if (false) var ans := 0;//change
         }
         else {

@@ -1,7 +1,7 @@
 // oldV.dfy
 
 method old_longBitsToDoubleC(x: long) returns (res: real);
-long realToRawLongBits(real x);
+long old_realToRawLongBits(real x);
 method old_snippet(x: real ) returns (res: real) {
     var retval: real := 0;
     var x_org: real := 0;
@@ -15,19 +15,19 @@ method old_snippet(x: real ) returns (res: real) {
     var IEEE_BIAS: int := 1023;
     var IEEE_MANT: int := 52;
     var half: real := 1.0/2.0;
-    var _2_pi_hi: real := longBitsToDoubleC((long)0x3FE45F306DC9C883L);
-    var pi2_hi: real := longBitsToDoubleC((long)0x3FF921FB54442D18L);
-    var pi2_lo: real := longBitsToDoubleC((long)0x3C91A62633145C07L);
-    var pi2_lo2: real := longBitsToDoubleC((long)0xB91F1976B7ED8FBCL);
-    var _2_pi_lo: real := longBitsToDoubleC((long)0xBC86B01EC5417056L);
-    var pi2_hi_hi: real := longBitsToDoubleC((long)0xFC000000L);
+    var _2_pi_hi: real := old_longBitsToDoubleC((long)0x3FE45F306DC9C883L);
+    var pi2_hi: real := old_longBitsToDoubleC((long)0x3FF921FB54442D18L);
+    var pi2_lo: real := old_longBitsToDoubleC((long)0x3C91A62633145C07L);
+    var pi2_lo2: real := old_longBitsToDoubleC((long)0xB91F1976B7ED8FBCL);
+    var _2_pi_lo: real := old_longBitsToDoubleC((long)0xBC86B01EC5417056L);
+    var pi2_hi_hi: real := old_longBitsToDoubleC((long)0xFC000000L);
     var pi2_hi_lo: real := pi2_hi - pi2_hi_hi;
-    var pi2_lo_hi: real := longBitsToDoubleC((long)0xFC000000L);
+    var pi2_lo_hi: real := old_longBitsToDoubleC((long)0xFC000000L);
     var pi2_lo_lo: real := pi2_lo - pi2_lo_hi;
     var mag52: real := 1024.*1024.*1024.*1024.*1024.*4.;/*2**52*/
     var magic: real := 1024.*1024.*1024.*1024.*1024.*4.;/*2**52*/
     var X_EPS: real := (real)1e-4;
-    var l_x: long := realToRawLongBits(x);
+    var l_x: long := old_realToRawLongBits(x);
 
     var md_b_sign := (int) ((l_x >> 63) & 1);
     var xexp := (int)((l_x >> 52) & 0x7FF);
@@ -72,19 +72,19 @@ method old_snippet(x: real ) returns (res: real) {
       var bot2: int := 0;
       var xn_d: real := 0.0;
       var md: real := 0.0; // should be bit union
-      var xm := floor(x * _2_pi_hi + half);
+      var xm := old_floor(x * _2_pi_hi + half);
       var xn_d := xm + mag52;
-      var l_xn: long := realToRawLongBits(xn_d);
+      var l_xn: long := old_realToRawLongBits(xn_d);
       var xn_m2: int := (int)(l_xn & 0xFFFFFFFF);
       var bot2 := xn_m2 & 3;
 
-      var l_x1: long := realToRawLongBits(xm);
+      var l_x1: long := old_realToRawLongBits(xm);
       var md_b_sign1: int := (int) ((l_x1 >> 63) & 1);
       var xexp1: int := (int)((l_x1 >> 52) & 0x7FF);
       var md_b_m21: int := (int)(l_x1 & 0xFFFFFFFF);
       var md_b_m11: int := (int)((l_x1 >> 31) & 0xFFFFF);
       l_x1 &= (long)0xFC000000L;
-      var a1 := longBitsToDoubleC(l_x1);
+      var a1 := old_longBitsToDoubleC(l_x1);
       var a2 := xm - a1;
       var x3 := (xm)*(pi2_hi);
       var x4 := (((a1*pi2_hi_hi-x3)+a1*pi2_hi_lo)+pi2_hi_hi*a2)+a2*pi2_hi_lo;;
@@ -150,13 +150,13 @@ method old_snippet(x: real ) returns (res: real) {
   }
   method longBitsToDoubleC(x: long) returns (res: real) {
     real bits;
-    memcpy(&bits, &x, sizeof bits);
+    old_memcpy(&bits, &x, sizeof bits);
     return bits;
 }
 	
-long realToRawLongBits(real x) {
+long old_realToRawLongBits(real x) {
     long bits;
-    memcpy(&bits, &x, sizeof bits);
+    old_memcpy(&bits, &x, sizeof bits);
     return bits;
 }
 
@@ -164,7 +164,7 @@ long realToRawLongBits(real x) {
 // newV.dfy
 
 method new_longBitsToDoubleC(x: long) returns (res: real);
-long realToRawLongBits(real x);
+long new_realToRawLongBits(real x);
 method new_snippet(x: real ) returns (res: real) {
     var retval: real := 0;
     var x_org: real := 0;
@@ -178,19 +178,19 @@ method new_snippet(x: real ) returns (res: real) {
     var IEEE_BIAS: int := 1023;
     var IEEE_MANT: int := 52;
     var half: real := 1.0/2.0;
-    var _2_pi_hi: real := longBitsToDoubleC((long)0x3FE45F306DC9C883L);
-    var pi2_hi: real := longBitsToDoubleC((long)0x3FF921FB54442D18L);
-    var pi2_lo: real := longBitsToDoubleC((long)0x3C91A62633145C07L);
-    var pi2_lo2: real := longBitsToDoubleC((long)0xB91F1976B7ED8FBCL);
-    var _2_pi_lo: real := longBitsToDoubleC((long)0xBC86B01EC5417056L);
-    var pi2_hi_hi: real := longBitsToDoubleC((long)0xFC000000L);
+    var _2_pi_hi: real := new_longBitsToDoubleC((long)0x3FE45F306DC9C883L);
+    var pi2_hi: real := new_longBitsToDoubleC((long)0x3FF921FB54442D18L);
+    var pi2_lo: real := new_longBitsToDoubleC((long)0x3C91A62633145C07L);
+    var pi2_lo2: real := new_longBitsToDoubleC((long)0xB91F1976B7ED8FBCL);
+    var _2_pi_lo: real := new_longBitsToDoubleC((long)0xBC86B01EC5417056L);
+    var pi2_hi_hi: real := new_longBitsToDoubleC((long)0xFC000000L);
     var pi2_hi_lo: real := pi2_hi - pi2_hi_hi;
-    var pi2_lo_hi: real := longBitsToDoubleC((long)0xFC000000L);
+    var pi2_lo_hi: real := new_longBitsToDoubleC((long)0xFC000000L);
     var pi2_lo_lo: real := pi2_lo - pi2_lo_hi;
     var mag52: real := 1024.*1024.*1024.*1024.*1024.*4.;/*2**52*/
     var magic: real := 1024.*1024.*1024.*1024.*1024.*4.;/*2**52*/
     var X_EPS: real := (real)1e-4;
-    var l_x: long := realToRawLongBits(x);
+    var l_x: long := new_realToRawLongBits(x);
 
     var md_b_sign := (int) ((l_x >> 63) & 1);
     var xexp := (int)((l_x >> 52) & 0x7FF);
@@ -235,19 +235,19 @@ method new_snippet(x: real ) returns (res: real) {
       var bot2: int := 0;
       var xn_d: real := 0.0;
       var md: real := 0.0; // should be bit union
-      var xm := floor(x * _2_pi_hi + half);
+      var xm := new_floor(x * _2_pi_hi + half);
       var xn_d := xm + mag52;
-      var l_xn: long := realToRawLongBits(xn_d);
+      var l_xn: long := new_realToRawLongBits(xn_d);
       var xn_m2: int := (int)(l_xn & 0xFFFFFFFF);
       var bot2 := xn_m2 & 3;
 
-      var l_x1: long := realToRawLongBits(xm);
+      var l_x1: long := new_realToRawLongBits(xm);
       var md_b_sign1: int := (int) ((l_x1 >> 63) & 1);
       var xexp1: int := (int)((l_x1 >> 52) & 0x7FF);
       var md_b_m21: int := (int)(l_x1 & 0xFFFFFFFF);
       var md_b_m11: int := (int)((l_x1 >> 31) & 0xFFFFF);
       l_x1 &= (long)0xFC000000L;
-      var a1 := longBitsToDoubleC(l_x1);
+      var a1 := new_longBitsToDoubleC(l_x1);
       var a2 := xm - a1;
       var x3 := (xm)*(pi2_hi);
       var x4 := (((a1*pi2_hi_hi-x3)+a1*pi2_hi_lo)+pi2_hi_hi*a2)+a2*pi2_hi_lo;;
@@ -313,13 +313,13 @@ method new_snippet(x: real ) returns (res: real) {
   }
   method longBitsToDoubleC(x: long) returns (res: real) {
     real bits;
-    memcpy(&bits, &x, sizeof bits);
+    new_memcpy(&bits, &x, sizeof bits);
     return bits;
 }
 	
-long realToRawLongBits(real x) {
+long new_realToRawLongBits(real x) {
     long bits;
-    memcpy(&bits, &x, sizeof bits);
+    new_memcpy(&bits, &x, sizeof bits);
     return bits;
 }
 

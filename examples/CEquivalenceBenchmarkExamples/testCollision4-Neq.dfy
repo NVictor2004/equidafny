@@ -1,11 +1,11 @@
 // oldV.dfy
 
-datatype ejhash = oldV(
+datatype ejhash = old_oldV(
     x: int,
     y: long,
     z: int,
 )
-ejhash constructor(int x, long y, int z) {
+ejhash old_constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;
 	    obj.var y := y;
@@ -19,20 +19,20 @@ method old_hashCode(ejhash obj) returns (res: int) {
 	return h;
 }
 method old_testCollision4(x1: int, y1: long, z1: int) returns (res: Unit) {
-	    var o1: ejhash := constructor(1234, 6454505372016058754, 3141);
-	    var o2: ejhash := constructor(x1, y1, z1);
-	    if (hashCode(o1) == hashCode(o2)) {
+	    var o1: ejhash := old_constructor(1234, 6454505372016058754, 3141);
+	    var o2: ejhash := old_constructor(x1, y1, z1);
+	    if (old_hashCode(o1) == old_hashCode(o2)) {
 	        printf("%s\n","Solved hash collision 4");
 	    }
 }
 // newV.dfy
 
-datatype ejhash = newV(
+datatype ejhash = new_newV(
     x: int,
     y: long,
     z: int,
 )
-ejhash constructor(int x, long y, int z) {
+ejhash new_constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;
 	    obj.var y := y;
@@ -46,9 +46,9 @@ method new_hashCode(ejhash obj) returns (res: int) {
 	return h;
 }
 method new_testCollision4(x1: int, y1: long, z1: int) returns (res: Unit) {
-	    var o1: ejhash := constructor(1234, 6454505372016058754, 3141);
-	    var o2: ejhash := constructor(x1, y1, z1);
-	    if (hashCode(o1) == hashCode(o2) && y1==z1) {//change
+	    var o1: ejhash := new_constructor(1234, 6454505372016058754, 3141);
+	    var o2: ejhash := new_constructor(x1, y1, z1);
+	    if (new_hashCode(o1) == new_hashCode(o2) && y1==z1) {//change
 	        printf("%s\n","Solved hash collision 4");
 	    }
 }

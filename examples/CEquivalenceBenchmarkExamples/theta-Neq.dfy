@@ -2,9 +2,9 @@
 
 const method theta(x1: real, x2: real) returns (res: real) {
     if(x1 > 0.0) {
-      return atan(x2 / x1) / (2 * M_PI);
+      return old_atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {
-      return (atan(x2 / x1) / (2 * M_PI) + 0.5);
+      return (old_atan(x2 / x1) / (2 * M_PI) + 0.5);
     }
     return 0.0;
 }
@@ -12,9 +12,9 @@ const method theta(x1: real, x2: real) returns (res: real) {
 
 const method theta(x1: real, x2: real) returns (res: real) {
     if(x1 > 0.0) {
-      return atan(x2 / x1) / (2 * M_PI);
+      return new_atan(x2 / x1) / (2 * M_PI);
     } else if (x1 < 0.0) {
-      return (atan(x2 / x1) / (2 * M_PI) - 0.5);//change
+      return (new_atan(x2 / x1) / (2 * M_PI) - 0.5);//change
     }
     return 0.0;
 }

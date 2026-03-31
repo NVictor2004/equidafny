@@ -1,11 +1,11 @@
 // oldV.dfy
 
-datatype ejhash = oldV(
+datatype ejhash = old_oldV(
     x: int,
     y: long,
     z: int,
 )
-ejhash constructor(int x, long y, int z) {
+ejhash old_constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;
 	    obj.var y := y;
@@ -19,23 +19,23 @@ method old_hashCode(ejhash obj) returns (res: int) {
 	return h;
 }
 method old_testCollision2(y1: long, z1: int,y2: long, z2: int) returns (res: Unit) {
-	    var o1: ejhash := constructor(1, y1, z1);
-	    var o2: ejhash := constructor(2, y2, z2);
-	    if (hashCode(o1) == hashCode(o2)) {
+	    var o1: ejhash := old_constructor(1, y1, z1);
+	    var o2: ejhash := old_constructor(2, y2, z2);
+	    if (old_hashCode(o1) == old_hashCode(o2)) {
 			printf("%s\n","Solved hash collision 2");
 	    }
 }
 // newV.dfy
 
 
-datatype ejhash = newV(
+datatype ejhash = new_newV(
     x: int,
     y: long,
     z: int,
 )
 
 
-ejhash constructor(int x, long y, int z) {
+ejhash new_constructor(int x, long y, int z) {
 		ejhash obj;
 	    obj.var x := x;
 	    obj.var y := y;
@@ -49,12 +49,12 @@ method new_hashCode(ejhash obj) returns (res: int) {
 	return h;
 }
 method new_testCollision2(y1: long, z1: int,y2: long, z2: int) returns (res: Unit) {
-	    var o1: ejhash := constructor(1, y1, z1);
-	    var o2: ejhash := constructor(2, y2, z2);
-	    if (checkCond(o1, o2)) {//change
+	    var o1: ejhash := new_constructor(1, y1, z1);
+	    var o2: ejhash := new_constructor(2, y2, z2);
+	    if (new_checkCond(o1, o2)) {//change
 			printf("%s\n","Solved hash collision 2");
 	    }
 }
 method new_checkCond(o1: ejhash, o2: ejhash) returns (res: bool){
-	return hashCode(o1) == hashCode(o2);
+	return new_hashCode(o1) == new_hashCode(o2);
 }

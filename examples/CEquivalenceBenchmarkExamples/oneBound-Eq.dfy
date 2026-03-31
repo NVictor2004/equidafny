@@ -10,10 +10,10 @@ method old_client(x: int) returns (res: int) {
   if (x < -100 || x > 100) {
     return x;
   }
-  if (x > lib(x))
+  if (x > old_lib(x))
     return x;
   else
-    return lib(x);
+    return old_lib(x);
 }
 // newV.dfy
 
@@ -27,8 +27,8 @@ method new_client(x: int) returns (res: int) {
   if (x < -100 || x > 100) {
     return x;
   }
-  if (x > lib(x))
+  if (x > new_lib(x))
     return x;
   else
-    return lib(x);
+    return new_lib(x);
 }

@@ -6,7 +6,7 @@ method old_f(i: int, j: int) returns (res: int)
   if (i == 0) {
     var r := j;
   } else {
-    var r := f(i - 1, j + 1);
+    var r := old_f(i - 1, j + 1);
   }
   return r;
 }
@@ -21,7 +21,7 @@ method new_f(i: int, j: int) returns (res: int)
     if (i == 1) {
       var r := j + 1;
     } else {
-      var r := f(i - 1, j + 1);
+      var r := new_f(i - 1, j + 1);
     }
   }
   return r;

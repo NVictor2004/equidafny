@@ -1,11 +1,11 @@
 // oldV.dfy
 
-datatype Vector3D = Vector3DClass(
+datatype Vector3D = old_Vector3DClass(
     x: float,
     y: float,
     z: float
 )
-datatype Light = LightClass(
+datatype Light = old_LightClass(
     AMBIENT: int,
     DIRECTIONAL: int,
     POINT: int,
@@ -15,7 +15,7 @@ datatype Light = LightClass(
     ig: float,
     ib: float
 )
-datatype Surface = SurfaceClass(
+datatype Surface = old_SurfaceClass(
     ir: float,
     ig: float,
     ib: float,
@@ -27,7 +27,7 @@ datatype Surface = SurfaceClass(
     kr: float,
     nt: float
 )
-datatype Sphere = SphereClass(
+datatype Sphere = old_SphereClass(
     surface: Surface,
     center: Vector3D,
     radius: float,
@@ -35,28 +35,28 @@ datatype Sphere = SphereClass(
 )
 const var TINY: float := 0.001f;
 const var I255: float := 0.00392156f;
-Vector3D Vector3DConstructor(float x, float y, float z) {
+Vector3D old_Vector3DConstructor(float x, float y, float z) {
       Vector3D obj;
       obj.var x := x; obj.y = y; obj.z = z;
       return obj;
 }
-Vector3D Vector3DConstructor2(Vector3D v) {
+Vector3D old_Vector3DConstructor2(Vector3D v) {
     Vector3D obj;
     obj.var x := v.x;
     obj.var y := v.y;
     obj.var z := v.z;
     return obj;
 }
-Vector3D normalize(Vector3D v){
+Vector3D old_normalize(Vector3D v){
   var t: float := v.x*v.x + v.y*v.y + v.z*v.z;
   if (t != 0 && t != 1) 
     var t := (float) (1 / sqrt(t));
   v.x *= t;
   v.y *= t;
   v.z *= t;
-  return Vector3DConstructor(v.x, v.y, v.z);
+  return old_Vector3DConstructor(v.x, v.y, v.z);
 }
-Light LightConstructor(int type, Vector3D v, float r, float g, float b) {
+Light old_LightConstructor(int type, Vector3D v, float r, float g, float b) {
       Light obj;
       obj.var lightType := type;
       obj.var ir := r;
@@ -65,19 +65,19 @@ Light LightConstructor(int type, Vector3D v, float r, float g, float b) {
       if (type != obj.AMBIENT) {
             obj.var lvec := v;
           if (type == obj.DIRECTIONAL) {
-                obj.var lvec := normalize(obj.lvec);
+                obj.var lvec := old_normalize(obj.lvec);
             }
       }
       return obj;
 }
-Surface SurfaceConstructor(float rval, float gval, float bval, float a, float d, float s, float n, float r, float t, float index){
+Surface old_SurfaceConstructor(float rval, float gval, float bval, float a, float d, float s, float n, float r, float t, float index){
       Surface obj;
       obj.var ir := rval; obj.ig = gval; obj.ib = bval;
       obj.var ka := a; obj.kd = d; obj.ks = s; obj.ns = n;
       obj.var kr := r*I255; obj.kt = t; obj.nt = index;
       return obj;
 }
-Sphere SphereConstructor(Surface s, Vector3D c, float r) {
+Sphere old_SphereConstructor(Surface s, Vector3D c, float r) {
 		  Sphere obj;
 	    obj.var surface := s;
 	    obj.var center := c;
@@ -99,12 +99,12 @@ method old_intersect(s: Sphere, d: Sphere) returns (res: bool) {
 }
 // newV.dfy
 
-datatype Vector3D = Vector3DClass(
+datatype Vector3D = new_Vector3DClass(
     x: float,
     y: float,
     z: float
 )
-datatype Light = LightClass(
+datatype Light = new_LightClass(
     AMBIENT: int,
     DIRECTIONAL: int,
     POINT: int,
@@ -114,7 +114,7 @@ datatype Light = LightClass(
     ig: float,
     ib: float
 )
-datatype Surface = SurfaceClass(
+datatype Surface = new_SurfaceClass(
     ir: float,
     ig: float,
     ib: float,
@@ -126,7 +126,7 @@ datatype Surface = SurfaceClass(
     kr: float,
     nt: float
 )
-datatype Sphere = SphereClass(
+datatype Sphere = new_SphereClass(
     surface: Surface,
     center: Vector3D,
     radius: float,
@@ -134,28 +134,28 @@ datatype Sphere = SphereClass(
 )
 const var TINY: float := 0.001f;
 const var I255: float := 0.00392156f;
-Vector3D Vector3DConstructor(float x, float y, float z) {
+Vector3D new_Vector3DConstructor(float x, float y, float z) {
       Vector3D obj;
       obj.var x := x; obj.y = y; obj.z = z;
       return obj;
 }
-Vector3D Vector3DConstructor2(Vector3D v) {
+Vector3D new_Vector3DConstructor2(Vector3D v) {
     Vector3D obj;
     obj.var x := v.x;
     obj.var y := v.y;
     obj.var z := v.z;
     return obj;
 }
-Vector3D normalize(Vector3D v){
+Vector3D new_normalize(Vector3D v){
   var t: float := v.x*v.x + v.y*v.y + v.z*v.z;
   if (t != 0 && t != 1) 
     var t := (float) (1 / sqrt(t));
   v.x *= t;
   v.y *= t;
   v.z *= t;
-  return Vector3DConstructor(v.x, v.y, v.z);
+  return new_Vector3DConstructor(v.x, v.y, v.z);
 }
-Light LightConstructor(int type, Vector3D v, float r, float g, float b) {
+Light new_LightConstructor(int type, Vector3D v, float r, float g, float b) {
       Light obj;
       obj.var lightType := type;
       obj.var ir := r;
@@ -164,19 +164,19 @@ Light LightConstructor(int type, Vector3D v, float r, float g, float b) {
       if (type != obj.AMBIENT) {
             obj.var lvec := v;
           if (type == obj.DIRECTIONAL) {
-                obj.var lvec := normalize(obj.lvec);
+                obj.var lvec := new_normalize(obj.lvec);
             }
       }
       return obj;
 }
-Surface SurfaceConstructor(float rval, float gval, float bval, float a, float d, float s, float n, float r, float t, float index){
+Surface new_SurfaceConstructor(float rval, float gval, float bval, float a, float d, float s, float n, float r, float t, float index){
       Surface obj;
       obj.var ir := rval; obj.ig = 10; obj.ib = bval;
       obj.var ka := a; obj.kd = d; obj.ks = s; obj.ns = n;
       obj.var kr := r/I255; obj.kt = t; obj.nt = index;
       return obj;
 }
-Sphere SphereConstructor(Surface s, Vector3D c, float r) {
+Sphere new_SphereConstructor(Surface s, Vector3D c, float r) {
 		  Sphere obj;
 	    obj.var surface := s;
 	    obj.var center := c;

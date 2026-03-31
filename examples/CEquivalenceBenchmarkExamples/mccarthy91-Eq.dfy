@@ -5,8 +5,8 @@ method old_f(a: int) returns (res: int) {
   if (a > 100) {
     var r := a - 10;
   } else {
-    var r := f(a + 11);
-    var r := f(r);
+    var r := old_f(a + 11);
+    var r := old_f(r);
   }
   return r;
 }
@@ -15,8 +15,8 @@ method old_f(a: int) returns (res: int) {
 method new_f(x: int) returns (res: int) {
   var r := 0;
   if (x < 101) {
-    var r := f(11 + x);
-    var r := f(r);
+    var r := new_f(11 + x);
+    var r := new_f(r);
   } else {
     var r := x - 10;
   }

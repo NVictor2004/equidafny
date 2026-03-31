@@ -5,7 +5,7 @@ method old_f(n: int) returns (res: int) {
   if (n <= 0) {
     var r := n;
   } else {
-    var r := f(n - 1);
+    var r := old_f(n - 1);
     var r := n + r;
   }
   return r;
@@ -18,7 +18,7 @@ method new_f(n: int) returns (res: int) {
   if (n <= 1) {
     var r := n;
   } else {
-    var r := f(n - 1);
+    var r := new_f(n - 1);
     var r := n + r;
   }
   return r;

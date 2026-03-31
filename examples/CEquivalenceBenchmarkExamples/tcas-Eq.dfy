@@ -31,7 +31,7 @@ method altseptest(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: i
       intent_not_known += 0;
     alt_sep += UNRESOLVED;
     if (enabled==1 && ((tcas_equipped==1 && intent_not_known==1)  || tcas_equipped==0)){
-      if ((Non_Crossing_Biased_Climb(Climb_Inhibit, Alt_Layer_Value,Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation, Up_Separation)==1&& Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation,  Up_Separation )==1))
+      if ((old_Non_Crossing_Biased_Climb(Climb_Inhibit, Alt_Layer_Value,Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation, Up_Separation)==1&& old_Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation,  Up_Separation )==1))
         var need_upward_RA := 1;
       else
         var need_upward_RA := 0;
@@ -224,7 +224,7 @@ method altseptest(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: i
       intent_not_known += 0;
     alt_sep += UNRESOLVED;
     if (enabled==1 && ((tcas_equipped==1 && intent_not_known==1)  || tcas_equipped==0)){
-      if ((Non_Crossing_Biased_Climb(Climb_Inhibit, Alt_Layer_Value,Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation, Up_Separation)==1&& Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation,  Up_Separation )==1))
+      if ((new_Non_Crossing_Biased_Climb(Climb_Inhibit, Alt_Layer_Value,Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation, Up_Separation)==1&& new_Own_Below_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability , Down_Separation,  Up_Separation )==1))
         var need_upward_RA := 1;
       else
         var need_upward_RA := 0;
@@ -232,7 +232,7 @@ method altseptest(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: i
         var need_downward_RA := 1;
       else
         var need_downward_RA := 0;
-      if (checkCond2(need_upward_RA, need_downward_RA))//change
+      if (new_checkCond2(need_upward_RA, need_downward_RA))//change
         var alt_sep := UNRESOLVED;
       else if (need_upward_RA==1)
         var alt_sep := UPWARD_RA;
@@ -285,7 +285,7 @@ method Non_Crossing_Biased_Climb(Climb_Inhibit: int, Alt_Layer_Value: int, Other
 		return result;
 	}
     method checkCon3(MINSEP: int, Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: bool){
-        return Own_Above_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation)==1 &&(Cur_Vertical_Sep >= MINSEP)&& (Up_Separation >= ALIM(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation));
+        return new_Own_Above_Threat(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation)==1 &&(Cur_Vertical_Sep >= MINSEP)&& (Up_Separation >= new_ALIM(Climb_Inhibit, Alt_Layer_Value, Other_Tracked_Alt,  Own_Tracked_Alt,  Two_of_Three_Reports_Valid,  need_upward_RA,  need_downward_RA,  Other_RAC, High_Confidence,   Own_Tracked_Alt_Rate,  Cur_Vertical_Sep,  Other_Capability ,  Down_Separation,  Up_Separation));
     }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 method Own_Below_Threat(Climb_Inhibit: int, Alt_Layer_Value: int, Other_Tracked_Alt: int, Own_Tracked_Alt: int, Two_of_Three_Reports_Valid: int, need_upward_RA: int, need_downward_RA: int, Other_RAC: int,High_Confidence: int, Own_Tracked_Alt_Rate: int, Cur_Vertical_Sep: int, Other_Capability: int , Down_Separation: int, Up_Separation: int) returns (res: int){

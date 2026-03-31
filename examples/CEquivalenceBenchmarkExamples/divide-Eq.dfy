@@ -5,7 +5,7 @@ method old_client(c: int, d: int) returns (res: int) {
   if (d == 0) {
     return 0;
   }
-  return lib(c, d);
+  return old_lib(c, d);
 }
 // newV.dfy
 
@@ -19,5 +19,5 @@ method new_client(c: int, d: int) returns (res: int) {
   if (d == 0) {
     return 0;
   }
-  return lib(c, d);
+  return new_lib(c, d);
 }

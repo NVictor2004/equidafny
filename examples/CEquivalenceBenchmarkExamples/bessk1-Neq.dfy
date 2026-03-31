@@ -5,7 +5,7 @@ method old_snippet(x: real) returns (res: real) {
         var ans: real := 0;
         if (x <= 2.0) {
             var y := x*x;
-            var ans := (log(x/2.0)*bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
+            var ans := (old_log(x/2.0)*old_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
         }
         else {
             var y := 2.0/x;
@@ -38,7 +38,7 @@ method new_snippet(x: real) returns (res: real) {
         var ans: real := 0;
         if (x <= 2.0) {
             var y := x*x;
-            var ans := (log(x/2.0)*bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
+            var ans := (new_log(x/2.0)*new_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
             ans+=2;//change
         }
         else {

@@ -20,7 +20,7 @@ method old_flmoon( n: int,  nph: int) returns (res: Unit)
 			xtra += (0.1721-4.0e-4*t)*sin(RAD*as)-0.6280*sin(RAD*am);
 		else 
 			printf("%s\n","nph is unknown in flmoon");
-		var i := (int) (xtra >= 0.0 ? floor(xtra) : ceil(xtra-1.0));
+		var i := (int) (xtra >= 0.0 ? old_floor(xtra) : old_ceil(xtra-1.0));
 		jd += i;
 		var frac := xtra-i;
 }
@@ -47,7 +47,7 @@ method new_flmoon( n: int,  nph: int) returns (res: Unit)
 			xtra += (0.1721-4.0e-4*t)*sin(RAD*as)-0.6280*sin(RAD*am);
 		else 
 			printf("%s\n","nph is unknown in flmoon");
-		var i := (int) (xtra >= 0.0 ? floor(xtra) : ceil(xtra-1.0));
+		var i := (int) (xtra >= 0.0 ? new_floor(xtra) : new_ceil(xtra-1.0));
 		jd += i;
 		var frac := xtra-i;
 }
