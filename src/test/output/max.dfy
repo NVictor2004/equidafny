@@ -29,7 +29,6 @@ ensures maxR(l) == maxT(l)
 {{}}
 
 lemma maxCEquivalence(l: seq<int>)
-decreases |l|
 ensures maxR(l) == maxC(l)
 {{}}
 

@@ -32,3 +32,8 @@ lemma eval1Equivalence(x: int, y: int)
 ensures evalM(x, y) == eval1(x, y)
 {{}}
 
+lemma myMulEquivalence(x: int, y: int)
+decreases (if (x <= 0) then -x else x)
+ensures mul(x, y) == myMul(x, y)
+{{}}
+

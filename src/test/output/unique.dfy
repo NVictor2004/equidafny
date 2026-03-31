@@ -46,3 +46,7 @@ lemma uniqAEquivalence(lst: List<int>)
 ensures uniqR(lst) == uniqA(lst)
 {{}}
 
+lemma distinctEquivalence(l: List<int>, r: List<int>)
+ensures unique(l, r) == distinct(l, r)
+{{}}
+

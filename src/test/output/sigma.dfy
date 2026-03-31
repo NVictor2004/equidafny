@@ -14,7 +14,6 @@ decreases (if (b == a) then 2 else if (b > a) then 2 + b - a else a - b)
 {if (a > b) then acc else s(a + 1, b, f, acc + f(a))}
 
 lemma sigma1Equivalence(f: int -> int, a: int, b: int)
-decreases (if (b == a) then 2 else if (b > a) then 2 + b - a else a - b)
 ensures sigmaM(f, a, b) == sigma1(f, a, b)
 {{}}
 

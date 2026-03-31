@@ -32,3 +32,9 @@ requires (fuel >= 0)
 ensures sculpteurDeNuageM(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a) == sculpteurDeNuage(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a)
 {{}}
 
+lemma leVraiSculpteurDeNuageEquivalence<A, B, C>(a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A -> B, b2c: B -> C, c2a: C -> A)
+requires (fuel >= 0)
+decreases (fuel)
+ensures leVraiSculpteurDeNuageM(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a) == leVraiSculpteurDeNuage(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a)
+{{}}
+

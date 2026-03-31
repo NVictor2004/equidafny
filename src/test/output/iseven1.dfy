@@ -24,3 +24,8 @@ lemma isEvenTopLvl1Equivalence(x: int)
 ensures isEvenTopLvlM(x) == isEvenTopLvl1(x)
 {{}}
 
+lemma myIsEvenEquivalence(x: int)
+decreases (if (x <= 0) then 0 else x)
+ensures isEven(x) == myIsEven(x)
+{{}}
+

@@ -3,9 +3,12 @@ package equivalence.program
 import translation.structure.*
 import translation.structure.BinaryOperator.*
 
-import equivalence.expression.convertExprBlock
+// import equivalence.expression.convertExprBlock
+import equivalence.expression.mergeFunction
 
 def programEquivalence(program: Program): Program = {
+  given Program = program
+
   val data = program.candidateFunctions.map(
     functionEquivalence(program.modelFunction, _)
   )
@@ -15,34 +18,40 @@ def programEquivalence(program: Program): Program = {
   )
 }
 
-private def functionEquivalence(
+def functionEquivalence(
     model: Function,
     candidate: Function
-): (Lemma, List[Lemma]) = {
-  val modelStmts = convertExprBlock(model.name, model.body)
-  val candStmts = convertExprBlock(candidate.name, candidate.body)
+)(using program: Program): (Lemma, List[Lemma], List[(Int, Int)]) = {
+
+  val (helperLemmas, mapping, stmts) = mergeFunction(model, candidate)
+
+  val modelIdents = model.params.map(p => Ident(p.name, Nil))
+
+  val candidateIdents = if (mapping.length == modelIdents.length) then mapping.sortBy(_._2).map {
+    case (modelIndex, _) => modelIdents(modelIndex)
+  } else modelIdents
 
   val equiv = Lemma(
     s"${candidate.name}Equivalence",
-    candidate.generic,
-    candidate.params,
-    candidate.specs ++
+    model.generic,
+    model.params,
+    model.specs ++
       List(
         Ensures(
           Binary(
             Eq,
             FunctionCall(
               model.name,
-              List(candidate.params.map(p => Ident(p.name, Nil)))
+              List(modelIdents)
             ),
             FunctionCall(
               candidate.name,
-              List(candidate.params.map(p => Ident(p.name, Nil)))
+              List(candidateIdents)
             )
           )
         )
       ),
-    Some(BlockStmt(Nil))
+    Some(BlockStmt(stmts))
   )
-  (equiv, Nil)
+  (equiv, helperLemmas, mapping)
 }

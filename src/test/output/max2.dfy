@@ -65,27 +65,28 @@ case _ => f
 }
 }
 
-lemma max5Equivalence(l: List<int>)
-ensures maxM(l) == max5(l)
+lemma max5Equivalence(lst: List<int>)
+decreases (lst)
+ensures maxM(lst) == max5(lst)
 {{}}
 
-lemma max4Equivalence(l: List<int>)
-decreases (l)
-ensures maxM(l) == max4(l)
+lemma max4Equivalence(lst: List<int>)
+decreases (lst)
+ensures maxM(lst) == max4(lst)
 {{}}
 
-lemma max3Equivalence(l: List<int>)
-decreases (length(l))
-ensures maxM(l) == max3(l)
+lemma max3Equivalence(lst: List<int>)
+decreases (lst)
+ensures maxM(lst) == max3(lst)
 {{}}
 
-lemma max2Equivalence(l: List<int>)
-decreases (l)
-ensures maxM(l) == max2(l)
+lemma max2Equivalence(lst: List<int>)
+decreases (lst)
+ensures maxM(lst) == max2(lst)
 {{}}
 
-lemma max1Equivalence(l: List<int>)
-decreases (l)
-ensures maxM(l) == max1(l)
+lemma max1Equivalence(lst: List<int>)
+decreases (lst)
+ensures maxM(lst) == max1(lst)
 {{}}
 

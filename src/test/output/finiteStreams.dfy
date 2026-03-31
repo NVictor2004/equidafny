@@ -25,8 +25,8 @@ case _ => 0
 }
 }
 
-lemma finiteEquivalence(stream: Stream)
-decreases (rank(stream))
-ensures finiteM(stream) == finite(stream)
+lemma finiteEquivalence(s: Stream)
+decreases (rank(s))
+ensures finiteM(s) == finite(s)
 {{}}
 
