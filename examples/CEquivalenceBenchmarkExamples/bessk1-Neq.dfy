@@ -5,7 +5,7 @@ method old_snippet(x: real) returns (res: real) {
         var ans: real := 0;
         if (x <= 2.0) {
             var y := x*x;
-            var ans := (old_log(x/2.0)*old_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
+            var ans := (log(x/2.0)*old_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
         }
         else {
             var y := 2.0/x;
@@ -14,31 +14,32 @@ method old_snippet(x: real) returns (res: real) {
         return ans;
 }
 method old_bessi1(x: real) returns (res: real){
-        real ax,ans,y;
+        var ax: real := fabs(x);
+        var ans: real := 0.0;
 
-        if ((ax=fabs(x)) < 3.75) {
+        if (ax < 3.75) {
             var y := x/3.75;
             y := y * y;
-            ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
+            ans:=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
                     +y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
         } else {
             var y := 3.75/ax;
-            ans=0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1
+            ans:=0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1
                     -y*0.420059e-2));
-            ans=0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2
+            ans:=0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2
                     +y*(0.163801e-2+y*(-0.1031555e-1+y*ans))));
-            ans *= (exp(ax)/sqrt(ax));
+            ans := ans * (exp(ax)/sqrt(ax));
         }
-        return x < 0.0 ? -ans : ans;
+        return if x < 0.0 then -ans else ans;
 }
 // newV.dfy
 
 method new_snippet(x: real) returns (res: real) {
-        var y: real := 0;
-        var ans: real := 0;
+        var y: real := 0.0;
+        var ans: real := 0.0;
         if (x <= 2.0) {
             var y := x*x;
-            var ans := (new_log(x/2.0)*new_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
+            var ans := (log(x/2.0)*new_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
             ans := ans + 2;//change
         }
         else {
@@ -49,20 +50,21 @@ method new_snippet(x: real) returns (res: real) {
         return ans+fabs(y);//change
 }
 method new_bessi1(x: real) returns (res: real){
-        real ax,ans,y;
+        var ax: real := fabs(x);
+        var ans: real := 0.0;
 
-        if ((ax=fabs(x)) < 3.75) {
+        if (ax < 3.75) {
             var y := x/3.75;
             y := y * y;
-            ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
+            ans:=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
                     +y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
         } else {
             var y := 3.75/ax;
-            ans=0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1
+            ans:=0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1
                     -y*0.420059e-2));
-            ans=0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2
+            ans:=0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2
                     +y*(0.163801e-2+y*(-0.1031555e-1+y*ans))));
-            ans *= (exp(ax)/sqrt(ax));
+            ans := ans * (exp(ax)/sqrt(ax));
         }
-        return x < 0.0 ? -ans : ans;
+        return if x < 0.0 then -ans else ans;
 }

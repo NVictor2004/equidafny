@@ -1,10 +1,10 @@
 // oldV.dfy
 
 method old_snippet(x: real) returns (res: real) {
-        var ax: real := 0;
-        var ans: real := 0;
-        var y: real := 0;
-        var ax := fabs(x);
+        var ax: real := 0.0;
+        var ans: real := 0.0;
+        var y: real := 0.0;
+        ax := fabs(x);
         if (ax < 3.75) {
             var y := x/3.75;
             y := y * y;
@@ -12,21 +12,22 @@ method old_snippet(x: real) returns (res: real) {
         } else {
             var y := 3.75/ax;
             var ans := 0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1 -y*0.420059e-2));
-            var ans := 0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2 +y*(0.163801e-2+y*(-0.1031555e-1+y*ans))));
-            ans *= (exp(ax)/sqrt(ax));
+            ans := 0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2 +y*(0.163801e-2+y*(-0.1031555e-1+y*ans))));
+            ans := ans * (exp(ax)/sqrt(ax));
         }
-        if (x < 0.0)
+        if (x < 0.0) {
             return -ans;
-        else
+        } else {
             return ans;
+        }
 }
 // newV.dfy
 
 method new_snippet(x: real) returns (res: real) {
-        var ax: real := 0;
-        var ans: real := 0;
-        var y: real := 0;
-        var ax := fabs(x);
+        var ax: real := 0.0;
+        var ans: real := 0.0;
+        var y: real := 0.0;
+        ax := fabs(x);
         if (ax < 3.75) {
             var y := x/3.75;
             y := y * y;
@@ -35,10 +36,11 @@ method new_snippet(x: real) returns (res: real) {
             var y := 3.75/ax;
             var ansRenamed: real := 0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1 -y*0.420059e-2));//change
             var ans := 0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2 +y*(0.163801e-2+y*(-0.1031555e-1+y*ansRenamed))));//change
-            ans *= (exp(ax)/sqrt(ax));
+            ans := ans * (exp(ax)/sqrt(ax));
         }
-        if (x < 0.0)
+        if (x < 0.0) {
             return -ans;
-        else
+        } else {
             return ans;
+        }
 }

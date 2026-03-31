@@ -1,6 +1,6 @@
 // oldV.dfy
 
-method old_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real, bank_ang: real, degToRad: double, g: double ) returns (res: double) { //degToRad and g are global vars
+method old_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real, bank_ang: real, degToRad: real, g: real ) returns (res: real) { //degToRad and g are global vars
     var dmin: real := 999;
     var dmst: real := 2;
     var psiA: real := psi1 * degToRad;
@@ -34,7 +34,7 @@ method old_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: r
   }
 // newV.dfy
 
-method new_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real, bank_ang: real, degToRad: double, g: double ) returns (res: double) { //degToRad and g are global vars
+method new_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real, bank_ang: real, degToRad: real, g: real ) returns (res: real) { //degToRad and g are global vars
     var dmin: real := 999;
     var dmst: real := 2;
     var psiA: real := psi1 * degToRad;

@@ -3,7 +3,7 @@
 datatype ejhash = old_oldV(
     x: int,
     y: long,
-    z: int,
+    z: int
 )
 ejhash old_constructor(int x, long y, int z) {
 		ejhash obj;

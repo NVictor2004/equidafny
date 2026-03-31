@@ -1,10 +1,10 @@
 // oldV.dfy
 
 method old_snippet(x: real) returns (res: real) {
-        var ax: real := 0;
-        var ans: real := 0;
-        var y: real := 0;
-        var ax := fabs(x);
+        var ax: real := 0.0;
+        var ans: real := 0.0;
+        var y: real := 0.0;
+        ax := fabs(x);
         if (ax < 3.75) {
             var y := x/3.75;
             y := y * y;
@@ -19,10 +19,10 @@ method old_snippet(x: real) returns (res: real) {
 // newV.dfy
 
 method new_snippet(x: real) returns (res: real) {
-        var axRenamed: real := 0;//change
-        var ans: real := 0;
-        var y: real := 0;
-        var axRenamed := fabs(x);//change
+        var axRenamed: real := 0.0;//change
+        var ans: real := 0.0;
+        var y: real := 0.0;
+        axRenamed := fabs(x);//change
         if (axRenamed < 3.75) {//change
             var y := x/3.75;
             y := y * y;

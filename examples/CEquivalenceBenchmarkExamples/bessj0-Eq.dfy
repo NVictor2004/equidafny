@@ -1,14 +1,14 @@
 // oldV.dfy
 
 method old_snippet(x: real) returns (res: real) {
-        var ax: real := 0;
-        var z: real := 0;
-        var xx: real := 0;
-        var y: real := 0;
-        var ans: real := 0;
-        var ans1: real := 0;
-        var ans2: real := 0;
-        var ax := fabs(x);
+        var ax: real := 0.0;
+        var z: real := 0.0;
+        var xx: real := 0.0;
+        var y: real := 0.0;
+        var ans: real := 0.0;
+        var ans1: real := 0.0;
+        var ans2: real := 0.0;
+        ax := fabs(x);
         if (ax < 8.0) {
             var y := x*x;
             var ans1 := 57568490574.0+y*(-13362590354.0+y*(651619640.7 +y*(-11214424.18+y*(77392.33017+y*(-184.9052456)))));
@@ -28,14 +28,13 @@ method old_snippet(x: real) returns (res: real) {
 // newV.dfy
 
 method new_snippet(x: real) returns (res: real) {
-        var ax: real := 0;
-        var z: real := 0;
-        real xx ;//change
-        var y: real := 0;
-        var ans: real := 0;
-        var ans1: real := 0;
-        var ans2: real := 0;
-        var ax := fabs(x);
+        var ax: real := 0.0;
+        var z: real := 0.0;
+        var y: real := 0.0;
+        var ans: real := 0.0;
+        var ans1: real := 0.0;
+        var ans2: real := 0.0;
+        ax := fabs(x);
         if (-ax > -8.0) {//change
             var y := x*x;
             var ans1 := 57568490574.0+y*(-13362590354.0+y*(651619640.7 +y*(-11214424.18+y*(77392.33017+y*(-184.9052456)))));
