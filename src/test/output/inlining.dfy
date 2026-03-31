@@ -4,7 +4,7 @@ function inlining_1(x: int): int
 function inlining_2(x: int): int
 {if (x > 1) then inlining_2(x - 2) + 2 else if (x < 0) then 0 else x}
 
-lemma inlining_2Equivalence(x: int)
+lemma inlining_1_inlining_2_Equivalence(x: int)
 ensures inlining_1(x) == inlining_2(x)
 {{}}
 

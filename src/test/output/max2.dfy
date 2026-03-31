@@ -65,27 +65,27 @@ case _ => f
 }
 }
 
-lemma max5Equivalence(lst: List<int>)
+lemma maxM_max5_Equivalence(lst: List<int>)
 decreases (lst)
 ensures maxM(lst) == max5(lst)
 {{}}
 
-lemma max4Equivalence(lst: List<int>)
+lemma maxM_max4_Equivalence(lst: List<int>)
 decreases (lst)
 ensures maxM(lst) == max4(lst)
 {{}}
 
-lemma max3Equivalence(lst: List<int>)
+lemma maxM_max3_Equivalence(lst: List<int>)
 decreases (lst)
 ensures maxM(lst) == max3(lst)
 {{}}
 
-lemma max2Equivalence(lst: List<int>)
+lemma maxM_max2_Equivalence(lst: List<int>)
 decreases (lst)
 ensures maxM(lst) == max2(lst)
 {{}}
 
-lemma max1Equivalence(lst: List<int>)
+lemma maxM_max1_Equivalence(lst: List<int>)
 decreases (lst)
 ensures maxM(lst) == max1(lst)
 {{}}

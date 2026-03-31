@@ -56,15 +56,15 @@ case Cons(x, xs) => p <= x && loop(x, xs)
 }
 }
 
-lemma isSortedAEquivalence(l: List<int>)
+lemma isSortedR_isSortedA_Equivalence(l: List<int>)
 ensures isSortedR(l) == isSortedA(l)
 {{}}
 
-lemma isSortedCEquivalence(l: List<int>)
+lemma isSortedR_isSortedC_Equivalence(l: List<int>)
 ensures isSortedR(l) == isSortedC(l)
 {{}}
 
-lemma isSortedBEquivalence(l: List<int>)
+lemma isSortedR_isSortedB_Equivalence(l: List<int>)
 ensures isSortedR(l) == isSortedB(l)
 {{}}
 

@@ -31,7 +31,7 @@ function leftM(i: int): int
 requires (0 <= i && i < 100000)
 {2 * i + 1}
 
-lemma maxHeapifyEquivalence(a: seq<int>, N: int, i: int)
+lemma maxHeapifyM_maxHeapify_Equivalence(a: seq<int>, N: int, i: int)
 requires (i >= 0 && i < N && N <= |a| && N <= 100000)
 decreases (N - i)
 ensures maxHeapifyM(a, N, i) == maxHeapify(a, N, i)

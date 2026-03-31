@@ -26,7 +26,7 @@ case Cons(h, t) => h >= 0 && h < N && validListM(t, N)
 }
 }
 
-lemma validAdjListEquivalence(adjList: seq<List<int>>, N: int, pos: int)
+lemma validAdjListM_validAdjList_Equivalence(adjList: seq<List<int>>, N: int, pos: int)
 requires (N >= 1 && pos >= 0 && pos <= N && N == |adjList|)
 decreases (pos)
 ensures validAdjListM(adjList, N, pos) == validAdjList(adjList, N, pos)

@@ -11,7 +11,7 @@ requires (0 <= start && n >= start && n <= |a|)
 function succM(n: int): int
 {n + 1}
 
-lemma isSortedArrayEquivalence(a: seq<int>, start: int, n: int)
+lemma isSortedArrayM_isSortedArray_Equivalence(a: seq<int>, start: int, n: int)
 decreases (n)
 requires (0 <= start && n >= start && n <= |a|)
 ensures isSortedArrayM(a, start, n) == isSortedArray(a, start, n)

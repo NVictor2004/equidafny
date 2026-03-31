@@ -56,7 +56,7 @@ case Cons(_, t) => 1 + length(t)
 }
 }
 
-lemma binSum1Equivalence(l1: List<bool>, l2: List<bool>, c: bool)
+lemma binSumM_binSum1_Equivalence(l1: List<bool>, l2: List<bool>, c: bool)
 decreases length(l1) + length(l2)
 ensures binSumM(l1, l2, c) == binSum1(l1, l2, c)
 {{}}

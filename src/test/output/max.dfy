@@ -24,11 +24,11 @@ case Cons(_, tl) => 1 + length(tl)
 }
 }
 
-lemma maxTEquivalence(l: seq<int>)
+lemma maxR_maxT_Equivalence(l: seq<int>)
 ensures maxR(l) == maxT(l)
 {{}}
 
-lemma maxCEquivalence(l: seq<int>)
+lemma maxR_maxC_Equivalence(l: seq<int>)
 ensures maxR(l) == maxC(l)
 {{}}
 

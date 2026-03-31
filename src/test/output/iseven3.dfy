@@ -37,7 +37,7 @@ case Succ(n0) => n0
 }
 }
 
-lemma isEven2Equivalence(un: UnaryNat)
+lemma isEven1_isEven2_Equivalence(un: UnaryNat)
 ensures isEven1(un) == isEven2(un)
 {{}}
 

@@ -24,7 +24,7 @@ case Cons(h, t) => Cons(f(h), mapf(t, f))
 }
 }
 
-lemma fizzBuzz1Equivalence(to: int)
+lemma fizzBuzz2_fizzBuzz1_Equivalence(to: int)
 requires (0 <= to)
 ensures fizzBuzz2(to) == fizzBuzz1(to)
 {{}}

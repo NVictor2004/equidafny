@@ -101,38 +101,38 @@ case Cons(hd, tl) => if (leq(t, hd)) then Cons(t, xs) else Cons(hd, insertM(tl, 
 }
 }
 
-lemma unfoldingSorted5Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
+lemma unfoldingSortedM_unfoldingSorted5_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted5(start, next, leq, max)
 {{}}
 
-lemma unfoldingSorted4Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
+lemma unfoldingSortedM_unfoldingSorted4_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted4(start, next, leq, max)
 {{}}
 
-lemma unfoldingSorted3Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
+lemma unfoldingSortedM_unfoldingSorted3_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted3(start, next, leq, max)
 {{}}
 
-lemma unfoldingSorted1Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
+lemma unfoldingSortedM_unfoldingSorted1_Equivalence<S, T>(start: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, max: int)
 ensures unfoldingSortedM(start, next, leq, max) == unfoldingSorted1(start, next, leq, max)
 {{}}
 
-lemma go5Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
+lemma loopM_go5_Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures loopM(s, next, leq, fuel, xs) == go5(s, next, leq, fuel, xs)
 {{}}
 
-lemma go4Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
+lemma loopM_go4_Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures loopM(s, next, leq, fuel, xs) == go4(s, next, leq, fuel, xs)
 {{}}
 
-lemma go3Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
+lemma loopM_go3_Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures loopM(s, next, leq, fuel, xs) == go3(s, next, leq, fuel, xs)
 {{}}
 
-lemma go1Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
+lemma loopM_go1_Equivalence<S, T>(s: S, next: S -> Option<(S, T)>, leq: (T, T) -> bool, fuel: int, xs: List<T>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures loopM(s, next, leq, fuel, xs) == go1(s, next, leq, fuel, xs)
 {{}}

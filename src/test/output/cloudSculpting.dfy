@@ -27,12 +27,12 @@ decreases (fuel)
 {if (fuel == 0) then (i1, i2, i3) else var (ii1, ii2, ii3) := mixmashM(i1, i2, i3);
 leVraiSculpteurDeNuageM(c2a(c), a2b(a), b2c(b), fuel - 1, ii1, ii2, ii3, a2b, b2c, c2a)}
 
-lemma sculpteurDeNuageEquivalence<A, B, C>(a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A -> B, b2c: B -> C, c2a: C -> A)
+lemma sculpteurDeNuageM_sculpteurDeNuage_Equivalence<A, B, C>(a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A -> B, b2c: B -> C, c2a: C -> A)
 requires (fuel >= 0)
 ensures sculpteurDeNuageM(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a) == sculpteurDeNuage(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a)
 {{}}
 
-lemma leVraiSculpteurDeNuageEquivalence<A, B, C>(a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A -> B, b2c: B -> C, c2a: C -> A)
+lemma leVraiSculpteurDeNuageM_leVraiSculpteurDeNuage_Equivalence<A, B, C>(a: A, b: B, c: C, fuel: int, i1: int, i2: int, i3: int, a2b: A -> B, b2c: B -> C, c2a: C -> A)
 requires (fuel >= 0)
 decreases (fuel)
 ensures leVraiSculpteurDeNuageM(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a) == leVraiSculpteurDeNuage(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a)

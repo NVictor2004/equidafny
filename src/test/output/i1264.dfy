@@ -37,7 +37,7 @@ case Cons(hd, tl) => Cons(hd, append(tl, l2))
 }
 }
 
-lemma slowReplaceEquivalence<T(==)>(l1: List<T>, x: T, l2: List<T>)
+lemma replace_slowReplace_Equivalence<T(==)>(l1: List<T>, x: T, l2: List<T>)
 decreases (l1)
 ensures replace(l1, x, l2) == slowReplace(l1, x, l2)
 {{}}

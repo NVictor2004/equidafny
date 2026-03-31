@@ -26,7 +26,7 @@ function chooseM(x: int, y: int): int
 decreases (if (x <= 0) then 0 else x)
 {if (x <= 0) then y else if (y <= 0) then x else chooseM(x - 1, y - 1)}
 
-lemma funnyZip1Equivalence(xs: List<int>, ys: List<int>)
+lemma funnyZipM_funnyZip1_Equivalence(xs: List<int>, ys: List<int>)
 decreases (xs)
 ensures funnyZipM(xs, ys) == funnyZip1(xs, ys)
 {{}}

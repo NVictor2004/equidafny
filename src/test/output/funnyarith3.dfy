@@ -28,11 +28,11 @@ function mul(x: int, y: int): int
 decreases (if (x <= 0) then -x else x)
 {if (x == 0) then 0 else if (x > 0) then add(mul(x - 1, y), y) else sub(mul(x + 1, y), y)}
 
-lemma eval1Equivalence(x: int, y: int)
+lemma evalM_eval1_Equivalence(x: int, y: int)
 ensures evalM(x, y) == eval1(x, y)
 {{}}
 
-lemma myMulEquivalence(x: int, y: int)
+lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures mul(x, y) == myMul(x, y)
 {{}}

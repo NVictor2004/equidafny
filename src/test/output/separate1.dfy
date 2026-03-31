@@ -22,7 +22,7 @@ case Cons(Goat(id), t) => var (s2, g2) := separate1(t);
 }
 }
 
-lemma separate1Equivalence(xs: List<Animal>)
+lemma separateM_separate1_Equivalence(xs: List<Animal>)
 ensures separateM(xs) == separate1(xs)
 {{}}
 

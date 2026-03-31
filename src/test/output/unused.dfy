@@ -8,7 +8,7 @@ var r3 := t2(n - 3);
 var results := if (n % 2 == 0) then r2 + r2 + r3 else r1 + r2;
 results}
 
-lemma t2Equivalence(n: int)
+lemma t1_t2_Equivalence(n: int)
 ensures t1(n) == t2(n)
 {{}}
 

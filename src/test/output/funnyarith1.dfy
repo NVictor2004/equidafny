@@ -40,7 +40,7 @@ function add(x: int, y: int): int
 decreases (if (x <= 0) then -x else x)
 {if (x == 0) then y else if (x > 0) then add(x - 1, y + 1) else add(x + 1, y - 1)}
 
-lemma eval1Equivalence(op: OpKind, x: int, y: int)
+lemma evalM_eval1_Equivalence(op: OpKind, x: int, y: int)
 ensures evalM(op, x, y) == eval1(op, x, y)
 {{}}
 

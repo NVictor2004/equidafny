@@ -32,7 +32,7 @@ def functionEquivalence(
   } else modelIdents
 
   val equiv = Lemma(
-    s"${candidate.name}Equivalence",
+    s"${model.name}_${candidate.name}_Equivalence",
     model.generic,
     model.params,
     model.specs ++

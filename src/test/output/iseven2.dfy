@@ -20,7 +20,7 @@ function isOdd(x: int): bool
 decreases (if (x <= 0) then 0 else x)
 {if (x <= 0) then false else if (x == 1) then true else !isEven(x - 1)}
 
-lemma isEvenTopLvl1Equivalence(x: int)
+lemma isEvenTopLvlM_isEvenTopLvl1_Equivalence(x: int)
 ensures isEvenTopLvlM(x) == isEvenTopLvl1(x)
 {{}}
 

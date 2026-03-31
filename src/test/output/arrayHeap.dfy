@@ -32,7 +32,7 @@ var isHeapL := l < N && isHeapM(a, N, l);
 var isHeapR := r < N && isHeapM(a, N, r);
 if (l < N && a[l] > a[i]) then false else if (r < N && a[r] > a[i]) then false else if (r < i) then isHeapL && isHeapR else if (l < i) then isHeapL else true}
 
-lemma childrenAreHeapsEquivalence(a: seq<int>, N: int, i: int)
+lemma childrenAreHeapsM_childrenAreHeaps_Equivalence(a: seq<int>, N: int, i: int)
 requires (i >= 0 && i < N && N <= |a| && N <= 100000)
 ensures childrenAreHeapsM(a, N, i) == childrenAreHeaps(a, N, i)
 {{}}

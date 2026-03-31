@@ -30,7 +30,7 @@ res}
 ghost function existsM<T(!new)>(p: T -> bool): bool
 {!forall t: T :: !p(t)}
 
-lemma fEquivalence(x: int, p: int -> bool)
+lemma fM_f_Equivalence(x: int, p: int -> bool)
 requires (!p(x) || existsM((j: int) => j < x && maxNegPM(j, p)))
 decreases (if (!p(x)) then 0 else x - eliminate_existsM((j: int) => j < x && maxNegPM(j, p)))
 ensures fM(x, p) == f(x, p)

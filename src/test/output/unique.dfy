@@ -42,11 +42,11 @@ case Cons(hd, tl) => Cons(hd, append(tl, l2))
 }
 }
 
-lemma uniqAEquivalence(lst: List<int>)
+lemma uniqR_uniqA_Equivalence(lst: List<int>)
 ensures uniqR(lst) == uniqA(lst)
 {{}}
 
-lemma distinctEquivalence(l: List<int>, r: List<int>)
+lemma unique_distinct_Equivalence(l: List<int>, r: List<int>)
 ensures unique(l, r) == distinct(l, r)
 {{}}
 

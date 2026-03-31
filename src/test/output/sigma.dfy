@@ -13,7 +13,7 @@ function s(a: int, b: int, f: int -> int, acc: int): int
 decreases (if (b == a) then 2 else if (b > a) then 2 + b - a else a - b)
 {if (a > b) then acc else s(a + 1, b, f, acc + f(a))}
 
-lemma sigma1Equivalence(f: int -> int, a: int, b: int)
+lemma sigmaM_sigma1_Equivalence(f: int -> int, a: int, b: int)
 ensures sigmaM(f, a, b) == sigma1(f, a, b)
 {{}}
 
