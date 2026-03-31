@@ -1,3 +1,4 @@
+
 // oldV.dfy
 
 method old_foo(a: int, b: int) returns (res: int) {

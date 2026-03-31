@@ -1,3 +1,8 @@
+function log(x: real): real
+function exp(x: real): real
+function fabs(x: real): real
+function sqrt(x: real): real
+
 // oldV.dfy
 
 method old_snippet(x: real) returns (res: real) {

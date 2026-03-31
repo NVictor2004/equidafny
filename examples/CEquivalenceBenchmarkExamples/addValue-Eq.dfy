@@ -1,3 +1,5 @@
+function sqrt(x: real): real
+
 // oldV.dfy
 
 method old_addValue(sum: real, sumOfSquares: real, mean: real, deviation: real, count: real, val: real) returns (

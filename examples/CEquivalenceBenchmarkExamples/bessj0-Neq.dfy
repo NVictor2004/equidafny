@@ -1,3 +1,6 @@
+function sin(x: real): real
+function fabs(x: real): real
+
 // oldV.dfy
 
 method old_snippet(x: real) returns (res: real) {

@@ -1,3 +1,4 @@
+
 // oldV.dfy
 
 method old_g(n: int) returns (res: int)
@@ -7,7 +8,7 @@ method old_g(n: int) returns (res: int)
     var r := 0;
   } else {
     var r := old_g(n - 1);
-    var r := n + r;
+    r := n + r;
   }
   return r;
 }

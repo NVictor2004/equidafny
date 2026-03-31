@@ -1,3 +1,6 @@
+function tan(x: real): real
+function sqrt(x: real): real
+
 // oldV.dfy
 
 const method theta(x1: real, x2: real) returns (res: real) {

@@ -1,3 +1,5 @@
+function sqrt(x: real): real
+
 // oldV.dfy
 
 datatype Vector3D = old_Vector3DClass(

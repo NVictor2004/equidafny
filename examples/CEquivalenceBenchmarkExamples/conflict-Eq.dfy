@@ -1,3 +1,10 @@
+function pow(x: real, y: real): real
+function tan(x: real): real
+function cos(x: real): real
+function sin(x: real): real
+function fabs(x: real): real
+function sqrt(x: real): real
+
 // oldV.dfy
 
 method old_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real, bank_ang: real, degToRad: real, g: real ) returns (res: real) { //degToRad and g are global vars

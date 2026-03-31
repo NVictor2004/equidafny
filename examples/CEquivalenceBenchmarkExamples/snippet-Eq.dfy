@@ -1,3 +1,5 @@
+function tan(x: real): real
+
 // oldV.dfy
 
 method old_snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y2: real, dt: double) returns (res: double) {

@@ -1,3 +1,4 @@
+
 // oldV.dfy
 
 method old_snippet(idum: int) returns (res: real) {//idum is a global variable

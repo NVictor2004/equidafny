@@ -1,3 +1,6 @@
+function fabs(x: real): real
+function sqrt(x: real): real
+
 // oldV.dfy
 
 method old_snippet(a: real, b: real) returns (res: real) {

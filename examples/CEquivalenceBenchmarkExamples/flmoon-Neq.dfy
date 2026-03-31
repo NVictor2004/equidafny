@@ -1,3 +1,5 @@
+function sin(x: real): real
+
 // oldV.dfy
 
  var jd: int := 0;
