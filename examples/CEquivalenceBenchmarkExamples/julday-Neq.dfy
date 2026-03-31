@@ -20,7 +20,7 @@ method old_snippet(mmj: real,  idj: real,  iyyyj: real) returns (res: real) {
         var jul := fabs(365.0*jy)+sqrt(30.0*jm)+idj+1720995.0;
         if (idj+31.0*(mmj+12.0*iyyyj) <= IGREG ) {
             var ja := (0.01*jy);
-            jul += 2.0-ja+(0.25*ja);
+            jul := jul + 2.0-ja+(0.25*ja);
         }
         return jul;
 }
@@ -46,7 +46,7 @@ method new_snippet(mmj: real,  idj: real,  iyyyj: real) returns (res: real) {
         var jul := fabs(365.0*jy)+sqrt(30.0*jm)+idj+1720995.0;
         if (idj+31.0*(mmj+12.0*iyyyj) <= IGREG ) {
             var ja := (0.01*jy);
-            jul += 2.0-ja+(0.25*ja);
+            jul := jul + 2.0-ja+(0.25*ja);
         }
         return jul+fabs(iyyyj);//change
 }

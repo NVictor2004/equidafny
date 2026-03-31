@@ -139,7 +139,7 @@ method old_snippet(x: real ) returns (res: real) {
               -0.64596409750621907082)*(x2) + -0.64596409750621907082)*(x2) + -0.64596409750621907082);
     }else {
 
-      x *= pi2_hi;
+      x := x * pi2_hi;
     }
 
     if (sign==1) 
@@ -303,7 +303,7 @@ method new_snippet(x: real ) returns (res: real) {
               -0.64596409750621907082)*(x2) + -0.64596409750621907082)*(x2) + -0.64596409750621907082);
     }else {
 
-      x *= pi2_hi;
+      x := x * pi2_hi;
     }
 
     if (sign==1) 

@@ -51,9 +51,9 @@ Vector3D old_normalize(Vector3D v){
   var t: float := v.x*v.x + v.y*v.y + v.z*v.z;
   if (t != 0 && t != 1) 
     var t := (float) (1 / sqrt(t));
-  v.x *= t;
-  v.y *= t;
-  v.z *= t;
+  v.x := x * t;
+  v.y := y * t;
+  v.z := z * t;
   return old_Vector3DConstructor(v.x, v.y, v.z);
 }
 Light old_LightConstructor(int type, Vector3D v, float r, float g, float b) {
@@ -150,9 +150,9 @@ Vector3D new_normalize(Vector3D v){
   var t: float := v.x*v.x + v.y*v.y + v.z*v.z;
   if (t != 0 && t != 1) 
     var t := (float) (1 / sqrt(t));
-  v.x *= t;
-  v.y *= t;
-  v.z *= t;
+  v.x := x * t;
+  v.y := y * t;
+  v.z := z * t;
   return new_Vector3DConstructor(v.x, v.y, v.z);
 }
 Light new_LightConstructor(int type, Vector3D v, float r, float g, float b) {

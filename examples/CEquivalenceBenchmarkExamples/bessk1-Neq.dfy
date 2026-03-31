@@ -18,7 +18,7 @@ method old_bessi1(x: real) returns (res: real){
 
         if ((ax=fabs(x)) < 3.75) {
             var y := x/3.75;
-            y*=y;
+            y := y * y;
             ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
                     +y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
         } else {
@@ -39,12 +39,12 @@ method new_snippet(x: real) returns (res: real) {
         if (x <= 2.0) {
             var y := x*x;
             var ans := (new_log(x/2.0)*new_bessi1(x))+(1.0*x)+(1.0+y*(0.15443144 +y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1 +y*(-0.110404e-2+y*(-0.4686e-4)))))));
-            ans+=2;//change
+            ans := ans + 2;//change
         }
         else {
             var y := 2.0/x;
             var ans := (1.25331414+y*(0.23498619 +y*(-0.3655620e-1+y*(0.1504268e-1+y*(-0.780353e-2 +y*(0.325614e-2+y*(-0.68245e-3)))))));
-            ans+=fabs(x);//change
+            ans := ans + fabs(x);//change
         }
         return ans+fabs(y);//change
 }
@@ -53,7 +53,7 @@ method new_bessi1(x: real) returns (res: real){
 
         if ((ax=fabs(x)) < 3.75) {
             var y := x/3.75;
-            y*=y;
+            y := y * y;
             ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
                     +y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
         } else {

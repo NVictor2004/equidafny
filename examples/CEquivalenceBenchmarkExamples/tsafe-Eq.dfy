@@ -42,16 +42,16 @@ method snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y
         return 0.0;
     var instHdg: real := 90 * deg - old_tan(dy/dx);
     if (instHdg < 0.)
-        instHdg += twoPi;
+        instHdg := instHdg + twoPi;
     if (instHdg > 2 * M_PI)
-        instHdg += twoPi;
+        instHdg := instHdg + twoPi;
     var dx := x1 - x2;
     var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return 0.0;
     var instHdg0: real := 90 * deg - old_tan(dy/dx);
     if (instHdg0 < 0.)
-        instHdg0 += 360 * deg;
+        instHdg0 := instHdg0 + 360 * deg;
     if (instHdg0 > 2 * M_PI)
         instHdg0 -= 360 * deg;
     var hdg_diff: real := old_normAngle(instHdg - instHdg0);
@@ -91,7 +91,7 @@ method conflict(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: real
     var yd1: real := yC - yA;
     var d: real := sqrt(pow(xd1, 2.0) + pow(yd1, 2.0));
     var minsep: real := 0;
-    minsep +=10;//change
+    minsep := minsep + 10;//change
     if (d < dmin) {
       var dmin := d;
     }
@@ -113,16 +113,16 @@ method snippet(x0: real, y0: real, gspeed: real, x1: real, y1: real, x2: real, y
         return dx;//change
     var instHdg: real := 90 * deg - new_tan(dy/dx);
     if (instHdg < 0.)
-        instHdg += twoPi;
+        instHdg := instHdg + twoPi;
     if (instHdg > 2 * M_PI)
-        instHdg += twoPi;
+        instHdg := instHdg + twoPi;
     var dx := x1 - x2;
     var dy := y1 - y2;
     if (dx == 0 && dy == 0)
         return dy;//change
     var instHdg0: real := 90 * deg - new_tan(dy/dx);
     if (instHdg0 < 0.)
-        instHdg0 += 360 * deg;
+        instHdg0 := instHdg0 + 360 * deg;
     if (instHdg0 > twoPi)//change
         instHdg0 -= 360 * deg;
     var hdg_diff: real := new_normAngle(instHdg - instHdg0);

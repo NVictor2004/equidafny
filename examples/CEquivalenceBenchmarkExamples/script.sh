@@ -10,26 +10,26 @@
 
 # perl -pi -e 's/bool (\w+)\s*\((.*?)\)/ "function $1(" . ($2 =~ s|(\w+)\s+(\w+)|$2: $1|gr) . "): bool" /ge' $1
 
-awk '
-  /\/\/ oldV.dfy/ { section="old"; print; next }
-  /\/\/ newV.dfy/ { section="new"; print; next }
+# awk '
+#   /\/\/ oldV.dfy/ { section="old"; print; next }
+#   /\/\/ newV.dfy/ { section="new"; print; next }
 
-  section=="old" { 
-      if ($0 !~ /(if|printf|fabs|sqrt|exp|sin|cos)\(/) {
-        gsub(/([a-zA-Z0-9_]+)\(/, "old_&");
-      }
-      print
-  }
+#   section=="old" { 
+#       if ($0 !~ /(if|printf|fabs|sqrt|exp|sin|cos)\(/) {
+#         gsub(/([a-zA-Z0-9_]+)\(/, "old_&");
+#       }
+#       print
+#   }
 
-  section=="new" { 
-      if ($0 !~ /(if|printf|fabs|sqrt|exp|sin|cos)\(/) {
-        gsub(/([a-zA-Z0-9_]+)\(/, "new_&");
-      }
-      print
-  }' $1 | sponge $1
+#   section=="new" { 
+#       if ($0 !~ /(if|printf|fabs|sqrt|exp|sin|cos)\(/) {
+#         gsub(/([a-zA-Z0-9_]+)\(/, "new_&");
+#       }
+#       print
+#   }' $1 | sponge $1
 
-sed -i -E 's/method old_(\w+)\(/method \1(/' $1
-sed -i -E 's/method new_(\w+)\(/method \1(/' $1
+sed -i -E 's/(\w+)\s*\*=\s*(\w+)/\1 := \1 * \2/' $1
+# sed -i -E 's/method new_(\w+)\(/method \1(/' $1
 
 # sed -i -E 's/function\s+(\w+)\s*\((.*?)\): (\w+)/method \1(\2) returns \(res: \3\)/' $1
 

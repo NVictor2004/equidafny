@@ -7,7 +7,7 @@ method old_snippet(x: real) returns (res: real) {
         var ax := fabs(x);
         if (ax < 3.75) {
             var y := x/3.75;
-            y*=y;
+            y := y * y;
             var ans := 1.0+y+(3.5156229+y*(3.0899424+y*(1.2067492+y*(0.2659732+y*(0.360768e-1+y*0.45813e-2)))));
         }
         else {
@@ -25,7 +25,7 @@ method new_snippet(x: real) returns (res: real) {
         var axRenamed := fabs(x);//change
         if (axRenamed < 3.75) {//change
             var y := x/3.75;
-            y*=y;
+            y := y * y;
             var ans := 1.0+y+(3.5156229+y*(3.0899424+y*(1.2067492+y*(0.2659732+y*(0.360768e-1+y*0.45813e-2)))));
         }
         else {

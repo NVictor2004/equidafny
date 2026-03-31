@@ -55,7 +55,7 @@ method new_snippet(psi1: real, vA: real, vC: real, xC0: real, yC0: real, psiC: r
     var yd1: real := yC - yA;
     var d: real := sqrt(pow(xd1, 2.0) + pow(yd1, 2.0));
     var minsep: real := 0;
-    minsep +=10;//change
+    minsep := minsep + 10;//change
     if (d < dmin) {
       var dmin := d;
     }

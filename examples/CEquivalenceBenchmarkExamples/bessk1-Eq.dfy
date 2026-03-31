@@ -18,7 +18,7 @@ method old_bessi1(x: real) returns (res: real){
 
         if ((ax=fabs(x)) < 3.75) {
             var y := x/3.75;
-            y*=y;
+            y := y * y;
             ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
                     +y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
         } else {
@@ -50,7 +50,7 @@ method new_bessi1(x: real) returns (res: real){
 
         if ((ax=fabs(x)) < 3.75) {
             var y := x/3.75;
-            y*=y;
+            y := y * y;
             ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
                     +y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
         } else {
