@@ -5,7 +5,7 @@ method old_foo(a: int, b: int) returns (res: int) {
 	  return 1;
 	return 0;
 }
-method old_main(void) returns (res: int) {
+method old_main() returns (res: int) {
 	var x: int := 2;
 	var y: int := 3;
 	var z: int := old_foo(x,y);
@@ -23,7 +23,7 @@ method new_foo(a: int, b: int) returns (res: int) {
 	  return 1;
 	return 0;
 }
-method new_main(void) returns (res: int) {
+method new_main() returns (res: int) {
 	var x: int := 2;
 	var y: int := 3;
 	var z: int := new_foo(x,y);

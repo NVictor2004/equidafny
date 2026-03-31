@@ -1,34 +1,26 @@
 // oldV.dfy
 
-var sum: real := 0;
-var sumOfSquares: real := 0;
-var mean: real := 0;
-var deviation: real := 0;
-var count: int := 0;
-method old_addValue(val: real) returns (res: Unit)
+method old_addValue(sum: real, sumOfSquares: real, mean: real, deviation: real, count: real, val: real) returns (
+  resSum: real, resSumOfSquares: real, resMean: real, resDeviation: real, resCount: real)
 {
-  count++;
-  printf("%s\n","stat ");
+  resCount := count + 1.0;
+  print("%s\n","stat ");
   var currentVal: real := val;
-  sum += currentVal;
-  sumOfSquares += currentVal * currentVal;
-  var mean := sum / count;
-  var deviation := sqrt( (sumOfSquares / count) - (mean * mean) );
+  resSum := sum + currentVal;
+  resSumOfSquares := sumOfSquares + (currentVal * currentVal);
+  resMean := resSum / resCount;
+  resDeviation := sqrt( (resSumOfSquares / resCount) - (resMean * resMean) );
 }
 // newV.dfy
 
-var sum: real := 0;
-var sumOfSquares: real := 0;
-var mean: real := 0;
-var deviation: real := 0;
-var count: int := 0;
-method new_addValue(val: real) returns (res: Unit)
+method new_addValue(sum: real, sumOfSquares: real, mean: real, deviation: real, count: real, val: real) returns (
+  resSum: real, resSumOfSquares: real, resMean: real, resDeviation: real, resCount: real)
 {
-  count++;
-  printf("%s\n","stat ");
+  resCount := count + 1.0;
+  print("%s\n","stat ");
   //var currentVal: real := val;
-  sum += val;//change
-  sumOfSquares += val * val;//change
-  var mean := sum / count;
-  var deviation := sqrt( (sumOfSquares / count) - (mean * mean) );
+  resSum := sum + val;//change
+  resSumOfSquares := sumOfSquares + (val * val);//change
+  resMean := resSum / resCount;
+  resDeviation := sqrt( (resSumOfSquares / resCount) - (resMean * resMean) );
 }
