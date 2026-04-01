@@ -6,11 +6,10 @@ function uniqR(lst: List<int>): List<int>
 function uniqA(lst: List<int>): List<int>
 {distinct(Nil, lst)}
 
-function distinct(a: List<int>, b: List<int>): List<int>
-decreases b
-{match b {
-case Nil => a
-case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a, Cons(hd, Nil)), tl)
+function find(lst: List<int>, n: int): bool
+{match lst {
+case Nil => false
+case Cons(hd, tl) => n == hd || find(tl, n)
 }
 }
 
@@ -21,17 +20,18 @@ case Cons(hd, tl) => a == hd || isin(a, tl)
 }
 }
 
+function distinct(a: List<int>, b: List<int>): List<int>
+decreases b
+{match b {
+case Nil => a
+case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a, Cons(hd, Nil)), tl)
+}
+}
+
 function unique(l: List<int>, r: List<int>): List<int>
 {match l {
 case Nil => r
 case Cons(hd, tl) => if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil))) else unique(tl, r)
-}
-}
-
-function find(lst: List<int>, n: int): bool
-{match lst {
-case Nil => false
-case Cons(hd, tl) => n == hd || find(tl, n)
 }
 }
 

@@ -3,14 +3,13 @@ package equivalence.expression
 import translation.structure.*
 
 import equivalence.program.functionEquivalence
-import equivalence.{expression => calledInModelArgs}
 
 def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = 
     (modelExpr, candidateExpr) match {
         case (FunctionCall(calledInModel, calledInModelArgs), FunctionCall(calledInCandidate, calledInCandidateArgs))
             if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name => {
-            val funcCalledInModel = program.helperFunctions.find(_.name == calledInModel).get
-            val funcCalledInCandidate = program.helperFunctions.find(_.name == calledInCandidate).get
+            val funcCalledInModel = program.helperFunctions(calledInModel)
+            val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
             val (lemma, helperLemmas, mapping) = functionEquivalence(funcCalledInModel, funcCalledInCandidate)
 
             val basicExprMap = mapping.map {
@@ -61,7 +60,7 @@ def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: Bas
 
             (Nil, List(modelParamIndex -> candParamIndex), Nil)
         }
-        case _ => (Nil, List(), Nil)
+        case _ => (Nil, Nil, Nil)
     }
 
 def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = {
@@ -87,8 +86,8 @@ def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: P
     var candIndicesLeft = (0 to candidateFunc.params.length - 1).filterNot(candIndicesCovered.contains(_))
 
     val typeMappings = modelIndicesLeft.map(modelIndex => {
-        val modelParam = modelFunc.params(modelIndex)
-        val candIndex = candIndicesLeft.find(i => candidateFunc.params(i).paramType == modelParam.paramType).get
+        val modelType = modelFunc.params(modelIndex).paramType
+        val candIndex = candIndicesLeft.find(i => candidateFunc.params(i).paramType == modelType).get
         candIndicesLeft = candIndicesLeft.filter(_ != candIndex)
         (modelIndex, candIndex)
     }).toList

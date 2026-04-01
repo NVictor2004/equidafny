@@ -29,7 +29,7 @@ case class Program(
     datatypes: List[Datatype],
     modelFunction: Function,
     candidateFunctions: List[Function],
-    helperFunctions: List[Function],
+    helperFunctions: Map[String, Function],
     mainLemmas: List[Lemma],
     helperLemmas: List[Lemma],
     auxiliaryLemmas: List[Lemma]

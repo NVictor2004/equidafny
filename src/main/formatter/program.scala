@@ -29,7 +29,7 @@ def formatProgram(
   datatypes.foreach(formatDatatype)
   formatFunction(modelFunction)
   candidateFunctions.foreach(formatFunction)
-  helperFunctions.foreach(formatFunction)
+  helperFunctions.values.foreach(formatFunction)
   mainLemma.foreach(formatLemma)
   helperLemmas.foreach(formatLemma)
   auxiliaryLemmas.foreach(formatLemma)

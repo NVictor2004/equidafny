@@ -33,17 +33,19 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     )
   }
 
-  val helperFunctions = functions.filterNot(function =>
+  val helperFunctionsList = functions.filterNot(function =>
     function.name == modelFunctionName || candidateFunctionNames.contains(
       function.name
     )
   )
 
+  val helperFunctionsMap = helperFunctionsList.map(func => (func.name, func)).toMap
+
   Program(
     data,
     modelFunction,
     candidateFunctions,
-    helperFunctions,
+    helperFunctionsMap,
     Nil,
     Nil,
     lemmas

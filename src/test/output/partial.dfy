@@ -12,23 +12,23 @@ x - eliminate_existsM((j: int) => j < x && maxNegPM(j, p)))
 if t then termF(x, p);
 f(x - 1, p) else x}
 
-ghost function maxNegP(p: int -> bool, j: int): bool
-{if p(j) then false else forall k :: !p(k) ==> (k <= j)}
-
-ghost function existsF<T(!new)>(p: T -> bool): bool
-{!forall t :: !p(t)}
-
-ghost function maxNegPM(j: int, p: int -> bool): bool
-{!p(j) && forall k :: !p(k) ==> (k <= j)}
-
 ghost function eliminate_existsM<T(!new)>(p: T -> bool): T
 requires (existsM(p))
 ensures (p(eliminate_existsM(p)))
 {var res :| p(res);
 res}
 
+ghost function maxNegP(p: int -> bool, j: int): bool
+{if p(j) then false else forall k :: !p(k) ==> (k <= j)}
+
+ghost function existsF<T(!new)>(p: T -> bool): bool
+{!forall t :: !p(t)}
+
 ghost function existsM<T(!new)>(p: T -> bool): bool
 {!forall t: T :: !p(t)}
+
+ghost function maxNegPM(j: int, p: int -> bool): bool
+{!p(j) && forall k :: !p(k) ==> (k <= j)}
 
 lemma fM_f_Equivalence(x: int, p: int -> bool)
 requires (!p(x) || existsM((j: int) => j < x && maxNegPM(j, p)))
