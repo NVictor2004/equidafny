@@ -35,5 +35,15 @@ ensures evalM(x, y) == eval1(x, y)
 lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures mul(x, y) == myMul(x, y)
+{{if (x == 0){}else {if (x > 0){add_myAdd_Equivalence(mul(x - 1, y), y);}else {sub_mySub_Equivalence(mul(x + 1, y), y);}}}}
+
+lemma add_myAdd_Equivalence(x: int, y: int)
+decreases (if (x <= 0) then -x else x)
+ensures add(x, y) == myAdd(x, y)
+{{}}
+
+lemma sub_mySub_Equivalence(x: int, y: int)
+decreases (if (x <= 0) then -x else x)
+ensures sub(x, y) == mySub(x, y)
 {{}}
 
