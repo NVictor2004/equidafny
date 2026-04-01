@@ -1,4 +1,4 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
 decreases length(l1) + length(l2)
@@ -49,7 +49,7 @@ case Cons(false, tl) => 2 * listToInt(tl)
 function norm(l1: List<bool>, l2: List<bool>, c: bool, res: List<bool>): int
 {listToInt(res)}
 
-function length<T>(l: List<T>): nat
+function length<A>(l: List<A>): nat
 {match l {
 case Nil => 0
 case Cons(_, t) => 1 + length(t)

@@ -1,4 +1,4 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function funnyZipM(xs: List<int>, ys: List<int>): List<int>
 decreases (xs)

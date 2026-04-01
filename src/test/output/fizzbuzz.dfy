@@ -1,6 +1,6 @@
 datatype Outcome = Fizz | Buzz | FizzBuzz | Number(n: int)
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function fizzBuzz2(to: int): List<Outcome>
 requires (0 <= to)
@@ -17,7 +17,7 @@ requires (0 <= to)
 function response1(n: int): Outcome
 {if n % 5 == 0 then if n % 3 == 0 then FizzBuzz() else Buzz() else if n % 3 == 0 then Fizz() else Number(n)}
 
-function mapf<T, U>(lst: List<T>, f: (T) -> U): List<U>
+function mapf<A, B>(lst: List<A>, f: (A) -> B): List<B>
 {match lst {
 case Nil => Nil
 case Cons(h, t) => Cons(f(h), mapf(t, f))

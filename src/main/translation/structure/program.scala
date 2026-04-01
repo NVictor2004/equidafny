@@ -3,7 +3,7 @@ package translation.structure
 case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
 case class Datatype(
     name: String,
-    generic: Option[List[(String, Option[GOption])]],
+    generic: List[(String, Option[GOption])],
     types: List[DeclaredType]
 )
 
@@ -11,7 +11,7 @@ case class Parameter(name: String, paramType: Type)
 case class Function(
     ghost: Boolean,
     name: String,
-    generic: Option[List[(String, Option[GOption])]],
+    generic: List[(String, Option[GOption])],
     params: List[Parameter],
     returnType: Type,
     specs: List[Spec],
@@ -19,7 +19,7 @@ case class Function(
 )
 case class Lemma(
     name: String,
-    generic: Option[List[(String, Option[GOption])]],
+    generic: List[(String, Option[GOption])],
     params: List[Parameter],
     specs: List[Spec],
     body: Option[BlockStmt]

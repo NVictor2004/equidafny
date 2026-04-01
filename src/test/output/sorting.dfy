@@ -1,4 +1,4 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function isSortedR(l: List<int>): bool
 {match l {

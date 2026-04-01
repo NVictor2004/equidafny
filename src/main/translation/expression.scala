@@ -125,7 +125,7 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     context.functionData.get(name) match {
       case None => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
       case Some(parameters) => {
-        val first = args(0).map(translateBasicExpr).zip(parameters).map((expr, parameter) => (parameter.name, expr))
+        val first = args(0).map(translateBasicExpr).zip(parameters).map((expr, name) => (name, expr))
         val rest = args.tail.map(_.map(expr => ("_", translateBasicExpr(expr))))
         TrueFunctionCall(name, first :: rest)
       }

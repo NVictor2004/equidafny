@@ -1,4 +1,4 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function maxR(l: seq<int>): int
 {if |l| == 0 then -1 else if |l| == 1 then l[0] else var m := maxR(l[1 ..]);
@@ -14,10 +14,10 @@ decreases |l|
 function bigger(a: int, b: int): int
 {if a >= b then a else b}
 
-function foldLeft<T, U>(f: (U, T) -> U, acc: U, l: seq<T>): U
+function foldLeft<A, B>(f: (B, A) -> B, acc: B, l: seq<A>): B
 {if |l| == 0 then acc else foldLeft(f, f(acc, l[0]), l[1 ..])}
 
-function length<T>(l: List<T>): nat
+function length<A>(l: List<A>): nat
 {match l {
 case Nil => 0
 case Cons(_, tl) => 1 + length(tl)

@@ -1,6 +1,6 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
-function replace<T(==)>(l1: List<T>, x: T, l2: List<T>): List<T>
+function replace<A(==)>(l1: List<A>, x: A, l2: List<A>): List<A>
 decreases (l1)
 {match l1 {
 case Nil() => Nil
@@ -8,10 +8,10 @@ case Cons(y, ys) => if x == y then append(l2, replace(ys, x, l2)) else Cons(y, r
 }
 }
 
-function slowReplace<T(==)>(l1: List<T>, x: T, l2: List<T>): List<T>
+function slowReplace<A(==)>(l1: List<A>, x: A, l2: List<A>): List<A>
 {join(split(l1, x), l2)}
 
-function join<T>(ll: List<List<T>>, l: List<T>): List<T>
+function join<A>(ll: List<List<A>>, l: List<A>): List<A>
 decreases (ll)
 {match ll {
 case Nil => Nil
@@ -20,7 +20,7 @@ case Cons(l1, ls) => append(append(l1, l), join(ls, l))
 }
 }
 
-function split<T(==)>(l: List<T>, x: T): List<List<T>>
+function split<A(==)>(l: List<A>, x: A): List<List<A>>
 decreases (l)
 {match l {
 case Nil => Cons(Nil, Nil)
@@ -29,7 +29,7 @@ Cons(Cons(y, r.head), r.tail)
 }
 }
 
-function append<T>(l1: List<T>, l2: List<T>): List<T>
+function append<A>(l1: List<A>, l2: List<A>): List<A>
 decreases (l1)
 {match l1 {
 case Nil() => l2
@@ -37,7 +37,7 @@ case Cons(hd, tl) => Cons(hd, append(tl, l2))
 }
 }
 
-lemma replace_slowReplace_Equivalence<T(==)>(l1: List<T>, x: T, l2: List<T>)
+lemma replace_slowReplace_Equivalence<A(==)>(l1: List<A>, x: A, l2: List<A>)
 decreases (l1)
 ensures replace(l1, x, l2) == slowReplace(l1, x, l2)
 {{}}

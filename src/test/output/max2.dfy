@@ -1,4 +1,4 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function maxM(lst: List<int>): int
 decreases (lst)
@@ -50,7 +50,7 @@ case Cons(hd, tl) => if (hd > max1(tl)) then hd else max1(tl)
 }
 }
 
-function length<T>(l: List<T>): nat
+function length<A>(l: List<A>): nat
 decreases (l)
 {match l {
 case Nil => 0

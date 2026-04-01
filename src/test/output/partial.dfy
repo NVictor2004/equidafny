@@ -12,7 +12,7 @@ x - eliminate_existsM((j: int) => j < x && maxNegPM(j, p)))
 if t then termF(x, p);
 f(x - 1, p) else x}
 
-ghost function eliminate_existsM<T(!new)>(p: T -> bool): T
+ghost function eliminate_existsM<A(!new)>(p: A -> bool): A
 requires (existsM(p))
 ensures (p(eliminate_existsM(p)))
 {var res :| p(res);
@@ -21,11 +21,11 @@ res}
 ghost function maxNegP(p: int -> bool, j: int): bool
 {if p(j) then false else forall k :: !p(k) ==> (k <= j)}
 
-ghost function existsF<T(!new)>(p: T -> bool): bool
+ghost function existsF<A(!new)>(p: A -> bool): bool
 {!forall t :: !p(t)}
 
-ghost function existsM<T(!new)>(p: T -> bool): bool
-{!forall t: T :: !p(t)}
+ghost function existsM<A(!new)>(p: A -> bool): bool
+{!forall t: A :: !p(t)}
 
 ghost function maxNegPM(j: int, p: int -> bool): bool
 {!p(j) && forall k :: !p(k) ==> (k <= j)}

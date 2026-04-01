@@ -41,9 +41,9 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   val Datatype(name, generic, types) = datatype
 
   writer.format("datatype %s", name)
-  generic.foreach(typeList =>
-    formatBrackets("<", formatList(typeList, formatGeneric), ">")
-  )
+  if (generic != Nil) {
+    formatBrackets("<", formatList(generic, formatGeneric), ">")
+  }
   writer.print(" = ")
   formatList(types, formatDeclaredType, " | ")
   writer.print("\n\n")
@@ -84,9 +84,11 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
   if (ghost) writer.print("ghost ")
 
   writer.format("function %s", name)
-  generic.foreach(typeList =>
-    formatBrackets("<", formatList(typeList, formatGeneric), ">")
-  )
+
+  if (generic != Nil) {
+    formatBrackets("<", formatList(generic, formatGeneric), ">")
+  }
+
   formatBrackets("(", formatList(params, formatParameter), ")")
   writer.print(": ")
   formatType(returnType)
@@ -114,9 +116,10 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
 
   writer.format("%s", name)
 
-  generic.foreach(typeList =>
-    formatBrackets("<", formatList(typeList, formatGeneric), ">")
-  )
+  if (generic != Nil) {
+    formatBrackets("<", formatList(generic, formatGeneric), ">")
+  }
+
   formatBrackets("(", formatList(params, formatParameter), ")")
 
   writer.println("")

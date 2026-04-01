@@ -10,7 +10,7 @@ private def lookup[A, B](data: List[(A, B)], key: A): B =
 def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = 
     (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-            if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name => {
+            if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModelArgs.map(_.length).sum == calledInCandidateArgs.map(_.length).sum => {
             // Generate Equivalence data for the called functions
             val funcCalledInModel = program.helperFunctions(calledInModel)
             val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
