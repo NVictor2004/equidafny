@@ -24,15 +24,11 @@ def functionEquivalence(
   val (helperLemmas, mapping, stmts) = mergeFunction(model, candidate)
   val mappingMap = mapping.map((a, b) => (b, a)).toMap
 
-  val modelIdents = model.params.map(p => Ident(p.name, Nil))
+  val modelIdents = model.params.map(_.name)
+  val candidateIdents = candidate.params.map(param => mappingMap(param.name))
 
-  val candidateIdents = 
-    if (mapping.length == modelIdents.length)
-      then candidate.params.map(param => Ident(mappingMap(param.name), Nil))
-      else modelIdents
-
-  val modelMap = model.params.zip(modelIdents).map((p, i) => (p.name, i))
-  val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p.name, i))
+  val modelMap = model.params.zip(modelIdents).map((p, i) => (p.name, Ident(i, Nil)))
+  val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p.name, Ident(i, Nil)))
 
   val equiv = Lemma(
     s"${model.name}_${candidate.name}_Equivalence",
@@ -43,14 +39,8 @@ def functionEquivalence(
         Ensures(
           Binary(
             Eq,
-            TrueFunctionCall(
-              model.name,
-              List(modelMap)
-            ),
-            TrueFunctionCall(
-              candidate.name,
-              List(candMap)
-            )
+            TrueFunctionCall(model.name, List(modelMap)),
+            TrueFunctionCall(candidate.name, List(candMap))
           )
         )
       ),

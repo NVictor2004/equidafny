@@ -41,5 +41,5 @@ lemma isHeapM_isHeap_Equivalence(a: seq<int>, N: int, i: int)
 requires (i >= 0 && i < N && N <= |a| && N <= 100000)
 decreases (N - i)
 ensures isHeapM(a, N, i) == isHeap(a, N, i)
-{{var l := leftM(i);var r := rightM(i);var isHeapL := l < N && isHeapM(a, N, l);var isHeapR := r < N && isHeapM(a, N, r);}}
+{{}}
 

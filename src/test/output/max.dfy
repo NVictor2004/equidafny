@@ -30,5 +30,5 @@ ensures maxR(l) == maxT(l)
 
 lemma maxR_maxC_Equivalence(l: seq<int>)
 ensures maxR(l) == maxC(l)
-{{if |l| == 0{}else {if |l| == 1{}else {var m := maxR(l[1 ..]);}}}}
+{{}}
 
