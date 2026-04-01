@@ -9,14 +9,15 @@ import translation.index.translateIndex
 import translation.structure.BinaryOperator.*
 import translation.structure.UnaryOperator.*
 import translation.structure.Quantifier.*
+import translation.translation.Context
 
-def translateExpr(expr: Parsers.ExprBlock): ExprBlock = {
+def translateExpr(expr: Parsers.ExprBlock)(using Context): ExprBlock = {
   val extendedExprs = expr.extendedExprs.map(translateExtendedExpr)
   val basicExpr = translateBasicExpr(expr.basicExpr)
   ExprBlock(extendedExprs, basicExpr)
 }
 
-def translateExtendedExpr(expr: Parsers.ExtendedExpr): ExtendedExpr =
+def translateExtendedExpr(expr: Parsers.ExtendedExpr)(using Context): ExtendedExpr =
   expr match {
     case Parsers.MethodCall(name, args) =>
       MethodCall(name, args.map(translateBasicExpr))
@@ -44,7 +45,7 @@ def translateLiteralExpr(literal: Parsers.LiteralExpr): LiteralExpr =
     case Parsers.Null                 => Null
   }
 
-def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
+def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicExpr = expr match {
   case literal: Parsers.LiteralExpr  => translateLiteralExpr(literal)
   case Parsers.Ident(name, suffixes) => Ident(name, suffixes)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
@@ -120,8 +121,16 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
       translateExpr(thenBranch),
       translateExpr(elseBranch)
     )
-  case Parsers.FunctionCall(name, args) =>
-    FunctionCall(name, args.map(_.map(translateBasicExpr)))
+  case Parsers.FunctionCall(name, args) => {
+    context.functionData.get(name) match {
+      case None => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
+      case Some(parameters) => {
+        val first = args(0).map(translateBasicExpr).zip(parameters).map((expr, parameter) => (parameter.name, expr))
+        val rest = args.tail.map(_.map(expr => ("_", translateBasicExpr(expr))))
+        TrueFunctionCall(name, first :: rest)
+      }
+    }
+  }
   case Parsers.LambdaCall(Parsers.Lambda(lvalues, body), args) =>
     LambdaCall(translateLambda(lvalues, body), args.map(translateBasicExpr))
   case Parsers.Match(expr, cases) =>
@@ -141,7 +150,7 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
 def translateLambda(
     lvalues: List[(String, Option[Parsers.Type])],
     body: Parsers.ExprBlock
-): Lambda = Lambda(
+)(using Context): Lambda = Lambda(
   lvalues.map { case (name, tpeOpt) => (name, tpeOpt.map(translateType)) },
   translateExpr(body)
 )

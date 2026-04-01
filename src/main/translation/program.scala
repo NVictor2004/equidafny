@@ -6,10 +6,21 @@ import translation.expression.translateExpr
 import translation.types.translateType
 import translation.specification.translateSpec
 import translation.statement.translateBlockStmt
+import translation.translation.Context
 
 import ujson.Value
 
 def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
+
+  val functionData = prog.collect {
+    case Parsers.Function(name, _, params, _, _, _) => 
+      name -> params.map { case Parsers.Parameter(name, paramType) =>
+          Parameter(name, translateType(paramType))
+        }
+  }.toMap
+
+  given context: Context = Context(functionData)
+
   val (data, functions, lemmas) =
     prog.foldLeft((Nil, Nil, Nil))(translateTopLevel)
 
@@ -80,7 +91,7 @@ def translateTopLevel(
         lemmas: List[Lemma]
     ),
     toplevel: Parsers.TopLevel
-): (List[Datatype], List[Function], List[Lemma]) =
+)(using Context): (List[Datatype], List[Function], List[Lemma]) =
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
       val item = Datatype(

@@ -4,32 +4,26 @@ import translation.structure.*
 
 import equivalence.program.functionEquivalence
 
-def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = 
+private def lookup[A, B](data: List[(A, B)], key: A): B =
+    data.find((a, _) => a == key).get._2
+
+def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = 
     (modelExpr, candidateExpr) match {
-        case (FunctionCall(calledInModel, calledInModelArgs), FunctionCall(calledInCandidate, calledInCandidateArgs))
+        case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
             if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name => {
             val funcCalledInModel = program.helperFunctions(calledInModel)
             val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
             val (lemma, helperLemmas, mapping) = functionEquivalence(funcCalledInModel, funcCalledInCandidate)
 
             val basicExprMap = mapping.map {
-                case (modelIndex, candidateIndex) => calledInModelArgs(0)(modelIndex) -> calledInCandidateArgs(0)(candidateIndex)
+                case (modelName, candName) => lookup(calledInModelArgs(0), modelName) -> lookup(calledInCandidateArgs(0), candName)
             }
 
-            val identMap = basicExprMap.collect {
+            val finalMapping = basicExprMap.collect {
                 case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
             }
 
-            val finalMapping = identMap.map {
-                case (modelIdent, candIdent) => {
-                    val modelParamIndex = modelFunc.params.indexWhere(_.name == modelIdent)
-                    val candParamIndex = candidateFunc.params.indexWhere(_.name == candIdent)
-
-                    (modelParamIndex, candParamIndex)
-                }
-            }
-
-            val finalStmt = CallStmt(lemma.name, calledInModelArgs)
+            val finalStmt = CallStmt(lemma.name, calledInModelArgs.map(_.map((_, expr) => expr).toList))
 
             (lemma :: helperLemmas, finalMapping, List(finalStmt))
         }
@@ -55,15 +49,12 @@ def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: Bas
             }
         }
         case (Ident(modelName, Nil), Ident(candName, Nil)) => {
-            val modelParamIndex = modelFunc.params.indexWhere(_.name == modelName)
-            val candParamIndex = candidateFunc.params.indexWhere(_.name == candName)
-
-            (Nil, List(modelParamIndex -> candParamIndex), Nil)
+            (Nil, List(modelName -> candName), Nil)
         }
         case _ => (Nil, Nil, Nil)
     }
 
-def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = {
+def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = {
     val ExprBlock(modelExtended, modelBasic) = modelExprBlock
     val ExprBlock(_, candBasic) = candidateExprBlock
 
@@ -76,20 +67,19 @@ def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExpr
     (lemmas, mappings, modelVariables ++ stmts)
 }
 
-def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = {
+def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = {
     val (lemmas, mappings, stmts) = mergeExprBlock(modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 
-    val modelIndicesCovered = mappings.map(_._1)
-    val candIndicesCovered = mappings.map(_._2)
+    val modelParamsCovered = mappings.map(_._1)
+    val candParamsCovered = mappings.map(_._2)
 
-    val modelIndicesLeft = (0 to modelFunc.params.length - 1).filterNot(modelIndicesCovered.contains(_))
-    var candIndicesLeft = (0 to candidateFunc.params.length - 1).filterNot(candIndicesCovered.contains(_))
+    val modelParamsLeft = modelFunc.params.filterNot(param => modelParamsCovered.contains(param.name))
+    var candParamsLeft = candidateFunc.params.filterNot(param => candParamsCovered.contains(param.name))
 
-    val typeMappings = modelIndicesLeft.map(modelIndex => {
-        val modelType = modelFunc.params(modelIndex).paramType
-        val candIndex = candIndicesLeft.find(i => candidateFunc.params(i).paramType == modelType).get
-        candIndicesLeft = candIndicesLeft.filter(_ != candIndex)
-        (modelIndex, candIndex)
+    val typeMappings = modelParamsLeft.map(modelParameter => {
+        val candParam = candParamsLeft.find(param => param.paramType == modelParameter.paramType).get
+        candParamsLeft = candParamsLeft.filter(_ != candParam)
+        (modelParameter.name, candParam.name)
     }).toList
 
     (lemmas, mappings ++ typeMappings, stmts)

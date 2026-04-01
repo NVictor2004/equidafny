@@ -4,8 +4,9 @@ import parsers.structure as Parsers
 import translation.structure.*
 import translation.expression.translateBasicExpr
 import translation.pattern.translatePattern
+import translation.translation.Context
 
-def translateStmt(stmt: Parsers.Stmt): Stmt = stmt match {
+def translateStmt(stmt: Parsers.Stmt)(using Context): Stmt = stmt match {
   case Parsers.CondStmt(cond, Parsers.BlockStmt(stmts), elseBranch) =>
     CondStmt(
       translateBasicExpr(cond),
@@ -31,12 +32,12 @@ def translateStmt(stmt: Parsers.Stmt): Stmt = stmt match {
     translateBlockStmt(stmts)
 }
 
-def translateBlockStmt(stmts: List[Parsers.Stmt]): BlockStmt =
+def translateBlockStmt(stmts: List[Parsers.Stmt])(using Context): BlockStmt =
   BlockStmt(stmts.map(translateStmt))
 
 def translateElseBranch(
     branch: Parsers.CondStmt | Parsers.BlockStmt
-): CondStmt | BlockStmt = branch match {
+)(using Context): CondStmt | BlockStmt = branch match {
   case Parsers.CondStmt(cond, Parsers.BlockStmt(stmts), elseBranch) =>
     CondStmt(
       translateBasicExpr(cond),

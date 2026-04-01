@@ -95,7 +95,13 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       writer.print(" else ")
       formatExpr(elseBranch)
     }
-    case FunctionCall(name, args) => {
+    case TrueFunctionCall(name, args) => {
+      writer.format("%s", name)
+      args.foreach(argList =>
+        formatBrackets("(", formatList(argList.map(_._2), formatBasicExpr), ")")
+      )
+    }
+    case OtherFunctionCall(name, args) => {
       writer.format("%s", name)
       args.foreach(argList =>
         formatBrackets("(", formatList(argList, formatBasicExpr), ")")

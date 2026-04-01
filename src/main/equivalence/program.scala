@@ -3,7 +3,6 @@ package equivalence.program
 import translation.structure.*
 import translation.structure.BinaryOperator.*
 
-// import equivalence.expression.convertExprBlock
 import equivalence.expression.mergeFunction
 
 def programEquivalence(program: Program): Program = {
@@ -21,15 +20,19 @@ def programEquivalence(program: Program): Program = {
 def functionEquivalence(
     model: Function,
     candidate: Function
-)(using program: Program): (Lemma, List[Lemma], List[(Int, Int)]) = {
-
+)(using program: Program): (Lemma, List[Lemma], List[(String, String)]) = {
   val (helperLemmas, mapping, stmts) = mergeFunction(model, candidate)
+  val mappingMap = mapping.map((a, b) => (b, a)).toMap
 
   val modelIdents = model.params.map(p => Ident(p.name, Nil))
 
-  val candidateIdents = if (mapping.length == modelIdents.length) then mapping.sortBy(_._2).map {
-    case (modelIndex, _) => modelIdents(modelIndex)
-  } else modelIdents
+  val candidateIdents = 
+    if (mapping.length == modelIdents.length)
+      then candidate.params.map(param => Ident(mappingMap(param.name), Nil))
+      else modelIdents
+
+  val modelMap = model.params.zip(modelIdents).map((p, i) => (p.name, i))
+  val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p.name, i))
 
   val equiv = Lemma(
     s"${model.name}_${candidate.name}_Equivalence",
@@ -40,13 +43,13 @@ def functionEquivalence(
         Ensures(
           Binary(
             Eq,
-            FunctionCall(
+            TrueFunctionCall(
               model.name,
-              List(modelIdents)
+              List(modelMap)
             ),
-            FunctionCall(
+            TrueFunctionCall(
               candidate.name,
-              List(candidateIdents)
+              List(candMap)
             )
           )
         )

@@ -48,7 +48,9 @@ case class Tuple(elements: List[BasicExpr]) extends BasicExpr
 case class Brackets(expr: BasicExpr) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
-case class FunctionCall(name: String, args: List[List[BasicExpr]])
+case class TrueFunctionCall(name: String, args: List[List[(String, BasicExpr)]])
+    extends BasicExpr
+case class OtherFunctionCall(name: String, args: List[List[BasicExpr]])
     extends BasicExpr
 case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
 case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)])
