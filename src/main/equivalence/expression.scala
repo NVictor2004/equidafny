@@ -65,11 +65,16 @@ def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: Bas
     }
 
 def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = {
-    // Ignore extended expressions for now
-    val ExprBlock(_, modelBasic) = modelExprBlock
-    val ExprBlock(_, candidateBasic) = candidateExprBlock
+    val ExprBlock(modelExtended, modelBasic) = modelExprBlock
+    val ExprBlock(_, candBasic) = candidateExprBlock
 
-    mergeBasicExpr(modelBasic, modelFunc, candidateBasic, candidateFunc)
+    val modelVariables = modelExtended.collect {
+        case Let(left, right) => LetStmt(left.map(_._1), right)
+    }
+
+    val (lemmas, mappings, stmts) = mergeBasicExpr(modelBasic, modelFunc, candBasic, candidateFunc)
+
+    (lemmas, mappings, modelVariables ++ stmts)
 }
 
 def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: Program): (List[Lemma], List[(Int, Int)], List[Stmt]) = {

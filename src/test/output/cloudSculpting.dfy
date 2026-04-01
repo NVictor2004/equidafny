@@ -36,5 +36,5 @@ lemma leVraiSculpteurDeNuageM_leVraiSculpteurDeNuage_Equivalence<A, B, C>(a: A, 
 requires (fuel >= 0)
 decreases (fuel)
 ensures leVraiSculpteurDeNuageM(a, b, c, fuel, i1, i2, i3, a2b, b2c, c2a) == leVraiSculpteurDeNuage(b2c, b, c, fuel, a2b, i2, a, i3, i1, c2a)
-{{}}
+{{if (fuel == 0){}else {var (ii1, ii2, ii3) := mixmashM(i1, i2, i3);}}}
 

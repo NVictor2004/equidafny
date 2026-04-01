@@ -38,7 +38,11 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
     writer.print(";")
   }
   case LetStmt(left, right) => {
-    writer.format("var %s := ", left.mkString("(", ", ", ")"))
+    if (left.length == 1) {
+      writer.format("var %s := ", left(0))
+    } else {
+      writer.format("var %s := ", left.mkString("(", ", ", ")"))
+    }
     formatBasicExpr(right)
     writer.print(";")
   }
