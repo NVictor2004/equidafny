@@ -20,7 +20,7 @@ private val dafnyPath =
   os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp"
 private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
-private val VerifiedDirs = Set("automatic", "helperEquivalence")
+private val VerifiedDirs = Set("automatic", "helperEquivalence", "termination")
 
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
   scalaExamples.foreach(jsonExample =>
