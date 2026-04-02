@@ -9,7 +9,7 @@ def programEquivalence(program: Program): Program = {
   given Program = program
 
   val data = program.candidateFunctions.map(
-    functionEquivalence(program.modelFunction, _)
+    functionEquivalence(Map(), program.modelFunction, _)
   )
   program.copy(
     mainLemmas = program.mainLemmas ++ data.map(_._1._2),
@@ -18,10 +18,11 @@ def programEquivalence(program: Program): Program = {
 }
 
 def functionEquivalence(
+    currentLemmas: Map[String, Lemma], 
     model: Function,
     candidate: Function
 )(using program: Program): ((String, Lemma), Map[String, Lemma], List[(String, String)]) = {
-  val (helperLemmas, mapping, stmts) = mergeFunction(model, candidate)
+  val (helperLemmas, mapping, stmts) = mergeFunction(currentLemmas, model, candidate)
   val mappingMap = mapping.map((a, b) => (b, a)).toMap
 
   val modelIdents = model.params.map(_.name)

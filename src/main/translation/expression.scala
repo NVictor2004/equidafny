@@ -116,10 +116,12 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     )
 
   // TODO: Move to optimisation pass?
+  // If statements can sometimes provide preconditions for function calls
+  // Therefore, that will need to be dealt with
   case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false))) => 
     Binary(BoolAnd, translateBasicExpr(cond), translateBasicExpr(thenBranch))
-  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true))) => 
-    Binary(BoolOr, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(thenBranch))
+  // case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true))) => 
+  //   Binary(BoolOr, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(thenBranch))
   case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false)), Parsers.ExprBlock(Nil, elseBranch)) => 
     Binary(BoolAnd, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(elseBranch))
   case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true)), Parsers.ExprBlock(Nil, elseBranch)) => 
