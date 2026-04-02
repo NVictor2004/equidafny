@@ -9,9 +9,9 @@ def formatPattern(pattern: Pattern)(using writer: Formatter): Unit =
     case UnNamed             => writer.format("_")
     case Basic(name, values) => {
       writer.format(name)
-      values.foreach(list =>
-        formatBrackets("(", formatList(list, formatPattern), ")")
-      )
+      if (values != Nil) {
+        formatBrackets("(", formatList(values, formatPattern), ")")
+      }
     }
     case Constant(value)        => formatLiteral(value)
     case PatternTuple(elements) =>

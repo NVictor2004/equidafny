@@ -13,7 +13,7 @@ decreases (rank(stream))
 {match stream {
 case SCons(_, tfun, sz) => var tail := tfun();
 ((rank(tail) < sz) && finite(tail))
-case SNil() => true
+case SNil => true
 }
 }
 

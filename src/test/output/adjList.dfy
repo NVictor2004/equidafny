@@ -21,7 +21,7 @@ case Nil => true
 function validListM(list: List<int>, N: int): bool
 requires (N >= 1)
 {match list {
-case Nil() => true
+case Nil => true
 case Cons(h, t) => (((h >= 0) && (h < N)) && validListM(t, N))
 }
 }

@@ -3,7 +3,7 @@ datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 function replace<A(==)>(l1: List<A>, x: A, l2: List<A>): List<A>
 decreases (l1)
 {match l1 {
-case Nil() => Nil
+case Nil => Nil
 case Cons(y, ys) => if (x == y) then append(l2, replace(ys, x, l2)) else Cons(y, replace(ys, x, l2))
 }
 }
@@ -32,7 +32,7 @@ Cons(Cons(y, r.head), r.tail)
 function append<A>(l1: List<A>, l2: List<A>): List<A>
 decreases (l1)
 {match l1 {
-case Nil() => l2
+case Nil => l2
 case Cons(hd, tl) => Cons(hd, append(tl, l2))
 }
 }
