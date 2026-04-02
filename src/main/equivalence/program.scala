@@ -12,15 +12,15 @@ def programEquivalence(program: Program): Program = {
     functionEquivalence(program.modelFunction, _)
   )
   program.copy(
-    mainLemmas = program.mainLemmas ++ data.map(_._1),
-    helperLemmas = program.helperLemmas ++ data.flatMap(_._2)
+    mainLemmas = program.mainLemmas ++ data.map(_._1._2),
+    helperLemmas = program.helperLemmas ++ data.flatMap(_._2.values)
   )
 }
 
 def functionEquivalence(
     model: Function,
     candidate: Function
-)(using program: Program): (Lemma, List[Lemma], List[(String, String)]) = {
+)(using program: Program): ((String, Lemma), Map[String, Lemma], List[(String, String)]) = {
   val (helperLemmas, mapping, stmts) = mergeFunction(model, candidate)
   val mappingMap = mapping.map((a, b) => (b, a)).toMap
 
@@ -46,5 +46,5 @@ def functionEquivalence(
       ),
     Some(BlockStmt(stmts))
   )
-  (equiv, helperLemmas, mapping)
+  ((model.name, equiv), helperLemmas, mapping)
 }

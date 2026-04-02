@@ -7,7 +7,7 @@ import equivalence.program.functionEquivalence
 private def lookup[A, B](data: List[(A, B)], key: A): B =
     data.find((a, _) => a == key).get._2
 
-def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = 
+def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = 
     (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
             if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModelArgs.map(_.length).sum == calledInCandidateArgs.map(_.length).sum => {
@@ -25,9 +25,9 @@ def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: Bas
             }
 
             // Call the generated helper equivalence lemma
-            val finalStmt = CallStmt(lemma.name, calledInModelArgs.map(_.map((_, expr) => expr).toList))
+            val finalStmt = CallStmt(lemma._2.name, calledInModelArgs.map(_.map((_, expr) => expr).toList))
 
-            (lemma :: helperLemmas, finalMapping, List(finalStmt))
+            (helperLemmas + lemma, finalMapping, List(finalStmt))
         }
         case (Cond(modelCond, modelThen, modelElse), Cond(candidateCond, candidateThen, candidateElse)) => {
             val (condHelpers, condMappings, condStmts) = mergeBasicExpr(modelCond, modelFunc, candidateCond, candidateFunc)
@@ -44,19 +44,24 @@ def mergeBasicExpr(modelExpr: BasicExpr, modelFunc: Function, candidateExpr: Bas
         }
         case (Tuple(modelElements), Tuple(candElements)) if modelElements.length == candElements.length => {
             val data = modelElements.zip(candElements).map((modelElem, candElem) => mergeBasicExpr(modelElem, modelFunc, candElem, candidateFunc))
-            data.foldLeft((List(), List(), List())) {
+            data.foldLeft((Map(), List(), List())) {
                 case ((accHelpers, accMappings, accStmts), (helpers, mappings, stmts)) => (
                     accHelpers ++ helpers, accMappings ++ mappings, accStmts ++ stmts
                 )
             }
         }
-        case (Ident(modelName, Nil), Ident(candName, Nil)) => {
-            (Nil, List(modelName -> candName), Nil)
+        case (Binary(modelOp, modelLeft, modelRight), Binary(candOp, candLeft, candRight)) if modelOp == candOp => {
+            val (leftLemmas, leftMappings, leftStmts) = mergeBasicExpr(modelLeft, modelFunc, candLeft, candidateFunc)
+            val (rightLemmas, rightMappings, rightStmts) = mergeBasicExpr(modelRight, modelFunc, candRight, candidateFunc)
+            (leftLemmas ++ rightLemmas, leftMappings ++ rightMappings, leftStmts ++ rightStmts)
         }
-        case _ => (Nil, Nil, Nil)
+        case (Ident(modelName, Nil), Ident(candName, Nil)) => {
+            (Map(), List(modelName -> candName), Nil)
+        }
+        case _ => (Map(), Nil, Nil)
     }
 
-def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = {
+def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = {
     val ExprBlock(modelExtended, modelBasic) = modelExprBlock
     val ExprBlock(_, candBasic) = candidateExprBlock
 
@@ -72,7 +77,7 @@ def mergeExprBlock(modelExprBlock: ExprBlock, modelFunc: Function, candidateExpr
     (lemmas, mappings, modelVariables ++ stmts)
 }
 
-def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: Program): (List[Lemma], List[(String, String)], List[Stmt]) = {
+def mergeFunction(modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = {
     // Mappings are generated through merging the function bodys and through type matching
     val (lemmas, mappings, stmts) = mergeExprBlock(modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 

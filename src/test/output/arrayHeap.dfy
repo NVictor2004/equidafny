@@ -35,5 +35,11 @@ var isHeapR := ((r < N) && isHeapM(a, N, r));
 lemma childrenAreHeapsM_childrenAreHeaps_Equivalence(a: seq<int>, N: int, i: int)
 requires ((((i >= 0) && (i < N)) && (N <= |a|)) && (N <= 100000))
 ensures (childrenAreHeapsM(a, N, i) == childrenAreHeaps(a, N, i))
+{{var l := leftM(i);var r := rightM(i);if ((l < N) && (r < N)){isHeapM_isHeap_Equivalence(a, N, l);isHeapM_isHeap_Equivalence(a, N, r);}else {isHeapM_isHeap_Equivalence(a, N, l);}}}
+
+lemma isHeapM_isHeap_Equivalence(a: seq<int>, N: int, i: int)
+requires ((((i >= 0) && (i < N)) && (N <= |a|)) && (N <= 100000))
+decreases ((N - i))
+ensures (isHeapM(a, N, i) == isHeap(a, N, i))
 {{}}
 
