@@ -129,7 +129,13 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
   //   Binary(BoolAnd, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(elseBranch))
   // case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true)), Parsers.ExprBlock(Nil, elseBranch)) => 
   //   Binary(BoolOr, translateBasicExpr(cond), translateBasicExpr(elseBranch))
-  
+  case Parsers.Cond(Parsers.Not(cond), thenBranch, elseBranch) => 
+    Cond(
+      translateBasicExpr(cond),
+      translateExpr(elseBranch),
+      translateExpr(thenBranch)
+    )
+
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(
       translateBasicExpr(cond),

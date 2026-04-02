@@ -3,6 +3,7 @@ package equivalence.expression
 import translation.structure.*
 
 import equivalence.program.functionEquivalence
+import equivalence.pattern.getIdentsFromPattern
 
 private def lookup[A, B](data: List[(A, B)], key: A): B =
     data.find((a, _) => a == key).get._2
@@ -77,10 +78,12 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
         // TODO: When they have the same number, but are in a different order
         case (Match(modelExpr, modelCases), Match(candExpr, candCases)) if modelCases.length == candCases.length => {
             val (exprLemmas, exprMappings, exprStmts) = mergeBasicExpr(currentLemmas, modelExpr, modelFunc, candExpr, candidateFunc)
-            val (finalLemmas, finalMappings, stmts) = modelCases.map(_._2).zip(candCases.map(_._2)).foldLeft(((exprLemmas, exprMappings, List[List[Stmt]]()))) {
-                case ((accLemmas, accMappings, accStmts), (modelExprBlock, candExprBlock)) => {
+            val (finalLemmas, finalMappings, stmts) = modelCases.zip(candCases).foldLeft(((exprLemmas, exprMappings, List[List[Stmt]]()))) {
+                case ((accLemmas, accMappings, accStmts), ((modelPattern, modelExprBlock), (_, candExprBlock))) => {
                     val (lemmas, mappings, stmts) = mergeExprBlock(accLemmas, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
-                    (lemmas, accMappings ++ mappings, accStmts :+ stmts)
+                    val identsInModelPattern = getIdentsFromPattern(modelPattern)
+                    val filteredMappings = mappings.filterNot((model, _) => identsInModelPattern.contains(model))
+                    (lemmas, accMappings ++ filteredMappings, accStmts :+ stmts)
                 }
             }
             val allEmpty = stmts.foldLeft(true)((acc, stmts) => acc && stmts.isEmpty)

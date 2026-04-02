@@ -31,7 +31,7 @@ case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a,
 function unique(l: List<int>, r: List<int>): List<int>
 {match l {
 case Nil => r
-case Cons(hd, tl) => if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil))) else unique(tl, r)
+case Cons(hd, tl) => if find(r, hd) then unique(tl, r) else unique(tl, append(r, Cons(hd, Nil)))
 }
 }
 
@@ -46,7 +46,15 @@ lemma uniqR_uniqA_Equivalence(lst: List<int>)
 ensures (uniqR(lst) == uniqA(lst))
 {{unique_distinct_Equivalence(lst, Nil);}}
 
+lemma find_isin_Equivalence(lst: List<int>, n: int)
+ensures (find(lst, n) == isin(n, lst))
+{{}}
+
 lemma unique_distinct_Equivalence(l: List<int>, r: List<int>)
 ensures (unique(l, r) == distinct(r, l))
-{{}}
+{{match l {
+case Nil =>
+case Cons(hd, tl) =>find_isin_Equivalence(r, hd);
+}
+}}
 

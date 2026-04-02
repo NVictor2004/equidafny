@@ -1,13 +1,13 @@
 ghost function fM(x: int, p: int -> bool): int
 requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
-decreases (if !p(x) then 0 else (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
+decreases (if p(x) then (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))) else 0)
 {if p(x) then termM(x, p);
 fM((x - 1), p) else x}
 
 ghost function f(x: int, p: int -> bool): int
 requires if !p(x) then true else existsF((j: int) => ((j < x) && maxNegP(p, j)))
-decreases (if !p(x) then 0 else equiv(x, p);
-(x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
+decreases (if p(x) then equiv(x, p);
+(x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))) else 0)
 {var t := p(x);
 if t then termF(x, p);
 f((x - 1), p) else x}
@@ -32,15 +32,15 @@ ghost function maxNegPM(j: int, p: int -> bool): bool
 
 lemma fM_f_Equivalence(x: int, p: int -> bool)
 requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
-decreases (if !p(x) then 0 else (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
+decreases (if p(x) then (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))) else 0)
 ensures (fM(x, p) == f(x, p))
 {{}}
 
 lemma equivalence_f(x: int, p: int -> bool)
 requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
 requires if !p(x) then true else existsF((j: int) => ((j < x) && maxNegP(p, j)))
-decreases (if !p(x) then 0 else equiv(x, p);
-(x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
+decreases (if p(x) then equiv(x, p);
+(x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))) else 0)
 ensures (fM(x, p) == f(x, p))
 {{if p(x){termM(x, p);termF(x, p);equivalence_f((x - 1), p);}}}
 

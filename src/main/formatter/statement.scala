@@ -29,6 +29,7 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
       formatPattern(pattern)
       writer.print(" =>")
       stmts.foreach(formatStmt)
+      writer.println("")
     })
     writer.println("}")
   }
