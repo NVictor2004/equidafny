@@ -7,10 +7,12 @@ import equivalence.program.functionEquivalence
 private def lookup[A, B](data: List[(A, B)], key: A): B =
     data.find((a, _) => a == key).get._2
 
+private def numberOfArguments[A](data: List[List[A]]): Int = data.map(_.length).sum
+
 def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = 
     (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-            if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModelArgs.map(_.length).sum == calledInCandidateArgs.map(_.length).sum => {
+            if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
             // Generate Equivalence data for the called functions
             val funcCalledInModel = program.helperFunctions(calledInModel)
             val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
@@ -49,6 +51,19 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
                     (lemmas, accMappings ++ mappings, accStmts ++ stmts)
                 }
             }
+        }
+        case (Binary(modelOp, 
+                     modelLeft @ TrueFunctionCall(_, modelLeftArgs), modelRight @ TrueFunctionCall(_, modelRightArgs)),
+              Binary(candOp,
+                     candLeft @ TrueFunctionCall(_, candLeftArgs), candRight @ TrueFunctionCall(_, candRightArgs)))
+              if modelOp == candOp &&
+                 numberOfArguments(modelLeftArgs) == numberOfArguments(candRightArgs) && 
+                 numberOfArguments(modelRightArgs) == numberOfArguments(candLeftArgs) &&
+                 numberOfArguments(modelLeftArgs) != numberOfArguments(candLeftArgs) &&
+                 numberOfArguments(modelRightArgs) != numberOfArguments(candRightArgs) => {
+            val (leftLemmas, leftMappings, leftStmts) = mergeBasicExpr(currentLemmas, modelLeft, modelFunc, candRight, candidateFunc)
+            val (rightLemmas, rightMappings, rightStmts) = mergeBasicExpr(leftLemmas, modelRight, modelFunc, candLeft, candidateFunc)
+            (rightLemmas, leftMappings ++ rightMappings, leftStmts ++ rightStmts)
         }
         case (Binary(modelOp, modelLeft, modelRight), Binary(candOp, candLeft, candRight)) if modelOp == candOp => {
             val (leftLemmas, leftMappings, leftStmts) = mergeBasicExpr(currentLemmas, modelLeft, modelFunc, candLeft, candidateFunc)

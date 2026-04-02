@@ -58,8 +58,11 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(RightImplies, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.BoolAnd(l, r) =>
     Binary(BoolAnd, translateBasicExpr(l), translateBasicExpr(r))
+
+  // TODO: Move to optimisation pass?
   case Parsers.BoolOr(l, r) =>
-    Binary(BoolOr, translateBasicExpr(l), translateBasicExpr(r))
+    Cond(translateBasicExpr(l), ExprBlock(Nil, BoolLiteral(true)), ExprBlock(Nil, translateBasicExpr(r)))
+
   case Parsers.Eq(l, r) =>
     Binary(Eq, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Neq(l, r) =>
@@ -122,10 +125,10 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(BoolAnd, translateBasicExpr(cond), translateBasicExpr(thenBranch))
   // case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true))) => 
   //   Binary(BoolOr, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(thenBranch))
-  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false)), Parsers.ExprBlock(Nil, elseBranch)) => 
-    Binary(BoolAnd, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(elseBranch))
-  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true)), Parsers.ExprBlock(Nil, elseBranch)) => 
-    Binary(BoolOr, translateBasicExpr(cond), translateBasicExpr(elseBranch))
+  // case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false)), Parsers.ExprBlock(Nil, elseBranch)) => 
+  //   Binary(BoolAnd, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(elseBranch))
+  // case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true)), Parsers.ExprBlock(Nil, elseBranch)) => 
+  //   Binary(BoolOr, translateBasicExpr(cond), translateBasicExpr(elseBranch))
   
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(

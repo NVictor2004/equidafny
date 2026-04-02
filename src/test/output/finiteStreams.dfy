@@ -3,7 +3,7 @@ datatype Stream = SNil | SCons(x: int, tailFun: () -> Stream, sz: int)
 function finiteM(s: Stream): bool
 decreases (rank(s))
 {match s {
-case SCons(_, tfun, sz) => (!(rank(tfun()) >= sz) && finiteM(tfun()))
+case SCons(_, tfun, sz) => if (rank(tfun()) >= sz) then false else finiteM(tfun())
 case _ => true
 }
 }

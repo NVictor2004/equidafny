@@ -13,7 +13,7 @@ requires ((((i >= 0) && (i < N)) && (N <= |a|)) && (N <= 100000))
 decreases ((N - i))
 {var l := ((2 * i) + 1);
 var r := ((2 * i) + 2);
-(!((((2 * i) + 1) < N) && (a[((2 * i) + 1)] > a[i])) && (!((((2 * i) + 2) < N) && (a[r] > a[i])) && if (((2 * i) + 2) < i) then (isHeap(a, N, ((2 * i) + 2)) && isHeap(a, N, ((2 * i) + 1))) else if (((2 * i) + 1) < i) then isHeap(a, N, ((2 * i) + 1)) else true))}
+if ((((2 * i) + 1) < N) && (a[((2 * i) + 1)] > a[i])) then false else if ((((2 * i) + 2) < N) && (a[r] > a[i])) then false else if (((2 * i) + 2) < i) then (isHeap(a, N, ((2 * i) + 2)) && isHeap(a, N, ((2 * i) + 1))) else if (((2 * i) + 1) < i) then isHeap(a, N, ((2 * i) + 1)) else true}
 
 function rightM(i: int): int
 requires ((0 <= i) && (i < 100000))
@@ -30,7 +30,7 @@ decreases ((N - i))
 var r := rightM(i);
 var isHeapL := ((l < N) && isHeapM(a, N, l));
 var isHeapR := ((r < N) && isHeapM(a, N, r));
-(!((l < N) && (a[l] > a[i])) && (!((r < N) && (a[r] > a[i])) && if (r < i) then (isHeapL && isHeapR) else if (l < i) then isHeapL else true))}
+if ((l < N) && (a[l] > a[i])) then false else if ((r < N) && (a[r] > a[i])) then false else if (r < i) then (isHeapL && isHeapR) else if (l < i) then isHeapL else true}
 
 lemma childrenAreHeapsM_childrenAreHeaps_Equivalence(a: seq<int>, N: int, i: int)
 requires ((((i >= 0) && (i < N)) && (N <= |a|)) && (N <= 100000))

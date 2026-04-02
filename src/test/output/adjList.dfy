@@ -3,12 +3,12 @@ datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
 decreases (pos)
-{((pos == 0) || (validListM(adjList[(pos - 1)], N) && validAdjListM(adjList, N, (pos - 1))))}
+{if (pos == 0) then true else (validListM(adjList[(pos - 1)], N) && validAdjListM(adjList, N, (pos - 1)))}
 
 function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
 decreases (pos)
-{((pos == 0) || (validAdjList(adjList, N, (pos - 1)) && validList(N, adjList[(pos - 1)])))}
+{if (pos == 0) then true else (validAdjList(adjList, N, (pos - 1)) && validList(N, adjList[(pos - 1)]))}
 
 function validList(N: int, l: List<int>): bool
 requires (N >= 1)
@@ -30,5 +30,10 @@ lemma validAdjListM_validAdjList_Equivalence(adjList: seq<List<int>>, N: int, po
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
 decreases (pos)
 ensures (validAdjListM(adjList, N, pos) == validAdjList(adjList, N, pos))
+{{if (pos == 0){}else {validListM_validList_Equivalence(adjList[(pos - 1)], N);}}}
+
+lemma validListM_validList_Equivalence(list: List<int>, N: int)
+requires (N >= 1)
+ensures (validListM(list, N) == validList(N, list))
 {{}}
 

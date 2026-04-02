@@ -1,11 +1,11 @@
 ghost function fM(x: int, p: int -> bool): int
-requires (!p(x) || existsM((j: int) => ((j < x) && maxNegPM(j, p))))
+requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
 decreases (if !p(x) then 0 else (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
 {if p(x) then termM(x, p);
 fM((x - 1), p) else x}
 
 ghost function f(x: int, p: int -> bool): int
-requires (!p(x) || existsF((j: int) => ((j < x) && maxNegP(p, j))))
+requires if !p(x) then true else existsF((j: int) => ((j < x) && maxNegP(p, j)))
 decreases (if !p(x) then 0 else equiv(x, p);
 (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
 {var t := p(x);
@@ -19,7 +19,7 @@ ensures p(eliminate_existsM(p))
 res}
 
 ghost function maxNegP(p: int -> bool, j: int): bool
-{(!p(j) && forall k :: (!p(k) ==> (k <= j)))}
+{if p(j) then false else forall k :: (!p(k) ==> (k <= j))}
 
 ghost function existsF<A(!new)>(p: A -> bool): bool
 {!forall t :: !p(t)}
@@ -31,14 +31,14 @@ ghost function maxNegPM(j: int, p: int -> bool): bool
 {(!p(j) && forall k :: (!p(k) ==> (k <= j)))}
 
 lemma fM_f_Equivalence(x: int, p: int -> bool)
-requires (!p(x) || existsM((j: int) => ((j < x) && maxNegPM(j, p))))
+requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
 decreases (if !p(x) then 0 else (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
 ensures (fM(x, p) == f(x, p))
 {{}}
 
 lemma equivalence_f(x: int, p: int -> bool)
-requires (!p(x) || existsM((j: int) => ((j < x) && maxNegPM(j, p))))
-requires (!p(x) || existsF((j: int) => ((j < x) && maxNegP(p, j))))
+requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
+requires if !p(x) then true else existsF((j: int) => ((j < x) && maxNegP(p, j)))
 decreases (if !p(x) then 0 else equiv(x, p);
 (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
 ensures (fM(x, p) == f(x, p))
@@ -46,12 +46,12 @@ ensures (fM(x, p) == f(x, p))
 
 lemma termF(x: int, p: int -> bool)
 requires existsF((j: int) => ((j < x) && maxNegP(p, j)))
-ensures (!p((x - 1)) || existsF((j: int) => ((j < (x - 1)) && maxNegP(p, j))))
+ensures if !p((x - 1)) then true else existsF((j: int) => ((j < (x - 1)) && maxNegP(p, j)))
 {{equiv(x, p);termM(x, p);equiv((x - 1), p);}}
 
 lemma termM(x: int, p: int -> bool)
 requires existsM((j: int) => ((j < x) && maxNegPM(j, p)))
-ensures (!p((x - 1)) || existsM((j: int) => ((j < (x - 1)) && maxNegPM(j, p))))
+ensures if !p((x - 1)) then true else existsM((j: int) => ((j < (x - 1)) && maxNegPM(j, p)))
 {{var j :| ((j < x) && maxNegPM(j, p));assert ((j < (x - 1)) ==> exists j :: ((j: int) => ((j < (x - 1)) && maxNegPM(j, p)))(j));}}
 
 lemma equiv(x: int, p: int -> bool)
