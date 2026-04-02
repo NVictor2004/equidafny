@@ -32,6 +32,15 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
 
             (helperLemmas + lemma, finalMapping, List(finalStmt))
         }
+        case (OtherFunctionCall(calledInModel, calledInModelArgs), OtherFunctionCall(calledInCand, calledInCandArgs)) if calledInModel == calledInCand => {
+            val flattened = calledInModelArgs.zip(calledInCandArgs).flatMap((modelList, candList) => modelList.zip(candList))
+            flattened.foldLeft((currentLemmas, Nil, Nil)) {
+                case ((accLemmas, accMappings, accStmts), (modelExpr, candExpr)) => {
+                    val (lemmas, mappings, stmts) = mergeBasicExpr(accLemmas, modelExpr, modelFunc, candExpr, candidateFunc)
+                    (lemmas, accMappings ++ mappings, accStmts ++ stmts)
+                }
+            }
+        }
         case (Cond(modelCond, modelThen, modelElse), Cond(candidateCond, candidateThen, candidateElse)) => {
             val (condLemmas, condMappings, condStmts) = mergeBasicExpr(currentLemmas, modelCond, modelFunc, candidateCond, candidateFunc)
             val (thenLemmas, thenMappings, thenStmts) = mergeExprBlock(condLemmas, modelThen, modelFunc, candidateThen, candidateFunc)

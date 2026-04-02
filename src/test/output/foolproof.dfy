@@ -29,5 +29,15 @@ decreases (if (x <= 0) then 0 else x)
 lemma funnyZipM_funnyZip1_Equivalence(xs: List<int>, ys: List<int>)
 decreases (xs)
 ensures (funnyZipM(xs, ys) == funnyZip1(xs, ys))
+{{match (xs, ys) {
+case (_, Nil) =>
+case (Nil, _) =>
+case (Cons(x, xs), Cons(y, ys)) =>chooseM_choose1_Equivalence(x, y);
+}
+}}
+
+lemma chooseM_choose1_Equivalence(x: int, y: int)
+decreases (if (x <= 0) then 0 else x)
+ensures (chooseM(x, y) == choose1(x, y))
 {{}}
 
