@@ -67,26 +67,26 @@ case _ => f
 
 lemma maxM_max5_Equivalence(lst: List<int>)
 decreases (lst)
-ensures (maxM(lst) == max5(lst))
+ensures (norm(lst, maxM(lst)) == norm(lst, max5(lst)))
 {{}}
 
 lemma maxM_max4_Equivalence(lst: List<int>)
 decreases (lst)
-ensures (maxM(lst) == max4(lst))
+ensures (norm(lst, maxM(lst)) == norm(lst, max4(lst)))
 {{}}
 
 lemma maxM_max3_Equivalence(lst: List<int>)
 decreases (lst)
-ensures (maxM(lst) == max3(lst))
+ensures (norm(lst, maxM(lst)) == norm(lst, max3(lst)))
 {{}}
 
 lemma maxM_max2_Equivalence(lst: List<int>)
 decreases (lst)
-ensures (maxM(lst) == max2(lst))
+ensures (norm(lst, maxM(lst)) == norm(lst, max2(lst)))
 {{}}
 
 lemma maxM_max1_Equivalence(lst: List<int>)
 decreases (lst)
-ensures (maxM(lst) == max1(lst))
+ensures (norm(lst, maxM(lst)) == norm(lst, max1(lst)))
 {{}}
 

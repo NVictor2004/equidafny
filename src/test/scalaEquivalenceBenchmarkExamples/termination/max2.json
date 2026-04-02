@@ -1,6 +1,7 @@
 {
   "file": "max2.dfy",
   "model": "maxM",
+  "norm": "norm",
   "candidates": [
     "max1",
     "max2",

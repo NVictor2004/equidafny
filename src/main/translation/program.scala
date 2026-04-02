@@ -24,6 +24,11 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
   val modelFunctionName = config("model").str
   val candidateFunctionNames = config("candidates").arr.map(_.str)
 
+  val normFunctionName = config.obj.get("norm").map(_.str)
+  val normFunction = normFunctionName.map(name => functions.find(_.name == name).getOrElse(
+    throw new Exception(s"Normalisation function ${name} not found")
+  ))
+
   val modelFunction = functions
     .find(_.name == modelFunctionName)
     .getOrElse(
@@ -42,7 +47,9 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
   }
 
   val helperFunctionsList = functions.filterNot(function =>
-    function.name == modelFunctionName || candidateFunctionNames.contains(
+    function.name == modelFunctionName || 
+    normFunctionName.fold(false)(name => function.name == name) || 
+    candidateFunctionNames.contains(
       function.name
     )
   )
@@ -54,6 +61,7 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     modelFunction,
     candidateFunctions,
     helperFunctionsMap,
+    normFunction,
     Nil,
     Nil,
     lemmas

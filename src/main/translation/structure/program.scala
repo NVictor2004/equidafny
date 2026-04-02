@@ -30,6 +30,7 @@ case class Program(
     modelFunction: Function,
     candidateFunctions: List[Function],
     helperFunctions: Map[String, Function],
+    normFunction: Option[Function],
     mainLemmas: List[Lemma],
     helperLemmas: List[Lemma],
     auxiliaryLemmas: List[Lemma]

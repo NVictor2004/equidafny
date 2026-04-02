@@ -31,6 +31,20 @@ def functionEquivalence(
   val modelMap = model.params.zip(modelIdents).map((p, i) => (p.name, Ident(i, Nil)))
   val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p.name, Ident(i, Nil)))
 
+  val modelFunctionCall = TrueFunctionCall(model.name, List(modelMap))
+  val candFunctionCall = TrueFunctionCall(candidate.name, List(candMap))
+
+  val (finalModelFunctionCall, finalCandFunctionCall) = program.normFunction match {
+    case None => (modelFunctionCall, candFunctionCall)
+    case Some(normFunction) => {
+      val functionName = normFunction.name
+      val lastParamName = normFunction.params.last.name
+      (TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, modelFunctionCall))), 
+      TrueFunctionCall(functionName, List(candMap :+ (lastParamName, candFunctionCall))))
+    }
+  }
+  
+
   val equiv = Lemma(
     s"${model.name}_${candidate.name}_Equivalence",
     model.generic,
@@ -40,8 +54,8 @@ def functionEquivalence(
         Ensures(
           Binary(
             Eq,
-            TrueFunctionCall(model.name, List(modelMap)),
-            TrueFunctionCall(candidate.name, List(candMap))
+            finalModelFunctionCall,
+            finalCandFunctionCall
           )
         )
       ),
