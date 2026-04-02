@@ -56,6 +56,13 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(LeftImplies, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.RightImplies(l, r) =>
     Binary(RightImplies, translateBasicExpr(l), translateBasicExpr(r))
+
+  // TODO: Move to optimisation pass?
+  case Parsers.BoolAnd(Parsers.Not(l), r) => 
+    Cond(translateBasicExpr(l), ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, translateBasicExpr(r)))
+  case Parsers.BoolAnd(l, Parsers.Not(r)) => 
+    Cond(translateBasicExpr(r), ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, translateBasicExpr(l)))
+  
   case Parsers.BoolAnd(l, r) =>
     Binary(BoolAnd, translateBasicExpr(l), translateBasicExpr(r))
 
