@@ -80,9 +80,12 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
             val (rightLemmas, rightMappings, rightStmts) = mergeBasicExpr(leftLemmas, modelRight, modelFunc, candRight, candidateFunc)
             (rightLemmas, leftMappings ++ rightMappings, leftStmts ++ rightStmts)
         }
-        case (Ident(modelName, Nil), Ident(candName, Nil)) => {
+        case (Unary(modelOp, modelExpr), Unary(candOp, candExpr)) if modelOp == candOp => 
+            mergeBasicExpr(currentLemmas, modelExpr, modelFunc, candExpr, candidateFunc)
+
+        case (Ident(modelName, Nil), Ident(candName, Nil)) =>
             (currentLemmas, List(modelName -> candName), Nil)
-        }
+
         // TODO: When the match expressions have different numbers of cases
         // TODO: When they have the same number, but are in a different order
         case (Match(modelExpr, modelCases), Match(candExpr, unsortedCandCases)) if modelCases.length == unsortedCandCases.length && listContainsUnNamed(modelCases.map(_._1)) == listContainsUnNamed(unsortedCandCases.map(_._1)) => {
