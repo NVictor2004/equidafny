@@ -42,5 +42,22 @@ decreases (if (x <= 0) then -x else x)
 
 lemma evalM_eval1_Equivalence(op: OpKind, x: int, y: int)
 ensures (evalM(op, x, y) == eval1(op, x, y))
+{{match op {
+case Add =>add_mySub_Equivalence(x, y);case Sub =>sub_myMul_Equivalence(x, y);case Mul =>mul_myAdd_Equivalence(x, y);}
+}}
+
+lemma add_mySub_Equivalence(x: int, y: int)
+decreases (if (x <= 0) then -x else x)
+ensures (add(x, y) == mySub(y, x))
+{{}}
+
+lemma sub_myMul_Equivalence(x: int, y: int)
+decreases (if (x <= 0) then -x else x)
+ensures (sub(x, y) == myMul(x, y))
+{{}}
+
+lemma mul_myAdd_Equivalence(x: int, y: int)
+decreases (if (x <= 0) then -x else x)
+ensures (mul(x, y) == myAdd(x, y))
 {{}}
 

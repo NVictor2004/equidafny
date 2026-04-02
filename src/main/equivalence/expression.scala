@@ -73,6 +73,21 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
         case (Ident(modelName, Nil), Ident(candName, Nil)) => {
             (currentLemmas, List(modelName -> candName), Nil)
         }
+        // TODO: When the match expressions have different numbers of cases
+        // TODO: When they have the same number, but are in a different order
+        case (Match(modelExpr, modelCases), Match(candExpr, candCases)) if modelCases.length == candCases.length => {
+            val (exprLemmas, exprMappings, exprStmts) = mergeBasicExpr(currentLemmas, modelExpr, modelFunc, candExpr, candidateFunc)
+            val (finalLemmas, finalMappings, stmts) = modelCases.map(_._2).zip(candCases.map(_._2)).foldLeft(((exprLemmas, exprMappings, List[List[Stmt]]()))) {
+                case ((accLemmas, accMappings, accStmts), (modelExprBlock, candExprBlock)) => {
+                    val (lemmas, mappings, stmts) = mergeExprBlock(accLemmas, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
+                    (lemmas, accMappings ++ mappings, accStmts :+ stmts)
+                }
+            }
+            val allEmpty = stmts.foldLeft(true)((acc, stmts) => acc && stmts.isEmpty)
+            val finalStmts = if allEmpty then exprStmts else exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
+
+            (finalLemmas, finalMappings, finalStmts)
+        }
         case _ => (currentLemmas, Nil, Nil)
     }
 

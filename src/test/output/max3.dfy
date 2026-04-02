@@ -41,5 +41,12 @@ case Cons(hd, tl) => f(hd, foldM(f, tl, a))
 
 lemma maxM_max1_Equivalence(lst: List<int>)
 ensures (maxM(lst) == max1(lst))
+{{match lst {
+case Nil =>case Cons(hd, tl) =>foldM_fold1_Equivalence((x, y) => if (x > y) then x else y, lst, hd);}
+}}
+
+lemma foldM_fold1_Equivalence(f: (int, int) -> int, l: List<int>, a: int)
+decreases (l)
+ensures (foldM(f, l, a) == fold1(f, l, a))
 {{}}
 
