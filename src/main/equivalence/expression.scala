@@ -3,7 +3,7 @@ package equivalence.expression
 import translation.structure.*
 
 import equivalence.program.functionEquivalence
-import equivalence.pattern.getIdentsFromPattern
+import equivalence.pattern.{getIdentsFromPattern, listContainsUnNamed}
 
 private def lookup[A, B](data: List[(A, B)], key: A): B =
     data.find((a, _) => a == key).get._2
@@ -85,7 +85,11 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
         }
         // TODO: When the match expressions have different numbers of cases
         // TODO: When they have the same number, but are in a different order
-        case (Match(modelExpr, modelCases), Match(candExpr, candCases)) if modelCases.length == candCases.length => {
+        case (Match(modelExpr, modelCases), Match(candExpr, unsortedCandCases)) if modelCases.length == unsortedCandCases.length && listContainsUnNamed(modelCases.map(_._1)) == listContainsUnNamed(unsortedCandCases.map(_._1)) => {
+            val candCases = 
+                if listContainsUnNamed(modelCases.map(_._1)) then unsortedCandCases
+                else modelCases.map((modelPattern, _) => unsortedCandCases.find(_._1 == modelPattern).get)
+                
             val (exprLemmas, exprMappings, exprStmts) = mergeBasicExpr(currentLemmas, modelExpr, modelFunc, candExpr, candidateFunc)
             val (finalLemmas, finalMappings, stmts) = modelCases.zip(candCases).foldLeft(((exprLemmas, exprMappings, List[List[Stmt]]()))) {
                 case ((accLemmas, accMappings, accStmts), ((modelPattern, modelExprBlock), (_, candExprBlock))) => {

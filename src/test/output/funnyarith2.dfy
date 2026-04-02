@@ -43,24 +43,24 @@ decreases (if (x <= 0) then -x else x)
 lemma evalM_eval1_Equivalence(op: OpKind, x: int, y: int)
 ensures (evalM(op, x, y) == eval1(op, x, y))
 {{match op {
-case Add =>add_mySub_Equivalence(x, y);
-case Sub =>sub_myMul_Equivalence(x, y);
-case Mul =>mul_myAdd_Equivalence(x, y);
+case Add =>add_myAdd_Equivalence(x, y);
+case Sub =>sub_mySub_Equivalence(x, y);
+case Mul =>mul_myMul_Equivalence(x, y);
 }
 }}
 
-lemma add_mySub_Equivalence(x: int, y: int)
+lemma add_myAdd_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
-ensures (add(x, y) == mySub(y, x))
+ensures (add(x, y) == myAdd(x, y))
 {{}}
 
-lemma sub_myMul_Equivalence(x: int, y: int)
+lemma sub_mySub_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
-ensures (sub(x, y) == myMul(x, y))
+ensures (sub(x, y) == mySub(y, x))
 {{}}
 
-lemma mul_myAdd_Equivalence(x: int, y: int)
+lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
-ensures (mul(x, y) == myAdd(x, y))
-{{}}
+ensures (mul(x, y) == myMul(x, y))
+{{if (x == 0){}else {if (x > 0){add_myAdd_Equivalence(mul((x - 1), y), y);}else {sub_mySub_Equivalence(mul((x + 1), y), y);}}}}
 
