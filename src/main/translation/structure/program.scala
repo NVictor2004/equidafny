@@ -1,6 +1,6 @@
 package translation.structure
 
-case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
+case class DeclaredType(name: String, typeParams: List[Parameter])
 case class Datatype(
     name: String,
     generic: List[(String, Option[GOption])],

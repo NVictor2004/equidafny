@@ -62,9 +62,9 @@ def formatDeclaredType(
 )(using writer: Formatter): Unit = {
   val DeclaredType(name, typeParams) = declaredType
   writer.print(name)
-  typeParams.foreach(params =>
-    formatBrackets("(", formatList(params, formatParameter), ")")
-  )
+  if (typeParams != Nil) {
+    formatBrackets("(", formatList(typeParams, formatParameter), ")")
+  }
 }
 
 private def formatGeneric(

@@ -65,7 +65,7 @@ def translateDeclaredType(decl: Parsers.DeclaredType)(using Context): DeclaredTy
     decl.name,
     decl.typeParams.map(_.map { case Parsers.Parameter(name, paramType) =>
       Parameter(name, translateType(paramType))
-    })
+    }).getOrElse(Nil)
   )
 
 def translateGeneric(
