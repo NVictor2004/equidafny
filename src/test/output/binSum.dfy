@@ -1,7 +1,7 @@
 datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
-decreases length(l1) + length(l2)
+decreases ((length(l1) + length(l2)))
 {match (l1, l2) {
 case (Nil, Nil) => Nil
 case (Cons(true, t1), Cons(false, t2)) => Cons(!c, binSumM(t1, t2, c))
@@ -16,7 +16,7 @@ case (Nil, Cons(false, t2)) => Cons(c, binSumM(t2, Nil, false))
 }
 
 function binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
-decreases length(l1) + length(l2)
+decreases ((length(l1) + length(l2)))
 {match (l1, l2, c) {
 case (Nil, Nil, _) => Cons(false, Nil)
 case (Cons(true, t1), Cons(false, t2), false) => Cons(true, binSum1(t1, t2, false))
@@ -41,8 +41,8 @@ case (Nil, Cons(false, t1), false) => Cons(false, binSum1(t1, Nil, false))
 function listToInt(l: List<bool>): int
 {match l {
 case Nil => 0
-case Cons(true, tl) => 1 + 2 * listToInt(tl)
-case Cons(false, tl) => 2 * listToInt(tl)
+case Cons(true, tl) => (1 + (2 * listToInt(tl)))
+case Cons(false, tl) => (2 * listToInt(tl))
 }
 }
 
@@ -52,12 +52,12 @@ function norm(l1: List<bool>, l2: List<bool>, c: bool, res: List<bool>): int
 function length<A>(l: List<A>): nat
 {match l {
 case Nil => 0
-case Cons(_, t) => 1 + length(t)
+case Cons(_, t) => (1 + length(t))
 }
 }
 
 lemma binSumM_binSum1_Equivalence(l1: List<bool>, l2: List<bool>, c: bool)
-decreases length(l1) + length(l2)
-ensures binSumM(l1, l2, c) == binSum1(l1, l2, c)
+decreases ((length(l1) + length(l2)))
+ensures (binSumM(l1, l2, c) == binSum1(l1, l2, c))
 {{}}
 

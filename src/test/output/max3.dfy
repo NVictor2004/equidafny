@@ -40,6 +40,6 @@ case Cons(hd, tl) => f(hd, foldM(f, tl, a))
 }
 
 lemma maxM_max1_Equivalence(lst: List<int>)
-ensures maxM(lst) == max1(lst)
+ensures (maxM(lst) == max1(lst))
 {{}}
 

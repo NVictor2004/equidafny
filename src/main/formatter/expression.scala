@@ -63,9 +63,11 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
   expr match {
     case expr: LiteralExpr             => formatLiteral(expr)
     case Binary(operator, left, right) => {
+      writer.print("(")
       formatBasicExpr(left)
       writer.print(s" ${formatBinaryOperator(operator)} ")
       formatBasicExpr(right)
+      writer.print(")")
     }
     case Unary(operator, e) => {
       writer.print(formatUnaryOperator(operator))
@@ -86,7 +88,6 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
     case Cardinality(e) => formatBrackets("|", formatBasicExpr(e), "|")
     case Tuple(es) => formatBrackets("(", formatList(es, formatBasicExpr), ")")
-    case Brackets(e) => formatBrackets("(", formatBasicExpr(e), ")")
     case Cond(cond, thenBranch, elseBranch) => {
       writer.print("if ")
       formatBasicExpr(cond)

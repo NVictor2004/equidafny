@@ -45,7 +45,6 @@ case class Quantified(
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr
 case class Cardinality(expr: BasicExpr) extends BasicExpr
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
-case class Brackets(expr: BasicExpr) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
 case class TrueFunctionCall(name: String, args: List[List[(String, BasicExpr)]])

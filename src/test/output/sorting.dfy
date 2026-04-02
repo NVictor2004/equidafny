@@ -11,7 +11,7 @@ function isSortedA(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(_, Nil) => true
-case Cons(x, Cons(y, ys)) => x <= y && iter(Cons(y, ys))
+case Cons(x, Cons(y, ys)) => ((x <= y) && iter(Cons(y, ys)))
 }
 }
 
@@ -26,7 +26,7 @@ function isSortedB(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(x, Nil) => isSortedB(Nil)
-case Cons(x, Cons(y, ys)) => x <= y && isSortedB(Cons(y, ys))
+case Cons(x, Cons(y, ys)) => ((x <= y) && isSortedB(Cons(y, ys)))
 }
 }
 
@@ -34,37 +34,37 @@ function iter(l: List<int>): bool
 {match l {
 case Nil => true
 case Cons(x, Nil) => true
-case Cons(x, Cons(y, ys)) => leq(x, y) && iter(Cons(y, ys))
+case Cons(x, Cons(y, ys)) => (leq(x, y) && iter(Cons(y, ys)))
 }
 }
 
 function leq(cur: int, next: int): bool
-{cur < next}
+{(cur < next)}
 
 function chk(l: List<int>, p: int, a: bool): bool
 {match l {
 case Nil => a
-case Cons(x, xs) => x >= p && chk(xs, x, a)
+case Cons(x, xs) => ((x >= p) && chk(xs, x, a))
 }
 }
 
 function loop(p: int, l: List<int>): bool
-decreases l
+decreases (l)
 {match l {
 case Nil => true
-case Cons(x, xs) => p <= x && loop(x, xs)
+case Cons(x, xs) => ((p <= x) && loop(x, xs))
 }
 }
 
 lemma isSortedR_isSortedA_Equivalence(l: List<int>)
-ensures isSortedR(l) == isSortedA(l)
+ensures (isSortedR(l) == isSortedA(l))
 {{}}
 
 lemma isSortedR_isSortedC_Equivalence(l: List<int>)
-ensures isSortedR(l) == isSortedC(l)
+ensures (isSortedR(l) == isSortedC(l))
 {{}}
 
 lemma isSortedR_isSortedB_Equivalence(l: List<int>)
-ensures isSortedR(l) == isSortedB(l)
+ensures (isSortedR(l) == isSortedB(l))
 {{}}
 

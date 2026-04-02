@@ -9,19 +9,19 @@ function uniqA(lst: List<int>): List<int>
 function find(lst: List<int>, n: int): bool
 {match lst {
 case Nil => false
-case Cons(hd, tl) => n == hd || find(tl, n)
+case Cons(hd, tl) => ((n == hd) || find(tl, n))
 }
 }
 
 function isin(a: int, lst: List<int>): bool
 {match lst {
 case Nil => false
-case Cons(hd, tl) => a == hd || isin(a, tl)
+case Cons(hd, tl) => ((a == hd) || isin(a, tl))
 }
 }
 
 function distinct(a: List<int>, b: List<int>): List<int>
-decreases b
+decreases (b)
 {match b {
 case Nil => a
 case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a, Cons(hd, Nil)), tl)
@@ -43,10 +43,10 @@ case Cons(hd, tl) => Cons(hd, append(tl, l2))
 }
 
 lemma uniqR_uniqA_Equivalence(lst: List<int>)
-ensures uniqR(lst) == uniqA(Nil)
+ensures (uniqR(lst) == uniqA(Nil))
 {{unique_distinct_Equivalence(lst, Nil);}}
 
 lemma unique_distinct_Equivalence(l: List<int>, r: List<int>)
-ensures unique(l, r) == distinct(l, r)
+ensures (unique(l, r) == distinct(l, r))
 {{}}
 

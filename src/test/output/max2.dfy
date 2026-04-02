@@ -26,7 +26,7 @@ decreases (length(l))
 case Nil => -999999999999
 case Cons(hd, tl) => match tl {
 case Nil => hd
-case Cons(hd1, tl1) => assert length(Cons(hd, tl1)) < length(l);
+case Cons(hd1, tl1) => assert (length(Cons(hd, tl1)) < length(l));
 if (hd > hd1) then max3(Cons(hd, tl1)) else max3(Cons(hd1, tl1))
 }
 
@@ -54,7 +54,7 @@ function length<A>(l: List<A>): nat
 decreases (l)
 {match l {
 case Nil => 0
-case Cons(_, t) => 1 + length(t)
+case Cons(_, t) => (1 + length(t))
 }
 }
 
@@ -67,26 +67,26 @@ case _ => f
 
 lemma maxM_max5_Equivalence(lst: List<int>)
 decreases (lst)
-ensures maxM(lst) == max5(lst)
+ensures (maxM(lst) == max5(lst))
 {{}}
 
 lemma maxM_max4_Equivalence(lst: List<int>)
 decreases (lst)
-ensures maxM(lst) == max4(lst)
+ensures (maxM(lst) == max4(lst))
 {{}}
 
 lemma maxM_max3_Equivalence(lst: List<int>)
 decreases (lst)
-ensures maxM(lst) == max3(lst)
+ensures (maxM(lst) == max3(lst))
 {{}}
 
 lemma maxM_max2_Equivalence(lst: List<int>)
 decreases (lst)
-ensures maxM(lst) == max2(lst)
+ensures (maxM(lst) == max2(lst))
 {{}}
 
 lemma maxM_max1_Equivalence(lst: List<int>)
 decreases (lst)
-ensures maxM(lst) == max1(lst)
+ensures (maxM(lst) == max1(lst))
 {{}}
 

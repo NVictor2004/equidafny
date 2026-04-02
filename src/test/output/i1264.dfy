@@ -4,7 +4,7 @@ function replace<A(==)>(l1: List<A>, x: A, l2: List<A>): List<A>
 decreases (l1)
 {match l1 {
 case Nil() => Nil
-case Cons(y, ys) => if x == y then append(l2, replace(ys, x, l2)) else Cons(y, replace(ys, x, l2))
+case Cons(y, ys) => if (x == y) then append(l2, replace(ys, x, l2)) else Cons(y, replace(ys, x, l2))
 }
 }
 
@@ -39,6 +39,6 @@ case Cons(hd, tl) => Cons(hd, append(tl, l2))
 
 lemma replace_slowReplace_Equivalence<A(==)>(l1: List<A>, x: A, l2: List<A>)
 decreases (l1)
-ensures replace(l1, x, l2) == slowReplace(l1, x, l2)
+ensures (replace(l1, x, l2) == slowReplace(l1, x, l2))
 {{}}
 

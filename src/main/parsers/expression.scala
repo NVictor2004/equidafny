@@ -112,7 +112,7 @@ private lazy val basicHigher =
         | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
         | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
-    | Brackets(atomic("(" ~> basic <~ ")"))
+    | atomic("(" ~> basic <~ ")")
     | Tuple("(" ~> sepBy(basic, ",") <~ ")")
 
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)

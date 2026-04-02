@@ -50,7 +50,6 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
   case Parsers.Ident(name, suffixes) => Ident(name, suffixes)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
-  case Parsers.Brackets(e)           => Brackets(translateBasicExpr(e))
   case Parsers.Iff(l, r)             =>
     Binary(Iff, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.LeftImplies(l, r) =>
@@ -115,6 +114,17 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
       varType.map(translateType),
       translateBasicExpr(body)
     )
+
+  // TODO: Move to optimisation pass?
+  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false))) => 
+    Binary(BoolAnd, translateBasicExpr(cond), translateBasicExpr(thenBranch))
+  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true))) => 
+    Binary(BoolOr, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(thenBranch))
+  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false)), Parsers.ExprBlock(Nil, elseBranch)) => 
+    Binary(BoolAnd, Unary(Not, translateBasicExpr(cond)), translateBasicExpr(elseBranch))
+  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, Parsers.BoolLiteral(true)), Parsers.ExprBlock(Nil, elseBranch)) => 
+    Binary(BoolOr, translateBasicExpr(cond), translateBasicExpr(elseBranch))
+  
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(
       translateBasicExpr(cond),
