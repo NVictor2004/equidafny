@@ -35,13 +35,13 @@ def functionEquivalence(
   val candFunctionCall = TrueFunctionCall(candidate.name, List(candMap))
 
   val (finalModelFunctionCall, finalCandFunctionCall) = program.normFunction match {
-    case None => (modelFunctionCall, candFunctionCall)
-    case Some(normFunction) => {
+    case Some(normFunction) if model.name == program.modelFunction.name => {
       val functionName = normFunction.name
       val lastParamName = normFunction.params.last.name
       (TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, modelFunctionCall))), 
       TrueFunctionCall(functionName, List(candMap :+ (lastParamName, candFunctionCall))))
     }
+    case _ => (modelFunctionCall, candFunctionCall)
   }
   
 

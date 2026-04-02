@@ -24,13 +24,6 @@ case Cons(hd, tl) => f(hd, fold1(f, tl, a))
 }
 }
 
-function norm(l: List<int>, f: int): int
-{match l {
-case Nil => -1
-case _ => f
-}
-}
-
 function foldM(f: (int, int) -> int, l: List<int>, a: int): int
 decreases (l)
 {match l {
@@ -39,8 +32,15 @@ case Cons(hd, tl) => f(hd, foldM(f, tl, a))
 }
 }
 
+function norm(l: List<int>, f: int): int
+{match l {
+case Nil => -1
+case _ => f
+}
+}
+
 lemma maxM_max1_Equivalence(lst: List<int>)
-ensures (maxM(lst) == max1(lst))
+ensures (norm(lst, maxM(lst)) == norm(lst, max1(lst)))
 {{match lst {
 case Nil =>
 case Cons(hd, tl) =>foldM_fold1_Equivalence((x, y) => if (x > y) then x else y, lst, hd);
