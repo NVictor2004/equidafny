@@ -3,8 +3,6 @@
   "model": "unfoldingSortedM",
   "candidates": [
     "unfoldingSorted1",
-    "unfoldingSorted3",
-    "unfoldingSorted4",
     "unfoldingSorted5"
   ]
 }
