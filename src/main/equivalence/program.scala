@@ -43,7 +43,7 @@ def functionEquivalence(
       val functionName = normFunction.name
       val lastParamName = normFunction.params.last.name
       (TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, modelFunctionCall))), 
-      TrueFunctionCall(functionName, List(candMap :+ (lastParamName, candFunctionCall))))
+      TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, candFunctionCall))))
     }
     case _ => (modelFunctionCall, candFunctionCall)
   }
