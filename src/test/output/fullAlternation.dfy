@@ -9,3 +9,8 @@ lemma m1_m2_Equivalence(n: int, flag: bool)
 ensures (m1(n, flag) == m2(n, flag))
 {{}}
 
+lemma m2_equivalence_fib(n: int)
+requires (n >= 2)
+ensures (m2(n, true) == (m2((n - 1), false) + m2((n - 2), false)))
+{{}}
+

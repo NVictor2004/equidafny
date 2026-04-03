@@ -2,7 +2,6 @@
   "file": "sorting.dfy",
   "model": "isSortedR",
   "candidates": [
-    "isSortedA",
     "isSortedB",
     "isSortedC"
   ]

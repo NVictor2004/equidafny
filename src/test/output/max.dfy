@@ -32,3 +32,8 @@ lemma maxR_maxC_Equivalence(l: seq<int>)
 ensures (maxR(l) == maxC(l))
 {{}}
 
+lemma maxEquivalence2Helper(a: int, b: seq<int>)
+ensures (foldLeft(bigger, a, b) == maxR(([a] + b)))
+decreases (|b|)
+{{}}
+

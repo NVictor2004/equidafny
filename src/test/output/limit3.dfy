@@ -9,3 +9,8 @@ lemma limit3_1_limit3_2_Equivalence(n: int)
 ensures (limit3_1(n) == limit3_2(n))
 {{}}
 
+lemma equivalenceLimit3_Helper(n: int)
+requires (n >= 1)
+ensures (limit3_2(n) > 0)
+{{}}
+

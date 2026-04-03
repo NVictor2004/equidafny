@@ -46,26 +46,3 @@ function isSortedC(l: List<int>): bool
   case Nil => true
   case Cons(x, xs) => chk(Cons(x, xs), x, true)
 }
-
-// Defining isSortedA
-
-function leq(cur: int, next: int): bool
-{
-  cur < next
-}
-
-function iter(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, Nil) => true
-  case Cons(x, Cons(y, ys)) => leq(x, y) && iter(Cons(y, ys))
-}
-
-function isSortedA(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(_, Nil) => true
-  case Cons(x, Cons(y, ys)) => x <= y && iter(Cons(y, ys))
-}

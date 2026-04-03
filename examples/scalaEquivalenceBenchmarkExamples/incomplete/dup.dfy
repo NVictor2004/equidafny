@@ -27,19 +27,6 @@ lemma equivalenceDup1<S, T>(n: int, s: S, t: T)
   ensures (norm(n, s, t, dup1(n, s, t)) == norm(n, s, t, dupM(n, s, t)))
 {}
 
-// CANDIDATE 2
-
-function dup2<S, T>(n: int, s: S, t: T): List<(S, T)>
-  decreases(if (n <= 0) then 0 else n) {
-  if (n <= 0) then Cons((s, t), Nil)
-  else Cons((s, t), dup2(n - 1, s, t))
-}
-
-// Counter Example: n = 0
-lemma equivalenceDup2<S, T>(n: int, s: S, t: T)
-  ensures (norm(n, s, t, dup2(n, s, t)) == norm(n, s, t, dupM(n, s, t)))
-{}
-
 // CANDIDATE 3
 
 // Wrong signature
@@ -53,19 +40,6 @@ function dup3<S, T>(n: int, t: T, s: S): List<(S, T)>
 // However, if you permute the arguments correctly, Dafny is able to prove equivalence
 lemma equivalenceDup3<S, T>(n: int, s: S, t: T)
   ensures (norm(n, s, t, dup3(n, t, s)) == norm(n, s, t, dupM(n, s, t)))
-{}
-
-// CANDIDATE 4
-
-function dup4<S, T>(n: int, s: S, t: T): List<(S, T)>
-  decreases(if (n <= 0) then 0 else n) {
-  if (n <= 0) then Nil
-  else dup4(n - 1, s, t) // duplicating nils, very useful
-}
-
-// Counter Example: n = 7721
-lemma equivalenceDup4<S, T>(n: int, s: S, t: T)
-  ensures (norm(n, s, t, dup4(n, s, t)) == norm(n, s, t, dupM(n, s, t)))
 {}
 
 // CANDIDATE 5
