@@ -117,29 +117,56 @@ lemma unfoldingSortedM_unfoldingSorted1_Equivalence<A, B>(start: A, next: A -> O
 ensures (unfoldingSortedM(start, next, leq, max) == unfoldingSorted1(start, next, leq, max))
 {{loopM_go1_Equivalence(start, next, leq, max, Nil);}}
 
+lemma insertM_insertSorted5_Equivalence<A>(xs: List<A>, leq: (A, A) -> bool, t: A)
+decreases (xs)
+ensures (insertM(xs, leq, t) == insertSorted5(t, leq, xs))
+{{match xs {
+case Nil =>
+case Cons(hd, tl) =>if leq(t, hd){}else {insertM_insertSorted5_Equivalence(tl, leq, t);}
+}
+}}
+
 lemma loopM_go5_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -> bool, fuel: int, xs: List<B>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go5(s, next, leq, xs, fuel))
 {{if (fuel <= 0){}else {match next(s) {
-case Some((nxtS, t)) =>loopM_go5_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case Some((nxtS, t)) =>insertM_insertSorted5_Equivalence(xs, leq, t);loopM_go5_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
 case None =>
 }
 }}}
+
+lemma insertM_insertSorted4_Equivalence<A>(xs: List<A>, leq: (A, A) -> bool, t: A)
+decreases (xs)
+ensures (insertM(xs, leq, t) == insertSorted4(t, leq, xs))
+{{match xs {
+case Nil =>
+case Cons(hd, tl) =>if leq(t, hd){}else {insertM_insertSorted4_Equivalence(tl, leq, t);}
+}
+}}
 
 lemma loopM_go4_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -> bool, fuel: int, xs: List<B>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go4(s, next, leq, xs, fuel))
 {{if (fuel <= 0){}else {match next(s) {
-case Some((nxtS, t)) =>loopM_go4_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case Some((nxtS, t)) =>insertM_insertSorted4_Equivalence(xs, leq, t);loopM_go4_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
 case None =>
 }
 }}}
+
+lemma insertM_insertSorted1_Equivalence<A>(xs: List<A>, leq: (A, A) -> bool, t: A)
+decreases (xs)
+ensures (insertM(xs, leq, t) == insertSorted1(t, leq, xs))
+{{match xs {
+case Nil =>
+case Cons(hd, tl) =>if leq(t, hd){}else {insertM_insertSorted1_Equivalence(tl, leq, t);}
+}
+}}
 
 lemma loopM_go1_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -> bool, fuel: int, xs: List<B>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go1(s, next, leq, xs, fuel))
 {{if (fuel <= 0){}else {match next(s) {
-case Some((nxtS, t)) =>loopM_go1_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case Some((nxtS, t)) =>insertM_insertSorted1_Equivalence(xs, leq, t);loopM_go1_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
 case None =>
 }
 }}}
