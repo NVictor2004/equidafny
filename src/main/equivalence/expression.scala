@@ -2,7 +2,7 @@ package equivalence.expression
 
 import translation.structure.*
 
-import equivalence.program.functionEquivalence
+import equivalence.program.{functionEquivalence, generateLemmaName}
 import equivalence.pattern.{getIdentsFromPattern, listContainsUnNamed}
 
 private def lookup[A, B](data: List[(A, B)], key: A): B =
@@ -10,28 +10,49 @@ private def lookup[A, B](data: List[(A, B)], key: A): B =
 
 private def numberOfArguments[A](data: List[List[A]]): Int = data.map(_.length).sum
 
-def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = 
+def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = 
     (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-            if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
-            // Generate Equivalence data for the called functions
-            val funcCalledInModel = program.helperFunctions(calledInModel)
-            val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
-            val (lemma, helperLemmas, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
+        if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => 
+            currentLemmas.get(calledInModel) match {
+                case None => {
+                    // This pair of functions has not been encountered yet, generate its equivalence lemma
 
-            // Convert mapping between the parameters of the called functions to a mapping to the parameters in
-            // the caller functions
-            val finalMapping = mapping.map {
-                case (modelName, candName) => lookup(calledInModelArgs(0), modelName) -> lookup(calledInCandidateArgs(0), candName)
-            }.collect {
-                case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
+                    // Generate Equivalence data for the called functions
+                    val funcCalledInModel = program.helperFunctions(calledInModel)
+                    val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
+                    val (lemma, helperLemmas, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
+
+                    // Convert mapping between the parameters of the called functions to a mapping to the parameters in
+                    // the caller functions
+                    val finalMapping = mapping.map {
+                        case (modelName, candName) => lookup(calledInModelArgs(0), modelName) -> lookup(calledInCandidateArgs(0), candName)
+                    }.collect {
+                        case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
+                    }
+
+                    // Call the generated helper equivalence lemma
+                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), calledInModelArgs.map(_.map((_, expr) => expr).toList))
+
+                    (helperLemmas + lemma, finalMapping, List(finalStmt))
+                }
+                case Some(None) => {
+                    // This pair of functions has been encountered before, but we are currently in the process
+                    // of generating its equivalence lemma
+                    // Just call the lemma without trying to generate it, trust that it will get generated before the whole
+                    // merging process completes
+
+                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), calledInModelArgs.map(_.map((_, expr) => expr).toList))
+                    (currentLemmas, Nil, List(finalStmt))
+                }
+                case Some(Some(lemma)) => {
+                    // This pair of functions has been encountered before, and its equivalence lemma has already
+                    // been generated, just call it
+
+                    val finalStmt = CallStmt(lemma.name, calledInModelArgs.map(_.map((_, expr) => expr).toList))
+                    (currentLemmas, Nil, List(finalStmt))
+                }
             }
-
-            // Call the generated helper equivalence lemma
-            val finalStmt = CallStmt(lemma._2.name, calledInModelArgs.map(_.map((_, expr) => expr).toList))
-
-            (helperLemmas + lemma, finalMapping, List(finalStmt))
-        }
         case (OtherFunctionCall(calledInModel, calledInModelArgs), OtherFunctionCall(calledInCand, calledInCandArgs)) if calledInModel == calledInCand => {
             val flattened = calledInModelArgs.zip(calledInCandArgs).flatMap((modelList, candList) => modelList.zip(candList))
             flattened.foldLeft((currentLemmas, Nil, Nil)) {
@@ -110,7 +131,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Lemma], modelExpr: BasicExpr, mode
         case _ => (currentLemmas, Nil, Nil)
     }
 
-def mergeExprBlock(currentLemmas: Map[String, Lemma], modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = {
+def mergeExprBlock(currentLemmas: Map[String, Option[Lemma]], modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = {
     val ExprBlock(modelExtended, modelBasic) = modelExprBlock
     val ExprBlock(_, candBasic) = candidateExprBlock
 
@@ -126,7 +147,7 @@ def mergeExprBlock(currentLemmas: Map[String, Lemma], modelExprBlock: ExprBlock,
     (lemmas, mappings, modelVariables ++ stmts)
 }
 
-def mergeFunction(currentLemmas: Map[String, Lemma], modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, Lemma], List[(String, String)], List[Stmt]) = {
+def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = {
     // Mappings are generated through merging the function bodys and through type matching
     val (lemmas, mappings, stmts) = mergeExprBlock(currentLemmas, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 

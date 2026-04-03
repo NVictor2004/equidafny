@@ -12,17 +12,21 @@ def programEquivalence(program: Program): Program = {
     functionEquivalence(Map(), program.modelFunction, _)
   )
   program.copy(
-    mainLemmas = program.mainLemmas ++ data.map(_._1._2),
-    helperLemmas = program.helperLemmas ++ data.flatMap(_._2.values)
+    mainLemmas = program.mainLemmas ++ data.map(_._1._2.get),
+    helperLemmas = program.helperLemmas ++ data.flatMap(_._2.values.map(_.get))
   )
 }
 
+def generateLemmaName(modelName: String, candName: String): String = 
+  s"${modelName}_${candName}_Equivalence"
+
 def functionEquivalence(
-    currentLemmas: Map[String, Lemma], 
+    currentLemmas: Map[String, Option[Lemma]], 
     model: Function,
     candidate: Function
-)(using program: Program): ((String, Lemma), Map[String, Lemma], List[(String, String)]) = {
-  val (helperLemmas, mapping, stmts) = mergeFunction(currentLemmas, model, candidate)
+)(using program: Program): ((String, Option[Lemma]), Map[String, Option[Lemma]], List[(String, String)]) = {
+  val newLemma = (model.name, None)
+  val (helperLemmas, mapping, stmts) = mergeFunction(currentLemmas + newLemma, model, candidate)
   val mappingMap = mapping.map((a, b) => (b, a)).toMap
 
   val modelIdents = model.params.map(_.name)
@@ -46,7 +50,7 @@ def functionEquivalence(
   
 
   val equiv = Lemma(
-    s"${model.name}_${candidate.name}_Equivalence",
+    generateLemmaName(model.name, candidate.name),
     model.generic,
     model.params,
     model.specs ++
@@ -61,5 +65,5 @@ def functionEquivalence(
       ),
     Some(BlockStmt(stmts))
   )
-  ((model.name, equiv), helperLemmas, mapping)
+  ((model.name, Some(equiv)), helperLemmas - model.name, mapping)
 }
