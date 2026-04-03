@@ -6,5 +6,5 @@ function inlining_2(x: int): int
 
 lemma inlining_1_inlining_2_Equivalence(x: int)
 ensures (inlining_1(x) == inlining_2(x))
-{{}}
+{{if (x > 0){inlining_1_inlining_2_Equivalence((x - 1));}else {}}}
 

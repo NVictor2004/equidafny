@@ -52,12 +52,12 @@ case Mul =>mul_myMul_Equivalence(x, y);
 lemma add_myAdd_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures (add(x, y) == myAdd(x, y))
-{{}}
+{{if (x == 0){}else {if (x > 0){add_myAdd_Equivalence((x - 1), (y + 1));}else {add_myAdd_Equivalence((x + 1), (y - 1));}}}}
 
 lemma sub_mySub_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures (sub(x, y) == mySub(y, x))
-{{}}
+{{if (x == 0){}else {if (x > 0){sub_mySub_Equivalence((x - 1), (y - 1));}else {sub_mySub_Equivalence((x + 1), (y + 1));}}}}
 
 lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)

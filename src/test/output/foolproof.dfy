@@ -32,12 +32,12 @@ ensures (funnyZipM(xs, ys) == funnyZip1(xs, ys))
 {{match (xs, ys) {
 case (_, Nil) =>
 case (Nil, _) =>
-case (Cons(x, xs), Cons(y, ys)) =>chooseM_choose1_Equivalence(x, y);
+case (Cons(x, xs), Cons(y, ys)) =>chooseM_choose1_Equivalence(x, y);funnyZipM_funnyZip1_Equivalence(xs, ys);
 }
 }}
 
 lemma chooseM_choose1_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (chooseM(x, y) == choose1(x, y))
-{{}}
+{{if (x <= 0){}else {if (y <= 0){}else {chooseM_choose1_Equivalence((x - 1), (y - 1));}}}}
 

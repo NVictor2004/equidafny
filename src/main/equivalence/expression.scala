@@ -53,6 +53,11 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], modelExpr: BasicEx
                     (currentLemmas, Nil, List(finalStmt))
                 }
             }
+        case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, _))
+        if calledInModel == modelFunc.name && calledInCandidate == candidateFunc.name => {
+            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), calledInModelArgs.map(_.map((_, expr) => expr).toList))
+            (currentLemmas, Nil, List(finalStmt))
+        }
         case (OtherFunctionCall(calledInModel, calledInModelArgs), OtherFunctionCall(calledInCand, calledInCandArgs)) if calledInModel == calledInCand => {
             val flattened = calledInModelArgs.zip(calledInCandArgs).flatMap((modelList, candList) => modelList.zip(candList))
             flattened.foldLeft((currentLemmas, Nil, Nil)) {

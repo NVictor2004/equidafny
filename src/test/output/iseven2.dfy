@@ -27,7 +27,7 @@ ensures (isEvenTopLvlM(x) == isEvenTopLvl1(x))
 lemma isEven_myIsEven_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isEven(x) == myIsEven(x))
-{{}}
+{{if (x < 0){}else {if (x == 0){}else {isEven_myIsEven_Equivalence((x - 2));}}}}
 
 lemma isOdd_myIsOdd_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)

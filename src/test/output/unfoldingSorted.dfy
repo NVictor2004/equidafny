@@ -120,15 +120,27 @@ ensures (unfoldingSortedM(start, next, leq, max) == unfoldingSorted1(start, next
 lemma loopM_go5_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -> bool, fuel: int, xs: List<B>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go5(s, next, leq, xs, fuel))
-{{}}
+{{if (fuel <= 0){}else {match next(s) {
+case Some((nxtS, t)) =>loopM_go5_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case None =>
+}
+}}}
 
 lemma loopM_go4_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -> bool, fuel: int, xs: List<B>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go4(s, next, leq, xs, fuel))
-{{}}
+{{if (fuel <= 0){}else {match next(s) {
+case Some((nxtS, t)) =>loopM_go4_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case None =>
+}
+}}}
 
 lemma loopM_go1_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -> bool, fuel: int, xs: List<B>)
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go1(s, next, leq, xs, fuel))
-{{}}
+{{if (fuel <= 0){}else {match next(s) {
+case Some((nxtS, t)) =>loopM_go1_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case None =>
+}
+}}}
 

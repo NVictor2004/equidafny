@@ -30,10 +30,14 @@ lemma validAdjListM_validAdjList_Equivalence(adjList: seq<List<int>>, N: int, po
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
 decreases (pos)
 ensures (validAdjListM(adjList, N, pos) == validAdjList(adjList, N, pos))
-{{if (pos == 0){}else {validListM_validList_Equivalence(adjList[(pos - 1)], N);}}}
+{{if (pos == 0){}else {validListM_validList_Equivalence(adjList[(pos - 1)], N);validAdjListM_validAdjList_Equivalence(adjList, N, (pos - 1));}}}
 
 lemma validListM_validList_Equivalence(list: List<int>, N: int)
 requires (N >= 1)
 ensures (validListM(list, N) == validList(N, list))
-{{}}
+{{match list {
+case Nil =>
+case Cons(h, t) =>validListM_validList_Equivalence(t, N);
+}
+}}
 

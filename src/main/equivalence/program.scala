@@ -20,6 +20,7 @@ def programEquivalence(program: Program): Program = {
 def generateLemmaName(modelName: String, candName: String): String = 
   s"${modelName}_${candName}_Equivalence"
 
+// TODO: Check if original pair of functions have the same number of arguments
 def functionEquivalence(
     currentLemmas: Map[String, Option[Lemma]], 
     model: Function,

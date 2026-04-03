@@ -50,5 +50,9 @@ case Cons(hd, tl) =>foldM_fold1_Equivalence((x, y) => if (x > y) then x else y, 
 lemma foldM_fold1_Equivalence(f: (int, int) -> int, l: List<int>, a: int)
 decreases (l)
 ensures (foldM(f, l, a) == fold1(f, l, a))
-{{}}
+{{match l {
+case Nil =>
+case Cons(hd, tl) =>foldM_fold1_Equivalence(f, tl, a);
+}
+}}
 
