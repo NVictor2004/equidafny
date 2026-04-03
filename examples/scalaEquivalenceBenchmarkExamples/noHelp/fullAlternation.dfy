@@ -19,3 +19,8 @@ function m2(n: int, mode: bool): int {
     var results := if (mode) then m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode) else m2(n-1, !mode) + m2(n-2, !mode);
     results
 }
+
+lemma m2_equivalence_fib(n: int)
+  requires n >= 2
+  ensures m2(n, true) == m2(n - 1, false) + m2(n - 2, false)
+{}

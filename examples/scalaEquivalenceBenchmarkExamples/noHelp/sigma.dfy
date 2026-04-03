@@ -31,3 +31,9 @@ function sigma1(f: int -> int, a: int, b: int): int
   decreases(if (b == a) then 2 else if (b > a) then 2 + b - a else a - b) {
   if (a > b) then 0 else sigma_rec(0, a, b, f)
 }
+
+lemma equivalenceSigmaRec_s(sum: int, i: int, b: int, f: int -> int)
+  decreases(if (b == i) then 2 else if (b > i) then 2 + b - i else i - b)
+  requires i <= b
+  ensures (sigma_rec(sum, i, b, f) == s(i, b, f, sum))
+{}
