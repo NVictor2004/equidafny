@@ -1,6 +1,6 @@
 datatype Animal = Sheep(id: int) | Goat(id: int)
 
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function separateM(xs: List<Animal>): (List<Animal>, List<Animal>)
 {match xs {
@@ -22,7 +22,7 @@ case Cons(Goat(id), t) => var (s2, g2) := separate1(t);
 }
 }
 
-lemma separate1Equivalence(xs: List<Animal>)
-ensures separateM(xs) == separate1(xs)
+lemma separateM_separate1_Equivalence(xs: List<Animal>)
+ensures (separateM(xs) == separate1(xs))
 {{}}
 

@@ -96,8 +96,6 @@ case class Cardinality(expr: BasicExpr) extends BasicExpr
 object Cardinality extends PureParserBridge1[BasicExpr, Cardinality]
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
 object Tuple extends PureParserBridge1[List[BasicExpr], Tuple]
-case class Brackets(expr: BasicExpr) extends BasicExpr
-object Brackets extends PureParserBridge1[BasicExpr, Brackets]
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
 object Cond extends PureParserBridge3[BasicExpr, ExprBlock, ExprBlock, Cond]

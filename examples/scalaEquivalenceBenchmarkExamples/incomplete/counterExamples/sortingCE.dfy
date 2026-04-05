@@ -22,31 +22,6 @@ function isSortedR(l: List<int>): bool
   case Cons(x, xs) => loop(x, xs)
 }
 
-// Defining isSortedB
-function isSortedB(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, Nil) => isSortedB(Nil)
-  case Cons(x, Cons(y, ys)) => x <= y && isSortedB(Cons(y, ys))
-}
-
-// Defining isSortedC
-
-function chk(l: List<int>, p: int, a: bool): bool
-{
-  match l
-  case Nil => a
-  case Cons(x, xs) => x >= p && chk(xs, x, a)
-}
-
-function isSortedC(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, xs) => chk(Cons(x, xs), x, true)
-}
-
 // Defining isSortedA
 
 function leq(cur: int, next: int): bool
@@ -68,4 +43,29 @@ function isSortedA(l: List<int>): bool
   case Nil => true
   case Cons(_, Nil) => true
   case Cons(x, Cons(y, ys)) => x <= y && iter(Cons(y, ys))
+}
+
+// Proving equivalence of isSortedA with isSortedR
+
+// Without the helper lemma, Dafny provides the counter example of Cons(-38, Cons(7681, Nil))
+// However, both functions return true for this input, so this is not a valid counter example
+// Also, this is a terrible counter example
+
+// With the helper lemma, Dafny successfully provides a correct counter example of
+// x = 8855, xs = Cons(8855, Nil)
+// However, this is still a terrible counter example
+
+lemma isSortedEquivalence4Helper(x: int, xs: List<int>)
+  decreases xs
+  ensures iter(Cons(x, xs)) == loop(x, xs)
+{
+}
+
+lemma isSortedEquivalence4(l: List<int>)
+  ensures isSortedA(l) == isSortedR(l)
+{
+  match l
+  case Nil => {}
+  case Cons(x, Nil) => {}
+  case Cons(x, Cons(y, ys)) => isSortedEquivalence4Helper(y, ys);
 }

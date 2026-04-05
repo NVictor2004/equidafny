@@ -17,7 +17,7 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
   }
   case CallStmt(name, args) => {
     writer.format("%s", name)
-    formatBrackets("(", formatList(args, formatBasicExpr), ")")
+    args.foreach(call => formatBrackets("(", formatList(call, formatBasicExpr), ")"))
     writer.print(";")
   }
   case MatchStmt(expr, cases) => {
@@ -29,6 +29,7 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
       formatPattern(pattern)
       writer.print(" =>")
       stmts.foreach(formatStmt)
+      writer.println("")
     })
     writer.println("}")
   }
@@ -38,7 +39,11 @@ def formatStmt(stmt: Stmt)(using writer: Formatter): Unit = stmt match {
     writer.print(";")
   }
   case LetStmt(left, right) => {
-    writer.format("var %s := ", left.mkString("(", ", ", ")"))
+    if (left.length == 1) {
+      writer.format("var %s := ", left(0))
+    } else {
+      writer.format("var %s := ", left.mkString("(", ", ", ")"))
+    }
     formatBasicExpr(right)
     writer.print(";")
   }

@@ -8,7 +8,7 @@ def evaluatePattern(pattern: Pattern): Double = pattern match {
   case UnNamed          => UnNamedPatternCost
   case Constant(value)  => ConstantPatternCost + evaluateLiteralExpr(value)
   case Basic(_, values) =>
-    BasicPatternCost + values.fold(0.0)(_.map(evaluatePattern).sum)
+    BasicPatternCost + values.map(evaluatePattern).sum
   case PatternTuple(elements) =>
     PatternTupleCost + elements.map(evaluatePattern).sum
 }

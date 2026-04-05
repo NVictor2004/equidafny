@@ -21,6 +21,7 @@ def formatProgram(
     modelFunction,
     candidateFunctions,
     helperFunctions,
+    normFunction,
     mainLemma,
     helperLemmas,
     auxiliaryLemmas
@@ -29,7 +30,8 @@ def formatProgram(
   datatypes.foreach(formatDatatype)
   formatFunction(modelFunction)
   candidateFunctions.foreach(formatFunction)
-  helperFunctions.foreach(formatFunction)
+  helperFunctions.values.foreach(formatFunction)
+  normFunction.foreach(formatFunction)
   mainLemma.foreach(formatLemma)
   helperLemmas.foreach(formatLemma)
   auxiliaryLemmas.foreach(formatLemma)
@@ -41,9 +43,9 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   val Datatype(name, generic, types) = datatype
 
   writer.format("datatype %s", name)
-  generic.foreach(typeList =>
-    formatBrackets("<", formatList(typeList, formatGeneric), ">")
-  )
+  if (generic != Nil) {
+    formatBrackets("<", formatList(generic, formatGeneric), ">")
+  }
   writer.print(" = ")
   formatList(types, formatDeclaredType, " | ")
   writer.print("\n\n")
@@ -62,9 +64,9 @@ def formatDeclaredType(
 )(using writer: Formatter): Unit = {
   val DeclaredType(name, typeParams) = declaredType
   writer.print(name)
-  typeParams.foreach(params =>
-    formatBrackets("(", formatList(params, formatParameter), ")")
-  )
+  if (typeParams != Nil) {
+    formatBrackets("(", formatList(typeParams, formatParameter), ")")
+  }
 }
 
 private def formatGeneric(
@@ -84,9 +86,11 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
   if (ghost) writer.print("ghost ")
 
   writer.format("function %s", name)
-  generic.foreach(typeList =>
-    formatBrackets("<", formatList(typeList, formatGeneric), ">")
-  )
+
+  if (generic != Nil) {
+    formatBrackets("<", formatList(generic, formatGeneric), ">")
+  }
+
   formatBrackets("(", formatList(params, formatParameter), ")")
   writer.print(": ")
   formatType(returnType)
@@ -114,9 +118,10 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
 
   writer.format("%s", name)
 
-  generic.foreach(typeList =>
-    formatBrackets("<", formatList(typeList, formatGeneric), ">")
-  )
+  if (generic != Nil) {
+    formatBrackets("<", formatList(generic, formatGeneric), ">")
+  }
+
   formatBrackets("(", formatList(params, formatParameter), ")")
 
   writer.println("")

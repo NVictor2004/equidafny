@@ -17,12 +17,13 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
     writer.print("set")
     formatBrackets("<", formatType(elementType), ">")
   }
-  case NamedType(name, generics) => {
+  case CreatedType(name, generics) => {
     writer.print(name)
-    generics.foreach(types =>
-      formatBrackets("<", formatList(types, formatType), ">")
-    )
+    if (generics != Nil) {
+      formatBrackets("<", formatList(generics, formatType), ">")
+    }
   }
+  case GenericType(name) => writer.print(name)
   case TupleType(elements) =>
     formatBrackets("(", formatList(elements, formatType), ")")
   case ArrowType(from, to) => {
