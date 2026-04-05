@@ -112,8 +112,10 @@ private lazy val basicHigher =
         | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
         | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
-    | atomic("(" ~> basic <~ ")")
-    | Tuple("(" ~> sepBy(basic, ",") <~ ")")
+    | "(" ~> basic <**> (
+      "," ~> sepBy(basic, ",").map(basics => ((basic: BasicExpr) => Tuple(basic :: basics)))
+      </> identity[BasicExpr]
+    ) <~ ")"
 
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
