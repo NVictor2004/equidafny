@@ -32,7 +32,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
                     }
 
                     // Call the generated helper equivalence lemma
-                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), calledInModelArgs.map(_.map(_._2).toList))
+                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
 
                     (helperLemmas + lemma, currentMappings ++ finalMapping, List(finalStmt))
                 }
@@ -42,14 +42,14 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
                     // Just call the lemma without trying to generate it, trust that it will get generated before the whole
                     // merging process completes
 
-                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), calledInModelArgs.map(_.map(_._2).toList))
+                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
                     (currentLemmas, currentMappings, List(finalStmt))
                 }
                 case Some(Some(lemma)) => {
                     // This pair of functions has been encountered before, and its equivalence lemma has already
                     // been generated, just call it
 
-                    val finalStmt = CallStmt(lemma.name, calledInModelArgs.map(_.map(_._2).toList))
+                    val finalStmt = CallStmt(lemma.name, List(calledInModelArgs(0).map(_._2)))
                     (currentLemmas, currentMappings, List(finalStmt))
                 }
             }
@@ -67,7 +67,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
                 }
             }
 
-            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), calledInModelArgs.map(_.map(_._2).toList))
+            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
 
             (finalLemmas, finalMappings, stmts :+ finalStmt)
         }
