@@ -27,7 +27,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: M
                     // Convert mapping between the parameters of the called functions to a mapping to the parameters in
                     // the caller functions
                     val finalMapping = mapping.map {
-                        case (modelName, candName) => lookup(calledInModelArgs(0), modelName) -> lookup(calledInCandidateArgs(0), candName)
+                        case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
                     }.collect {
                         case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
                     }
@@ -57,12 +57,12 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: M
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
         if calledInModel == modelFunc.name && calledInCandidate == candidateFunc.name => {
             val exprMapping = currentMappings.map {
-                case (modelName, candName) => lookup(calledInModelArgs(0), modelName) -> lookup(calledInCandidateArgs(0), candName)
+                case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
             }
 
             // TODO: Match function arguments to generate further mappings for all cases where two functions are compared
             val (finalLemmas, finalMappings, stmts) = exprMapping.foldLeft((currentLemmas, currentMappings, List[Stmt]())) {
-                case ((accLemmas, accMappings, accStmts), (modelExpr, candExpr)) => {
+                case ((accLemmas, accMappings, accStmts), (candExpr, modelExpr)) => {
                     val (lemmas, mappings, stmts) = mergeBasicExpr(accLemmas, accMappings, modelExpr, modelFunc, candExpr, candidateFunc)
                     (lemmas, mappings, accStmts ++ stmts)
                 }
@@ -91,7 +91,6 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: M
                 case _ => condStmts ++ List(CondStmt(modelCond, BlockStmt(thenStmts), Some(BlockStmt(elseStmts))))
             }
 
-            // TODO: Mappings concatenation
             (elseLemmas, elseMappings, finalStmts)
         }
         // TODO: Same length tuples? In which case, the match expression pattern matching needs to be fixed
@@ -125,7 +124,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: M
             mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
 
         case (Ident(modelName, Nil), Ident(candName, Nil)) =>
-            (currentLemmas, currentMappings + (modelName -> candName), Nil)
+            (currentLemmas, currentMappings + (candName -> modelName), Nil)
 
         // TODO: When the match expressions have different numbers of cases
         // TODO: When they have the same number, but are in a different order
@@ -140,7 +139,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: M
                 case ((accLemmas, accMappings, accStmts), ((modelPattern, modelExprBlock), (_, candExprBlock))) => {
                     val (lemmas, mappings, stmts) = mergeExprBlock(accLemmas, accMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
                     val identsInModelPattern = getIdentsFromPattern(modelPattern)
-                    val filteredMappings = mappings.filterNot((model, _) => identsInModelPattern.contains(model))
+                    val filteredMappings = mappings.filterNot((_, model) => identsInModelPattern.contains(model))
                     (lemmas, filteredMappings, accStmts :+ stmts)
                 }
             }
@@ -180,7 +179,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: M
     }
 
     val modelParamNames = modelFunc.params.map(_._1).toList
-    val finalMappings = unfilteredMappings.filter((modelName, _) => modelParamNames.contains(modelName))
+    val finalMappings = unfilteredMappings.filter((_, modelName) => modelParamNames.contains(modelName))
     (finalLemmas, finalMappings, finalStmts)
 }
 
@@ -216,7 +215,7 @@ def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function
             if (modelCount == 1) {
                 val modelName = modelFunc.params.find((_, currentType) => currentType == paramType).get._1
                 val candName = candidateFunc.params.find((_, currentType) => currentType == paramType).get._1
-                accMappings ++ List((modelName, candName))
+                accMappings ++ List((candName, modelName))
             } else {
                 accMappings
             }
@@ -227,8 +226,8 @@ def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function
     val (lemmas, mappings, stmts) = mergeExprBlock(currentLemmas, typeMappings, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 
     // Find parameters not covered already
-    val modelParamsCovered = mappings.keys.toList
-    val candParamsCovered = mappings.values.toList
+    val candParamsCovered = mappings.keys.toList
+    val modelParamsCovered = mappings.values.toList
 
     val modelParamsLeft = modelFunc.params.filterNot((name, _) => modelParamsCovered.contains(name))
     var candParamsLeft = candidateFunc.params.filterNot((name, _) => candParamsCovered.contains(name))
@@ -237,7 +236,7 @@ def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function
     val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
         val (candName, _) = candParamsLeft.find((_, currentType) => currentType == modelType).get
         candParamsLeft = candParamsLeft.filter((currentName, _) => currentName != candName)
-        (modelName, candName)
+        (candName, modelName)
     }).toList
 
     (lemmas, mappings ++ remainingMappings, stmts)

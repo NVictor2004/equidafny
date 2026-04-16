@@ -27,8 +27,7 @@ def functionEquivalence(
     candidate: Function
 )(using program: Program): ((String, Option[Lemma]), Map[String, Option[Lemma]], Map[String, String]) = {
   val newLemma = (model.name, None)
-  val (helperLemmas, mapping, stmts) = mergeFunction(currentLemmas + newLemma, model, candidate)
-  val mappingMap = mapping.map((a, b) => (b, a)).toMap
+  val (helperLemmas, mappingMap, stmts) = mergeFunction(currentLemmas + newLemma, model, candidate)
 
   val modelIdents = model.params.keys
   val candidateIdents = candidate.params.map((paramName, _) => mappingMap(paramName))
@@ -66,5 +65,5 @@ def functionEquivalence(
       ),
     Some(BlockStmt(stmts))
   )
-  ((model.name, Some(equiv)), helperLemmas - model.name, mapping)
+  ((model.name, Some(equiv)), helperLemmas - model.name, mappingMap)
 }

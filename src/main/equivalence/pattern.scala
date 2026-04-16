@@ -2,9 +2,6 @@ package equivalence.pattern
 
 import translation.structure.* 
 
-private def reverseLookup[A, B](mappings: List[(A, B)], value: B): A = 
-    mappings.find((_, v) => v == value).get._1
-
 private def lookup[A, B](mappings: List[(A, B)], key: A): Option[B] = 
     mappings.find((k, _) => k == key).map(_._2)
 
@@ -33,10 +30,10 @@ def mapBasicExprToPattern(expr: BasicExpr, pattern: Pattern): List[(String, Patt
     case (Ident(name, Nil), pattern) => List((name, pattern))
 }
 
-def createPattern(candExpr: BasicExpr, modelCandMapping: Map[String, String], modelPatternMapping: List[(String, Pattern)]): Pattern = candExpr match {
-    case Tuple(elements) => PatternTuple(elements.map(element => createPattern(element, modelCandMapping, modelPatternMapping)))
+def createPattern(candExpr: BasicExpr, candModelMapping: Map[String, String], modelPatternMapping: List[(String, Pattern)]): Pattern = candExpr match {
+    case Tuple(elements) => PatternTuple(elements.map(element => createPattern(element, candModelMapping, modelPatternMapping)))
     case Ident(candName, Nil) => {
-        val modelName = reverseLookup(modelCandMapping.toList, candName)
+        val modelName = candModelMapping(candName)
         lookup(modelPatternMapping, modelName).getOrElse(UnNamed)
     }
 }
