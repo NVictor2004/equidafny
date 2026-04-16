@@ -62,5 +62,5 @@ ensures (sub(x, y) == mySub(y, x))
 lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures (mul(x, y) == myMul(x, y))
-{{if (x == 0){}else {if (x > 0){add_myAdd_Equivalence(mul((x - 1), y), y);}else {sub_mySub_Equivalence(mul((x + 1), y), y);}}}}
+{{if (x == 0){}else {if (x > 0){mul_myMul_Equivalence((x - 1), y);add_myAdd_Equivalence(mul((x - 1), y), y);}else {sub_mySub_Equivalence(mul((x + 1), y), y);}}}}
 

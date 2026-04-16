@@ -14,48 +14,29 @@ private def numberOfArguments[A](data: List[List[A]]): Int = data.map(_.length).
 def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: Map[String, String], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], Map[String, String], List[Stmt]) = {
     val (finalLemmas, unfilteredMappings, finalStmts) = (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-        if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => 
-            currentLemmas.get(calledInModel) match {
-                case None => {
-                    // This pair of functions has not been encountered yet, generate its equivalence lemma
+        if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) && !currentLemmas.get(calledInModel).isDefined => {
+            // This pair of functions has not been encountered yet, generate its equivalence lemma
 
-                    // Generate Equivalence data for the called functions
-                    val funcCalledInModel = program.helperFunctions(calledInModel)
-                    val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
-                    val (lemma, helperLemmas, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
+            // Generate Equivalence data for the called functions
+            val funcCalledInModel = program.helperFunctions(calledInModel)
+            val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
+            val (lemma, helperLemmas, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
 
-                    // Convert mapping between the parameters of the called functions to a mapping to the parameters in
-                    // the caller functions
-                    val finalMapping = mapping.map {
-                        case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
-                    }.collect {
-                        case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
-                    }
-
-                    // Call the generated helper equivalence lemma
-                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
-
-                    (helperLemmas + lemma, currentMappings ++ finalMapping, List(finalStmt))
-                }
-                case Some(None) => {
-                    // This pair of functions has been encountered before, but we are currently in the process
-                    // of generating its equivalence lemma
-                    // Just call the lemma without trying to generate it, trust that it will get generated before the whole
-                    // merging process completes
-
-                    val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
-                    (currentLemmas, currentMappings, List(finalStmt))
-                }
-                case Some(Some(lemma)) => {
-                    // This pair of functions has been encountered before, and its equivalence lemma has already
-                    // been generated, just call it
-
-                    val finalStmt = CallStmt(lemma.name, List(calledInModelArgs(0).map(_._2)))
-                    (currentLemmas, currentMappings, List(finalStmt))
-                }
+            // Convert mapping between the parameters of the called functions to a mapping to the parameters in
+            // the caller functions
+            val finalMapping = mapping.map {
+                case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
+            }.collect {
+                case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
             }
+
+            // Call the generated helper equivalence lemma
+            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
+
+            (helperLemmas + lemma, currentMappings ++ finalMapping, List(finalStmt))
+        }
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-        if calledInModel == modelFunc.name && calledInCandidate == candidateFunc.name => {
+        if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
             val exprMapping = currentMappings.map {
                 case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
             }
