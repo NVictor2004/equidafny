@@ -11,7 +11,7 @@ private def lookup[A, B](data: List[(A, B)], key: A): B =
 
 private def numberOfArguments[A](data: List[List[A]]): Int = data.map(_.length).sum
 
-def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: List[(String, String)], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = {
+def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: Map[String, String], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], Map[String, String], List[Stmt]) = {
     val (finalLemmas, unfilteredMappings, finalStmts) = (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
         if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => 
@@ -125,7 +125,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
             mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
 
         case (Ident(modelName, Nil), Ident(candName, Nil)) =>
-            (currentLemmas, currentMappings :+ (modelName -> candName), Nil)
+            (currentLemmas, currentMappings + (modelName -> candName), Nil)
 
         // TODO: When the match expressions have different numbers of cases
         // TODO: When they have the same number, but are in a different order
@@ -184,7 +184,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
     (finalLemmas, finalMappings, finalStmts)
 }
 
-def mergeExprBlock(currentLemmas: Map[String, Option[Lemma]], currentMappings: List[(String, String)], modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = {
+def mergeExprBlock(currentLemmas: Map[String, Option[Lemma]], currentMappings: Map[String, String], modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], Map[String, String], List[Stmt]) = {
     val ExprBlock(modelExtended, modelBasic) = modelExprBlock
     val ExprBlock(_, candBasic) = candidateExprBlock
 
@@ -200,7 +200,7 @@ def mergeExprBlock(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
     (lemmas, mappings, modelVariables ++ stmts)
 }
 
-def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = {
+def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], Map[String, String], List[Stmt]) = {
     // Mappings are generated through merging the function bodys and through type matching
 
     // Find Type mappings
@@ -221,14 +221,14 @@ def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function
                 accMappings
             }
         }
-    }
+    }.toMap
 
     // Find mappings through function body merging
     val (lemmas, mappings, stmts) = mergeExprBlock(currentLemmas, typeMappings, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 
     // Find parameters not covered already
-    val modelParamsCovered = mappings.map(_._1)
-    val candParamsCovered = mappings.map(_._2)
+    val modelParamsCovered = mappings.keys.toList
+    val candParamsCovered = mappings.values.toList
 
     val modelParamsLeft = modelFunc.params.filterNot((name, _) => modelParamsCovered.contains(name))
     var candParamsLeft = candidateFunc.params.filterNot((name, _) => candParamsCovered.contains(name))

@@ -25,7 +25,7 @@ def functionEquivalence(
     currentLemmas: Map[String, Option[Lemma]], 
     model: Function,
     candidate: Function
-)(using program: Program): ((String, Option[Lemma]), Map[String, Option[Lemma]], List[(String, String)]) = {
+)(using program: Program): ((String, Option[Lemma]), Map[String, Option[Lemma]], Map[String, String]) = {
   val newLemma = (model.name, None)
   val (helperLemmas, mapping, stmts) = mergeFunction(currentLemmas + newLemma, model, candidate)
   val mappingMap = mapping.map((a, b) => (b, a)).toMap

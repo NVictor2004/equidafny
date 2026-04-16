@@ -33,10 +33,10 @@ def mapBasicExprToPattern(expr: BasicExpr, pattern: Pattern): List[(String, Patt
     case (Ident(name, Nil), pattern) => List((name, pattern))
 }
 
-def createPattern(candExpr: BasicExpr, modelCandMapping: List[(String, String)], modelPatternMapping: List[(String, Pattern)]): Pattern = candExpr match {
+def createPattern(candExpr: BasicExpr, modelCandMapping: Map[String, String], modelPatternMapping: List[(String, Pattern)]): Pattern = candExpr match {
     case Tuple(elements) => PatternTuple(elements.map(element => createPattern(element, modelCandMapping, modelPatternMapping)))
     case Ident(candName, Nil) => {
-        val modelName = reverseLookup(modelCandMapping, candName)
+        val modelName = reverseLookup(modelCandMapping.toList, candName)
         lookup(modelPatternMapping, modelName).getOrElse(UnNamed)
     }
 }
