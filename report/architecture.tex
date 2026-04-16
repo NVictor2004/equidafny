@@ -3,10 +3,20 @@
 % TODO: System architecture diagram?
 % TODO: Describe how to use the tool
 
-Our tool is divided into several important components. 
+Our tool is divided into several components. The most important component is the generation of Dafny data structures to facilitate the equivalence proof; this is described in \Cref{chp:implementation}. Similarly, the evaluation component is described in \Cref{chp:evaluation}. The remaining components are described in the following sections. 
 
 \section{Parsing}
 
+% Why parser combinator? And why Parsley?
+
+The first component is a parser. This system is used to parse the input Dafny program into a Scala data structure, so that it can be easily processed by the rest of the system. This parser was implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}. 
+
+\paragraph{Optimisation} The parser should be as efficient as possible. One method to increase performance is by minimising the amount of backtracking. Some backtracking is essential due to ambiguity in the Dafny language, however, I have attempted to minimise this as much as possible by carefully ordering the execution of all sub-parsers and by left-factoring whenever possible.
+
 \section{Translation}
 
+The data structure outputted by the parser is specifically designed to be easy to parse into. This ensures that the parser is simple to implement and efficient to execute. However, this data structure is not ideal for equivalence proof generation. Therefore, this component is used to translate the data structure outputted by the parser into a different data structure that will be used throughout the rest of the system. This translation system allowed me to specifically design the latter data structure to make equivalence proof generation as simple and efficient as possible, without forcing me to update the parser accordingly. This design choice made development significantly easier, especially since the latter data structure constantly evolved over time.
+
 \section{Formatting}
+
+Finally, after generating the equivalence proof, the data structure must be converted back into text and stored in a file before it can be processed by Dafny. This is achieved through the formatting component. To increase efficiency, this system directly writes to the file as it processes the program. This avoids the memory overhead of creating a large string before writing it to the file. 
