@@ -48,5 +48,16 @@ case Cons(_, t) => (1 + length(t))
 lemma binSumM_binSum1_Equivalence(l1: List<bool>, l2: List<bool>, c: bool)
 decreases ((length(l1) + length(l2)))
 ensures (binSumM(l1, l2, c) == binSum1(l1, l2, c))
-{{}}
+{{match (l1, l2) {
+case (Nil, Nil) =>
+case (Cons(true, t1), Cons(false, t2)) =>binSumM_binSum1_Equivalence(t1, t2, c);binSumM_binSum1_Equivalence(t1, t2, c);
+case (Cons(false, t1), Cons(true, t2)) =>binSumM_binSum1_Equivalence(t1, t2, c);binSumM_binSum1_Equivalence(t1, t2, c);
+case (Cons(false, t1), Cons(false, t2)) =>binSumM_binSum1_Equivalence(t1, t2, false);binSumM_binSum1_Equivalence(t1, t2, false);
+case (Cons(true, t1), Cons(true, t2)) =>binSumM_binSum1_Equivalence(t1, t2, true);binSumM_binSum1_Equivalence(t1, t2, true);
+case (Cons(true, t1), Nil) =>binSumM_binSum1_Equivalence(t1, Nil, c);binSumM_binSum1_Equivalence(t1, Nil, c);
+case (Cons(false, t1), Nil) =>binSumM_binSum1_Equivalence(t1, Nil, false);binSumM_binSum1_Equivalence(t1, Nil, false);
+case (Nil, Cons(true, t2)) =>
+case (Nil, Cons(false, t2)) =>
+}
+}}
 

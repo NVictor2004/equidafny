@@ -80,7 +80,7 @@ lemma loopM_go5_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go5(s, next, leq, xs, fuel))
 {{if (fuel <= 0){}else {match next(s) {
-case Some((nxtS, t)) =>insertM_insertSorted5_Equivalence(xs, leq, t);loopM_go5_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case Some((nxtS, t)) =>insertM_insertSorted5_Equivalence(xs, leq, t);insertM_insertSorted5_Equivalence(xs, leq, t);loopM_go5_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
 case None =>
 }
 }}}
@@ -98,7 +98,7 @@ lemma loopM_go1_Equivalence<A, B>(s: A, next: A -> Option<(A, B)>, leq: (B, B) -
 decreases (if (fuel <= 0) then 0 else fuel)
 ensures (loopM(s, next, leq, fuel, xs) == go1(s, next, leq, xs, fuel))
 {{if (fuel <= 0){}else {match next(s) {
-case Some((nxtS, t)) =>insertM_insertSorted1_Equivalence(xs, leq, t);loopM_go1_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
+case Some((nxtS, t)) =>insertM_insertSorted1_Equivalence(xs, leq, t);insertM_insertSorted1_Equivalence(xs, leq, t);loopM_go1_Equivalence(nxtS, next, leq, (fuel - 1), insertM(xs, leq, t));
 case None =>
 }
 }}}

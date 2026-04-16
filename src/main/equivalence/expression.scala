@@ -3,7 +3,7 @@ package equivalence.expression
 import translation.structure.*
 
 import equivalence.program.{functionEquivalence, generateLemmaName}
-import equivalence.pattern.{getIdentsFromPattern, listContainsUnNamed}
+import equivalence.pattern.*
 
 private def lookup[A, B](data: List[(A, B)], key: A): B =
     data.find((a, _) => a == key).get._2
@@ -93,7 +93,8 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
             // TODO: Mappings concatenation
             (elseLemmas, elseMappings, finalStmts)
         }
-        case (Tuple(modelElements), Tuple(candElements)) if modelElements.length == candElements.length => {
+        // TODO: Same length tuples? In which case, the match expression pattern matching needs to be fixed
+        case (Tuple(modelElements), Tuple(candElements)) => {
             modelElements.zip(candElements).foldLeft((currentLemmas, currentMappings, List[Stmt]())) {
                 case ((accLemmas, accMappings, accStmts), (modelElem, candElem)) => {
                     val (lemmas, mappings, stmts) = mergeBasicExpr(accLemmas, accMappings, modelElem, modelFunc, candElem, candidateFunc)
@@ -147,6 +148,33 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
 
             (finalLemmas, finalMappings, finalStmts)
         }
+        case (Match(modelExpr, modelCases), Match(candExpr, candCases)) => {
+            val (exprLemmas, exprMappings, exprStmts) = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
+
+            // Create mappings between the identifiers in the model match expression's expression and each model case's pattern
+            val modelPatternMappings = modelCases.map((pattern, _) => mapBasicExprToPattern(modelExpr, pattern))
+
+            // For each model case, create a pattern to merge with every candidate case
+            val modelPatterns = modelPatternMappings.map(patternMappings => createPattern(candExpr, exprMappings, patternMappings))
+
+            val candExprBlocks = modelPatterns.map(modelPattern => candCases.filter(candCase => mergePattern(modelPattern, candCase._1)).map(_._2))
+            val exprBlockMappings = modelCases.map(_._2).zip(candExprBlocks)
+
+            val (finalLemmas, finalMappings, stmts) = exprBlockMappings.foldLeft((exprLemmas, exprMappings, List[List[Stmt]]())) {
+                case ((accLemmas, accMappings, accStmts), (modelExprBlock, candExprBlocks)) => {
+                    val (lemmas, mappings, stmts) = candExprBlocks.foldLeft((accLemmas, accMappings, List[Stmt]())) {
+                        case ((accLemmas, accMappings, accStmts), candExprBlock) => {
+                            val (lemmas, mappings, stmts) = mergeExprBlock(accLemmas, accMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
+                            (lemmas, mappings, accStmts ++ stmts)
+                        }
+                    }
+                    (lemmas, mappings, accStmts :+ stmts)
+                }
+            }
+
+            val finalStmts = exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
+            (finalLemmas, finalMappings, finalStmts)
+        }
         case _ => (currentLemmas, currentMappings, Nil)
     }
 
@@ -173,21 +201,54 @@ def mergeExprBlock(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
 
 def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, Option[Lemma]], List[(String, String)], List[Stmt]) = {
     // Mappings are generated through merging the function bodys and through type matching
-    val (lemmas, mappings, stmts) = mergeExprBlock(currentLemmas, Nil, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 
-    // Find parameters not covered by function body merging
+    // Find Type mappings
+    val modelTypeCounts = mapTypesToCounts(modelFunc.params)
+    val candTypeCounts = mapTypesToCounts(candidateFunc.params)
+
+    val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
+        case (accMappings, (paramType, modelCount)) => {
+            val candCount = candTypeCounts.getOrElse(paramType, 0)
+            if (modelCount != candCount) {
+                throw new IllegalArgumentException("Types can't be matched")
+            }
+            if (modelCount == 1) {
+                val modelName = modelFunc.params.find(_.paramType == paramType).get.name
+                val candName = candidateFunc.params.find(_.paramType == paramType).get.name
+                accMappings ++ List((modelName, candName))
+            } else {
+                accMappings
+            }
+        }
+    }
+
+    // Find mappings through function body merging
+    val (lemmas, mappings, stmts) = mergeExprBlock(currentLemmas, typeMappings, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
+
+    // Find parameters not covered already
     val modelParamsCovered = mappings.map(_._1)
     val candParamsCovered = mappings.map(_._2)
 
     val modelParamsLeft = modelFunc.params.filterNot(param => modelParamsCovered.contains(param.name))
     var candParamsLeft = candidateFunc.params.filterNot(param => candParamsCovered.contains(param.name))
 
-    // Generate type mappings
-    val typeMappings = modelParamsLeft.map(modelParameter => {
+    // Generate remaining mappings
+    val remainingMappings = modelParamsLeft.map(modelParameter => {
         val candParam = candParamsLeft.find(param => param.paramType == modelParameter.paramType).get
         candParamsLeft = candParamsLeft.filter(_ != candParam)
         (modelParameter.name, candParam.name)
     }).toList
 
-    (lemmas, mappings ++ typeMappings, stmts)
+    (lemmas, mappings ++ remainingMappings, stmts)
 }
+
+def mapTypesToCounts(params: List[Parameter]): Map[Type, Int] = 
+    params.foldLeft(Map()) {
+        case (accMap, param) => {
+            val newEntry = accMap.get(param.paramType) match {
+                case Some(count) => (param.paramType, count + 1)
+                case None => (param.paramType, 1)
+            }
+            accMap + newEntry
+        }
+    }
