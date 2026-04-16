@@ -51,12 +51,11 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   writer.print("\n\n")
 }
 
-private def formatParameter(
-    parameter: Parameter
+private def formatNameTypePair(
+  pair: (String, Type)
 )(using writer: Formatter): Unit = {
-  val Parameter(name, paramType) = parameter
-  writer.format("%s: ", name)
-  formatType(paramType)
+  writer.format("%s: ", pair._1)
+  formatType(pair._2)
 }
 
 def formatDeclaredType(
@@ -64,8 +63,8 @@ def formatDeclaredType(
 )(using writer: Formatter): Unit = {
   val DeclaredType(name, typeParams) = declaredType
   writer.print(name)
-  if (typeParams != Nil) {
-    formatBrackets("(", formatList(typeParams, formatParameter), ")")
+  if (!typeParams.isEmpty) {
+    formatBrackets("(", formatList(typeParams.toList, formatNameTypePair), ")")
   }
 }
 
@@ -91,7 +90,7 @@ def formatFunction(function: Function)(using writer: Formatter): Unit = {
     formatBrackets("<", formatList(generic, formatGeneric), ">")
   }
 
-  formatBrackets("(", formatList(params, formatParameter), ")")
+  formatBrackets("(", formatList(params.toList, formatNameTypePair), ")")
   writer.print(": ")
   formatType(returnType)
 
@@ -122,7 +121,7 @@ def formatLemma(lemma: Lemma)(using writer: Formatter): Unit = {
     formatBrackets("<", formatList(generic, formatGeneric), ">")
   }
 
-  formatBrackets("(", formatList(params, formatParameter), ")")
+  formatBrackets("(", formatList(params.toList, formatNameTypePair), ")")
 
   writer.println("")
 

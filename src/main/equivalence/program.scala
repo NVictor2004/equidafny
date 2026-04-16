@@ -30,11 +30,11 @@ def functionEquivalence(
   val (helperLemmas, mapping, stmts) = mergeFunction(currentLemmas + newLemma, model, candidate)
   val mappingMap = mapping.map((a, b) => (b, a)).toMap
 
-  val modelIdents = model.params.map(_.name)
-  val candidateIdents = candidate.params.map(param => mappingMap(param.name))
+  val modelIdents = model.params.keys
+  val candidateIdents = candidate.params.map((paramName, _) => mappingMap(paramName))
 
-  val modelMap = model.params.zip(modelIdents).map((p, i) => (p.name, Ident(i, Nil)))
-  val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p.name, Ident(i, Nil)))
+  val modelMap = model.params.zip(modelIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
+  val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
 
   val modelFunctionCall = TrueFunctionCall(model.name, List(modelMap))
   val candFunctionCall = TrueFunctionCall(candidate.name, List(candMap))
@@ -42,7 +42,7 @@ def functionEquivalence(
   val (finalModelFunctionCall, finalCandFunctionCall) = program.normFunction match {
     case Some(normFunction) if model.name == program.modelFunction.name => {
       val functionName = normFunction.name
-      val lastParamName = normFunction.params.last.name
+      val lastParamName = normFunction.params.last._1
       (TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, modelFunctionCall))), 
       TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, candFunctionCall))))
     }

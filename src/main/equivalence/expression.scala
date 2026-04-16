@@ -4,6 +4,7 @@ import translation.structure.*
 
 import equivalence.program.{functionEquivalence, generateLemmaName}
 import equivalence.pattern.*
+import scala.collection.immutable.ListMap
 
 private def lookup[A, B](data: List[(A, B)], key: A): B =
     data.find((a, _) => a == key).get._2
@@ -178,7 +179,7 @@ def mergeBasicExpr(currentLemmas: Map[String, Option[Lemma]], currentMappings: L
         case _ => (currentLemmas, currentMappings, Nil)
     }
 
-    val modelParamNames = modelFunc.params.map(_._1)
+    val modelParamNames = modelFunc.params.map(_._1).toList
     val finalMappings = unfilteredMappings.filter((modelName, _) => modelParamNames.contains(modelName))
     (finalLemmas, finalMappings, finalStmts)
 }
@@ -213,8 +214,8 @@ def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function
                 throw new IllegalArgumentException("Types can't be matched")
             }
             if (modelCount == 1) {
-                val modelName = modelFunc.params.find(_.paramType == paramType).get.name
-                val candName = candidateFunc.params.find(_.paramType == paramType).get.name
+                val modelName = modelFunc.params.find((_, currentType) => currentType == paramType).get._1
+                val candName = candidateFunc.params.find((_, currentType) => currentType == paramType).get._1
                 accMappings ++ List((modelName, candName))
             } else {
                 accMappings
@@ -229,25 +230,25 @@ def mergeFunction(currentLemmas: Map[String, Option[Lemma]], modelFunc: Function
     val modelParamsCovered = mappings.map(_._1)
     val candParamsCovered = mappings.map(_._2)
 
-    val modelParamsLeft = modelFunc.params.filterNot(param => modelParamsCovered.contains(param.name))
-    var candParamsLeft = candidateFunc.params.filterNot(param => candParamsCovered.contains(param.name))
+    val modelParamsLeft = modelFunc.params.filterNot((name, _) => modelParamsCovered.contains(name))
+    var candParamsLeft = candidateFunc.params.filterNot((name, _) => candParamsCovered.contains(name))
 
     // Generate remaining mappings
-    val remainingMappings = modelParamsLeft.map(modelParameter => {
-        val candParam = candParamsLeft.find(param => param.paramType == modelParameter.paramType).get
-        candParamsLeft = candParamsLeft.filter(_ != candParam)
-        (modelParameter.name, candParam.name)
+    val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
+        val (candName, _) = candParamsLeft.find((_, currentType) => currentType == modelType).get
+        candParamsLeft = candParamsLeft.filter((currentName, _) => currentName != candName)
+        (modelName, candName)
     }).toList
 
     (lemmas, mappings ++ remainingMappings, stmts)
 }
 
-def mapTypesToCounts(params: List[Parameter]): Map[Type, Int] = 
+def mapTypesToCounts(params: ListMap[String, Type]): Map[Type, Int] = 
     params.foldLeft(Map()) {
-        case (accMap, param) => {
-            val newEntry = accMap.get(param.paramType) match {
-                case Some(count) => (param.paramType, count + 1)
-                case None => (param.paramType, 1)
+        case (accMap, (_, paramType)) => {
+            val newEntry = accMap.get(paramType) match {
+                case Some(count) => (paramType, count + 1)
+                case None => (paramType, 1)
             }
             accMap + newEntry
         }

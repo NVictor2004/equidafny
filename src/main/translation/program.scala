@@ -10,6 +10,8 @@ import translation.translation.Context
 
 import ujson.Value
 
+import scala.collection.immutable.ListMap
+
 def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
 
   val functionData = prog.collect {
@@ -71,9 +73,9 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
 def translateDeclaredType(decl: Parsers.DeclaredType)(using Context): DeclaredType =
   DeclaredType(
     decl.name,
-    decl.typeParams.map(_.map { case Parsers.Parameter(name, paramType) =>
-      Parameter(name, translateType(paramType))
-    }).getOrElse(Nil)
+    decl.typeParams.map(typeParamList => ListMap(typeParamList.map { case Parsers.Parameter(name, paramType) =>
+      (name, translateType(paramType))
+    }*)).getOrElse(ListMap())
   )
 
 def translateGeneric(
@@ -122,9 +124,9 @@ def translateTopLevel(
         false,
         name,
         translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
-        params.map { case Parsers.Parameter(name, paramType) =>
-          Parameter(name, translateType(paramType))
-        },
+        ListMap(params.map { case Parsers.Parameter(name, paramType) =>
+          (name, translateType(paramType))
+        }*),
         translateType(returnType),
         specs.map(translateSpec),
         translateExpr(body)
@@ -147,9 +149,9 @@ def translateTopLevel(
         true,
         name,
         translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
-        params.map { case Parsers.Parameter(name, paramType) =>
-          Parameter(name, translateType(paramType))
-        },
+        ListMap(params.map { case Parsers.Parameter(name, paramType) =>
+          (name, translateType(paramType))
+        }*),
         translateType(returnType),
         specs.map(translateSpec),
         translateExpr(body)
@@ -164,9 +166,9 @@ def translateTopLevel(
       val item = Lemma(
         name,
         translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
-        params.map { case Parsers.Parameter(name, paramType) =>
-          Parameter(name, translateType(paramType))
-        },
+        ListMap(params.map { case Parsers.Parameter(name, paramType) =>
+          (name, translateType(paramType))
+        }*),
         specs.map(translateSpec),
         body.map { case Parsers.BlockStmt(stmts) =>
           translateBlockStmt(stmts)
