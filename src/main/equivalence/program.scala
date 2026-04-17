@@ -5,15 +5,19 @@ import translation.structure.BinaryOperator.*
 
 import equivalence.expression.mergeFunction
 
+import scala.collection.mutable.Map as MutableMap
+
 def programEquivalence(program: Program): Program = {
   given Program = program
 
-  val data = program.candidateFunctions.map(
-    functionEquivalence(Map(), program.modelFunction, _)
-  )
+  val data = program.candidateFunctions.map(candFunction => {
+    val currentLemmas = MutableMap[String, Option[Lemma]]()
+    val ((_, lemma), _) = functionEquivalence(currentLemmas, program.modelFunction, candFunction)
+    (lemma, currentLemmas.values)
+  })
   program.copy(
-    mainLemmas = program.mainLemmas ++ data.map(_._1._2.get),
-    helperLemmas = program.helperLemmas ++ data.flatMap(_._2.values.map(_.get))
+    mainLemmas = program.mainLemmas ++ data.map(_._1.get),
+    helperLemmas = program.helperLemmas ++ data.flatMap(_._2.map(_.get))
   )
 }
 
@@ -22,12 +26,12 @@ def generateLemmaName(modelName: String, candName: String): String =
 
 // TODO: Check if original pair of functions have the same number of arguments
 def functionEquivalence(
-    currentLemmas: Map[String, Option[Lemma]], 
+    currentLemmas: MutableMap[String, Option[Lemma]],
     model: Function,
     candidate: Function
-)(using program: Program): ((String, Option[Lemma]), Map[String, Option[Lemma]], Map[String, String]) = {
-  val newLemma = (model.name, None)
-  val (helperLemmas, mappingMap, stmts) = mergeFunction(currentLemmas + newLemma, model, candidate)
+)(using program: Program): ((String, Option[Lemma]), Map[String, String]) = {
+  currentLemmas += (model.name -> None)
+  val (mappingMap, stmts) = mergeFunction(currentLemmas, model, candidate)
 
   val modelIdents = model.params.keys
   val candidateIdents = candidate.params.map((paramName, _) => mappingMap(paramName))
@@ -65,5 +69,6 @@ def functionEquivalence(
       ),
     Some(BlockStmt(stmts))
   )
-  ((model.name, Some(equiv)), helperLemmas - model.name, mappingMap)
+  currentLemmas -= model.name
+  ((model.name, Some(equiv)), mappingMap)
 }
