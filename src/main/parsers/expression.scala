@@ -83,15 +83,17 @@ private lazy val basicHigher =
     | Set("{" ~> sepBy(basic, ",") <~ "}")
     | Seq("[" ~> sepBy(basic, ",") <~ "]")
     | Cardinality("|" ~> basic <~ "|")
-    | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
-    | lambda
     | ident <**> (
-      some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
-        FunctionCall(_: String, args)
-      )
+      "=>" ~> expr.map(exprBlock => ((ident: String) => Lambda(List((ident, None)), exprBlock)))
+      | some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
+          FunctionCall(_: String, args)
+        )
         | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
         | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
+    // TODO: These three cases all start with "(", the lambda case starting with an ident has already been covered
+    | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
+    | lambda
     | "(" ~> basic <**> (
       "," ~> sepBy(basic, ",").map(basics => ((basic: BasicExpr) => Tuple(basic :: basics)))
       </> identity[BasicExpr]
