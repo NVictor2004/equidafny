@@ -14,10 +14,6 @@ import parsers.pattern.pattern
 import parsers.types.typeParser
 import parsers.index.index
 
-// TODO: ==> and <== should not be interchangeable
-// TODO: Within each group, different operators should not associate
-// TODO: Parentheses need to be used
-
 lazy val basic: Parsley[BasicExpr] =
   precedence(
     basicHigher,
@@ -26,11 +22,6 @@ lazy val basic: Parsley[BasicExpr] =
     Ops(Prefix)(
       Not from "!",
       Neg from "-"
-    ),
-    Ops(InfixL)(
-      // BitOr from atomic("|" <~ notFollowedBy("|")), TODO: Add this back in
-      BitAnd from atomic("&" <~ notFollowedBy("&")),
-      BitXor from "^"
     ),
     Ops(InfixL)(
       Mul from "*",
@@ -42,19 +33,12 @@ lazy val basic: Parsley[BasicExpr] =
       Sub from "-"
     ),
     Ops(InfixL)(
-      LeftShift from "<<",
-      RightShift from ">>"
-    ),
-    Ops(InfixL)(
       Eq from atomic("==" <~ notFollowedBy(">")),
       Neq from "!=",
       LTE from atomic("<=" <~ notFollowedBy("=>")),
       GTE from ">=",
       LT from atomic("<" <~ notFollowedBy("==>")),
-      GT from ">",
-      In from "in",
-      NotIn from "!in",
-      Disjoint from "!!"
+      GT from ">"
     ),
     Ops(InfixL)(
       BoolAnd from "&&",
@@ -71,8 +55,6 @@ lazy val basic: Parsley[BasicExpr] =
     )
   )
 
-// TODO: Something was wrong with the bool parser here
-// TODO: move literal back up in the precedence atom list to see
 lazy val literal: Parsley[LiteralExpr] =
   BoolLiteral(bool)
     | ("null" as Null)

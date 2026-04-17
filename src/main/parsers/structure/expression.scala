@@ -52,16 +52,6 @@ case class GT(left: BasicExpr, right: BasicExpr) extends BasicExpr
 object GT extends PureParserBridge2[BasicExpr, BasicExpr, GT]
 case class GTE(left: BasicExpr, right: BasicExpr) extends BasicExpr
 object GTE extends PureParserBridge2[BasicExpr, BasicExpr, GTE]
-case class In(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object In extends PureParserBridge2[BasicExpr, BasicExpr, In]
-case class NotIn(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object NotIn extends PureParserBridge2[BasicExpr, BasicExpr, NotIn]
-case class Disjoint(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object Disjoint extends PureParserBridge2[BasicExpr, BasicExpr, Disjoint]
-case class LeftShift(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object LeftShift extends PureParserBridge2[BasicExpr, BasicExpr, LeftShift]
-case class RightShift(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object RightShift extends PureParserBridge2[BasicExpr, BasicExpr, RightShift]
 case class Add(left: BasicExpr, right: BasicExpr) extends BasicExpr
 object Add extends PureParserBridge2[BasicExpr, BasicExpr, Add]
 case class Sub(left: BasicExpr, right: BasicExpr) extends BasicExpr
@@ -72,12 +62,6 @@ case class Div(left: BasicExpr, right: BasicExpr) extends BasicExpr
 object Div extends PureParserBridge2[BasicExpr, BasicExpr, Div]
 case class Mod(left: BasicExpr, right: BasicExpr) extends BasicExpr
 object Mod extends PureParserBridge2[BasicExpr, BasicExpr, Mod]
-case class BitOr(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object BitOr extends PureParserBridge2[BasicExpr, BasicExpr, BitOr]
-case class BitAnd(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object BitAnd extends PureParserBridge2[BasicExpr, BasicExpr, BitAnd]
-case class BitXor(left: BasicExpr, right: BasicExpr) extends BasicExpr
-object BitXor extends PureParserBridge2[BasicExpr, BasicExpr, BitXor]
 case class Neg(expr: BasicExpr) extends BasicExpr
 object Neg extends PureParserBridge1[BasicExpr, Neg]
 case class Not(expr: BasicExpr) extends BasicExpr

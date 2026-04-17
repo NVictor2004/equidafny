@@ -82,16 +82,6 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(GT, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.GTE(l, r) =>
     Binary(GTE, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.In(l, r) =>
-    Binary(In, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.NotIn(l, r) =>
-    Binary(NotIn, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Disjoint(l, r) =>
-    Binary(Disjoint, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.LeftShift(l, r) =>
-    Binary(LeftShift, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.RightShift(l, r) =>
-    Binary(RightShift, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Add(l, r) =>
     Binary(Add, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Sub(l, r) =>
@@ -102,12 +92,6 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(Div, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Mod(l, r) =>
     Binary(Mod, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.BitOr(l, r) =>
-    Binary(BitOr, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.BitAnd(l, r) =>
-    Binary(BitAnd, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.BitXor(l, r) =>
-    Binary(BitXor, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Neg(e) => Unary(Neg, translateBasicExpr(e))
   case Parsers.Not(e) => Unary(Not, translateBasicExpr(e))
   case Parsers.Forall(variable, varType, body) =>

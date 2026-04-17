@@ -32,19 +32,11 @@ private def formatBinaryOperator(operator: BinaryOperator): String =
     case LTE          => "<="
     case GT           => ">"
     case GTE          => ">="
-    case In           => "in"
-    case NotIn        => "!in"
-    case Disjoint     => "!!"
-    case LeftShift    => "<<"
-    case RightShift   => ">>"
     case Add          => "+"
     case Sub          => "-"
     case Mul          => "*"
     case Div          => "/"
     case Mod          => "%"
-    case BitOr        => "|"
-    case BitAnd       => "&"
-    case BitXor       => "^"
   }
 
 private def formatUnaryOperator(operator: UnaryOperator): String =

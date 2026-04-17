@@ -17,9 +17,7 @@ case object Null extends LiteralExpr
 
 enum BinaryOperator {
   case Iff, LeftImplies, RightImplies, BoolAnd, BoolOr, Eq, Neq, LT, LTE, GT,
-    GTE,
-    In, NotIn, Disjoint, LeftShift, RightShift, Add, Sub, Mul, Div, Mod,
-    BitOr, BitAnd, BitXor
+    GTE, Add, Sub, Mul, Div, Mod
 }
 
 enum UnaryOperator {
