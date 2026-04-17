@@ -90,15 +90,13 @@ private lazy val basicHigher =
       "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> expr)
     )
-    | Forall(
-      "forall" ~> ident,
-      option(atomic(":" ~> typeParser)),
-      "::" ~> basic
+    | "forall" ~> ident <**> (
+      "::" ~> basic.map(expr => ((varName: String) => Forall(varName, None, expr)))
+      | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) => ((varName: String) => Forall(varName, Some(t), expr)))
     )
-    | Exists(
-      "exists" ~> ident,
-      option(atomic(":" ~> typeParser)),
-      "::" ~> basic
+    | "exists" ~> ident <**> (
+      "::" ~> basic.map(expr => ((varName: String) => Exists(varName, None, expr)))
+      | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) => ((varName: String) => Exists(varName, Some(t), expr)))
     )
     | Set("{" ~> sepBy(basic, ",") <~ "}")
     | Seq("[" ~> sepBy(basic, ",") <~ "]")
@@ -126,10 +124,9 @@ private lazy val extendedHigher: Parsley[ExtendedExpr] =
         ";"
       )
     )
-    | LetOrFail(
-      "var" ~> ident,
-      option(atomic(":" ~> typeParser)),
-      ":|" ~> basic
+    | "var" ~> ident <**> (
+      ":|" ~> basic.map(expr => ((varName: String) => LetOrFail(varName, None, expr)))
+      | ((":" ~> typeParser <~ ":|") <~> basic).map((t, expr) => ((varName: String) => LetOrFail(varName, Some(t), expr)))
     )
     | Assert("assert" ~> basic)
 
