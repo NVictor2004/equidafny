@@ -100,16 +100,19 @@ private lazy val basicHigher =
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
 private lazy val extendedHigher: Parsley[ExtendedExpr] =
-  Let(atomic("var" ~> lvalue <~ ":="), basic)
-    | atomic(
+  atomic(
       MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
         ";"
       )
     )
-    | "var" ~> ident <**> (
-      ":|" ~> basic.map(expr => ((varName: String) => LetOrFail(varName, None, expr)))
-      | ((":" ~> typeParser <~ ":|") <~> basic).map((t, expr) => ((varName: String) => LetOrFail(varName, Some(t), expr)))
-    )
+    | "var" ~> (
+      (("(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")" <~ ":=") <~> basic).map((lvalues, right) => Let(lvalues, right))
+      | ident <**> (
+        ":=" ~> basic.map(expr => ((varName: String) => Let(List((varName, None)), expr)))
+        | ":|" ~> basic.map(expr => ((varName: String) => LetOrFail(varName, None, expr)))
+        | ((":" ~> typeParser <~ ":|") <~> basic).map((t, expr) => ((varName: String) => LetOrFail(varName, Some(t), expr)))
+        )
+      )
     | Assert("assert" ~> basic)
 
 private lazy val lvalue =

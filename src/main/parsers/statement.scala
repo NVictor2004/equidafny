@@ -35,7 +35,3 @@ private lazy val stmt: Parsley[Stmt] =
     )
     | condStmt
     | block
-
-private lazy val lvalue =
-  "(" ~> sepBy(ident, ",") <~ ")"
-    | ident.map(List(_))
