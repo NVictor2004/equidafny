@@ -1,2 +1,61 @@
 \chapter{Implementation}\label{chp:implementation}
 
+\paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
+
+\section{Function Merging}
+
+This tool will use an approach that I have called `Function Merging'. This is where the bodies of the model and candidate functions are processed simultaneously, creating a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. 
+
+\subsection{Worked Example}
+
+To demonstrate how this process works, I will use the two functions \lstinline|unique| and \lstinline|distinct| (this example was also used in \Cref{sec:equivalence-lemmas}). These functions each take two lists as input, and compute the unique elements of their union:
+
+\begin{lstlisting}[caption=Function Merging Worked Example: \lstinline|unique| and \lstinline|distinct| Functions]
+function unique(l: List<int>, r: List<int>): List<int>
+{
+  match l
+  case Nil => r
+  case Cons(hd, tl) =>
+    if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil)))
+    else unique(tl, r)
+}
+
+function distinct(a: List<int>, b: List<int>): List<int>
+  decreases b
+{
+  match b
+  case Nil => a
+  case Cons(hd, tl) =>
+    if isin(hd, a) then distinct(a, tl)
+    else distinct(append(a, Cons(hd, Nil)), tl)
+}
+\end{lstlisting}
+%
+
+I will refer to the \lstinline|unique| function as the model function, and the \lstinline|distinct| function as the candidate function.
+
+As described in \Cref{sec:equivalence-lemmas}, there are two problems we must address to create an equivalence lemma for these functions. First, the parameters of the model function must each be matched to one of the parameters of the candidate function that serves the same purpose. In simpler examples, the types of the parameters can be used to construct these mappings, however, since in this example each function has multiple parameters with the same type, we must process the bodies of the functions to construct these mappings.
+
+Second, the model and candidate functions each refer to the functions \lstinline|find| and \lstinline|isin| respectively. Therefore, these helper functions must also be merged recursively, an equivalence lemma must be created for them, and this lemma must be called in the main equivalence lemma for the \lstinline|unique| and \lstinline|distinct| functions, with the correct arguments and under the correct conditions. 
+
+Therefore, the Function Merging process will work as follows. Since the bodies of the two functions have the same structure (they are both match expressions), these structures can be split up into smaller components, which can then each be merged one at a time. First, the expressions \lstinline|l| and \lstinline|b| are merged. This creates the parameter mapping \lstinline|b -> l| (parameter mappings are always from candidate parameters to model parameters). Next, we merge the \lstinline|case| expressions. In this case, the patterns in the two match expressions are the same, thus we can merge the \lstinline|case| expressions corresponding to the same pattern together. Merging the expressions corresponding to the \lstinline|Nil| pattern creates the parameter mapping \lstinline|a -> r|. Thus, we have now created mappings between all function parameters. Merging the expressions corresponding to the \lstinline|Cons| pattern requires merging the functions \lstinline|find| and \lstinline|isin|. This is achieved using the same process recursively. Let us assume that this process resulting in the following equivalence lemma:
+
+\begin{lstlisting}[caption=Function Merging Worked Example: \lstinline|find| and \lstinline|isin| Equivalence Lemma]
+lemma findEquivalence(l: List<int>, n: int)
+  ensures find(l, n) == isin(n, l)
+{}
+\end{lstlisting}
+%
+Equivalence lemmas are generated in such a way that they must be called by copying the arguments used in the model function. Therefore, this lemma must be called with \lstinline|findEquivalence(r, hd)|.
+
+Finally, the main equivalence lemma must be created. Using the parameter mappings \lstinline|b -> l| and \lstinline|a -> r|, we can determine that the order of the arguments passed into the model function should be swapped when they are passed into the candidate function. This results in the lemma's postcondition being \lstinline|unique(l, r) == distinct(r, l)|. To create the body of the lemma, we will copy the match expression in the model function, replacing the \lstinline|case| expressions with the statements created by merging them with the corresponding expressions in the candidate function. This results in the following equivalence lemma:
+
+\begin{lstlisting}[caption=Function Merging Worked Example: \lstinline|unique| and \lstinline|distinct| Equivalence Lemma]
+lemma uniqueEquivalence(l: List<int>, r: List<int>)
+  ensures unique(l, r) == distinct(r, l)
+{
+  match l
+  case Nil => {}
+  case Cons(hd, tl) => findEquivalence(r, hd);
+}
+\end{lstlisting}
