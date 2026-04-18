@@ -21,9 +21,9 @@ requires (n >= 0)
 ensures (rep1(n, f, a) == rep2(n, f, a))
 {{repeat1_repeat2_Equivalence(n, f);}}
 
-lemma repeat1_repeat2_Equivalence<A>(n: int, f: A -> A)
+lemma repeat1_repeat2_Equivalence<A>(n: int, f: A -> A, a: A)
 requires (n >= 0)
 decreases (n)
-ensures (repeat1(n, f) == repeat2(n, f))
+ensures (repeat1(n, f)(a) == repeat2(n, f)(a))
 {{}}
 

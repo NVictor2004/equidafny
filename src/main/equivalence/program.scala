@@ -4,6 +4,7 @@ import translation.structure.*
 import translation.structure.BinaryOperator.*
 
 import equivalence.expression.mergeFunction
+import equivalence.types.getListOfTypes
 
 import scala.collection.mutable.Map as MutableMap
 
@@ -39,8 +40,21 @@ def functionEquivalence(
   val modelMap = model.params.zip(modelIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
   val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
 
-  val modelFunctionCall = TrueFunctionCall(model.name, List(modelMap))
-  val candFunctionCall = TrueFunctionCall(candidate.name, List(candMap))
+  val (params, modelArgs, candArgs) = model.returnType match {
+    case ArrowType(from, _) => {
+      val types = getListOfTypes(from)
+      val Lambda(lvalues, _) = model.body.basicExpr
+      val idents = lvalues.map(_._1)
+      val paramData = idents.zip(types)
+      val argData = idents.map(ident => (ident, Ident(ident, Nil)))
+      (model.params ++ paramData, List(modelMap, argData), List(candMap, argData))
+    }
+    case _ => (model.params, List(modelMap), List(candMap))
+  }
+
+  val modelFunctionCall = TrueFunctionCall(model.name, modelArgs)
+  val candFunctionCall = TrueFunctionCall(candidate.name, candArgs)
+  
 
   val (finalModelFunctionCall, finalCandFunctionCall) = program.normFunction match {
     case Some(normFunction) if model.name == program.modelFunction.name => {
@@ -56,7 +70,7 @@ def functionEquivalence(
   val equiv = Lemma(
     generateLemmaName(model.name, candidate.name),
     model.generic,
-    model.params,
+    params,
     model.specs ++
       List(
         Ensures(
