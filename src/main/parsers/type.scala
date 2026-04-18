@@ -9,7 +9,7 @@ import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.structure.*
 
-private lazy val domainType: Parsley[Type] =
+private lazy val domainType: Parsley[DomainType] =
   ("int" as TypeInt)
     | ("bool" as TypeBool)
     | ("string" as TypeString)
@@ -21,6 +21,6 @@ private lazy val domainType: Parsley[Type] =
     | NamedType(ident, option("<" ~> sepBy(typeParser, ",") <~ ">"))
 
 lazy val typeParser: Parsley[Type] = domainType <**> (
-  "->" ~> typeParser.map(rightType => ((leftType: Type) => ArrowType(leftType, rightType)))
+  "->" ~> typeParser.map(rightType => ((leftType: DomainType) => ArrowType(leftType, rightType)))
   </> identity[Type]
 )

@@ -3,8 +3,9 @@ package translation.types
 import parsers.structure as Parsers
 import translation.structure.*
 import translation.translation.Context
+import Parsers.NamedType
 
-def translateType(t: Parsers.Type)(using context: Context): Type = t match {
+def translateDomainType(t: Parsers.DomainType)(using context: Context): DomainType = t match {
   case Parsers.TypeInt                   => TypeInt
   case Parsers.TypeBool                  => TypeBool
   case Parsers.TypeString                => TypeString
@@ -19,6 +20,10 @@ def translateType(t: Parsers.Type)(using context: Context): Type = t match {
     }
   }
   case Parsers.TupleType(elements) => TupleType(elements.map(translateType))
+}
+
+def translateType(t: Parsers.Type)(using context: Context): Type = t match {
+  case t: Parsers.DomainType => translateDomainType(t)
   case Parsers.ArrowType(from, to) =>
-    ArrowType(translateType(from), translateType(to))
+    ArrowType(translateDomainType(from), translateType(to))
 }
