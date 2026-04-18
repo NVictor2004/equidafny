@@ -6,6 +6,7 @@ import translation.structure.BinaryOperator.*
 import equivalence.expression.mergeFunction
 import equivalence.types.getListOfTypes
 
+import scala.collection.immutable.ListMap
 import scala.collection.mutable.Map as MutableMap
 
 def programEquivalence(program: Program): Program = {
@@ -40,17 +41,7 @@ def functionEquivalence(
   val modelMap = model.params.zip(modelIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
   val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
 
-  val (params, modelArgs, candArgs) = model.returnType match {
-    case ArrowType(from, _) => {
-      val types = getListOfTypes(from)
-      val Lambda(lvalues, _) = model.body.basicExpr
-      val idents = lvalues.map(_._1)
-      val paramData = idents.zip(types)
-      val argData = idents.map(ident => (ident, Ident(ident, Nil)))
-      (model.params ++ paramData, List(modelMap, argData), List(candMap, argData))
-    }
-    case _ => (model.params, List(modelMap), List(candMap))
-  }
+  val (params, modelArgs, candArgs) = getArgData(model.params, List(modelMap), List(candMap), model.returnType, model.body.basicExpr)
 
   val modelFunctionCall = TrueFunctionCall(model.name, modelArgs)
   val candFunctionCall = TrueFunctionCall(candidate.name, candArgs)
@@ -85,4 +76,16 @@ def functionEquivalence(
   )
   currentLemmas -= model.name
   ((model.name, Some(equiv)), mappingMap)
+}
+
+def getArgData(params: ListMap[String, Type], modelMap: List[List[(String, BasicExpr)]], candMap: List[List[(String, BasicExpr)]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[List[(String, BasicExpr)]], List[List[(String, BasicExpr)]]) = t match {
+  case ArrowType(from, to) => {
+      val types = getListOfTypes(from)
+      val Lambda(lvalues, body) = expr
+      val idents = lvalues.map(_._1)
+      val paramData = idents.zip(types)
+      val argData = idents.map(ident => (ident, Ident(ident, Nil)))
+      getArgData(params ++ paramData, modelMap :+ argData, candMap :+ argData, to, body.basicExpr)
+    }
+    case _ => (params, modelMap, candMap)
 }
