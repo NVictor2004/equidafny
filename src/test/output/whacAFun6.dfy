@@ -19,7 +19,7 @@ decreases (n)
 lemma rep1_rep2_Equivalence<A>(n: int, f: A -> A, a: A)
 requires (n >= 0)
 ensures (rep1(n, f, a) == rep2(n, f, a))
-{{repeat1_repeat2_Equivalence(n, f);}}
+{{repeat1_repeat2_Equivalence(n, f, a);}}
 
 lemma repeat1_repeat2_Equivalence<A>(n: int, f: A -> A, a: A)
 requires (n >= 0)
