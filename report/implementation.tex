@@ -144,4 +144,8 @@ lemma lengthEquivalence<T>(l: List<T>)
 \end{lstlisting}
 %
 
-The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalence structure. 
+The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \lstinline|A| and \lstinline|B|, the expressions \lstinline|A && B| and \lstinline|if A then B else false| are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+
+\footnote{Translate one into the other, which way round?}
+
+This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \lstinline|A|, \lstinline|B| and \lstinline|C|, the expression \lstinline|if !A then C else B| can be simplified into \lstinline|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed. 
