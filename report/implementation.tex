@@ -6,7 +6,7 @@
 
 This tool will use an approach that I have called `Function Merging'. This is where the bodies of the model and candidate functions are processed simultaneously, creating a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. 
 
-\subsection{Worked Example}
+\subsection{Worked Example}\label{sec:worked-example}
 
 To demonstrate how this process works, I will use the two functions \lstinline|unique| and \lstinline|distinct| (this example was also used in \Cref{sec:equivalence-lemmas}). These functions each take two lists as input, and compute the unique elements of their union:
 
@@ -59,3 +59,89 @@ lemma uniqueEquivalence(l: List<int>, r: List<int>)
   case Cons(hd, tl) => findEquivalence(r, hd);
 }
 \end{lstlisting}
+
+\subsection{Benefits and Drawbacks}
+
+As described in \Cref{sec:equivalence-lemmas}, to prove the equivalence of two functions that both use helper functions, the tool must generate equivalence lemmas between the helper functions and call these lemmas within the main equivalence lemma under the correct conditions and with the correct arguments. As demonstrated in \Cref{sec:worked-example}, the Function Merging process is capable of this. 
+
+However, one major drawback with this approach is that it requires the bodies of the functions to have the same structure. For example, here are two functions \lstinline|lengthM| and \lstinline|length1|, which each calculate the length of a list:
+\begin{lstlisting}[caption=\lstinline|lengthM| and \lstinline|length1| Functions]
+function lengthM<T>(l: List<T>): int {
+    match l {
+        case Nil => 0
+        case Cons(_, t) => 1 + lengthM(t)
+    }
+}
+
+function length1<T>(l: List<T>): int {
+    if l == Nil then 0 else 1 + length1(l.tail)
+}
+\end{lstlisting}
+%
+
+The bodies of these two functions have different structures, therefore, the Function Merging process will fail. The tool uses two methods to attempt to mitigate this issue.
+
+First, the tool will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
+
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|lengthM| and \lstinline|length1| Functions,label=lst:lengthM-length1-lemma]
+lemma lengthEquivalence<T>(l: List<T>)
+    ensures lengthM(l) == length1(l)
+{}
+\end{lstlisting}
+%
+In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, the tool can still prove equivalence in some cases despite the Merging process failing. However, this method does not work for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
+\begin{lstlisting}[caption=\lstinline|lengthTailM| and \lstinline|lengthTail1| Functions]
+function lengthTailM<T>(acc: int, l: List<T>): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(_, t) => lengthTailM(acc + 1, t)
+    }
+}
+
+function lengthTail1<T>(l: List<T>, acc: int): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(_, t) => lengthTail1(t, acc + 1)
+    }
+}
+\end{lstlisting}
+%
+
+I can now reimplement functions \lstinline|lengthM| and \lstinline|length1| to use these tail-recursive helper functions:
+\begin{lstlisting}[caption=Reimplementations of \lstinline|lengthM| and \lstinline|length1| Functions]
+function lengthM<T>(l: List<T>): int {
+    match l {
+        case Nil => 0
+        case Cons(_, t) => lengthTailM(1, t)
+    }
+}
+
+function length1<T>(l: List<T>): int {
+    if l == Nil then 0 else lengthTail1(l.tail, 1)
+}
+\end{lstlisting}
+%
+
+In this case, the tool will still generate the equivalence lemma shown in \Cref{lst:lengthM-length1-lemma}, however, this is no longer sufficient to prove equivalence. The Dafny verifier requires the following to prove equivalence:
+\begin{lstlisting}[caption=Equivalence Lemmas for reimplementations of \lstinline|lengthM| and \lstinline|length1| Functions]
+lemma lengthTailEquivalence<T>(acc: int, l: List<T>)
+    decreases l
+    ensures lengthTailM(acc, l) == lengthTail1(l, acc)
+{}
+
+lemma lengthEquivalence<T>(l: List<T>)
+    ensures lengthM(l) == length1(l)
+{
+    match l {
+        case Nil => 
+        case Cons(_, t) => lengthTailEquivalence(1, t);
+    }
+}
+\end{lstlisting}
+%
+
+The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalence structure. 
