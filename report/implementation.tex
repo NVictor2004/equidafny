@@ -81,6 +81,8 @@ function length1<T>(l: List<T>): int {
 
 The bodies of these two functions have different structures, therefore, the Function Merging process will fail. The tool uses two methods to attempt to mitigate this issue.
 
+\footnote{Different example with partial failure of FM?}
+
 First, the tool will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
 
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|lengthM| and \lstinline|length1| Functions,label=lst:lengthM-length1-lemma]
@@ -148,4 +150,19 @@ The second method of mitigating the problem of the Merging process failing is by
 
 \footnote{Translate one into the other, which way round?}
 
-This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \lstinline|A|, \lstinline|B| and \lstinline|C|, the expression \lstinline|if !A then C else B| can be simplified into \lstinline|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed. 
+This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \lstinline|A|, \lstinline|B| and \lstinline|C|, the expression \lstinline|if !A then C else B| can be simplified into \lstinline|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
+
+\section{Technical Audit Limitations}
+
+In \Cref{sec:audit}, I demonstrated that Dafny has several types of limitations when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of the limitations identified. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
+
+\footnote{Make sure these names are kept up to date}
+
+\subsection{Explicitly enforcing induction to prove lemmas}
+As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse.
+
+\footnote{Finish this induction section}
+
+\subsection{Providing Variants to prove termination}
+\subsection{Equivalence of Higher-Order Functions}
+\subsection{Generating Auxiliary Lemmas}
