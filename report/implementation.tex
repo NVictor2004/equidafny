@@ -2,7 +2,30 @@
 
 \paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
-\section{Function Merging}
+\section{System Architecture}
+
+% TODO: System architecture diagram?
+% TODO: Describe how to use the tool
+
+Our tool is divided into several components. The most important component is the generation of Dafny data structures to facilitate the equivalence proof; this is described in the following sections. Similarly, the evaluation component is described in \Cref{chp:evaluation}. The remaining components are described in this section. 
+
+\subsection{Parsing}
+
+% Why parser combinator? And why Parsley?
+
+The first component is a parser. This system is used to parse the input Dafny program into a Scala data structure, so that it can be easily processed by the rest of the system. This parser was implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}. 
+
+\paragraph{Optimisation} The parser should be as efficient as possible. One method to increase performance is by minimising the amount of backtracking. Some backtracking is essential due to ambiguity in the Dafny language, however, I have attempted to minimise this as much as possible by carefully ordering the execution of all sub-parsers and by left-factoring whenever possible.
+
+\subsection{Translation}
+
+The data structure outputted by the parser is specifically designed to be easy to parse into. This ensures that the parser is simple to implement and efficient to execute. However, this data structure is not ideal for equivalence proof generation. Therefore, this component is used to translate the data structure outputted by the parser into a different data structure that will be used throughout the rest of the system. This translation system allowed me to specifically design the latter data structure to make equivalence proof generation as simple and efficient as possible, without forcing me to update the parser accordingly. This design choice made development significantly easier, especially since the latter data structure constantly evolved over time.
+
+\subsection{Formatting}
+
+Finally, after generating the equivalence proof, the data structure must be converted back into text and stored in a file before it can be processed by Dafny. This is achieved through the formatting component. To increase efficiency, this system directly writes to the file as it processes the program. This avoids the memory overhead of creating a large string before writing it to the file. 
+
+\section{Function Merging}\label{sec:function-merging}
 
 This tool will use an approach that I have called `Function Merging'. This is where the bodies of the model and candidate functions are processed simultaneously, creating a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. 
 
