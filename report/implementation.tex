@@ -175,6 +175,13 @@ The second method of mitigating the problem of the Merging process failing is by
 
 This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \lstinline|A|, \lstinline|B| and \lstinline|C|, the expression \lstinline|if !A then C else B| can be simplified into \lstinline|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
 
+\subsection{Merging each type of function body}
+\footnote{More detail here}
+The bodies of Dafny functions can be composed of a variety of different types of structures.
+
+\paragraph{Function Calls} TODO
+\paragraph{Match Expressions} TODO
+
 \section{Technical Audit Limitations}
 
 In \Cref{sec:audit}, I demonstrated that Dafny has several types of limitations when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of the limitations identified. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
