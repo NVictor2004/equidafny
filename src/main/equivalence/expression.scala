@@ -25,16 +25,9 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
 
             // Convert mapping between the parameters of the called functions to a mapping to the parameters in
             // the caller functions
-            val exprMapping = mapping.map {
+            val stmts = mapping.map {
                 case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
-            }
-
-            val stmts = exprMapping.foldLeft(List[Stmt]()) {
-                case (accStmts, (candExpr, modelExpr)) => {
-                    val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
-                    accStmts ++ stmts
-                }
-            }
+            }.flatMap((candExpr, modelExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)).toList
 
             // Call the generated helper equivalence lemma
             val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs.flatMap(_.map(_._2))))
@@ -44,16 +37,9 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
         }
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
         if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
-            val exprMapping = currentMappings.map {
+            val stmts = currentMappings.map {
                 case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
-            }
-
-            val stmts = exprMapping.foldLeft(List[Stmt]()) {
-                case (accStmts, (candExpr, modelExpr)) => {
-                    val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
-                    accStmts ++ stmts
-                }
-            }
+            }.flatMap((candExpr, modelExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)).toList
 
             val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
 
@@ -61,34 +47,22 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
         }
         case (OtherFunctionCall(calledInModel, calledInModelArgs), OtherFunctionCall(calledInCand, calledInCandArgs)) if calledInModel == calledInCand => {
             val flattened = calledInModelArgs.zip(calledInCandArgs).flatMap((modelList, candList) => modelList.zip(candList))
-            flattened.foldLeft(List[Stmt]()) {
-                case (accStmts, (modelExpr, candExpr)) => {
-                    val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
-                    accStmts ++ stmts
-                }
-            }
+            flattened.flatMap((modelExpr, candExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc))
         }
         case (Cond(modelCond, modelThen, modelElse), Cond(candidateCond, candidateThen, candidateElse)) => {
             val condStmts = mergeBasicExpr(currentLemmas, currentMappings, modelCond, modelFunc, candidateCond, candidateFunc)
             val thenStmts = mergeExprBlock(currentLemmas, currentMappings, modelThen, modelFunc, candidateThen, candidateFunc)
             val elseStmts = mergeExprBlock(currentLemmas, currentMappings, modelElse, modelFunc, candidateElse, candidateFunc)
 
-            val finalStmts = (thenStmts, elseStmts) match {
+            (thenStmts, elseStmts) match {
                 case (Nil, Nil) => condStmts
                 case _ => condStmts ++ List(CondStmt(modelCond, BlockStmt(thenStmts), Some(BlockStmt(elseStmts))))
             }
-
-            finalStmts
         }
         // TODO: Same length tuples? In which case, the match expression pattern matching needs to be fixed
-        case (Tuple(modelElements), Tuple(candElements)) => {
-            modelElements.zip(candElements).foldLeft(List[Stmt]()) {
-                case (accStmts, (modelElem, candElem)) => {
-                    val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelElem, modelFunc, candElem, candidateFunc)
-                    accStmts ++ stmts
-                }
-            }
-        }
+        case (Tuple(modelElements), Tuple(candElements)) =>
+            modelElements.zip(candElements).flatMap((modelElem, candElem) => mergeBasicExpr(currentLemmas, currentMappings, modelElem, modelFunc, candElem, candidateFunc))
+
         case (Binary(modelOp, 
                      modelLeft @ TrueFunctionCall(_, modelLeftArgs), modelRight @ TrueFunctionCall(_, modelRightArgs)),
               Binary(candOp,
@@ -123,12 +97,12 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                 else modelCases.map((modelPattern, _) => unsortedCandCases.find(_._1 == modelPattern).get)
                 
             val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
-            val stmts = modelCases.zip(candCases).foldLeft(List[List[Stmt]]()) {
-                case (accStmts, ((modelPattern, modelExprBlock), (_, candExprBlock))) => {
+            val stmts = modelCases.zip(candCases).map {
+                case ((modelPattern, modelExprBlock), (_, candExprBlock)) => {
                     val stmts = mergeExprBlock(currentLemmas, currentMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
                     val identsInModelPattern = getIdentsFromPattern(modelPattern)
                     currentMappings.filterInPlace((_, model) => !identsInModelPattern.contains(model))
-                    accStmts :+ stmts
+                    stmts
                 }
             }
             val allEmpty = stmts.foldLeft(true)((acc, stmts) => acc && stmts.isEmpty)
@@ -148,17 +122,7 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             val candExprBlocks = modelPatterns.map(modelPattern => candCases.filter(candCase => mergePattern(modelPattern, candCase._1)).map(_._2))
             val exprBlockMappings = modelCases.map(_._2).zip(candExprBlocks)
 
-            val stmts = exprBlockMappings.foldLeft(List[List[Stmt]]()) {
-                case (accStmts, (modelExprBlock, candExprBlocks)) => {
-                    val stmts = candExprBlocks.foldLeft(List[Stmt]()) {
-                        case (accStmts, candExprBlock) => {
-                            val stmts = mergeExprBlock(currentLemmas, currentMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
-                            accStmts ++ stmts
-                        }
-                    }
-                    accStmts :+ stmts
-                }
-            }
+            val stmts = exprBlockMappings.map((modelExprBlock, candExprBlocks) => candExprBlocks.flatMap(candExprBlock => mergeExprBlock(currentLemmas, currentMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)))
 
             exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
         }
