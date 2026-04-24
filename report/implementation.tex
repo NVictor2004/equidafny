@@ -164,5 +164,56 @@ As described in \Cref{sec:induction}, when the functions being processed both re
 \footnote{Finish this induction section}
 
 \subsection{Providing Variants to prove termination}
+As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
+
+\footnote{Complete this section after looking at Dragana copy decreases benchmarks}
+\footnote{Also need to copy termination lemmas and assertions}
+
 \subsection{Equivalence of Higher-Order Functions}
 \subsection{Generating Auxiliary Lemmas}
+
+\section{Technical Details}
+
+\subsection{Mutually Recursive Functions}
+Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \lstinline|isEven| and \lstinline|myIsEven| which each output whether a given integer is even or not. They use the helper functions \lstinline|isOdd| and \lstinline|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
+
+\begin{lstlisting}[caption={\lstinline|isEven|, \lstinline|myIsEven|, \lstinline|isOdd| and \lstinline|myIsOdd| Functions}]
+function isEven(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !isOdd(x - 1)
+}
+
+function myIsEven(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !myIsOdd(x - 1)
+}
+
+function isOdd(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !isEven(x - 1)
+}
+
+function myIsOdd(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !myIsEven(x - 1)
+}
+\end{lstlisting}
+
+Let the functions \lstinline|isEven| and \lstinline|myIsEven| be the model and candidate functions respectively. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in our tool attempting to merge the function calls \lstinline|isOdd(x - 1)| and \lstinline|myIsOdd(x - 1)|. This requires the functions \lstinline|isOdd| and \lstinline|myIsOdd| themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \lstinline|isEven| and \lstinline|myIsEven| needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
+
+Our tool solves this problem in the following way. During Function Merging, the process has access to the lemmas currently being generated. This is stored in a map from the name of the model function to an optional lemma (represented using the Scala data structure \lstinline|Option|). When the Merging process encounters two function calls, this map is consulted to determine how the process should proceed.
+
+There are three possibilities. First, if the model function name is not a key in this map, then the functions themselves should be merged together. In the above example, when processing the functions \lstinline|isEven| and \lstinline|myIsEven| for the first time and encountering the function calls to \lstinline|isOdd| and \lstinline|myIsOdd|, \lstinline|isOdd| should not be a key in the map, leading to the functions themselves being merged. Second, if the name of the model function is mapped to a lemma (wrapped in a \lstinline|Some| object), then the corresponding lemma has already been generated. Thus, this lemma can be called without further merging. This also prevents the generation of the same lemma multiple times. Finally, if the model function's name is mapped to the \lstinline|None| object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \lstinline|isOdd| and \lstinline|myIsOdd| and encountering the function calls to \lstinline|isEven| and \lstinline|myIsEven|, \lstinline|isEven| should be mapped to the \lstinline|None| object since the process reached this point during the Merging of \lstinline|isEven| and \lstinline|myIsEven|. 
+
+\footnote{Finish this}
+
+% \subsection{Standardisation of Generic Variables}
+\subsection{Normalisation Functions}
