@@ -25,18 +25,22 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
 
             // Convert mapping between the parameters of the called functions to a mapping to the parameters in
             // the caller functions
-            val finalMapping = mapping.map {
+            val exprMapping = mapping.map {
                 case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
-            }.collect {
-                case (Ident(name, Nil), Ident(name2, Nil)) => name -> name2
+            }
+
+            val stmts = exprMapping.foldLeft(List[Stmt]()) {
+                case (accStmts, (candExpr, modelExpr)) => {
+                    val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
+                    accStmts ++ stmts
+                }
             }
 
             // Call the generated helper equivalence lemma
             val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs.flatMap(_.map(_._2))))
 
             currentLemmas += lemma
-            currentMappings ++= finalMapping
-            List(finalStmt)
+            stmts :+ finalStmt
         }
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
         if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
@@ -44,7 +48,6 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                 case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
             }
 
-            // TODO: Match function arguments to generate further mappings for all cases where two functions are compared
             val stmts = exprMapping.foldLeft(List[Stmt]()) {
                 case (accStmts, (candExpr, modelExpr)) => {
                     val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
