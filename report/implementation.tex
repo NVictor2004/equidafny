@@ -193,6 +193,49 @@ As described in \Cref{sec:termination}, the Dafny verifier sometimes requires th
 \footnote{Also need to copy termination lemmas and assertions}
 
 \subsection{Equivalence of Higher-Order Functions}
+As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
+
+To resolve this limitation, when generating the postconditions for lemmas, our tool will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
+
+\begin{lstlisting}[caption=\lstinline|uncurry1| and \lstinline|uncurry2| functions]
+function uncurry1<A, B, C>(f: A -> B -> C): (A, B) -> C {
+    (a, b) => f(a)(b)
+}
+
+function uncurry2<A, B, C>(f: A -> B -> C): (A, B) -> C {
+    (a, b) => var res := f(a)(b); res
+}
+\end{lstlisting}
+%
+When generating the corresponding equivalence lemma, instead of attempting to prove equivalence on the lambda functions themselves (\lstinline|uncurry1(f)| and \lstinline|uncurry2(f)|), the tool will pass the same arguments to both lambda functions so that the function bodies can be directly compared:
+
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|uncurry1| and \lstinline|uncurry2| functions]
+lemma uncurry1_uncurry2_Equivalence<A, B, C>(f: A -> B -> C, a: A, b: B)
+ensures (uncurry1(f)(a, b) == uncurry2(f)(a, b))
+{}
+\end{lstlisting}
+%
+If the bodies of the outputted lambda functions are themselves lambda functions, our tool will repeatedly pass the same arguments to both functions, until it reaches the body of the innermost lambda function. For example, here are two functions that implement currying:
+
+\begin{lstlisting}[caption=\lstinline|curry1| and \lstinline|curry2| functions]
+function curry1<A, B, C>(f: (A, B) -> C): A -> B -> C {
+    a => b => f(a, b)
+}
+
+function curry2<A, B, C>(f: (A, B) -> C): A -> B -> C {
+    aa => bb => var res := f(aa, bb); res
+}
+\end{lstlisting}
+%
+
+Our tool will produce the following equivalence lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|curry1| and \lstinline|curry2| functions]
+lemma curry1_curry2_Equivalence<A, B, C>(f: (A, B) -> C, a: A, b: B)
+ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
+{}
+\end{lstlisting}
+%
+
 \subsection{Generating Auxiliary Lemmas}
 
 \section{Technical Details}
