@@ -4,8 +4,7 @@
 
 \section{User Interface}
 Our tool is accessed from the command line by passing in a single JSON configuration file. For example, a suitable JSON file may look like this:
-\begin{listing}[!ht]
-\begin{minted}{json}
+\begin{lstlisting}[caption=Example JSON configuration file]
 {
   "file": "dup.dfy",
   "model": "dupM",
@@ -16,15 +15,17 @@ Our tool is accessed from the command line by passing in a single JSON configura
     "dup3"
   ]
 }
-\end{minted}
-\caption{Example JSON configuration file}
-\end{listing}
+\end{lstlisting}
 %
 The keys `file', `model' and `candidates' are necessary for a configuration file to be valid, while the key `norm' is optional. Their purposes are described below.
 
-\paragraph{`file'} This key should provide a path to a single Dafny file. This file must contain all the necessary Dafny code to perform program equivalence. This includes the model and candidate functions, all helper functions and any auxiliary lemmas.
+\paragraph{file} This key should provide a path to a single Dafny file. This file must contain all the necessary Dafny code to perform program equivalence. This includes the model and candidate functions, all helper functions and any auxiliary lemmas.
 
-\paragraph{`model'} This key should provide the name of the single model function. If this function cannot be found, our tool will throw an error.  
+\paragraph{model} This key should provide the name of the single model function. If this function cannot be found, our tool will throw an error.
+
+\paragraph{norm} This key should provide the name of a normalisation function, if one is necessary. 
+
+\paragraph{candidates} This key should provide a list of the names of candidate functions. Our tool will attempt to prove equivalence between the model function and each candidate function. 
 
 \section{System Architecture}
 
