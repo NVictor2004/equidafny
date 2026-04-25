@@ -106,9 +106,8 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                 }
             }
             val allEmpty = stmts.foldLeft(true)((acc, stmts) => acc && stmts.isEmpty)
-            val finalStmts = if allEmpty then exprStmts else exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
-
-            finalStmts
+            
+            if allEmpty then exprStmts else exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
         }
         case (Match(modelExpr, modelCases), Match(candExpr, candCases)) => {
             val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
@@ -166,7 +165,7 @@ def mergeFunction(currentLemmas: MutableMap[String, Option[Lemma]], modelFunc: F
             if (modelCount == 1) {
                 val modelName = modelFunc.params.find((_, currentType) => currentType == paramType).get._1
                 val candName = candidateFunc.params.find((_, currentType) => currentType == paramType).get._1
-                accMappings ++ List((candName, modelName))
+                (candName, modelName) :: accMappings
             } else {
                 accMappings
             }
@@ -179,30 +178,24 @@ def mergeFunction(currentLemmas: MutableMap[String, Option[Lemma]], modelFunc: F
     val stmts = mergeExprBlock(currentLemmas, currentMappings, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
 
     // Find parameters not covered already
-    val candParamsCovered = currentMappings.keys.toList
-    val modelParamsCovered = currentMappings.values.toList
-
-    val modelParamsLeft = modelFunc.params.filterNot((name, _) => modelParamsCovered.contains(name))
-    var candParamsLeft = candidateFunc.params.filterNot((name, _) => candParamsCovered.contains(name))
+    val modelParamsLeft = modelFunc.params.removedAll(currentMappings.values)
+    var candParamsLeft = candidateFunc.params.removedAll(currentMappings.keys)
 
     // Generate remaining mappings
     val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
         val (candName, _) = candParamsLeft.find((_, currentType) => currentType == modelType).get
-        candParamsLeft = candParamsLeft.filter((currentName, _) => currentName != candName)
+        candParamsLeft = candParamsLeft.removed(candName)
         (candName, modelName)
-    }).toList
+    })
 
     currentMappings ++= remainingMappings
     (currentMappings.toMap, stmts)
 }
 
 def mapTypesToCounts(params: ListMap[String, Type]): Map[Type, Int] = 
-    params.foldLeft(Map()) {
+    params.foldLeft(MutableMap[Type, Int]()) {
         case (accMap, (_, paramType)) => {
-            val newEntry = accMap.get(paramType) match {
-                case Some(count) => (paramType, count + 1)
-                case None => (paramType, 1)
-            }
-            accMap + newEntry
+            val count = accMap.getOrElse(paramType, 0)
+            accMap += (paramType -> (count + 1))
         }
-    }
+    }.toMap
