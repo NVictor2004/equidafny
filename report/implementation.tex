@@ -2,7 +2,7 @@
 
 \paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
-\section{User Interface}
+\section{User Interface}\label{sec:user-interface}
 Our tool is accessed from the command line by passing in a single JSON configuration file. For example, a suitable JSON file may look like this:
 \begin{lstlisting}[caption=Example JSON configuration file]
 {
@@ -30,7 +30,6 @@ The keys `file', `model' and `candidates' are necessary for a configuration file
 \section{System Architecture}
 
 % TODO: System architecture diagram?
-% TODO: Describe how to use the tool
 
 Our tool is divided into several components. The most important component is the generation of Dafny data structures to facilitate the equivalence proof; this is described in the following sections. Similarly, the evaluation component is described in \Cref{chp:evaluation}. The remaining components are described in this section. 
 
@@ -214,15 +213,13 @@ In \Cref{sec:audit}, I demonstrated that Dafny has several types of limitations 
 \footnote{Make sure these names are kept up to date}
 
 \subsection{Explicitly enforcing induction to prove lemmas}
-As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse.
-
-\footnote{Finish this induction section}
+As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement limitation.
 
 \subsection{Providing Variants to prove termination}
 As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
 
 \footnote{Complete this section after looking at Dragana copy decreases benchmarks}
-\footnote{Also need to copy termination lemmas and assertions}
+\footnote{Also need to implement copying of termination lemmas and assertions}
 
 \subsection{Equivalence of Higher-Order Functions}
 As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
@@ -269,6 +266,9 @@ ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
 %
 
 \subsection{Generating Auxiliary Lemmas}
+As described in \Cref{sec:auxiliary-lemmas}, proving equivalence sometimes requires auxiliary lemmas that would be difficult for our tool or Dafny to automatically generate. Therefore, these lemmas must be written by the user and provided to our tool. As described in \Cref{sec:user-interface}, the user must provide the path to a Dafny file in the JSON configuration file. The user can provide our tool with any necessary auxiliary lemmas by writing them in this Dafny file.
+
+\footnote{Finish this section once more work is done on auxiliary lemmas}
 
 \section{Technical Details}
 
@@ -314,4 +314,3 @@ There are three possibilities. First, if the model function name is not a key in
 Finally, if the model function's name is mapped to the \lstinline|None| object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \lstinline|isOdd| and \lstinline|myIsOdd| and encountering the function calls to \lstinline|isEven| and \lstinline|myIsEven|, \lstinline|isEven| should be mapped to the \lstinline|None| object since the process reached this point during the Merging of \lstinline|isEven| and \lstinline|myIsEven|. Our tool responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, our tool can successfully deal with mutually recursive functions. 
 
 % \subsection{Standardisation of Generic Variables}
-\subsection{Normalisation Functions}
