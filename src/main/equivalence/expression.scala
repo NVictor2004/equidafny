@@ -102,9 +102,8 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                     stmts
                 }
             }
-            val allEmpty = stmts.foldLeft(true)((acc, stmts) => acc && stmts.isEmpty)
             
-            if allEmpty then exprStmts else exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
+            if stmts.forall(_.isEmpty) then exprStmts else exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
         }
         case (Match(modelExpr, modelCases), Match(candExpr, candCases)) => {
             val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
