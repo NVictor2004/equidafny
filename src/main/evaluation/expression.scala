@@ -17,7 +17,7 @@ def evaluateBasicExpr(expr: BasicExpr): Double = expr match {
   case Tuple(elements)    => TupleCost + elements.map(evaluateBasicExpr).sum
   case Cond(cond, thenBranch, elseBranch) => 
     CondCost + evaluateBasicExpr(cond) + evaluateExprBlock(thenBranch) + evaluateExprBlock(elseBranch)
-  case TrueFunctionCall(_, args)           => CallCost + args.flatMap(_.map((_, expr) => evaluateBasicExpr(expr))).sum
+  case TrueFunctionCall(_, args)           => CallCost + args.flatMap(_.values.map(evaluateBasicExpr)).sum
   case OtherFunctionCall(_, args)          => CallCost + args.flatMap(_.map(evaluateBasicExpr)).sum
   case LambdaCall(lambda, args)           => LambdaCallCost + evaluateBasicExpr(lambda) + args.map(evaluateBasicExpr).sum
   case Match(expr, cases)                 => 

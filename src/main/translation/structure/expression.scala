@@ -1,5 +1,7 @@
 package translation.structure
 
+import scala.collection.immutable.ListMap
+
 sealed trait BasicExpr
 sealed trait LiteralExpr extends BasicExpr
 sealed trait ExtendedExpr
@@ -45,7 +47,7 @@ case class Cardinality(expr: BasicExpr) extends BasicExpr
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
-case class TrueFunctionCall(name: String, args: List[List[(String, BasicExpr)]])
+case class TrueFunctionCall(name: String, args: List[ListMap[String, BasicExpr]])
     extends BasicExpr
 case class OtherFunctionCall(name: String, args: List[List[BasicExpr]])
     extends BasicExpr

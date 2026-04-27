@@ -11,6 +11,8 @@ import translation.structure.UnaryOperator.*
 import translation.structure.Quantifier.*
 import translation.translation.Context
 
+import scala.collection.immutable.ListMap
+
 def translateExpr(expr: Parsers.ExprBlock)(using Context): ExprBlock = {
   val extendedExprs = expr.extendedExprs.map(translateExtendedExpr)
   val basicExpr = translateBasicExpr(expr.basicExpr)
@@ -137,8 +139,8 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     context.functionData.get(name) match {
       case None => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
       case Some(parameters) => {
-        val first = args(0).map(translateBasicExpr).zip(parameters).map((expr, name) => (name, expr))
-        val rest = args.tail.map(_.map(expr => ("_", translateBasicExpr(expr))))
+        val first = ListMap(parameters.zip(args(0).map(translateBasicExpr))*)
+        val rest = args.tail.map(exprs => ListMap(exprs.map(expr => ("_", translateBasicExpr(expr)))*))
         TrueFunctionCall(name, first :: rest)
       }
     }

@@ -7,10 +7,7 @@ import equivalence.pattern.*
 import scala.collection.immutable.ListMap
 import scala.collection.mutable.Map as MutableMap
 
-private def lookup[A, B](data: List[(A, B)], key: A): B =
-    data.find((a, _) => a == key).get._2
-
-private def numberOfArguments[A](data: List[List[A]]): Int = data.map(_.length).sum
+private def numberOfArguments[A, B](data: List[ListMap[A, B]]): Int = data.map(_.size).sum
 
 def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMappings: MutableMap[String, String], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): List[Stmt] = {
     val finalStmts = (modelExpr, candidateExpr) match {
@@ -26,7 +23,7 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             // Convert mapping between the parameters of the called functions to a mapping to the parameters in
             // the caller functions
             val stmts = mapping.map {
-                case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
+                case (candName, modelName) => calledInCandidateArgs(0)(candName) -> calledInModelArgs(0)(modelName)
             }.flatMap((candExpr, modelExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)).toList
 
             // Call the generated helper equivalence lemma
@@ -38,10 +35,10 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
         if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
             val stmts = currentMappings.map {
-                case (candName, modelName) => lookup(calledInCandidateArgs(0), candName) -> lookup(calledInModelArgs(0), modelName)
+                case (candName, modelName) => calledInCandidateArgs(0)(candName) -> calledInModelArgs(0)(modelName)
             }.flatMap((candExpr, modelExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)).toList
 
-            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).map(_._2)))
+            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).values.toList))
 
             stmts :+ finalStmt
         }

@@ -8,6 +8,7 @@ import equivalence.types.getListOfTypes
 
 import scala.collection.immutable.ListMap
 import scala.collection.mutable.Map as MutableMap
+import scala.annotation.tailrec
 
 def programEquivalence(program: Program): Program = {
   given Program = program
@@ -33,26 +34,25 @@ def functionEquivalence(
     candidate: Function
 )(using program: Program): ((String, Option[Lemma]), Map[String, String]) = {
   currentLemmas += (model.name -> None)
-  val (mappingMap, stmts) = mergeFunction(currentLemmas, model, candidate)
+  val (mapping, stmts) = mergeFunction(currentLemmas, model, candidate)
 
   val modelIdents = model.params.keys
-  val candidateIdents = candidate.params.map((paramName, _) => mappingMap(paramName))
+  val candidateIdents = candidate.params.keys.map(paramName => mapping(paramName))
 
-  val modelMap = model.params.zip(modelIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
-  val candMap = candidate.params.zip(candidateIdents).map((p, i) => (p._1, Ident(i, Nil))).toList
+  val modelMap = ListMap(model.params.zip(modelIdents).map((p, i) => (p._1, Ident(i, Nil))).toList*)
+  val candMap = ListMap(candidate.params.zip(candidateIdents).map((p, i) => (p._1, Ident(i, Nil))).toList*)
 
   val (params, modelArgs, candArgs) = getArgData(model.params, List(modelMap), List(candMap), model.returnType, model.body.basicExpr)
 
   val modelFunctionCall = TrueFunctionCall(model.name, modelArgs)
   val candFunctionCall = TrueFunctionCall(candidate.name, candArgs)
-  
 
   val (finalModelFunctionCall, finalCandFunctionCall) = program.normFunction match {
     case Some(normFunction) if model.name == program.modelFunction.name => {
       val functionName = normFunction.name
       val lastParamName = normFunction.params.last._1
-      (TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, modelFunctionCall))), 
-      TrueFunctionCall(functionName, List(modelMap :+ (lastParamName, candFunctionCall))))
+      (TrueFunctionCall(functionName, List(modelMap + (lastParamName -> modelFunctionCall))), 
+      TrueFunctionCall(functionName, List(modelMap + (lastParamName -> candFunctionCall))))
     }
     case _ => (modelFunctionCall, candFunctionCall)
   }
@@ -75,16 +75,17 @@ def functionEquivalence(
     Some(BlockStmt(stmts))
   )
   currentLemmas -= model.name
-  ((model.name, Some(equiv)), mappingMap)
+  ((model.name, Some(equiv)), mapping)
 }
 
-def getArgData(params: ListMap[String, Type], modelMap: List[List[(String, BasicExpr)]], candMap: List[List[(String, BasicExpr)]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[List[(String, BasicExpr)]], List[List[(String, BasicExpr)]]) = t match {
+@tailrec
+def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[String, BasicExpr]], candMap: List[ListMap[String, BasicExpr]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
   case ArrowType(from, to) => {
       val types = getListOfTypes(from)
       val Lambda(lvalues, body) = expr
       val idents = lvalues.map(_._1)
       val paramData = idents.zip(types)
-      val argData = idents.map(ident => (ident, Ident(ident, Nil)))
+      val argData = ListMap(idents.map(ident => (ident, Ident(ident, Nil)))*)
       getArgData(params ++ paramData, modelMap :+ argData, candMap :+ argData, to, body.basicExpr)
     }
     case _ => (params, modelMap, candMap)
