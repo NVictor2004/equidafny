@@ -1,0 +1,26 @@
+import benchmarks_formula_defs._
+import stainless.lang._
+
+object C_formula_sol359 {
+   
+  
+  def evall(e: Exp): Int = {
+    e match {
+      case Num(a) => { a }
+      case Plus(a, b) => { evall(a) + evall(b) }
+      case Minus(a, b) => { evall(a) - evall(b) }
+    }
+  }
+  
+  def eval(f: Formula): Boolean = {
+    f match {
+      case True_ => { true }
+      case False_ => { false }
+      case Not(a) => { if (eval(a)) false else true }
+      case AndAlso(a, b) => { eval(a) && eval(b) }
+      case OrElse(a, b) => { eval(a) || eval(b) }
+      case Imply(a, b) => { eval(Not(AndAlso(a, Not(b)))) }
+      case Equal(a, b) => { if (evall(a) == evall(b)) true else false }
+    }
+  }
+}
