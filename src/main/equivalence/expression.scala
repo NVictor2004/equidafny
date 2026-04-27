@@ -12,33 +12,27 @@ private def numberOfArguments[A, B](data: List[ListMap[A, B]]): Int = data.map(_
 def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMappings: MutableMap[String, String], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): List[Stmt] = {
     val finalStmts = (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-        if calledInModel != modelFunc.name && calledInCandidate != candidateFunc.name && calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) && !currentLemmas.get(calledInModel).isDefined => {
-            // This pair of functions has not been encountered yet, generate its equivalence lemma
+        if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
+            
+            val mapping =
+                if currentLemmas.get(calledInModel).isDefined then currentMappings
+                else {
+                    // This pair of functions has not been encountered yet, merge the functions themselves
+                    val funcCalledInModel = program.helperFunctions(calledInModel)
+                    val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
+                    val (lemma, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
+                    currentLemmas += lemma
+                    mapping
+                }
 
-            // Generate Equivalence data for the called functions
-            val funcCalledInModel = program.helperFunctions(calledInModel)
-            val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
-            val (lemma, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
-
-            // Convert mapping between the parameters of the called functions to a mapping to the parameters in
-            // the caller functions
+            // Convert mapping between the parameters of the called functions to a mapping between the arguments in the function calls
+            // Merge these arguments together
             val stmts = mapping.map {
                 case (candName, modelName) => calledInCandidateArgs(0)(candName) -> calledInModelArgs(0)(modelName)
             }.flatMap((candExpr, modelExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)).toList
 
             // Call the generated helper equivalence lemma
             val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs.flatMap(_.map(_._2))))
-
-            currentLemmas += lemma
-            stmts :+ finalStmt
-        }
-        case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
-        if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
-            val stmts = currentMappings.map {
-                case (candName, modelName) => calledInCandidateArgs(0)(candName) -> calledInModelArgs(0)(modelName)
-            }.flatMap((candExpr, modelExpr) => mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)).toList
-
-            val finalStmt = CallStmt(generateLemmaName(calledInModel, calledInCandidate), List(calledInModelArgs(0).values.toList))
 
             stmts :+ finalStmt
         }
