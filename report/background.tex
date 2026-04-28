@@ -1,17 +1,16 @@
 \chapter{Background}\label{chp:background}
 
+Program Equivalence can be formally defined using Hoare Triples. Two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
+
 \section{Current state-of-the-art tools}\label{sec:tools-desc}
 
 \footnote{Need to expand on any technical terminology that you will use, or build on, later}
  
 \subsection{Dafny}\label{sec:dafny}
 
-\footnote{simple example in each thing in the intro, maybe same example, specification is optional}
-\footnote{formal definition of program equivalence}
-
 Dafny is a popular program verifier, under active development by Amazon \cite{leinoDafnyAutomaticProgram2010}. It is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants. This allows Dafny's verifier to automatically prove theorems and that programs match their specifications. Dafny programs can also be compiled into a variety of other languages, including C\#, Java and Python, but only after Dafny has verified them. This allows verified programs to be integrated easily into existing codebases, without breaking any functionality.
 
-Dafny's program verification heavily relies on Boogie \cite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver \cite{10.1007/978-3-540-78800-3_24}. 
+Dafny's program verification heavily relies on Boogie~\cite{10.1007/11804192_17}, another state-of-the-art program verifier. The verification process involves translating a Dafny program into a Boogie program; this is then translated into a series of verification conditions, which are passed to the Z3 SMT solver~\cite{10.1007/978-3-540-78800-3_24}. 
 
 Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two functions attempt to find the maximum element of a sequence of integers. The first is as follows:
 %
@@ -55,22 +54,19 @@ For this example, the Boogie translation resulted in a file almost 3350 lines lo
 
 \subsection{SymDiff}
 
-\footnote{how exactly does symdiff work, more details, example}
-\footnote{need to define the terms product program and mutual summary}
+\footnote{example as with other sections}
 
-SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}: it works by specifying the differences between multiple programs and verifying properties about them.
+SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}. The system works by combining the two programs being compared into a single program called a `product program'. This product program contains the bodies of the individual programs to simulate both of their executions. Symdiff attempts to prove postconditions on this product program to verify the relationship between the individual functions. These postconditions are called `mutual summaries'. The postconditions can be proven by passing the product program to the Boogie program verifier. 
 
-SymDiff can also be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption. \textcite{lahiriAutomatedDifferentialProgramb} focussed on formally proving control flow equivalence under given differences, by constructing a product program, using the concept of a mutual summary, and passing it to the Boogie program verifier.
+Since this process is very general, it is not limited to program equivalence. For example, SymDiff can be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption.
 
 \subsection{Stainless}
 
-\footnote{scala subset specify}
 \footnote{Examples of specifications and counterexamples}
-\footnote{What does matching many functions mean?}
 
-Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. Stainless performs these verifications by passing each part of the program through a series of transformations, until it can be used by the Inox solver \parencite{EpfllaraInox2026}. However, an important restriction of Stainless is that it only supports a subset of Scala's features.
+Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. Stainless performs these verifications by passing each part of the program through a series of transformations, until it can be used by the Inox solver \parencite{EpfllaraInox2026}. However, an important restriction of Stainless is that it only supports a subset of Scala's features. This subset only includes the functional paradigm; the full description is in the Stainless documentation. The Stainless developers called this subset `Pure Scala'.
 
-One part of Stainless's functionality that is especially relevant to this work is its equivalence checker \parencite{IntroductionStainless091,milovancevicProvingDisprovingEquivalence2023}. Its ability to automatically generate equivalence lemmas for helper functions and to match many functions at once will make it a great inspiration for the rest of this project.
+One part of Stainless's functionality that is especially relevant to this work is its equivalence checker \parencite{IntroductionStainless091,milovancevicProvingDisprovingEquivalence2023}. The abilities of this system will be a great inspiration for the rest of this project. In particular, its ability to automatically generate and prove equivalence lemmas for helper functions is especially important, as this is the main contribution our tool should provide. 
 
 Consider the following example, taken from the equivalence tests in Stainless's GitHub repository \parencite{StainlessFrontendsBenchmarks}. This is also an example used by \textcite{milovancevicProvingDisprovingEquivalence2023}, which I converted to Dafny in \Cref{sec:dafny}. These two functions attempt to find the maximum element of a list of integers, by approaching the list in opposite directions:
 
