@@ -202,7 +202,9 @@ This translation process can also be used to simplify expressions with the same 
 \subsection{Merging each type of function body}
 The bodies of Dafny functions can be composed of a variety of different types of structures. Function Merging for some structures is complex, so I have described them in detail in this section. 
 
-\paragraph{Function Calls} During the merging of a pair of functions, a pair of calls to helper functions may be encountered. If this occurs, the helper functions themselves must be merged in a recursive manner. Once this completes, this results in an equivalence lemma and a set of mappings between the parameters of the helper functions. These mappings can be used to create mappings between the corresponding arguments in the calls to the helper functions. These arguments must themselves be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. \footnote{Example needed?}
+\paragraph{Function Calls} During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. \footnote{Example needed?}
+
+Mappings between arguments are created using the mappings between the corresponding function parameters.  
 
 \paragraph{Match Expressions} TODO \footnote{Write this when match expressions are finished}
 
