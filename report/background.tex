@@ -96,6 +96,29 @@ Stainless is able to prove the equivalence of these functions fully automaticall
 
 \subsection{KLEE}
 
-\footnote{Example}
+KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For example, here is an implementation of the \lstinline|sign| function. This example was taken from the KLEE tutorial \parencite{TutorialOneKLEE}:
+\begin{lstlisting}[caption=KLEE tutorial: sign function example]
+int sign(int x) {
+  if (x == 0)
+    return 0;
+  if (x < 0)
+    return -1;
+  else
+    return 1;
+}
+\end{lstlisting}
+%
 
-KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For each path, KLEE maintains the set of conditions needed for that path to have been taken, thus, if the path ends in an error, KLEE can use those conditions to generate a single test case that will create the error. Therefore, KLEE is a powerful tool, however, one of its main limitations is that the number of possible paths to keep track of can grow exponentially large when it is working with programs containing many loops and branches.
+This function can now be called with a KLEE symbolic variable as argument:
+\begin{lstlisting}[caption=KLEE tutorial: Calling sign function with symbolic variable as argument]
+int main() {
+  int a;
+  klee_make_symbolic(&a, sizeof(a), "a");
+  return sign(a);
+}
+\end{lstlisting}
+%
+
+Since there are three different paths through the \lstinline|sign| function (for each of the cases where \(x < 0\), \(x = 0\) and \(x > 0\) respectively), running KLEE on this program generates three test cases, one for each path respectively. 
+
+For each path it explores, KLEE maintains the set of conditions needed for that path to have been taken, thus, if the path ends in an error, KLEE can use those conditions to generate a single test case that will create the error. Therefore, KLEE is a powerful tool, however, one of its main limitations is that the number of possible paths to keep track of can grow exponentially large when it is working with programs containing many loops and branches.
