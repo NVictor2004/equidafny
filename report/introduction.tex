@@ -1,7 +1,8 @@
 \chapter{Introduction}
 
-\footnote{3-5 keypoints of what is in the project, bulletpoints, in the background}
-\footnote{Objectives? Later this will become contributions}
+\footnote{Need to describe contributions}
+
+\section{Background and Project Aim}
 
 Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. If this can be proven, then these programs are described as equivalent; one of these programs can be substituted for the other without affecting the behaviour of the overall system. This has applications in a variety of fields. For example, compiler developers can use this to ensure that optimisations always preserve the intended behaviour of the original program.
 
@@ -9,4 +10,13 @@ Therefore, Program Equivalence is a very exciting area of Computer Science. Howe
 
 The main drawback of these tools is that, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. The average software developer will not have the necessary expertise to provide these, thus, these tools will be inaccessible to them. Therefore, the general aim of this project is to learn from the current state-of-the-art tools, and use this to build a new tool that decreases the level of user assistance required as much as possible, thus allowing the average software developer to better reap the benefits of using program equivalence tools in their work.
 
-This project will begin with a review of the current tools for proving program equivalence in \Cref{chp:background}. After this, this project will focus solely on the Dafny program verifier. I will explore Dafny's capabilities and limitations in proving program equivalence in \Cref{sec:audit}; this will clearly demonstrate that there are many cases where Dafny requires user assistance to complete its proofs. Thus, I will build a tool on top of the Dafny verifier that will allow the user to prove the equivalence of two Dafny functions with as little user assistance as possible. Finally, I will evaluate this tool against the current state-of-the-art systems as described in \Cref{chp:plans}.
+\section{Objectives}
+
+The main objectives of this project are as follows:
+
+\begin{description}
+    \item[\nameref{sec:tools-desc}] To describe the current state-of-the-art tools for proving program equivalence. After this, the project will focus solely on the Dafny program verifier. 
+    \item[\nameref{sec:audit}] To explore Dafny's capabilities and limitations in proving program equivalence. This will clearly demonstrate that there are many cases where Dafny requires user assistance to complete its proofs.
+    \item[\nameref{chp:implementation}] To implement a tool on top of the Dafny verifier that will allow the user to prove the equivalence of two Dafny functions with as little user assistance as possible.
+    \item[\nameref{chp:evaluation}] To evaluate this tool against the current state-of-the-art tools.
+\end{description}
