@@ -2,7 +2,7 @@ package equivalence.expression
 
 import translation.structure.*
 
-import equivalence.program.{functionEquivalence, generateLemmaName}
+import equivalence.program.{mergeFunction, generateLemmaName}
 import equivalence.pattern.*
 import scala.collection.immutable.ListMap
 import scala.collection.mutable.Map as MutableMap
@@ -20,7 +20,7 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                     // This pair of functions has not been encountered yet, merge the functions themselves
                     val funcCalledInModel = program.helperFunctions(calledInModel)
                     val funcCalledInCandidate = program.helperFunctions(calledInCandidate)
-                    val (lemma, mapping) = functionEquivalence(currentLemmas, funcCalledInModel, funcCalledInCandidate)
+                    val (lemma, mapping) = mergeFunction(currentLemmas, funcCalledInModel, funcCalledInCandidate)
                     currentLemmas += lemma
                     mapping
                 }
@@ -138,54 +138,3 @@ def mergeExprBlock(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
 
     modelVariables ++ stmts
 }
-
-def mergeFunction(currentLemmas: MutableMap[String, Option[Lemma]], modelFunc: Function, candidateFunc: Function)(using program: Program): (Map[String, String], List[Stmt]) = {
-    // Mappings are generated through merging the function bodys and through type matching
-
-    // Find Type mappings
-    val modelTypeCounts = mapTypesToCounts(modelFunc.params)
-    val candTypeCounts = mapTypesToCounts(candidateFunc.params)
-
-    val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
-        case (accMappings, (paramType, modelCount)) => {
-            val candCount = candTypeCounts.getOrElse(paramType, 0)
-            if (modelCount != candCount) {
-                throw new IllegalArgumentException("Types can't be matched")
-            }
-            if (modelCount == 1) {
-                val modelName = modelFunc.params.find((_, currentType) => currentType == paramType).get._1
-                val candName = candidateFunc.params.find((_, currentType) => currentType == paramType).get._1
-                (candName, modelName) :: accMappings
-            } else {
-                accMappings
-            }
-        }
-    }
-
-    val currentMappings = MutableMap(typeMappings*)
-
-    // Find mappings through function body merging
-    val stmts = mergeExprBlock(currentLemmas, currentMappings, modelFunc.body, modelFunc, candidateFunc.body, candidateFunc)
-
-    // Find parameters not covered already
-    val modelParamsLeft = modelFunc.params.removedAll(currentMappings.values)
-    var candParamsLeft = candidateFunc.params.removedAll(currentMappings.keys)
-
-    // Generate remaining mappings
-    val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
-        val (candName, _) = candParamsLeft.find((_, currentType) => currentType == modelType).get
-        candParamsLeft = candParamsLeft.removed(candName)
-        (candName, modelName)
-    })
-
-    currentMappings ++= remainingMappings
-    (currentMappings.toMap, stmts)
-}
-
-def mapTypesToCounts(params: ListMap[String, Type]): Map[Type, Int] = 
-    params.foldLeft(MutableMap[Type, Int]()) {
-        case (accMap, (_, paramType)) => {
-            val count = accMap.getOrElse(paramType, 0)
-            accMap += (paramType -> (count + 1))
-        }
-    }.toMap

@@ -3,7 +3,7 @@ package equivalence.program
 import translation.structure.*
 import translation.structure.BinaryOperator.*
 
-import equivalence.expression.mergeFunction
+import equivalence.expression.mergeExprBlock
 import equivalence.types.getListOfTypes
 
 import scala.collection.immutable.ListMap
@@ -15,7 +15,7 @@ def programEquivalence(program: Program): Program = {
 
   val data = program.candidateFunctions.map(candFunction => {
     val currentLemmas = MutableMap[String, Option[Lemma]]()
-    val ((_, lemma), _) = functionEquivalence(currentLemmas, program.modelFunction, candFunction)
+    val ((_, lemma), _) = mergeFunction(currentLemmas, program.modelFunction, candFunction)
     (lemma, currentLemmas.values)
   })
   program.copy(
@@ -28,13 +28,55 @@ def generateLemmaName(modelName: String, candName: String): String =
   s"${modelName}_${candName}_Equivalence"
 
 // TODO: Check if original pair of functions have the same number of arguments
-def functionEquivalence(
+def mergeFunction(
     currentLemmas: MutableMap[String, Option[Lemma]],
     model: Function,
     candidate: Function
 )(using program: Program): ((String, Option[Lemma]), Map[String, String]) = {
+  // Create mapping for the equivalence lemma currently being generated
   currentLemmas += (model.name -> None)
-  val (mapping, stmts) = mergeFunction(currentLemmas, model, candidate)
+
+  // Mappings are generated through merging the function bodies and through type matching
+  // Find Type mappings
+  val modelTypeCounts = mapTypesToCounts(model.params)
+  val candTypeCounts = mapTypesToCounts(candidate.params)
+
+  val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
+      case (accMappings, (paramType, modelCount)) => {
+          val candCount = candTypeCounts.getOrElse(paramType, 0)
+          if (modelCount != candCount) {
+              throw new IllegalArgumentException("Types can't be matched")
+          }
+          if (modelCount == 1) {
+              val modelName = model.params.find((_, currentType) => currentType == paramType).get._1
+              val candName = candidate.params.find((_, currentType) => currentType == paramType).get._1
+              (candName, modelName) :: accMappings
+          } else {
+              accMappings
+          }
+      }
+  }
+
+  val currentMappings = MutableMap(typeMappings*)
+
+  // Merge the function bodies
+  // This will append further mappings and create the body of the equivalence lemma
+  val stmts = mergeExprBlock(currentLemmas, currentMappings, model.body, model, candidate.body, candidate)
+
+  // Find parameters not covered already
+  val modelParamsLeft = model.params.removedAll(currentMappings.values)
+  var candParamsLeft = candidate.params.removedAll(currentMappings.keys)
+
+  // Generate remaining mappings
+  val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
+      val (candName, _) = candParamsLeft.find((_, currentType) => currentType == modelType).get
+      candParamsLeft = candParamsLeft.removed(candName)
+      (candName, modelName)
+  })
+
+  // Append remaining mappings and convert to immutable Map
+  currentMappings ++= remainingMappings
+  val mapping = currentMappings.toMap
 
   val modelIdents = model.params.keys
   val candidateIdents = candidate.params.keys.map(paramName => mapping(paramName))
@@ -56,7 +98,6 @@ def functionEquivalence(
     }
     case _ => (modelFunctionCall, candFunctionCall)
   }
-  
 
   val equiv = Lemma(
     generateLemmaName(model.name, candidate.name),
@@ -79,7 +120,7 @@ def functionEquivalence(
 }
 
 @tailrec
-def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[String, BasicExpr]], candMap: List[ListMap[String, BasicExpr]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
+private def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[String, BasicExpr]], candMap: List[ListMap[String, BasicExpr]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
   case ArrowType(from, to) => {
       val types = getListOfTypes(from)
       val Lambda(lvalues, body) = expr
@@ -90,3 +131,11 @@ def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[String, Bas
     }
     case _ => (params, modelMap, candMap)
 }
+
+private def mapTypesToCounts(params: ListMap[String, Type]): Map[Type, Int] = 
+    params.foldLeft(MutableMap[Type, Int]()) {
+        case (accMap, (_, paramType)) => {
+            val count = accMap.getOrElse(paramType, 0)
+            accMap += (paramType -> (count + 1))
+        }
+    }.toMap
