@@ -17,7 +17,7 @@ def containsUnNamed(pattern: Pattern): Boolean = pattern match {
 }
 
 def listContainsUnNamed(patterns: List[Pattern]): Boolean = 
-    patterns.foldLeft(false)((acc, pattern) => acc || containsUnNamed(pattern))
+    patterns.exists(containsUnNamed)
 
 def mapBasicExprToPattern(expr: BasicExpr, pattern: Pattern): Map[String, Pattern] = (expr, pattern) match {
     case (Tuple(elements), PatternTuple(patternElements)) if elements.length == patternElements.length =>
