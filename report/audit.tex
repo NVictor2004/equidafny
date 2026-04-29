@@ -3,15 +3,15 @@
 \footnote{also look at broken / incorrect examples and see equivalence, they should be}
 
 \footnote{highlighting important parts of examples}
-\footnote{any limitations that only arise with more complex data structures?}
+\footnote{any challenges that only arise with more complex data structures?}
 
-There are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these limitations and prove equivalence. These limitations include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
+There are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these challenges and prove equivalence. These challenges include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
 The majority of the following examples have been taken from the program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. I converted all of their tests into Dafny functions, and proved their equivalence. Many of these tests consisted of more than 2 functions, each in their own file. For these cases, I concatenated all of these functions into a single Dafny file to form a single test, and proved the equivalence of each function with a single function, thus proving, through the transitivity of equivalence, that all of these functions were pairwise equivalent. This resulted in a total of 62 tests.
 
 These tests cover a great variety of types of programs. The number of lines of code in each test ranges from around 10 to over 200. They cover a variety of inbuilt and custom data structures, including sequences, lists and the Option datatype. Some tests also cover concepts such as mutual recursion, generic types and higher-order functions.
 
-Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 7 different types of limitations. \Cref{tbl:limitations-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of limitations, therefore, these are counted multiple times. This table also includes imperative equivalence tests that I wrote myself. All of the tests from the Stainless repository can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
+Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 7 different types of challenges. \Cref{tbl:challenges-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of challenges, therefore, these are counted multiple times. This table also includes imperative equivalence tests that I wrote myself. All of the tests from the Stainless repository can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
 
 \begin{table}[ht]
   \centering
@@ -37,8 +37,10 @@ Using these tests, I have attempted to characterise the cases where Dafny requir
   \hline
   \end{tabular}
   \caption{Summary of the number of examples that demonstrate each type of limitation}
-  \label{tbl:limitations-summary}
+  \label{tbl:challenges-summary}
 \end{table}
+
+\footnote{short paragraph intro to each sub section, maybe copy from plans?}
 
 The following sections describe each type of limitation that I have identified. Each section contains at least one example to clearly demonstrate the limitation being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. 
 

@@ -4,13 +4,13 @@
 
 % Further Extension: List and seqs can be matched if the functions operate on them in the same way
 
-The aim of this project is to build a tool on top of the Dafny program verifier that removes as many of the limitations identified in \Cref{sec:audit} as possible. Some of these limitations are out of the scope of this project. Preventing incorrect counterexamples (as described in \Cref{sec:counterexamples}) is one such limitation, as it results from problems in Boogie and the underlying Z3 solver. Similarly, the limitations related to imperative programs (as described in \Cref{sec:imperative-equivalence}) are also out of scope, as Dafny functions provide enough complexity for this project by themselves.
+The aim of this project is to build a tool on top of the Dafny program verifier that addresses as many of the challenges identified in \Cref{sec:audit} as possible. Some of these challenges are out of the scope of this project. Preventing incorrect counterexamples (as described in \Cref{sec:counterexamples}) is one such limitation, as it results from problems in Boogie and the underlying Z3 solver. Similarly, the challenges related to imperative programs (as described in \Cref{sec:imperative-equivalence}) are also out of scope, as Dafny functions provide enough complexity for this project by themselves.
 
 I plan to build my tool in Scala. It will be called from the command line, taking as input multiple Dafny files, containing the functions to be compared and any help the user needs to provide. The tool will also require a JSON configuration file, specifying which functions must be proven to be equivalent and any other information the tool requires. The tool will attempt to create an equivalence proof and prove it using Dafny; Dafny's output will be used as the output of the tool.
 
 The following table summarises the current development plan, broken down into milestones. Each milestone has an associated completion deadline and a description of what that milestone involves. Each milestone is described as either Necessary or Optional. If Necessary milestones take longer than I expected, I will use the time previously dedicated to Optional milestones to complete the Necessary ones.
 
-If I have time remaining once all the project and evaluation milestones are completed, I plan to further extend our tool to handle the remaining limitations relating to Dafny functions identified in \Cref{sec:audit}. This includes removing the necessity for the user to explicitly define induction schemes to prove lemmas (\Cref{sec:induction}) and implementing the ability to prove user-provided auxiliary lemmas (\Cref{sec:auxiliary-lemmas}).
+If I have time remaining once all the project and evaluation milestones are completed, I plan to further extend our tool to handle the remaining challenges relating to Dafny functions identified in \Cref{sec:audit}. This includes removing the necessity for the user to explicitly define induction schemes to prove lemmas (\Cref{sec:induction}) and implementing the ability to prove user-provided auxiliary lemmas (\Cref{sec:auxiliary-lemmas}).
 
 \begin{table}[ht]
   \centering

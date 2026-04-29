@@ -1,5 +1,9 @@
 \chapter{Implementation}\label{chp:implementation}
 
+\footnote{use AI to convert some C examples into functions, focus on iteration examples}
+\footnote{split implementation into design (the algorithm) and implementation (the choice of languages, scala parsley, formatting, translation), just rearrange}
+\footnote{extension: mapping seqs to lists for example, can use a transform function to convert one to the other, user defined, just call in equivalence lemma, type mappings, this leads to auxiliary lemmas}
+
 \paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
 \section{User Interface}\label{sec:user-interface}
@@ -36,6 +40,7 @@ Our tool is divided into several components. The most important component is the
 \subsection{Parsing}
 
 % Why parser combinator? And why Parsley?
+\footnote{Show example of left factoring and other optimisations}
 
 The first component is a parser. This system is used to parse the input Dafny program into a Scala data structure, so that it can be easily processed by the rest of the system. This parser was implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}. 
 
@@ -208,9 +213,9 @@ Mappings between arguments are created using the mappings between the correspond
 
 \paragraph{Match Expressions} TODO \footnote{Write this when match expressions are finished}
 
-\section{Technical Audit Limitations}
+\section{Technical Audit Challenges}
 
-In \Cref{sec:audit}, I demonstrated that Dafny has several types of limitations when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of the limitations identified. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
 
 \footnote{Make sure these names are kept up to date}
 
