@@ -228,32 +228,7 @@ function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
 }
 \end{lstlisting}
 %
-These functions rely on helper functions \lstinline|insertM| and \lstinline|insert1| that each insert a single integer into a sorted list in such a way that the list remains sorted. Their implementations are as follows:
-
-\begin{lstlisting}[caption=\lstinline|insertM| and \lstinline|insert1| Functions]
-function insertM(xs: List<int>, t: int): List<int>
-  decreases xs {
-  match xs {
-    case Nil => Cons(t, Nil)
-    case Cons(hd, tl) =>
-      if (t <= hd) then Cons(t, xs)
-      else Cons(hd, insertM(tl, t))
-  }
-}
-
-function insert1(t: int, xs: List<int>): List<int>
-  decreases xs {
-  match xs {
-    case Nil => Cons(t, Nil)
-    case Cons(hd, tl) =>
-      if (t <= hd) then Cons(t, xs)
-      else Cons(hd, insert1(t, tl))
-  }
-}
-\end{lstlisting}
-%
-
-Thus, the arguments in the function calls to \lstinline|insertSortedM| and \lstinline|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \lstinline|insertM| and \lstinline|insert1| is necessary. This results in the following equivalence lemmas:
+These functions rely on helper functions \lstinline|insertM| and \lstinline|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{lst:insertM-insert1-functions}. Thus, the arguments in the function calls to \lstinline|insertSortedM| and \lstinline|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \lstinline|insertM| and \lstinline|insert1| is necessary. This results in the following equivalence lemmas:
 
 \begin{lstlisting}[caption=Equivalence Lemmas for \lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
 lemma equivalenceInsertSorted5(t: int, xs: List<int>)
