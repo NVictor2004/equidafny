@@ -207,11 +207,73 @@ This translation process can also be used to simplify expressions with the same 
 \subsection{Merging each type of function body}
 The bodies of Dafny functions can be composed of a variety of different types of structures. Function Merging for some structures is complex, so I have described them in detail in this section. 
 
-\paragraph{Function Calls} During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. \footnote{Example needed?}
+\subsubsection{Function Calls}
+During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \lstinline|insertSortedM| and \lstinline|insertSorted1| that each implement the insertion sort algorithm:
+\begin{lstlisting}[caption=\lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
+function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
+  {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
+  }
+}
 
-Mappings between arguments are created using the mappings between the corresponding function parameters.  
+function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
+  decreases insert
+ {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
+  }
+}
+\end{lstlisting}
+%
+These functions rely on helper functions \lstinline|insertM| and \lstinline|insert1| that each insert a single integer into a sorted list in such a way that the list remains sorted. Their implementations are as follows:
 
-\paragraph{Match Expressions} TODO \footnote{Write this when match expressions are finished}
+\begin{lstlisting}[caption=\lstinline|insertM| and \lstinline|insert1| Functions]
+function insertM(xs: List<int>, t: int): List<int>
+  decreases xs {
+  match xs {
+    case Nil => Cons(t, Nil)
+    case Cons(hd, tl) =>
+      if (t <= hd) then Cons(t, xs)
+      else Cons(hd, insertM(tl, t))
+  }
+}
+
+function insert1(t: int, xs: List<int>): List<int>
+  decreases xs {
+  match xs {
+    case Nil => Cons(t, Nil)
+    case Cons(hd, tl) =>
+      if (t <= hd) then Cons(t, xs)
+      else Cons(hd, insert1(t, tl))
+  }
+}
+\end{lstlisting}
+%
+
+Thus, the arguments in the function calls to \lstinline|insertSortedM| and \lstinline|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \lstinline|insertM| and \lstinline|insert1| is necessary. This results in the following equivalence lemmas:
+
+\begin{lstlisting}[caption=Equivalence Lemmas for \lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
+lemma equivalenceInsertSorted5(t: int, xs: List<int>)
+  ensures (insert1(t, xs) == insertM(xs, t))
+{}
+
+lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
+  ensures (insertSorted1(sorted, insert) == insertSortedM(insert, sorted))
+{
+    match insert {
+        case Nil => {}
+        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
+    }
+}
+\end{lstlisting}
+% 
+
+\subsubsection{Match Expressions}
+
+TODO \footnote{Write this when match expressions are finished}
 
 \section{Technical Audit Challenges}
 
