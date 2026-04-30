@@ -2,10 +2,8 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-datatype Option<T> = None | Some(value: T)
-
 function insertM(xs: List<int>, t: int): List<int>
-  decreases(xs) {
+  decreases xs {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
@@ -14,42 +12,42 @@ function insertM(xs: List<int>, t: int): List<int>
   }
 }
 
-function loopM(insert: List<int>, sorted: List<int>): List<int>
+function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
   {
   match insert {
-    case Cons(x, xs) => loopM(xs, insertM(sorted, x))
     case Nil => sorted
+    case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
   }
 }
 
-function insertSorted5(t: int, xs: List<int>): List<int>
-  decreases(xs) {
+function insert1(t: int, xs: List<int>): List<int>
+  decreases xs {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
       if (t <= hd) then Cons(t, xs)
-      else Cons(hd, insertSorted5(t, tl))
+      else Cons(hd, insert1(t, tl))
   }
 }
 
-function go5(sorted: List<int>, insert: List<int>): List<int>
+function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
   decreases insert
  {
   match insert {
-    case Cons(x, xs) => go5(insertSorted5(x, sorted), xs)
     case Nil => sorted
+    case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
   }
 }
 
 lemma equivalenceInsertSorted5(t: int, xs: List<int>)
-  ensures (insertSorted5(t, xs) == insertM(xs, t))
+  ensures (insert1(t, xs) == insertM(xs, t))
 {}
 
 lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
-  ensures (go5(sorted, insert) == loopM(insert, sorted))
+  ensures (insertSorted1(sorted, insert) == insertSortedM(insert, sorted))
 {
     match insert {
-        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
         case Nil => {}
+        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
     }
 }
