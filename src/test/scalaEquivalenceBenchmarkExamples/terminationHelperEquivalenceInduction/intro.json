@@ -1,0 +1,7 @@
+{
+  "file": "intro.dfy",
+  "model": "insertRandomSortedM",
+  "candidates": [
+    "insertRandomSorted1"
+  ]
+}

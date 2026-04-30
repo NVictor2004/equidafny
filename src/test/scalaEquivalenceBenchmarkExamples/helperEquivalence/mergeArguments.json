@@ -1,0 +1,7 @@
+{
+  "file": "mergeArguments.dfy",
+  "model": "insertSortedM",
+  "candidates": [
+    "insertSorted1"
+  ]
+}
