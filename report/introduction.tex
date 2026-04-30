@@ -1,6 +1,10 @@
 \chapter{Introduction}
 
-\footnote{introduction is summary of whole project, with example, include implementations and challenges, just list challenges not too much detail, im planning to do ..., contribution is all examples, introduction only includes things that work, evaluation: run on this many examples, my tool works on this many, get dafny, stainless}
+% NOTE! Introduction only includes things that work! Summary of entire project!
+
+\footnote{evaluation: run on this many examples, my tool works on this many, get dafny, stainless}
+
+\section{Background and Objectives}
 
 Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. This can be formally defined using Hoare Triples: two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
 
@@ -84,13 +88,17 @@ lemma equivalenceInsertRandomSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 \end{lstlisting}
 %
 
-The aim of this project is to implement a tool to address these challenges. In particular, the main contributions of this project are as follows:
+\section{Implementation and Evaluation}
+
+The aim of this project is to implement a tool to address the challenges identified above. In particular, the main contributions of this project are as follows:
 
 \begin{description}
-    \item[Dataset of Equivalence tests] The creation of a dataset of pairs of equivalent Dafny functions
-    \item[Novel Algorithm] Development of an algorithm to automatically generate equivalence lemmas 
-    \item[Tool] Implemented EquiDafny: a tool that implements this algorithm
-    \item[Evaluation] An evaluation of this tool against the Dafny verifier and the Stainless equivalence checker
+    \item[Dataset of Equivalence tests] The conversion of Stainless tests into a dataset of pairs of equivalent Dafny functions
+    \item[Novel Algorithm] Development of the Function Merging algorithm to automatically generate equivalence lemmas 
+    \item[Tool] Implemented EquiDafny: a command-line tool that implements this algorithm
+    \item[Evaluation] An evaluation of EquiDafny against the Dafny verifier and the Stainless equivalence checker
 \end{description}
 
-The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other. These mappings describe which parameters have the same purpose across the two functions. These mappings are used to ensure arguments are inserted correctly into the function calls within the postconditions of each lemma. The second output is the body of each lemma. This includes variable declarations and calls to any equivalence lemmas with the correct arguments and under the correct conditions. 
+The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other. These mappings describe which parameters have the same purpose across the two functions. These mappings are used to ensure arguments are inserted correctly into the function calls within the postconditions of each lemma. The second output is the body of each lemma. This includes variable declarations and calls to any equivalence lemmas with the correct arguments and under the correct conditions.
+
+EquiDafny is implemented in Scala. The tool is called by passing in a single JSON configuration file. This file provides any important details EquiDafny needs to run, including the names of the functions to be compared and a path to a single Dafny file containing all necessary source code. EquiDafny is split into several components including parsing, translation and formatting. The parsing component parses the initial Dafny source file (implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}). The translation component converts the data structure outputted by the parser into a structure that is easier to work with. Finally, the formatting component outputs the final equivalence lemmas to a file so that they can be checked by the Dafny verifier.  
