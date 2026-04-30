@@ -1,6 +1,5 @@
 \chapter{Introduction}
 
-\footnote{Give the tool a name}
 \footnote{introduction is summary of whole project, with example, include implementations and challenges, just list challenges not too much detail, im planning to do ..., contribution is all examples, introduction only includes things that work, evaluation: run on this many examples, my tool works on this many, get dafny, stainless}
 
 Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. This can be formally defined using Hoare Triples: two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
@@ -18,7 +17,7 @@ Therefore, the general aim of this project is to build a new tool, learning from
     \item[\nameref{chp:evaluation}] To evaluate this tool against the current state-of-the-art tools
 \end{description}
 
-After describing the current state-of-the-art tools, this project will focus solely on the Dafny program verifier. \footnote{Why Dafny over all other tools?}
+After describing the current state-of-the-art tools, this project will focus solely on the Dafny program verifier. Dafny is a popular tool under active development by Amazon \parencite{leinoDafnyAutomaticProgram2010}, therefore, building a tool on Dafny would be highly relevant to modern software engineering projects. This is especially true since Dafny can be compiled into a variety of popular languages, including C\#, Java and Python, allowing verified code to easily be integrated into existing codebases. 
 
 To find an understanding of Dafny's capabilities, I used the set of program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. After converting them from Scala to Dafny I attempted to prove equivalence for each pair of functions. Using this I identified a number of challenges Dafny encounters. One of the main challenges involved generating equivalence lemmas for helper functions, and calling them with the correct arguments and under the correct conditions. Since the Dafny verifier often proves lemmas through induction, further challenges included the verifier often requiring a variant to prove termination, and sometimes requiring an explicit statement of the induction scheme. An example that demonstrates all three of these challenges is as follows. Here are two functions called \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1| that each generate a specified number of random numbers, and insert them into a sorted list while maintaining its order.
 
@@ -85,13 +84,13 @@ lemma equivalenceInsertRandomSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 \end{lstlisting}
 %
 
-The specific aim of this project is to implement a tool to address these challenges. In particular, the main contributions of this project are as follows:
+The aim of this project is to implement a tool to address these challenges. In particular, the main contributions of this project are as follows:
 
 \begin{description}
     \item[Dataset of Equivalence tests] The creation of a dataset of pairs of equivalent Dafny functions
     \item[Novel Algorithm] Development of an algorithm to automatically generate equivalence lemmas 
-    \item[Tool] A tool that implements this algorithm
+    \item[Tool] Implemented EquiDafny: a tool that implements this algorithm
     \item[Evaluation] An evaluation of this tool against the Dafny verifier and the Stainless equivalence checker
 \end{description}
 
-The main algorithm our tool uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other. These mappings describe which parameters have the same purpose across the two functions. These mappings are used to ensure arguments are inserted correctly into the function calls within the postconditions of each lemma. The second output is the body of each lemma. This includes variable declarations and calls to any equivalence lemmas with the correct arguments and under the correct conditions. 
+The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other. These mappings describe which parameters have the same purpose across the two functions. These mappings are used to ensure arguments are inserted correctly into the function calls within the postconditions of each lemma. The second output is the body of each lemma. This includes variable declarations and calls to any equivalence lemmas with the correct arguments and under the correct conditions. 
