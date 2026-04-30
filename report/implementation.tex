@@ -204,52 +204,6 @@ The second method of mitigating the problem of the Merging process failing is by
 
 This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \lstinline|A|, \lstinline|B| and \lstinline|C|, the expression \lstinline|if !A then C else B| can be simplified into \lstinline|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
 
-\subsection{Merging each type of function body}
-The bodies of Dafny functions can be composed of a variety of different types of structures. Function Merging for some structures is complex, so I have described them in detail in this section. 
-
-\subsubsection{Function Calls}
-During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \lstinline|insertSortedM| and \lstinline|insertSorted1| that each implement the insertion sort algorithm:
-\begin{lstlisting}[caption=\lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
-function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
-  {
-  match insert {
-    case Nil => sorted
-    case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
-  }
-}
-
-function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
-  decreases insert
- {
-  match insert {
-    case Nil => sorted
-    case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
-  }
-}
-\end{lstlisting}
-%
-These functions rely on helper functions \lstinline|insertM| and \lstinline|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{lst:insertM-insert1-functions}. Thus, the arguments in the function calls to \lstinline|insertSortedM| and \lstinline|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \lstinline|insertM| and \lstinline|insert1| is necessary. This results in the following equivalence lemmas:
-
-\begin{lstlisting}[caption=Equivalence Lemmas for \lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
-lemma equivalenceInsertSorted5(t: int, xs: List<int>)
-  ensures (insert1(t, xs) == insertM(xs, t))
-{}
-
-lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
-  ensures (insertSorted1(sorted, insert) == insertSortedM(insert, sorted))
-{
-    match insert {
-        case Nil => {}
-        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
-    }
-}
-\end{lstlisting}
-% 
-
-\subsubsection{Match Expressions}
-
-TODO \footnote{Write this when match expressions are finished}
-
 \section{Technical Audit Challenges}
 
 In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
@@ -356,5 +310,48 @@ Our tool solves this problem in the following way. During Function Merging, the 
 There are three possibilities. First, if the model function name is not a key in this map, then the functions themselves should be merged together. In the above example, when processing the functions \lstinline|isEven| and \lstinline|myIsEven| for the first time and encountering the function calls to \lstinline|isOdd| and \lstinline|myIsOdd|, \lstinline|isOdd| should not be a key in the map, leading to the functions themselves being merged. Second, if the name of the model function is mapped to a lemma (wrapped in a \lstinline|Some| object), then the corresponding lemma has already been generated. Thus, this lemma can be called without further merging. This also prevents the generation of the same lemma multiple times.
 
 Finally, if the model function's name is mapped to the \lstinline|None| object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \lstinline|isOdd| and \lstinline|myIsOdd| and encountering the function calls to \lstinline|isEven| and \lstinline|myIsEven|, \lstinline|isEven| should be mapped to the \lstinline|None| object since the process reached this point during the Merging of \lstinline|isEven| and \lstinline|myIsEven|. Our tool responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, our tool can successfully deal with mutually recursive functions. 
+
+\subsection{Merging Function Calls}
+During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \lstinline|insertSortedM| and \lstinline|insertSorted1| that each implement the insertion sort algorithm:
+\begin{lstlisting}[caption=\lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
+function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
+  {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
+  }
+}
+
+function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
+  decreases insert
+ {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
+  }
+}
+\end{lstlisting}
+%
+These functions rely on helper functions \lstinline|insertM| and \lstinline|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{lst:insertM-insert1-functions}. Thus, the arguments in the function calls to \lstinline|insertSortedM| and \lstinline|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \lstinline|insertM| and \lstinline|insert1| is necessary. This results in the following equivalence lemmas:
+
+\begin{lstlisting}[caption=Equivalence Lemmas for \lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
+lemma equivalenceInsertSorted5(t: int, xs: List<int>)
+  ensures (insert1(t, xs) == insertM(xs, t))
+{}
+
+lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
+  ensures (insertSorted1(sorted, insert) == insertSortedM(insert, sorted))
+{
+    match insert {
+        case Nil => {}
+        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
+    }
+}
+\end{lstlisting}
+% 
+
+\subsection{Merging Match Expressions}
+
+TODO \footnote{Write this when match expressions are finished}
 
 % \subsection{Standardisation of Generic Variables}
