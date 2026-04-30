@@ -1,0 +1,308 @@
+\chapter{Design}\label{chp:design}
+
+\footnote{use AI to convert some C examples into functions, focus on iteration examples}
+\footnote{extension: mapping seqs to lists for example, can use a transform function to convert one to the other, user defined, just call in equivalence lemma, type mappings, this leads to auxiliary lemmas}
+
+\paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
+
+\section{Function Merging}\label{sec:function-merging}
+
+This tool will use an approach that I have called `Function Merging'. This is where the bodies of the model and candidate functions are processed simultaneously, creating a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. 
+
+\subsection{Worked Example}\label{sec:worked-example}
+
+To demonstrate how this process works, I will use the two functions \lstinline|unique| and \lstinline|distinct| (this example was also used in \Cref{sec:equivalence-lemmas}). These functions each take two lists as input, and compute the unique elements of their union:
+
+\begin{lstlisting}[caption=Function Merging Worked Example: \lstinline|unique| and \lstinline|distinct| Functions]
+function unique(l: List<int>, r: List<int>): List<int>
+{
+  match l
+  case Nil => r
+  case Cons(hd, tl) =>
+    if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil)))
+    else unique(tl, r)
+}
+
+function distinct(a: List<int>, b: List<int>): List<int>
+  decreases b
+{
+  match b
+  case Nil => a
+  case Cons(hd, tl) =>
+    if isin(hd, a) then distinct(a, tl)
+    else distinct(append(a, Cons(hd, Nil)), tl)
+}
+\end{lstlisting}
+%
+
+I will refer to the \lstinline|unique| function as the model function, and the \lstinline|distinct| function as the candidate function.
+
+As described in \Cref{sec:equivalence-lemmas}, there are two problems we must address to create an equivalence lemma for these functions. First, the parameters of the model function must each be matched to one of the parameters of the candidate function that serves the same purpose. In simpler examples, the types of the parameters can be used to construct these mappings, however, since in this example each function has multiple parameters with the same type, we must process the bodies of the functions to construct these mappings.
+
+Second, the model and candidate functions each refer to the functions \lstinline|find| and \lstinline|isin| respectively. Therefore, these helper functions must also be merged recursively, an equivalence lemma must be created for them, and this lemma must be called in the main equivalence lemma for the \lstinline|unique| and \lstinline|distinct| functions, with the correct arguments and under the correct conditions. 
+
+Therefore, the Function Merging process will work as follows. Since the bodies of the two functions have the same structure (they are both match expressions), these structures can be split up into smaller components, which can then each be merged one at a time. First, the expressions \lstinline|l| and \lstinline|b| are merged. This creates the parameter mapping \lstinline|b -> l| (parameter mappings are always from candidate parameters to model parameters). Next, we merge the \lstinline|case| expressions. In this case, the patterns in the two match expressions are the same, thus we can merge the \lstinline|case| expressions corresponding to the same pattern together. Merging the expressions corresponding to the \lstinline|Nil| pattern creates the parameter mapping \lstinline|a -> r|. Thus, we have now created mappings between all function parameters. Merging the expressions corresponding to the \lstinline|Cons| pattern requires merging the functions \lstinline|find| and \lstinline|isin|. This is achieved using the same process recursively. Let us assume that this process resulting in the following equivalence lemma:
+
+\begin{lstlisting}[caption=Function Merging Worked Example: \lstinline|find| and \lstinline|isin| Equivalence Lemma]
+lemma findEquivalence(l: List<int>, n: int)
+  ensures find(l, n) == isin(n, l)
+{}
+\end{lstlisting}
+%
+Equivalence lemmas are generated in such a way that they must be called by copying the arguments used in the model function. Therefore, this lemma must be called with \lstinline|findEquivalence(r, hd)|.
+
+Finally, the main equivalence lemma must be created. Using the parameter mappings \lstinline|b -> l| and \lstinline|a -> r|, we can determine that the order of the arguments passed into the model function should be swapped when they are passed into the candidate function. This results in the lemma's postcondition being \lstinline|unique(l, r) == distinct(r, l)|. To create the body of the lemma, we will copy the match expression in the model function, replacing the \lstinline|case| expressions with the statements created by merging them with the corresponding expressions in the candidate function. This results in the following equivalence lemma:
+
+\begin{lstlisting}[caption=Function Merging Worked Example: \lstinline|unique| and \lstinline|distinct| Equivalence Lemma]
+lemma uniqueEquivalence(l: List<int>, r: List<int>)
+  ensures unique(l, r) == distinct(r, l)
+{
+  match l
+  case Nil => {}
+  case Cons(hd, tl) => findEquivalence(r, hd);
+}
+\end{lstlisting}
+
+\subsection{Benefits and Drawbacks}
+
+As described in \Cref{sec:equivalence-lemmas}, to prove the equivalence of two functions that both use helper functions, the tool must generate equivalence lemmas between the helper functions and call these lemmas within the main equivalence lemma under the correct conditions and with the correct arguments. As demonstrated in \Cref{sec:worked-example}, the Function Merging process is capable of this. 
+
+However, one major drawback with this approach is that it requires the bodies of the functions to have the same structure. For example, here are two functions \lstinline|lengthM| and \lstinline|length1|, which each calculate the length of a list:
+\begin{lstlisting}[caption=\lstinline|lengthM| and \lstinline|length1| Functions]
+function lengthM<T>(l: List<T>): int {
+    match l {
+        case Nil => 0
+        case Cons(_, t) => 1 + lengthM(t)
+    }
+}
+
+function length1<T>(l: List<T>): int {
+    if l == Nil then 0 else 1 + length1(l.tail)
+}
+\end{lstlisting}
+%
+
+The bodies of these two functions have different structures, therefore, the Function Merging process will fail. The tool uses two methods to attempt to mitigate this issue.
+
+\footnote{Different example with partial failure of FM?}
+
+First, the tool will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
+
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|lengthM| and \lstinline|length1| Functions,label=lst:lengthM-length1-lemma]
+lemma lengthEquivalence<T>(l: List<T>)
+    ensures lengthM(l) == length1(l)
+{}
+\end{lstlisting}
+%
+In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, the tool can still prove equivalence in some cases despite the Merging process failing. However, this method does not work for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
+\begin{lstlisting}[caption=\lstinline|lengthTailM| and \lstinline|lengthTail1| Functions]
+function lengthTailM<T>(acc: int, l: List<T>): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(_, t) => lengthTailM(acc + 1, t)
+    }
+}
+
+function lengthTail1<T>(l: List<T>, acc: int): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(_, t) => lengthTail1(t, acc + 1)
+    }
+}
+\end{lstlisting}
+%
+
+I can now reimplement functions \lstinline|lengthM| and \lstinline|length1| to use these tail-recursive helper functions:
+\begin{lstlisting}[caption=Reimplementations of \lstinline|lengthM| and \lstinline|length1| Functions]
+function lengthM<T>(l: List<T>): int {
+    match l {
+        case Nil => 0
+        case Cons(_, t) => lengthTailM(1, t)
+    }
+}
+
+function length1<T>(l: List<T>): int {
+    if l == Nil then 0 else lengthTail1(l.tail, 1)
+}
+\end{lstlisting}
+%
+
+In this case, the tool will still generate the equivalence lemma shown in \Cref{lst:lengthM-length1-lemma}, however, this is no longer sufficient to prove equivalence. The Dafny verifier requires the following to prove equivalence:
+\begin{lstlisting}[caption=Equivalence Lemmas for reimplementations of \lstinline|lengthM| and \lstinline|length1| Functions]
+lemma lengthTailEquivalence<T>(acc: int, l: List<T>)
+    decreases l
+    ensures lengthTailM(acc, l) == lengthTail1(l, acc)
+{}
+
+lemma lengthEquivalence<T>(l: List<T>)
+    ensures lengthM(l) == length1(l)
+{
+    match l {
+        case Nil => 
+        case Cons(_, t) => lengthTailEquivalence(1, t);
+    }
+}
+\end{lstlisting}
+%
+
+The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \lstinline|A| and \lstinline|B|, the expressions \lstinline|A && B| and \lstinline|if A then B else false| are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+
+\footnote{Translate one into the other, which way round?}
+
+This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \lstinline|A|, \lstinline|B| and \lstinline|C|, the expression \lstinline|if !A then C else B| can be simplified into \lstinline|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
+
+\section{Technical Audit Challenges}
+
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
+
+\footnote{Make sure these names are kept up to date}
+
+\subsection{Explicitly enforcing induction to prove lemmas}
+As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement limitation.
+
+\subsection{Providing Variants to prove termination}
+As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
+
+\footnote{Complete this section after looking at Dragana copy decreases benchmarks}
+\footnote{Also need to implement copying of termination lemmas and assertions}
+
+\subsection{Equivalence of Higher-Order Functions}
+As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
+
+To resolve this limitation, when generating the postconditions for lemmas, our tool will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
+
+\begin{lstlisting}[caption=\lstinline|uncurry1| and \lstinline|uncurry2| functions]
+function uncurry1<A, B, C>(f: A -> B -> C): (A, B) -> C {
+    (a, b) => f(a)(b)
+}
+
+function uncurry2<A, B, C>(f: A -> B -> C): (A, B) -> C {
+    (a, b) => var res := f(a)(b); res
+}
+\end{lstlisting}
+%
+When generating the corresponding equivalence lemma, instead of attempting to prove equivalence on the lambda functions themselves (\lstinline|uncurry1(f)| and \lstinline|uncurry2(f)|), the tool will pass the same arguments to both lambda functions so that the function bodies can be directly compared:
+
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|uncurry1| and \lstinline|uncurry2| functions]
+lemma uncurry1_uncurry2_Equivalence<A, B, C>(f: A -> B -> C, a: A, b: B)
+ensures (uncurry1(f)(a, b) == uncurry2(f)(a, b))
+{}
+\end{lstlisting}
+%
+If the bodies of the outputted lambda functions are themselves lambda functions, our tool will repeatedly pass the same arguments to both functions, until it reaches the body of the innermost lambda function. For example, here are two functions that implement currying:
+
+\begin{lstlisting}[caption=\lstinline|curry1| and \lstinline|curry2| functions]
+function curry1<A, B, C>(f: (A, B) -> C): A -> B -> C {
+    a => b => f(a, b)
+}
+
+function curry2<A, B, C>(f: (A, B) -> C): A -> B -> C {
+    aa => bb => var res := f(aa, bb); res
+}
+\end{lstlisting}
+%
+
+Our tool will produce the following equivalence lemma:
+\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|curry1| and \lstinline|curry2| functions]
+lemma curry1_curry2_Equivalence<A, B, C>(f: (A, B) -> C, a: A, b: B)
+ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
+{}
+\end{lstlisting}
+%
+
+\subsection{Generating Auxiliary Lemmas}
+As described in \Cref{sec:auxiliary-lemmas}, proving equivalence sometimes requires auxiliary lemmas that would be difficult for our tool or Dafny to automatically generate. Therefore, these lemmas must be written by the user and provided to our tool. As described in \Cref{sec:user-interface}, the user must provide the path to a Dafny file in the JSON configuration file. The user can provide our tool with any necessary auxiliary lemmas by writing them in this Dafny file.
+
+\footnote{Finish this section once more work is done on auxiliary lemmas}
+
+\section{Technical Details}
+
+\subsection{Mutually Recursive Functions}
+Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \lstinline|isEven| and \lstinline|myIsEven| which each output whether a given integer is even or not. They use the helper functions \lstinline|isOdd| and \lstinline|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
+
+\begin{lstlisting}[caption={\lstinline|isEven|, \lstinline|myIsEven|, \lstinline|isOdd| and \lstinline|myIsOdd| Functions}]
+function isEven(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !isOdd(x - 1)
+}
+
+function myIsEven(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !myIsOdd(x - 1)
+}
+
+function isOdd(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !isEven(x - 1)
+}
+
+function myIsOdd(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !myIsEven(x - 1)
+}
+\end{lstlisting}
+
+Let the functions \lstinline|isEven| and \lstinline|myIsEven| be the model and candidate functions respectively. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in our tool attempting to merge the function calls \lstinline|isOdd(x - 1)| and \lstinline|myIsOdd(x - 1)|. This requires the functions \lstinline|isOdd| and \lstinline|myIsOdd| themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \lstinline|isEven| and \lstinline|myIsEven| needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
+
+Our tool solves this problem in the following way. During Function Merging, the process has access to the lemmas currently being generated. This is stored in a map from the name of the model function to an optional lemma (represented using the Scala data structure \lstinline|Option|). When the Merging process encounters two function calls, this map is consulted to determine how the process should proceed.
+
+There are three possibilities. First, if the model function name is not a key in this map, then the functions themselves should be merged together. In the above example, when processing the functions \lstinline|isEven| and \lstinline|myIsEven| for the first time and encountering the function calls to \lstinline|isOdd| and \lstinline|myIsOdd|, \lstinline|isOdd| should not be a key in the map, leading to the functions themselves being merged. Second, if the name of the model function is mapped to a lemma (wrapped in a \lstinline|Some| object), then the corresponding lemma has already been generated. Thus, this lemma can be called without further merging. This also prevents the generation of the same lemma multiple times.
+
+Finally, if the model function's name is mapped to the \lstinline|None| object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \lstinline|isOdd| and \lstinline|myIsOdd| and encountering the function calls to \lstinline|isEven| and \lstinline|myIsEven|, \lstinline|isEven| should be mapped to the \lstinline|None| object since the process reached this point during the Merging of \lstinline|isEven| and \lstinline|myIsEven|. Our tool responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, our tool can successfully deal with mutually recursive functions. 
+
+\subsection{Merging Function Calls}
+During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \lstinline|insertSortedM| and \lstinline|insertSorted1| that each implement the insertion sort algorithm:
+\begin{lstlisting}[caption=\lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
+function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
+  {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
+  }
+}
+
+function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
+  decreases insert
+ {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
+  }
+}
+\end{lstlisting}
+%
+These functions rely on helper functions \lstinline|insertM| and \lstinline|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{lst:insertM-insert1-functions}. Thus, the arguments in the function calls to \lstinline|insertSortedM| and \lstinline|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \lstinline|insertM| and \lstinline|insert1| is necessary. This results in the following equivalence lemmas:
+
+\begin{lstlisting}[caption=Equivalence Lemmas for \lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
+lemma equivalenceInsertSorted5(t: int, xs: List<int>)
+  ensures (insert1(t, xs) == insertM(xs, t))
+{}
+
+lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
+  ensures (insertSorted1(sorted, insert) == insertSortedM(insert, sorted))
+{
+    match insert {
+        case Nil => {}
+        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
+    }
+}
+\end{lstlisting}
+% 
+
+\subsection{Merging Match Expressions}
+
+TODO \footnote{Write this when match expressions are finished}
+
+% \subsection{Standardisation of Generic Variables}
