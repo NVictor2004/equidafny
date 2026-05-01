@@ -34,11 +34,16 @@ EquiDafny was implemented in Scala. The tool is divided into several components.
 \subsection{Parsing}
 
 % Why parser combinator? And why Parsley?
-\footnote{Show example of left factoring and other optimisations}
 
 The first component is a parser. This system is used to parse the input Dafny program into a Scala data structure, so that it can be easily processed by the rest of the system. This parser was implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}. 
 
-\paragraph{Optimisation} The parser should be as efficient as possible. One method to increase performance is by minimising the amount of backtracking. Some backtracking is essential due to ambiguity in the Dafny language, however, I have attempted to minimise this as much as possible by carefully ordering the execution of all sub-parsers and by left-factoring whenever possible.
+The parser should be as efficient as possible. One method to increase performance is by minimising the amount of backtracking. Some backtracking is essential due to ambiguity in the Dafny language, however, I have attempted to minimise this as much as possible by carefully ordering the execution of all sub-parsers and by left-factoring whenever possible.
+
+One example of when this occurs is when parsing types. The type of a function is called an arrow type, for example, the type of a function that takes two integers and outputs their sum is \((int, int) \rightarrow int\). Let all other types, such as \(int\) or \(bool\) be called domain types. Since arrow types are right-associative, the type on the left of an arrow must be a domain type, while the type on the right can be any type (either a domain type or an arrow type). Therefore, if we define \(D\) as a parser of domain types and \(T\) as a parser of all types, we can define \(T\) in PEG as follows: \[T \leftarrow D~`{\rightarrow}\textrm'~T~/~D\]
+
+When \(T\) tries to parse a domain type, it must first attempt and fail to parse an arrow type (the left hand side of the \(/\) operator). After this, the parser must then backtrack across what \(D\) parsed to attempt the right hand side. This backtracking decreases the efficiency of the parser and therefore must be removed. In this case, the PEG expression can be left-factored to create a new \(T\) parser: \[T \leftarrow D~(`{\rightarrow}\textrm'~T~/~\epsilon)\]
+
+Now, when \(T\) tries to parse a domain type, it will parse the type using the \(D\) parser, and then attempt to continue to parse the rest of an arrow type. However, now it will immediately fail when trying to parse the \(`{\rightarrow}\textrm'\) and move to the correct branch of the \(/\) operator. Since parsing failed on the first character, the parser no longer requires backtracking.  
 
 \subsection{Translation}
 
