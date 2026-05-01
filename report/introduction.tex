@@ -2,8 +2,6 @@
 
 % NOTE! Introduction only includes things that work! Summary of entire project!
 
-\footnote{evaluation: run on this many examples, my tool works on this many, get dafny, stainless}
-
 \section{Background and Objectives}
 
 Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. This can be formally defined using Hoare Triples: two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
@@ -103,7 +101,7 @@ The main algorithm EquiDafny uses is called `Function Merging'. By exploiting si
 
 EquiDafny is implemented in Scala. The tool is called by passing in a single JSON configuration file. This file provides any important details EquiDafny needs to run, including the names of the functions to be compared and a path to a single Dafny file containing all necessary source code. EquiDafny is split into several components including parsing, translation and formatting. The parsing component parses the initial Dafny source file (implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}). The translation component converts the data structure outputted by the parser into a structure that is easier to work with. Finally, the formatting component outputs the final equivalence lemmas to a file so that they can be checked by the Dafny verifier.
 
-After creating a few more tests myself, I tested EquiDafny on a dataset of 51 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:results}:
+After creating a few more tests myself, I tested EquiDafny on a dataset of 51 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:intro-results}:
 
 \begin{table}[ht]
   \centering
@@ -119,7 +117,7 @@ After creating a few more tests myself, I tested EquiDafny on a dataset of 51 te
     \hline
   \end{tabular}
   \caption{EquiDafny evaluation results}
-  \label{tbl:results}
+  \label{tbl:intro-results}
 \end{table}
 
 Thus, EquiDafny outperforms the standard Dafny verifier. In particular, the tool is able to verify the equivalence of \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1| as shown above. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala' \parencite{IntroductionStainless091}). 

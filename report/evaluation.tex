@@ -3,4 +3,25 @@
 \footnote{metric scoring for how much help is needed, to measure level of user assistance, different kinds of user annotations have different difficulty levels to the user}
 \footnote{Also need system profiling somewhere}
 
-\footnote{short, compare with the other tools, number of tests that work, dafny without tool, dafny with tool, stainless with and without draganas tool}
+\footnote{compare with stainless without dragana's tool}
+
+I tested EquiDafny on a dataset of 51 test files. These files were either converted from the Stainless equivalence tests or written myself. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:evaluation-results}:
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    Tool & Tests Verified (out of 51) \\
+    \hline
+    EquiDafny & 44 \\
+    \hline
+    Dafny Verifier with bodyless equivalence lemmas & 20 \\
+    \hline
+    Stainless equivalence checker & 50 \\
+    \hline
+  \end{tabular}
+  \caption{EquiDafny evaluation results}
+  \label{tbl:evaluation-results}
+\end{table}
+
+Thus, EquiDafny outperforms the standard Dafny verifier. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala' \parencite{IntroductionStainless091}). 
