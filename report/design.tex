@@ -221,6 +221,20 @@ As described in \Cref{sec:auxiliary-lemmas}, proving equivalence sometimes requi
 
 \section{Technical Details}\label{sec:technical-details}
 
+\subsection{Generating Parameter Mappings}
+
+Parameter Mappings are generated in multiple stages. First, if only a single parameter in each function is of a specific type, then these parameters must be mapped together. For example, given the following signatures for the functions \lstinline|f| and \lstinline|g|:
+\begin{lstlisting}[caption=\lstinline|f| and \lstinline|g| function signatures]
+function f(a: int, b: bool, c: bool): int
+function g(x: bool, y: int, z: bool): int
+\end{lstlisting}
+%
+Parameters \lstinline|a| and \lstinline|y| can immediately be mapped together, since they are each the only \lstinline|int| parameter in their respective functions. However, parameters \lstinline|b|, \lstinline|c|, \lstinline|x| and \lstinline|z| cannot be mapped in this way. Parameter mappings are stored by mapping candidate function parameters to model function parameters.
+
+After these mappings are generated, the bodies of the functions are merged together to generate further mappings (as described in \Cref{sec:worked-example}). During the Function Merging process, the map of mappings is continuously updated. A reference to it is passed through all merging functions so that the algorithm always has access to the most up-to-date set of mappings. This is necessary when merging Function Calls (see \Cref{sec:merging-calls}). 
+
+After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with the same type. This ensures that every parameter is mapped. 
+
 \subsection{Mutually Recursive Functions}
 Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \lstinline|isEven| and \lstinline|myIsEven| which each output whether a given integer is even or not. They use the helper functions \lstinline|isOdd| and \lstinline|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
 
@@ -262,7 +276,7 @@ There are three possibilities. First, if the model function name is not a key in
 
 Finally, if the model function's name is mapped to the \lstinline|None| object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \lstinline|isOdd| and \lstinline|myIsOdd| and encountering the function calls to \lstinline|isEven| and \lstinline|myIsEven|, \lstinline|isEven| should be mapped to the \lstinline|None| object since the process reached this point during the Merging of \lstinline|isEven| and \lstinline|myIsEven|. Our tool responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, our tool can successfully deal with mutually recursive functions. 
 
-\subsection{Merging Function Calls}
+\subsection{Merging Function Calls}\label{sec:merging-calls}
 During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \lstinline|insertSortedM| and \lstinline|insertSorted1| that each implement the insertion sort algorithm:
 \begin{lstlisting}[caption=\lstinline|insertSortedM| and \lstinline|insertSorted1| Functions]
 function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
