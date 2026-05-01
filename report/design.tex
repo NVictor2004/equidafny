@@ -157,12 +157,12 @@ This translation process can also be used to simplify expressions with the same 
 
 \section{Technical Audit Challenges}
 
-In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the limitation this refers to is described in \Cref{sec:equivalence-lemmas}). 
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the challenge this refers to is described in \Cref{sec:equivalence-lemmas}). 
 
 \footnote{Make sure these names are kept up to date}
 
 \subsection{Explicitly enforcing induction to prove lemmas}
-As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement limitation.
+As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement challenge.
 
 \subsection{Providing Variants to prove termination}
 As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
@@ -173,7 +173,7 @@ As described in \Cref{sec:termination}, the Dafny verifier sometimes requires th
 \subsection{Equivalence of Higher-Order Functions}
 As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
 
-To resolve this limitation, when generating the postconditions for lemmas, our tool will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
+To resolve this challenge, when generating the postconditions for lemmas, our tool will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
 
 \begin{lstlisting}[caption=\lstinline|uncurry1| and \lstinline|uncurry2| functions]
 function uncurry1<A, B, C>(f: A -> B -> C): (A, B) -> C {

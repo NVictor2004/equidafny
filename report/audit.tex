@@ -11,13 +11,23 @@ The majority of the following examples have been taken from the program equivale
 
 These tests cover a great variety of types of programs. The number of lines of code in each test ranges from around 10 to over 200. They cover a variety of inbuilt and custom data structures, including sequences, lists and the Option datatype. Some tests also cover concepts such as mutual recursion, generic types and higher-order functions.
 
-Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 7 different types of challenges. \Cref{tbl:challenges-summary} summarises the number of tests that demonstrate each type of limitation. Many examples demonstrate multiple types of challenges, therefore, these are counted multiple times. This table also includes imperative equivalence tests that I wrote myself. All of the tests from the Stainless repository can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
+Using these tests, I have attempted to characterise the cases where Dafny required user assistance. In this way, I have identified 7 different types of challenges. The following paragraphs describe what each type of challenge involves.
+
+\paragraph{\nameref{sec:counterexamples}} When attempting to prove the equivalence of non-equivalent functions, the Dafny verifier creates counter-examples, however, these examples are not always as simple as possible, nor are they always correct.
+\paragraph{\nameref{sec:equivalence-lemmas}} When the functions being compared both use helper functions, the Dafny verifier requires the user to create separate equivalence lemmas for the helper functions, and call these lemmas within the lemma for the original functions, under the correct conditions and with the correct arguments.
+\paragraph{\nameref{sec:auxiliary-lemmas}} Sometimes the Dafny verifier can only prove equivalence by using an auxiliary lemma. These lemmas are often difficult for the verifier to generate. In addition, they must also be called with the correct conditions and with the correct arguments.
+\paragraph{\nameref{sec:induction}} The Dafny verifier often proves lemmas using induction, however, the verifier is sometimes unable to infer the induction scheme, requiring the user to explicitly describe it.
+\paragraph{\nameref{sec:termination}} The verifier requires a variant to prove each lemma (since they are proved through induction), however, it is often unable to infer one by itself, even when the functions being compared themselves use an appropriate variant. In addition, any termination lemmas or assertions must also be explicitly copied into the equivalence lemma. 
+\paragraph{\nameref{sec:imperative-equivalence}} Imperative methods cannot be proven equivalent using lemmas since lemmas must be pure while methods can have side-effects. Therefore, equivalence must instead be proven through postconditions and invariants, which are often complicated. I also explore product programs\parencite{lahiriDifferentialAssertionChecking2013} which can make proving imperative program equivalence easier. 
+\paragraph{\nameref{sec:higher-order}} The Dafny verifier sometimes cannot prove the equivalence of higher-order functions despite being able to prove that the outputted functions give the same output for the same inputs.
+
+\Cref{tbl:challenges-summary} summarises the number of tests that demonstrate each type of challenge. Many examples demonstrate multiple types of challenges, therefore, these are counted multiple times. This table also includes imperative equivalence tests that I wrote myself. All of the tests from the Stainless repository can be proven equivalent by Stainless fully automatically, except for the single test involving higher-order functions. 
 
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |c|c|c| } 
   \hline
-  Type of Limitation & Number of Examples & Source \\
+  Type of Challenge & Number of Examples & Source \\
   \hline
   None (Fully Automatic) & 19 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline
@@ -36,13 +46,11 @@ Using these tests, I have attempted to characterise the cases where Dafny requir
   \nameref{sec:higher-order} & 1 & \parencite{StainlessFrontendsBenchmarks} \\
   \hline
   \end{tabular}
-  \caption{Summary of the number of examples that demonstrate each type of limitation}
+  \caption{Summary of the number of examples that demonstrate each type of challenge}
   \label{tbl:challenges-summary}
 \end{table}
 
-\footnote{short paragraph intro to each sub section, maybe copy from plans?}
-
-The following sections describe each type of limitation that I have identified. Each section contains at least one example to clearly demonstrate the limitation being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. 
+The following sections describe each type of challenge in detail. Each section contains at least one example to clearly demonstrate the challenge being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. 
 
 \subsection{Necessary Datastructures}
 
@@ -662,6 +670,6 @@ lemma equivalenceFlip<A, B, C>(f: (A, B) -> C)
 \end{lstlisting}
 %
 
-\footnote{Where does the limitation truly lie, any patterns to what it can/cannot prove?}
+\footnote{Where does the challenge truly lie, any patterns to what it can/cannot prove?}
 
 Therefore, Dafny is able to prove the equivalence of some higher-order functions. However, it struggles with others, despite being able to prove that the outputted functions give the same output for the same inputs.
