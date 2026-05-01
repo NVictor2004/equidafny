@@ -219,7 +219,7 @@ As described in \Cref{sec:auxiliary-lemmas}, proving equivalence sometimes requi
 
 \footnote{Finish this section once more work is done on auxiliary lemmas}
 
-\section{Technical Details}
+\section{Technical Details}\label{sec:technical-details}
 
 \subsection{Mutually Recursive Functions}
 Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \lstinline|isEven| and \lstinline|myIsEven| which each output whether a given integer is even or not. They use the helper functions \lstinline|isOdd| and \lstinline|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
