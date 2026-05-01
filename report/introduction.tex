@@ -101,4 +101,23 @@ The aim of this project is to implement a tool to address the challenges identif
 
 The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other. These mappings describe which parameters have the same purpose across the two functions. These mappings are used to ensure arguments are inserted correctly into the function calls within the postconditions of each lemma. The second output is the body of each lemma. This includes variable declarations and calls to any equivalence lemmas with the correct arguments and under the correct conditions.
 
-EquiDafny is implemented in Scala. The tool is called by passing in a single JSON configuration file. This file provides any important details EquiDafny needs to run, including the names of the functions to be compared and a path to a single Dafny file containing all necessary source code. EquiDafny is split into several components including parsing, translation and formatting. The parsing component parses the initial Dafny source file (implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}). The translation component converts the data structure outputted by the parser into a structure that is easier to work with. Finally, the formatting component outputs the final equivalence lemmas to a file so that they can be checked by the Dafny verifier.  
+EquiDafny is implemented in Scala. The tool is called by passing in a single JSON configuration file. This file provides any important details EquiDafny needs to run, including the names of the functions to be compared and a path to a single Dafny file containing all necessary source code. EquiDafny is split into several components including parsing, translation and formatting. The parsing component parses the initial Dafny source file (implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}). The translation component converts the data structure outputted by the parser into a structure that is easier to work with. Finally, the formatting component outputs the final equivalence lemmas to a file so that they can be checked by the Dafny verifier.
+
+After creating a few more tests myself, I tested EquiDafny on a dataset of 51 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:results}:
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    Tool & Tests Verified (out of 51) \\
+    \hline
+    EquiDafny & 44 \\
+    \hline
+    Dafny Verifier with bodyless equivalence lemmas & 20 \\
+    \hline
+    Stainless equivalence checker & 50 \\
+    \hline
+  \end{tabular}
+  \caption{EquiDafny evaluation results}
+  \label{tbl:results}
+\end{table}
