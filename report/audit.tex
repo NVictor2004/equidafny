@@ -114,7 +114,7 @@ lemma isSortedEquivalence(l: List<int>)
 
 \footnote{Why does it provide an incorrect counter example?}
 
-However, it incorrectly provides \lstinline|Cons(-38, Cons(7681, Nil))| as a counterexample. I extended the above proof to include and use a helper lemma, as shown below:
+However, it incorrectly provides \lstinline|Cons(-38, Cons(7681, Nil))| as a counterexample. As found by \textcite{putrueleMaskDToolMeasuring2022}, counterexamples may sometimes be incorrect due to the Z3 solver being incomplete. I extended the above proof to include and use a helper lemma, as shown below:
 \begin{lstlisting}[caption=Equivalence Lemma with Helper for \lstinline|isSortedA| and \lstinline|isSortedR|]
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
   decreases xs
@@ -132,9 +132,7 @@ lemma isSortedEquivalence(l: List<int>)
 \end{lstlisting}
 %
 
-Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, though this is the simplest counterexample in terms of list length, it is not the simplest example in terms of the integers used, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient.
-
-As asserted by \textcite{putrueleMaskDToolMeasuring2022}, since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver, the counterexamples produced by it can be difficult to read and understand. They also note these counterexamples may sometimes be incorrect, due to the Z3 solver being incomplete.
+Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, though this is the simplest counterexample in terms of list length, it is not the simplest example in terms of the integers used, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient. \textcite{putrueleMaskDToolMeasuring2022} also state that generated counterexamples can sometimes be difficult to read and understand since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver.
 
 \subsection{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
 
