@@ -6,7 +6,7 @@ import parsers.structure.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.expression.basic
 
-lazy val index =
+val index =
     basic <**> (
       "..".as(StartSubIndex(_: BasicExpr))
       | ":=" ~> basic.map(rightBasic => ((leftBasic: BasicExpr) => UpdateIndex(leftBasic, rightBasic)))

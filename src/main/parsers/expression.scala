@@ -55,7 +55,7 @@ lazy val basic: Parsley[BasicExpr] =
     )
   )
 
-lazy val literal: Parsley[LiteralExpr] =
+val literal: Parsley[LiteralExpr] =
   BoolLiteral(bool)
     | ("null" as Null)
     | IntLiteral(integer)
@@ -101,7 +101,7 @@ private lazy val basicHigher =
 
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
-private lazy val extendedHigher: Parsley[ExtendedExpr] =
+private val extendedHigher: Parsley[ExtendedExpr] =
   atomic(
       MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
         ";"
@@ -117,6 +117,6 @@ private lazy val extendedHigher: Parsley[ExtendedExpr] =
       )
     | Assert("assert" ~> basic)
 
-private lazy val lvalue =
+private val lvalue =
   "(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")"
     | ident.map(i => List((i, None)))
