@@ -29,21 +29,16 @@
 
 % minted config
 \usepackage{minted}
-\usepackage{inconsolata}
-
 \setminted{
     style=tango,
     fontsize=\footnotesize,
-    numbersep=5pt,
     gobble=0,
     breaklines=true,
     bgcolor=gray!5,
 }
 
 % Hyperlink settings
-\usepackage{nameref}
 \usepackage{hyperref}
-\usepackage{cleveref}
 % Define colours
 \definecolor[named]{ACMPurple}{cmyk}{0.55,1,0,0.15}
 \definecolor[named]{ACMDarkBlue}{cmyk}{1,0.58,0,0.21}
@@ -54,6 +49,7 @@
     citecolor=ACMPurple,
     urlcolor=ACMDarkBlue,
     filecolor=ACMDarkBlue}
+\usepackage{cleveref}
 
 \title{Proving Program Equivalence In Dafny}
 \author{Nathaniel Victor}
