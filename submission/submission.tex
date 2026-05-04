@@ -5,9 +5,9 @@
 \usepackage{graphicx}
 % Display figures in EPS format
 
-%\usepackage{color}
-%\renewcommand\UrlFont{\color{blue}\rmfamily}
-%\urlstyle{rm}
+% \usepackage{color}
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+% \urlstyle{rm}
 
 \usepackage{listings}
 \usepackage{xcolor}
@@ -21,7 +21,7 @@
 
 \begin{document}
 %
-\title{Proving Program Equivalence In Dafny}
+\title{Proving program equivalence in Dafny}
 
 \author{Nathaniel Victor\inst{1}\orcidID{0000-1111-2222-3333} \and
 Dragana Milovancevic\inst{1}\orcidID{1111-2222-3333-4444} \and
@@ -37,16 +37,16 @@ Sophia Drossopoulou\inst{1}\orcidID{2222--3333-4444-5555}}
 \begin{abstract}
 Two programs are equivalent if they produce the same output for any input. Proving program equivalence has applications across a variety of fields, however, these proofs are often difficult to write. This has led to the development of a variety of tools to help mitigate this~\cite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}, but using them still requires significant mathematical expertise that the average software developer does not have. The aim of this project is to decrease the necessity for this as much as possible, focussing specifically on the Dafny program verifier. In this project, I will explore Dafny's capabilities in proving program equivalence. I will build a tool on top of Dafny to attempt to address the challenges the Dafny verifier faces and allow the user to create equivalence proofs with as little user assistance as possible. Finally, I will evaluate this tool against the current state-of-the-art systems.
 
-\keywords{Program Equivalence \and Dafny \and Another keyword.}
+\keywords{Program equivalence \and Dafny \and Another keyword.}
 \end{abstract}
 
 \section{Background and Objectives}
 
-Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. This can be formally defined using Hoare Triples: two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
+Proving program equivalence is the act of verifying that, for any input, two programs always give the same output. This can be formally defined using Hoare Triples: two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
 
 If this can be proven, then these programs are equivalent; one of these programs can be substituted for the other without affecting the behaviour of the overall system. This has applications in a variety of fields. For example, compiler developers can use this to ensure that optimisations always preserve the intended behaviour of the original program.
 
-Therefore, Program Equivalence is a critical field in Computer Science. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of tools are being developed to help prove equivalence automatically~\cite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}. These tools can make proving equivalence significantly easier for developers, especially when working with large codebases. They can also generate counterexamples when equivalence cannot be proven, making debugging much easier. The main drawback of these tools is that, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. The average software developer will not have the necessary expertise to provide these, thus, these tools will be inaccessible to them.
+Therefore, program equivalence is a critical field in Computer Science. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of tools are being developed to help prove equivalence automatically~\cite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}. These tools can make proving equivalence significantly easier for developers, especially when working with large codebases. They can also generate counterexamples when equivalence cannot be proven, making debugging much easier. The main drawback of these tools is that, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. The average software developer will not have the necessary expertise to provide these, thus, these tools will be inaccessible to them.
 
 Therefore, the general aim of this project is to build a new tool, learning from the current state-of-the-art tools, that decreases the level of user assistance required as much as possible, thus allowing the average software developer to better reap the benefits of using program equivalence tools in their work. In particular, the main objectives of this project are as follows:
 
@@ -158,7 +158,9 @@ After creating a few more tests myself, I tested EquiDafny on a dataset of 51 te
   \label{tbl:intro-results}
 \end{table}
 
-Thus, EquiDafny outperforms the standard Dafny verifier. In particular, the tool is able to verify the equivalence of \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1| as shown above. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala'~\cite{IntroductionStainless091}). 
+Thus, the Stainless equivalence checker is more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala'~\cite{IntroductionStainless091}). However, EquiDafny outperforms the standard Dafny verifier. In particular, the tool is able to verify the equivalence of \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1| as shown above. 
+
+\section{Ongoing and Future Work}
 
 \begin{credits}
 \subsubsection{\ackname} General Acknowledgments
