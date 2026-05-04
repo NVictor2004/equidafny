@@ -1,4 +1,4 @@
-from pygments.lexer import RegexLexer, words
+from pygments.lexer import RegexLexer, words, bygroups
 from pygments.token import *
 
 KEYWORDS = ('abstract',
@@ -91,12 +91,24 @@ class CustomLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r"//.*?$", Comment.Singleline),
+            (r"//.*?$", Comment.Single),
             (words(KEYWORDS, suffix=r'\b'), Keyword),
-            (words(KEYWORD_TYPES, suffix=r'\b'), Keyword.Type),
-            (r"\b(\d+(\.\d+)?)\b", Number),
             (r"\"[^\"]*\"", String),
-            (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*(?=\(|\<)\b", Name.Function),
+            (r"\b([A-Za-z_?\'][A-Za-z0-9_?\']*)(\()\b", bygroups(Name.Function, Punctuation)),
+            (r"\b([A-Za-z_?\'][A-Za-z0-9_?\']*)(\<)\b", bygroups(Name.Function, Punctuation), "generics_list"),
+            (r"(:)\s*(?!=)\b", Punctuation, "type"),
             (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Name),
+            (r"[\(\)\[\]\{\}]", Punctuation),
+        ],
+        'generics_list': [
+            (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Keyword.Type),
+            (r",", Punctuation),
+            (r">", Punctuation, "#pop"),
+        ],
+        'type': [
+            (words(KEYWORD_TYPES, suffix=r'\b'), Keyword.Type),
+            (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Keyword.Type),
+            (r"<", Punctuation, "generics_list"),
+            (r",", Punctuation, "#pop"),
         ]
     }
