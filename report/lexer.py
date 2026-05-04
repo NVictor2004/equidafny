@@ -83,7 +83,7 @@ KEYWORDS = ('abstract',
       'yield',
       'yields')
 
-KEYWORD_TYPES = ('char', 'seq', 'set', 'real', 'nat', 'int')
+OPERATORS = ('=', '|', '=>', '<==>', '<==', '==>', '&&', '||', '==', '!=', '<', '<=', '>', '>=', '+', '-', '*', '/', '%')
 
 class CustomLexer(RegexLexer):
     name = 'Dafny'
@@ -91,24 +91,31 @@ class CustomLexer(RegexLexer):
 
     tokens = {
         'root': [
+            (r"\s+", Whitespace),
             (r"//.*?$", Comment.Single),
             (words(KEYWORDS, suffix=r'\b'), Keyword),
+            (words(OPERATORS), Operator),
+            (r"\d+", Number),
             (r"\"[^\"]*\"", String),
-            (r"\b([A-Za-z_?\'][A-Za-z0-9_?\']*)(\()\b", bygroups(Name.Function, Punctuation)),
-            (r"\b([A-Za-z_?\'][A-Za-z0-9_?\']*)(\<)\b", bygroups(Name.Function, Punctuation), "generics_list"),
-            (r"(:)\s*(?!=)\b", Punctuation, "type"),
+            (r"\b([A-Za-z_?\'][A-Za-z0-9_?\']*)(\()", bygroups(Name.Function, Punctuation)),
+            (r"\b([A-Za-z_?\'][A-Za-z0-9_?\']*)(\<)", bygroups(Name.Function, Punctuation), "type_list"),
+            (r"(:)(?!=)", Punctuation, "single_type"),
             (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Name),
-            (r"[\(\)\[\]\{\}]", Punctuation),
+            (r"[\(\)\[\]\{\},;]", Punctuation),
         ],
-        'generics_list': [
+        'type_list': [
+            (r"\s+", Whitespace),
             (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Keyword.Type),
             (r",", Punctuation),
-            (r">", Punctuation, "#pop"),
+            (r"[<\(]", Punctuation, "#push"),
+            (r"[>\)]", Punctuation, "#pop"),
         ],
-        'type': [
-            (words(KEYWORD_TYPES, suffix=r'\b'), Keyword.Type),
+        'single_type': [
+            (r"\n", Whitespace, "#pop"),
+            (r"[,\)\{]", Punctuation, "#pop"),
+            (r"\s+", Whitespace),
+            (r"->", Operator),
             (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Keyword.Type),
-            (r"<", Punctuation, "generics_list"),
-            (r",", Punctuation, "#pop"),
+            (r"[<\(]", Punctuation, "type_list"),
         ]
     }
