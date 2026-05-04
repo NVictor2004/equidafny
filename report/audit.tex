@@ -137,7 +137,8 @@ Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| a
 \subsection{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
 
 For this example, I will provide two solutions to the problem of reducing a list down its unique elements. Both solutions each require two helper functions, where each of the three pairs of functions across the two solutions are equivalent. The first pair of functions are \lstinline|isin| and \lstinline|find|. These functions determine whether a given element is in a list:
-\begin{lstlisting}[caption=\lstinline|isin| and \lstinline|find| Functions]
+% Caption: lstinline|isin| and \lstinline|find| Functions
+\begin{minted}{lexer.py:CustomLexer}
 function find(lst: List<int>, n: int): bool
 {
   match lst
@@ -151,7 +152,7 @@ function isin(a: int, lst: List<int>): bool
   case Nil => false
   case Cons(hd, tl) => a == hd || isin(a, tl)
 }
-\end{lstlisting}
+\end{minted}
 %
 Dafny requires that these helper functions are explicitly proven equivalent to be able to prove that the main functions are equivalent. Therefore, the user must write the following equivalence lemma:
 \begin{lstlisting}[caption=Equivalence Lemma for \lstinline|isin| and \lstinline|find|]
