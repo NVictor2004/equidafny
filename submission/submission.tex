@@ -97,7 +97,7 @@ However, the Dafny verifier is unable to prove this lemma automatically.
 This example illustrates three main challenges here when attempting to prove the equivalence lemma. 
 
 \paragraph{First:} Generate and call lemmas for helper functions. The \lstinline|insertSortedM| and \lstinline|insertSorted1| functions both use the helper functions \lstinline|insertM| and \lstinline|insert1| in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \lstinline|eqInsert|, under the condition \lstinline|count > 0| and with the correct arguments.
-\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant (\lstinline|count|), copied from the \lstinline|InsertSorted| functions.
+\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant for proving termination (\lstinline|count|), copied from the \lstinline|InsertSorted| functions.
 \paragraph{Third:} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \lstinline|eqInsertSorted| lemma to complete the proof.
 
 Thus, EquiDafny generates the following: 
