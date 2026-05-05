@@ -34,7 +34,7 @@
 \section{Introduction}
 
 Program verifiers such as Dafny~\cite{leinoDafnyAutomaticProgram2010} and KeY~\cite{KeYBook2016} allow developers to write proofs of program equivalence, however, they require a significant level of user assistance to complete proofs.
-Recently, many equivalence checkers are being developed to help proving program equivalence easier~\cite{lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,FelsingEtAl,GodlinEtAl}. The aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. 
+Recently, many equivalence checkers are being developed to help proving program equivalence easier~\cite{lahiriSYMDIFFLanguageAgnosticSemantic2012,milovancevicProvingDisprovingEquivalence2023,FelsingEtAl,GodlinEtAl}. The aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. 
 EquiDafny improves over Dafny by automating equivalence proofs and decreasing the level of user assistance.
 
 \section{Design Overview} 
@@ -97,7 +97,7 @@ However, the Dafny verifier is unable to prove this lemma automatically.
 This example illustrates three main challenges here when attempting to prove the equivalence lemma. 
 
 \paragraph{First:} Generate and call lemmas for helper functions. The \lstinline|insertSortedM| and \lstinline|insertSorted1| functions both use the helper functions \lstinline|insertM| and \lstinline|insert1| in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \lstinline|eqInsert|, under the condition \lstinline|count > 0| and with the correct arguments.
-\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant (\lstinline|count|), copied from the \lstinline|InsertSorted| functions.
+\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant (\lstinline|count|), copied from the \lstinline|InsertSorted1| function.
 \paragraph{Third:} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \lstinline|eqInsertSorted| lemma to complete the proof.
 
 Thus, EquiDafny generates the following: 
@@ -121,8 +121,8 @@ lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 \end{lstlisting}
 %
 
-The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together.
-This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other which have the same function. This is used to describe how the arguments passed into one function in an equivalence lemma must be permuted to form the arguments to the second function. 
+The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can be split into their constituent parts and recursively `merged' together.
+This algorithm has two outputs. The first is a set of mappings between the parameters of one function to the parameters of the other. This is used to describe how the arguments passed into one function in an equivalence lemma must be permuted to form the arguments to the second function. 
 The second output is the body of each lemma. In this example, this involves the call to the helper equivalence lemma \lstinline|eqInsert|. Additionally, the algorithm involves merging function call arguments correctly and merging mutually recursive functions.
 
 \section{Evaluation}
@@ -138,6 +138,7 @@ To evaluate EquiDafny, I took the set of program equivalence tests from Stainles
 \end{center}
 
 \section{Ongoing and Future Work}
+This section outlines how EquiDafny will be improved in the future.
 
 \paragraph{Datatype Transformations} Currently, EquiDafny, like other tools such as Stainless and REVE, requires equivalent programs to have identical type signatures. For example, changing \lstinline|next: Seed -> (Seed, int)| to \lstinline|next: Seed -> (int, Seed)| in one of the functions cannot be treated by EquiDafny. I plan to extend the tool with type transformations.
 
