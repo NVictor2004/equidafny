@@ -126,7 +126,7 @@ This algorithm has two outputs. The first is a set of mappings between the param
 The second output is the body of each lemma. In this example, this involves the call to the helper equivalence lemma \lstinline|eqInsert|. Additionally, the algorithm involves merging function call arguments correctly and merging mutually recursive functions.
 
 \section{Evaluation}
-To evaluate EquiDafny, I took the set of program equivalence tests from Stainless and converted them to Dafny. I additionally created a few new tests myself. This dataset is at \url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. The results are shown below. Thus, EquiDafny improves the base Dafny verifier and is almost on par to the state-of-the-art checker Stainless. 
+To evaluate EquiDafny, I took the set of program equivalence tests from the Stainless verifier and converted them from Scala to Dafny. I additionally created a few new tests myself. This dataset is publicly available at \url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. The evaluation results are shown below. Thus, EquiDafny improves the base Dafny verifier and is almost on par to the state-of-the-art checker Stainless. 
 \begin{center}
   \begin{tabular}{|c|c|c|c|}
   \hline
