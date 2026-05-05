@@ -12,8 +12,8 @@ insertRandomSorted1(nxtS, next, insert1(t, xs), (count - 1))}
 function insert1(t: int, xs: List<int>): List<int>
 decreases (xs)
 {match xs {
-case Nil => Cons(t, Nil)
 case Cons(hd, tl) => if (t <= hd) then Cons(t, xs) else Cons(hd, insert1(t, tl))
+case Nil => Cons(t, Nil)
 }
 }
 
