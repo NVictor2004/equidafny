@@ -35,14 +35,16 @@
 %
 \section{Introduction}
 
-Program verifiers~\cite{leinoDafnyAutomaticProgram2010} allow developers to write proofs of program equivalence, however, they require a significant level of user assistance to complete proofs. Many equivalence checkers are being developed to help proving program equivalence easier~\cite{lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091}.
+Program verifiers such as Dafny~\cite{leinoDafnyAutomaticProgram2010} and KeY~\cite{} allow developers to write proofs of program equivalence, however, they require a significant level of user assistance to complete proofs.
+Recently, many equivalence checkers are being developed to help proving program equivalence easier~\cite{lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091}.
 \footnote{Add citations for reve and rvt, check email}
-
-The aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. It decreases the level of user assistance required as much as possible.
+The aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. 
+EquiDafny improves over Dafny by automating equivalence proofs and decreasing the level of user assistance.
 
 \section{Design Overview} 
 
-An example of two equivalent functions \lstinline|insertSortedM| and \lstinline|insertSorted1|. The first function uses the helper function \lstinline|insertM|:
+I will present the overview of EquiDafny on an example of two equivalent functions: \lstinline|insertSortedM| and \lstinline|insertSorted1|. 
+The first function uses the helper function \lstinline|insertM|:
 \begin{lstlisting}
 function insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), 
                              count: int, xs: List<int>): List<int>
@@ -63,7 +65,7 @@ function insertM(xs: List<int>, t: int): List<int>
 }
 \end{lstlisting}
 %
-The second function uses the same structure with the helper function \lstinline|insert1|:
+The second function uses the same structure, with the helper function \lstinline|insert1|:
 \begin{lstlisting}
 function insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int),
                              xs: List<int>, count: int): List<int>
@@ -85,7 +87,7 @@ function insert1(t: int, xs: List<int>): List<int>
 \end{lstlisting}
 %
 
-The user can create an equivalence lemma for this example, however, the Dafny verifier is unable to prove program equivalence without assistance:
+The user can create an equivalence lemma for this example:
 \begin{lstlisting}
 lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int), 
                            xs: List<int>, count: int)
@@ -94,12 +96,13 @@ lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 {}
 \end{lstlisting}
 %
+However, the Dafny verifier is unable to prove this lemma automatically.
 
-This proof illustrates three main challenges here when attempting to prove the \lstinline|eqInsertSorted| lemma. 
+This example illustrates three main challenges here when attempting to prove the equivalence lemma. 
 
-\paragraph{First} Generate and call lemmas for helper functions. The \lstinline|insertSortedM| and \lstinline|insertSorted1| functions both use the helper functions \lstinline|insertM| and \lstinline|insert1| in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \lstinline|eqInsert|, under the condition \lstinline|count > 0| and with the correct arguments.
-\paragraph{Second} Provide a variant. EquiDafny provides a suitable variant (\lstinline|count|); this is copied from the \lstinline|InsertSorted| functions.
-\paragraph{Third} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \lstinline|eqInsertSorted| lemma to do this.
+\paragraph{First:} Generate and call lemmas for helper functions. The \lstinline|insertSortedM| and \lstinline|insertSorted1| functions both use the helper functions \lstinline|insertM| and \lstinline|insert1| in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \lstinline|eqInsert|, under the condition \lstinline|count > 0| and with the correct arguments.
+\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant (\lstinline|count|), copied from the \lstinline|InsertSorted| functions.
+\paragraph{Third:} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \lstinline|eqInsertSorted| lemma to complete the proof.
 
 Thus, EquiDafny generates the following: 
 \begin{lstlisting}
@@ -127,7 +130,7 @@ This algorithm has two outputs. The first is a set of mappings between the param
 The second output is the body of each lemma. In this example, this involves the call to the helper equivalence lemma \lstinline|eqInsert|. Additionally, the algorithm involves merging function call arguments correctly and merging mutually recursive functions.
 
 \section{Evaluation}
-To evaluate EquiDafny, I took the set of program equivalence tests from Stainless and converted them to Dafny. After creating a few tests myself, the results are shown below. Thus, EquiDafny improves the standard Dafny verifier and is almost on par to the state-of-the-art checker Stainless. 
+To evaluate EquiDafny, I took the set of program equivalence tests from Stainless and converted them to Dafny. I Additionally created a few new tests myself. The results are shown below. Thus, EquiDafny improves the base Dafny verifier and is almost on par to the state-of-the-art checker Stainless. 
 \begin{center}
   \begin{tabular}{|c|c|c|c|}
   \hline
