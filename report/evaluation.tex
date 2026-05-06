@@ -1,7 +1,7 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
 \footnote{metric scoring: how much user assistance is needed, different kinds of user annotations have different difficulty levels to the user}
-\footnote{Also need system profiling somewhere}
+\footnote{Also need system profiling}
 
 \footnote{compare with stainless without dragana's tool}
 \footnote{Explain why some tests fail, with example}
@@ -25,4 +25,22 @@ I tested EquiDafny on a dataset of 51 test files. These files were either conver
   \label{tbl:evaluation-results}
 \end{table}
 
-Thus, EquiDafny outperforms the standard Dafny verifier. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala' \parencite{IntroductionStainless091}). 
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. EquiDafny is unable to prove 7 of the 51 tests. Dafny can prove none of these tests while Stainless can prove 6 of them. The test that neither EquiDafny nor Stainless are able to prove is described below. The functions \mintinline{lexer.py:CustomLexer}|repeat1| and \mintinline{lexer.py:CustomLexer}|repeat2| each output a lambda function that applies a given function a given number of times:
+\begin{minted}{lexer.py:CustomLexer}
+function repeat1<A>(n: int, f: A -> A): A -> A
+  requires (n >= 0)
+  decreases(n) {
+  a =>
+    if (n == 0) then a
+    else repeat1(n - 1, f)(f(a))
+}
+
+function repeat2<A>(n: int, f: A -> A): A -> A
+  requires (n >= 0)
+  decreases(n) {
+  if (n == 0) then a => a
+  else a => repeat2(n - 1, f)(f(a))
+}
+\end{minted}
+
+Despite any assistance I provide, the Dafny verifier is unable to prove these functions equivalent.

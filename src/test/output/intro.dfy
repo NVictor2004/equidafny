@@ -1,13 +1,13 @@
 datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
-function insertRandomSortedM<A>(seed: A, next: A -> (A, int), count: int, xs: List<int>): List<int>
+function insertSortedM<A>(seed: A, next: A -> (A, int), count: int, xs: List<int>): List<int>
 {if (count <= 0) then xs else var (nxtS, t) := next(seed);
-insertRandomSortedM(nxtS, next, (count - 1), insertM(xs, t))}
+insertSortedM(nxtS, next, (count - 1), insertM(xs, t))}
 
-function insertRandomSorted1<A>(seed: A, next: A -> (A, int), xs: List<int>, count: int): List<int>
+function insertSorted1<A>(seed: A, next: A -> (A, int), xs: List<int>, count: int): List<int>
 decreases (count)
 {if (count <= 0) then xs else var (nxtS, t) := next(seed);
-insertRandomSorted1(nxtS, next, insert1(t, xs), (count - 1))}
+insertSorted1(nxtS, next, insert1(t, xs), (count - 1))}
 
 function insert1(t: int, xs: List<int>): List<int>
 decreases (xs)
@@ -25,9 +25,9 @@ case Cons(hd, tl) => if (t <= hd) then Cons(t, xs) else Cons(hd, insertM(tl, t))
 }
 }
 
-lemma insertRandomSortedM_insertRandomSorted1_Equivalence<A>(seed: A, next: A -> (A, int), count: int, xs: List<int>)
-ensures (insertRandomSortedM(seed, next, count, xs) == insertRandomSorted1(seed, next, xs, count))
-{{if (count <= 0){}else {var (nxtS, t) := next(seed);insertM_insert1_Equivalence(xs, t);insertRandomSortedM_insertRandomSorted1_Equivalence(nxtS, next, (count - 1), insertM(xs, t));}}}
+lemma insertSortedM_insertSorted1_Equivalence<A>(seed: A, next: A -> (A, int), count: int, xs: List<int>)
+ensures (insertSortedM(seed, next, count, xs) == insertSorted1(seed, next, xs, count))
+{{if (count <= 0){}else {var (nxtS, t) := next(seed);insertM_insert1_Equivalence(xs, t);insertSortedM_insertSorted1_Equivalence(nxtS, next, (count - 1), insertM(xs, t));}}}
 
 lemma insertM_insert1_Equivalence(xs: List<int>, t: int)
 decreases (xs)

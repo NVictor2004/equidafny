@@ -53,10 +53,8 @@
 
 \include{title/title}
 
-\footnote{In abstract, show outcome of evaluation}
-
 \begin{abstract}
-Two programs are equivalent if they produce the same output for any input. Proving program equivalence has applications across a variety of fields, however, these proofs are often difficult to write. This has led to the development of a variety of tools to help mitigate this \parencite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}, but using them still requires significant mathematical expertise that the average software developer does not have. The aim of this project is to decrease the necessity for this as much as possible, focussing specifically on the Dafny program verifier. In this project, I will explore Dafny's capabilities in proving program equivalence. I will build a tool on top of Dafny to attempt to address the challenges the Dafny verifier faces and allow the user to create equivalence proofs with as little user assistance as possible. Finally, I will evaluate this tool against the current state-of-the-art systems.
+Two programs are equivalent if they produce the same output for any input. Proving program equivalence has applications across a variety of fields, however, these proofs are often difficult to write. This has led to the development of a variety of tools to help mitigate this \parencite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}, but using them still requires significant mathematical expertise that the average software developer does not have. The aim of this project is to decrease the necessity for this as much as possible, focussing specifically on the Dafny program verifier. In this project, I explored Dafny's capabilities in proving program equivalence. I built EquiDafny, a tool on top of Dafny to attempt to address the challenges the Dafny verifier faces to allow the user to create equivalence proofs with as little user assistance as possible. Finally, I evaluated EquiDafny against Dafny and Stainless. The results showed that EquiDafny improves upon the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. 
 \end{abstract}
 
 \tableofcontents
@@ -69,8 +67,6 @@ Two programs are equivalent if they produce the same output for any input. Provi
 \include{evaluation}
 \include{conclusions}
 \include{declarations}
-
-\footnote{appendix: short diff between my dafny and actual dafny}
 
 \printbibliography
 

@@ -83,8 +83,6 @@ function length1<T>(l: List<T>): int {
 
 The bodies of these two functions have different structures, therefore, the Function Merging process will fail. The tool uses two methods to attempt to mitigate this issue.
 
-\footnote{Different example with partial failure of FM?}
-
 First, the tool will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
 
 \begin{minted}{lexer.py:CustomLexer}
@@ -150,8 +148,6 @@ lemma lengthEquivalence<T>(l: List<T>)
 % TODO: Wrap A && B in inline code
 The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \mintinline{lexer.py:CustomLexer}|A| and \mintinline{lexer.py:CustomLexer}|B|, the expressions A \&\& B and \mintinline{lexer.py:CustomLexer}|if A then B else false| are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
 
-\footnote{Translate one into the other, which way round?}
-
 This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \mintinline{lexer.py:CustomLexer}|A|, \mintinline{lexer.py:CustomLexer}|B| and \mintinline{lexer.py:CustomLexer}|C|, the expression \mintinline{lexer.py:CustomLexer}|if !A then C else B| can be simplified into \mintinline{lexer.py:CustomLexer}|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
 
 \section{Technical Audit Challenges}
@@ -216,7 +212,7 @@ ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
 \subsection{Generating Auxiliary Lemmas}
 As described in \Cref{sec:auxiliary-lemmas}, proving equivalence sometimes requires auxiliary lemmas that would be difficult for our tool or Dafny to automatically generate. Therefore, these lemmas must be written by the user and provided to our tool. As described in \Cref{sec:user-interface}, the user must provide the path to a Dafny file in the JSON configuration file. The user can provide our tool with any necessary auxiliary lemmas by writing them in this Dafny file.
 
-\footnote{Finish this section once more work is done on auxiliary lemmas}
+Thus, the lemmas themselves can be provided, however, they must still be called within the generated equivalence lemmas, with the correct arguments and under the correct conditions. These conditions and arguments cannot be easily generated, since this requires an understanding of what each auxiliary lemma proves and how it would be useful when proving an equivalence lemma. Thus, this is a difficult problem that EquiDafny does not currently solve. 
 
 \section{Technical Details}\label{sec:technical-details}
 

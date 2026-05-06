@@ -123,10 +123,7 @@ For each path it explores, KLEE maintains the set of conditions needed for that 
 
 \section{Dafny: Technical Audit}\label{sec:audit}
 
-\footnote{also look at broken / incorrect examples and see equivalence, they should be}
-
 \footnote{highlighting important parts of examples}
-\footnote{any challenges that only arise with more complex data structures?}
 
 There are many cases where the user needs to provide assistance to Dafny in order to prove equivalence. In this section, I will provide a series of examples to demonstrate where Dafny's limitations are in this area, and how the user can provide assistance to allow Dafny to overcome these challenges and prove equivalence. These challenges include a series of problems when generating and proving auxiliary lemmas, problems with proving termination of the equivalence lemmas in the presense of termination proofs for the individual functions, and problems with proving the equivalence of Dafny methods with imperative features, such as loops.
 
