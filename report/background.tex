@@ -12,7 +12,7 @@ Dafny's program verification heavily relies on Boogie~\cite{10.1007/11804192_17}
 
 Consider the following example, converted from the original Scala provided by \textcite{milovancevicProvingDisprovingEquivalence2023}. These two functions attempt to find the maximum element of a sequence of integers. The first is as follows:
 %
-\begin{lstlisting}[caption=\lstinline|maxR| function, label=lst:maxR]
+\begin{minted}{lexer.py:CustomLexer}
 function maxR(l: seq<int>): int
 {
   if |l| == 0 then -1
@@ -21,10 +21,10 @@ function maxR(l: seq<int>): int
     var m := maxR(l[1..]);
     if l[0] > m then l[0] else m
 }
-\end{lstlisting}
+\end{minted}
 %
 The second is as follows:
-\begin{lstlisting}[caption=\lstinline|maxC| Function, label=lst:maxC]
+\begin{minted}{lexer.py:CustomLexer}
 function maxC(l: seq<int>): int
   decreases |l|
 {
@@ -36,15 +36,15 @@ function maxC(l: seq<int>): int
     else
       maxC(l[1..])
 }
-\end{lstlisting}
+\end{minted}
 %
 The main difficulty with proving the equivalence of these two functions is that they approach the problem in opposite ways: the first function processes the list from the end to the start, while the second processes it from the start to the end. However, despite this, Dafny is able to prove equivalence with almost no help from the user using this lemma:
-\begin{lstlisting}[caption=Equivalence Lemma for \lstinline|maxR| and \lstinline|maxC|]
+\begin{minted}{lexer.py:CustomLexer}
 lemma maxEquivalence(l: seq<int>)
   ensures maxC(l) == maxR(l)
   decreases |l|
 {}
-\end{lstlisting}
+\end{minted}
 %
 This lemma states that, for any sequence of integers \lstinline|l|, the function calls \lstinline|maxC(l)| and \lstinline|maxR(l)| return the same output. Therefore, by proving this lemma, Dafny can prove that these functions are equivalent. However, in this case, Dafny requires the user to explicitly provide the length of the sequence \lstinline|l| as a variant to prove termination (this lemma is proven using induction).
 
@@ -68,7 +68,7 @@ One part of Stainless's functionality that is especially relevant to this work i
 
 Consider the following example, taken from the equivalence tests in Stainless's GitHub repository \parencite{StainlessFrontendsBenchmarks}. This is also an example used by \textcite{milovancevicProvingDisprovingEquivalence2023}, which I converted to Dafny in \Cref{sec:dafny}. These two functions attempt to find the maximum element of a list of integers, by approaching the list in opposite directions:
 
-\begin{lstlisting}[caption=\lstinline|maxR| and \lstinline|maxC| Scala functions, label=lst:maxRmaxCScala]
+\begin{minted}{lexer.py:CustomLexer}
 def maxR(lst: List[Int]): Int = {
     lst match {
         case Nil()           => -1
@@ -88,14 +88,14 @@ def maxC(l: List[Int]): Int = {
         else maxC(b :: tl)
     }
 }
-\end{lstlisting}
+\end{minted}
 %
 Stainless is able to prove the equivalence of these functions fully automatically. Therefore, its abilities will be a great inspiration for this project. 
 
 \subsection{KLEE}
 
 KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For example, here is an implementation of the \lstinline|sign| function. This example was taken from the KLEE tutorial \parencite{TutorialOneKLEE}:
-\begin{lstlisting}[caption=KLEE tutorial: sign function example]
+\begin{minted}{c}
 int sign(int x) {
   if (x == 0)
     return 0;
@@ -104,17 +104,17 @@ int sign(int x) {
   else
     return 1;
 }
-\end{lstlisting}
+\end{minted}
 %
 
 This function can now be called with a KLEE symbolic variable as argument:
-\begin{lstlisting}[caption=KLEE tutorial: Calling sign function with symbolic variable as argument]
+\begin{minted}{c}
 int main() {
   int a;
   klee_make_symbolic(&a, sizeof(a), "a");
   return sign(a);
 }
-\end{lstlisting}
+\end{minted}
 %
 
 Since there are three different paths through the \lstinline|sign| function (for each of the cases where \(x < 0\), \(x = 0\) and \(x > 0\) respectively), running KLEE on this program generates three test cases, one for each path respectively. 

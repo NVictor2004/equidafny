@@ -2,7 +2,7 @@
 
 \section{User Interface}\label{sec:user-interface}
 Our tool is accessed from the command line by passing in a single JSON configuration file. For example, a suitable JSON file may look like this:
-\begin{lstlisting}[caption=Example JSON configuration file]
+\begin{minted}{json}
 {
   "file": "dup.dfy",
   "model": "dupM",
@@ -13,7 +13,7 @@ Our tool is accessed from the command line by passing in a single JSON configura
     "dup3"
   ]
 }
-\end{lstlisting}
+\end{minted}
 %
 The keys `file', `model' and `candidates' are necessary for a configuration file to be valid, while the key `norm' is optional. Their purposes are described below.
 
