@@ -60,7 +60,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{minted}
 
 \subsection{Incorrect Counterexamples}\label{sec:counterexamples} 
-In this example, I will provide two functions that attempt to determine whether a list of integers is sorted in non-decreasing order. The first function is as follows, involving the main function \lstinline|isSortedR| and a helper function \lstinline|loop|:
+In this example, I will provide two functions that attempt to determine whether a list of integers is sorted in non-decreasing order. The first function is as follows, involving the main function \mintinline{lexer.py:CustomLexer}|isSortedR| and a helper function \mintinline{lexer.py:CustomLexer}|loop|:
 
 \begin{minted}{lexer.py:CustomLexer}
 function loop(p: int, l: List<int>): bool
@@ -79,7 +79,7 @@ function isSortedR(l: List<int>): bool
 }
 \end{minted}
 %
-The second function is as follows, involving the main function \lstinline|isSortedA| and helper functions \lstinline|iter| and \lstinline|leq|:
+The second function is as follows, involving the main function \mintinline{lexer.py:CustomLexer}|isSortedA| and helper functions \mintinline{lexer.py:CustomLexer}|iter| and \mintinline{lexer.py:CustomLexer}|leq|:
 
 \begin{minted}{lexer.py:CustomLexer}
 function leq(cur: int, next: int): bool
@@ -104,7 +104,7 @@ function isSortedA(l: List<int>): bool
 }
 \end{minted}
 %
-These functions are not equivalent, as \lstinline|isSortedA| uses a strictly less-than comparison in the \lstinline|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
+These functions are not equivalent, as \mintinline{lexer.py:CustomLexer}|isSortedA| uses a strictly less-than comparison in the \mintinline{lexer.py:CustomLexer}|leq| function, when it should use a less-than-or-equal-to comparison. Therefore, Dafny is unable to prove the following equivalence lemma:
 \begin{minted}{lexer.py:CustomLexer}
 lemma isSortedEquivalence(l: List<int>)
   ensures isSortedA(l) == isSortedR(l)
@@ -114,7 +114,7 @@ lemma isSortedEquivalence(l: List<int>)
 
 \footnote{Why does it provide an incorrect counter example?}
 
-However, it incorrectly provides \lstinline|Cons(-38, Cons(7681, Nil))| as a counterexample. As found by \textcite{putrueleMaskDToolMeasuring2022}, counterexamples may sometimes be incorrect due to the Z3 solver being incomplete. I extended the above proof to include and use a helper lemma, as shown below:
+However, it incorrectly provides \mintinline{lexer.py:CustomLexer}|Cons(-38, Cons(7681, Nil))| as a counterexample. As found by \textcite{putrueleMaskDToolMeasuring2022}, counterexamples may sometimes be incorrect due to the Z3 solver being incomplete. I extended the above proof to include and use a helper lemma, as shown below:
 \begin{minted}{lexer.py:CustomLexer}
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)
   decreases xs
@@ -132,12 +132,11 @@ lemma isSortedEquivalence(l: List<int>)
 \end{minted}
 %
 
-Now, Dafny is able to provide a correct counterexample of \lstinline|x = 8855| and \lstinline|xs = Cons(8855, Nil)| for the helper lemma. However, though this is the simplest counterexample in terms of list length, it is not the simplest example in terms of the integers used, as \lstinline|x = 0| and \lstinline|xs = Cons(0, Nil)| would be sufficient. \textcite{putrueleMaskDToolMeasuring2022} also state that generated counterexamples can sometimes be difficult to read and understand since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver.
+Now, Dafny is able to provide a correct counterexample of \mintinline{lexer.py:CustomLexer}|x = 8855| and \mintinline{lexer.py:CustomLexer}|xs = Cons(8855, Nil)| for the helper lemma. However, though this is the simplest counterexample in terms of list length, it is not the simplest example in terms of the integers used, as \mintinline{lexer.py:CustomLexer}|x = 0| and \mintinline{lexer.py:CustomLexer}|xs = Cons(0, Nil)| would be sufficient. \textcite{putrueleMaskDToolMeasuring2022} also state that generated counterexamples can sometimes be difficult to read and understand since there are multiple translations steps between the Dafny source code and the verification conditions sent to the Z3 SMT solver.
 
 \subsection{Equivalence Lemmas for Helper functions}\label{sec:equivalence-lemmas}
 
-For this example, I will provide two solutions to the problem of reducing a list down its unique elements. Both solutions each require two helper functions, where each of the three pairs of functions across the two solutions are equivalent. The first pair of functions are \lstinline|isin| and \lstinline|find|. These functions determine whether a given element is in a list:
-% Caption: lstinline|isin| and \lstinline|find| Functions
+For this example, I will provide two solutions to the problem of reducing a list down its unique elements. Both solutions each require two helper functions, where each of the three pairs of functions across the two solutions are equivalent. The first pair of functions are \mintinline{lexer.py:CustomLexer}|isin| and \mintinline{lexer.py:CustomLexer}|find|. These functions determine whether a given element is in a list:
 \begin{minted}{lexer.py:CustomLexer}
 function find(lst: List<int>, n: int): bool
 {
@@ -163,7 +162,7 @@ lemma findEquivalence(l: List<int>, n: int)
 %
 \textcite{milovancevicProvingDisprovingEquivalence2023} were able to automatically generate these helper lemmas by preprocessing the two solutions to find helper functions with compatible signatures: where the arguments of one function can be permuted so that their types match the types of the arguments of another function. Once candidate pairs of functions are found, equivalence lemmas such as the one above can be automatically generated and proven. If multiple functions share the same signature, test cases are used to narrow down the search space. These can be defined by the user or generated from counterexamples found when disproving equivalence of other incorrect candidate submissions.
 
-The second pair of functions are \lstinline|unique| and \lstinline|distinct|. These functions take two lists as input, and compute the unique elements of their union:
+The second pair of functions are \mintinline{lexer.py:CustomLexer}|unique| and \mintinline{lexer.py:CustomLexer}|distinct|. These functions take two lists as input, and compute the unique elements of their union:
 
 \begin{minted}{lexer.py:CustomLexer}
 function unique(l: List<int>, r: List<int>): List<int>
@@ -199,11 +198,11 @@ lemma uniqEquivalenceHelper(l: List<int>, r: List<int>)
 \end{minted}
 %
 
-Therefore, since the proof of the equivalence of \lstinline|unique| and \lstinline|distinct| relies on the equivalence of \lstinline|find| and \lstinline|isin|, the user must explicitly call the equivalence lemma for the helper functions. This lemma must be called with the correct arguments and under the correct conditions, within the main equivalence lemma (as demonstrated above).
+Therefore, since the proof of the equivalence of \mintinline{lexer.py:CustomLexer}|unique| and \mintinline{lexer.py:CustomLexer}|distinct| relies on the equivalence of \mintinline{lexer.py:CustomLexer}|find| and \mintinline{lexer.py:CustomLexer}|isin|, the user must explicitly call the equivalence lemma for the helper functions. This lemma must be called with the correct arguments and under the correct conditions, within the main equivalence lemma (as demonstrated above).
 
-In addition, this lemma cannot be so easily generated using the method described above, as the arguments of \lstinline|unique| and \lstinline|distinct| have the same types, but are used in different ways. Therefore, to successfully generate this lemma, the functions themselves must be processed to identify how each argument is used.
+In addition, this lemma cannot be so easily generated using the method described above, as the arguments of \mintinline{lexer.py:CustomLexer}|unique| and \mintinline{lexer.py:CustomLexer}|distinct| have the same types, but are used in different ways. Therefore, to successfully generate this lemma, the functions themselves must be processed to identify how each argument is used.
 
-Finally, the third pair of functions \lstinline|uniqR| and \lstinline|uniqA| to find the unique elements of a list are as follows:
+Finally, the third pair of functions \mintinline{lexer.py:CustomLexer}|uniqR| and \mintinline{lexer.py:CustomLexer}|uniqA| to find the unique elements of a list are as follows:
 
 \begin{minted}{lexer.py:CustomLexer}
 function uniqR(lst: List<int>): List<int>
@@ -231,7 +230,7 @@ Therefore, to prove the equivalence of two functions that both use helper functi
 
 \subsection{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
 
-Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two functions \lstinline|limit3_1| and \lstinline|limit3_2|, which attempt to compute the triangular number of a given integer \lstinline|n| (the functions return \lstinline|n| when n is negative):
+Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two functions \mintinline{lexer.py:CustomLexer}|limit3_1| and \mintinline{lexer.py:CustomLexer}|limit3_2|, which attempt to compute the triangular number of a given integer \mintinline{lexer.py:CustomLexer}|n| (the functions return \mintinline{lexer.py:CustomLexer}|n| when n is negative):
 \begin{minted}{lexer.py:CustomLexer}
 function limit3_1(n: int): int {
   if (n <= 1) then n
@@ -247,7 +246,7 @@ function limit3_2(n: int): int {
 }
 \end{minted}
 %
-The main difference between these two functions is in the \lstinline|else| branch of the \lstinline|limit3_2| function, where it will either output \lstinline|n + r| or \lstinline|r|, depending on whether \lstinline|r >= 0|. However, to reach this \lstinline|else| branch, we know that \lstinline|n| must be greater than or equal to 2, so \lstinline|n - 1| must be at least 1. Therefore, \lstinline|limit3_2(n-1)| will output a triangular number, which must be non-negative. This means that we should be able to prove that \lstinline|r| is always non-negative, so \lstinline|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
+The main difference between these two functions is in the \mintinline{lexer.py:CustomLexer}|else| branch of the \mintinline{lexer.py:CustomLexer}|limit3_2| function, where it will either output \mintinline{lexer.py:CustomLexer}|n + r| or \mintinline{lexer.py:CustomLexer}|r|, depending on whether \mintinline{lexer.py:CustomLexer}|r >= 0|. However, to reach this \mintinline{lexer.py:CustomLexer}|else| branch, we know that \mintinline{lexer.py:CustomLexer}|n| must be greater than or equal to 2, so \mintinline{lexer.py:CustomLexer}|n - 1| must be at least 1. Therefore, \mintinline{lexer.py:CustomLexer}|limit3_2(n-1)| will output a triangular number, which must be non-negative. This means that we should be able to prove that \mintinline{lexer.py:CustomLexer}|r| is always non-negative, so \mintinline{lexer.py:CustomLexer}|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
 
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceLimit3_Helper(n: int)
@@ -262,7 +261,7 @@ lemma equivalenceLimit3(n: int)
 }
 \end{minted}
 %
-Therefore, Dafny is able to prove the equivalence of these two functions, but only after the user provides a helper lemma that would be difficult for Dafny to automatically generate. Here is another, more complicated example. Consider the following two functions \lstinline|m1| and \lstinline|m2|, which output the fibonnaci number of a given integer \lstinline|n|. However, both functions contain an extra boolean argument: 
+Therefore, Dafny is able to prove the equivalence of these two functions, but only after the user provides a helper lemma that would be difficult for Dafny to automatically generate. Here is another, more complicated example. Consider the following two functions \mintinline{lexer.py:CustomLexer}|m1| and \mintinline{lexer.py:CustomLexer}|m2|, which output the fibonnaci number of a given integer \mintinline{lexer.py:CustomLexer}|n|. However, both functions contain an extra boolean argument: 
 \begin{minted}{lexer.py:CustomLexer}
 function m1(n: int, flag: bool): int {
   if (n < 1) then 0
@@ -282,7 +281,7 @@ function m2(n: int, mode: bool): int {
 }
 \end{minted}
 %
-The first function does not use the boolean argument at all/ The second function uses it in the \lstinline|else| branch to either compute the standard fibonacci expression \lstinline|m2(n-1, !mode) + m2(n-2, !mode)|, or the expression with the \lstinline|m2(n-1, !mode)| call unrolled once (\lstinline|m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)|). Dafny only requires assistance in proving that the unrolled function call in \lstinline|m2| is equivalent to the standard fibonacci expression. Therefore, the user must provide the following auxiliary lemma:
+The first function does not use the boolean argument at all/ The second function uses it in the \mintinline{lexer.py:CustomLexer}|else| branch to either compute the standard fibonacci expression \mintinline{lexer.py:CustomLexer}|m2(n-1, !mode) + m2(n-2, !mode)|, or the expression with the \mintinline{lexer.py:CustomLexer}|m2(n-1, !mode)| call unrolled once (\mintinline{lexer.py:CustomLexer}|m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)|). Dafny only requires assistance in proving that the unrolled function call in \mintinline{lexer.py:CustomLexer}|m2| is equivalent to the standard fibonacci expression. Therefore, the user must provide the following auxiliary lemma:
 
 \begin{minted}{lexer.py:CustomLexer}
 lemma m2_equivalence_fib(n: int)
@@ -291,7 +290,7 @@ lemma m2_equivalence_fib(n: int)
 {}
 \end{minted}
 %
-Using this, Dafny can now prove the equivalence of \lstinline|m1| and \lstinline|m2|:
+Using this, Dafny can now prove the equivalence of \mintinline{lexer.py:CustomLexer}|m1| and \mintinline{lexer.py:CustomLexer}|m2|:
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalence(n: int, flag: bool)
   ensures m1(n, flag) == m2(n, flag)
@@ -304,7 +303,7 @@ Thus, this is another example of where Dafny can prove the equivalence of two fu
 
 \subsection{Explicitly enforcing induction to prove lemmas}\label{sec:induction}
 
-Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, consider the two functions \lstinline|binSumM| and \lstinline|binSum1|. These functions compute the sum of two binary numbers and a carry bit, where the bits are represented as booleans, and the binary numbers are represented as lists of bits, in order of least significant to most significant. The \lstinline|binSum1| function computes the sum by listing every possible form of input, while the \lstinline|binSumM| function simplifies this by using the carry bit in a more complicated way. The functions are as follows: 
+Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, consider the two functions \mintinline{lexer.py:CustomLexer}|binSumM| and \mintinline{lexer.py:CustomLexer}|binSum1|. These functions compute the sum of two binary numbers and a carry bit, where the bits are represented as booleans, and the binary numbers are represented as lists of bits, in order of least significant to most significant. The \mintinline{lexer.py:CustomLexer}|binSum1| function computes the sum by listing every possible form of input, while the \mintinline{lexer.py:CustomLexer}|binSumM| function simplifies this by using the carry bit in a more complicated way. The functions are as follows: 
 
 \begin{minted}{lexer.py:CustomLexer}
 function binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
@@ -448,21 +447,21 @@ function uniq2(lst: List<int>): List<int>
 }
 \end{minted}
 %
-The functions \lstinline|drop_2| and \lstinline|drop| are helper functions that remove all occurrences of an integer from a list of integers. The definitions of these functions are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
+The functions \mintinline{lexer.py:CustomLexer}|drop_2| and \mintinline{lexer.py:CustomLexer}|drop| are helper functions that remove all occurrences of an integer from a list of integers. The definitions of these functions are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceDrop(a: int, lst: List<int>)
   ensures (drop(a, lst) == drop_2(lst, a))
 {}
 \end{minted}
 %
-To prove termination, Dafny requires the lists inputted into the recursive calls to \lstinline|solution_2| and \lstinline|uniq2| to be `smaller' than the lists provided in the original calls. Therefore, the outputs of \lstinline|drop_2| and \lstinline|drop| must be `smaller' than the original lists. Dafny cannot infer this by itself, therefore, the user must explicitly provide lemmas. \lstinline|solution_2| and \lstinline|uniq2| use the lemmas \lstinline|lemM| and \lstinline|lem2| respectively for this purpose. These lemmas are equivalent, so I will only provide \lstinline|lem2|. For this example, it is sufficient to prove one list is `smaller' than another by using their lengths:
+To prove termination, Dafny requires the lists inputted into the recursive calls to \mintinline{lexer.py:CustomLexer}|solution_2| and \mintinline{lexer.py:CustomLexer}|uniq2| to be `smaller' than the lists provided in the original calls. Therefore, the outputs of \mintinline{lexer.py:CustomLexer}|drop_2| and \mintinline{lexer.py:CustomLexer}|drop| must be `smaller' than the original lists. Dafny cannot infer this by itself, therefore, the user must explicitly provide lemmas. \mintinline{lexer.py:CustomLexer}|solution_2| and \mintinline{lexer.py:CustomLexer}|uniq2| use the lemmas \mintinline{lexer.py:CustomLexer}|lemM| and \mintinline{lexer.py:CustomLexer}|lem2| respectively for this purpose. These lemmas are equivalent, so I will only provide \mintinline{lexer.py:CustomLexer}|lem2|. For this example, it is sufficient to prove one list is `smaller' than another by using their lengths:
 \begin{minted}{lexer.py:CustomLexer}
 lemma lem2(a: int, lst: List<int>)
   ensures length(drop(a, lst)) <= length(lst)
 {}
 \end{minted}
 %
-Using \lstinline|equivalenceDrop|, Dafny is able to prove the equivalence of \lstinline|solution_2| and \lstinline|uniq2|, but only if the user explicitly calls \lstinline|lem2|:
+Using \mintinline{lexer.py:CustomLexer}|equivalenceDrop|, Dafny is able to prove the equivalence of \mintinline{lexer.py:CustomLexer}|solution_2| and \mintinline{lexer.py:CustomLexer}|uniq2|, but only if the user explicitly calls \mintinline{lexer.py:CustomLexer}|lem2|:
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalence_solution2_uniq2(lst: List<int>)
   ensures (solution_2(lst) == uniq2(lst))
@@ -479,7 +478,7 @@ lemma equivalence_solution2_uniq2(lst: List<int>)
 
 \subsection{Equivalence of Imperative Methods}\label{sec:imperative-equivalence}
 
-Recursive functions can be converted into their iterative versions. For example, here is a recursive implementation of a function \lstinline|isSortedB| to determine whether a sequence of integers is sorted in non-decreasing order:
+Recursive functions can be converted into their iterative versions. For example, here is a recursive implementation of a function \mintinline{lexer.py:CustomLexer}|isSortedB| to determine whether a sequence of integers is sorted in non-decreasing order:
 \begin{minted}{lexer.py:CustomLexer}
 function isSortedB(l: seq<int>): bool
   decreases |l|
@@ -490,7 +489,7 @@ function isSortedB(l: seq<int>): bool
 }
 \end{minted}
 %
-This implementation can be converted into the following imperative method. It is not an exact conversion from the recursive version, to make better use of imperative features. Both the function and the method use sequences, so that I can use Dafny's built-in indexing and slicing features. The method's postcondition states that it will output a boolean equivalent to whether each element in the sequence is less than or equal to the next element. If this can be proven, then the sequence must be sorted in non-decreasing order. The variable \lstinline|index| together with the invariant in the \lstinline|while| loop are used to keep track of which sequence elements have been checked so far.
+This implementation can be converted into the following imperative method. It is not an exact conversion from the recursive version, to make better use of imperative features. Both the function and the method use sequences, so that I can use Dafny's built-in indexing and slicing features. The method's postcondition states that it will output a boolean equivalent to whether each element in the sequence is less than or equal to the next element. If this can be proven, then the sequence must be sorted in non-decreasing order. The variable \mintinline{lexer.py:CustomLexer}|index| together with the invariant in the \mintinline{lexer.py:CustomLexer}|while| loop are used to keep track of which sequence elements have been checked so far.
 \begin{minted}{lexer.py:CustomLexer}
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res <==> (forall i :: 0 <= i < |l| - 1 ==> l[i] <= l[i+1])
@@ -518,9 +517,9 @@ These specifications can be very difficult to write correctly. Additionally, jus
 
 As described by \textcite{lahiriDifferentialAssertionChecking2013}, one solution to these difficulties is to generate product programs. A product program is a method that contains the bodies of the two methods being compared, in such a way that relationships between the two can be verified.
 
-For example, we can use this process to prove the equivalence of the imperative versions of \lstinline|isSortedR| and \lstinline|isSortedB| (the function version of \lstinline|isSortedR| can be found in \Cref{sec:counterexamples}). The imperative version of \lstinline|isSortedR| (called \lstinline|isSortedRI|) is as follows, requiring a helper function \lstinline|loopI|. As above, the methods are not an exact conversion from their recursive counterparts. Additionally, the \lstinline|isSortedR| function operates on Lists, so I have converted it to use sequences instead. 
+For example, we can use this process to prove the equivalence of the imperative versions of \mintinline{lexer.py:CustomLexer}|isSortedR| and \mintinline{lexer.py:CustomLexer}|isSortedB| (the function version of \mintinline{lexer.py:CustomLexer}|isSortedR| can be found in \Cref{sec:counterexamples}). The imperative version of \mintinline{lexer.py:CustomLexer}|isSortedR| (called \mintinline{lexer.py:CustomLexer}|isSortedRI|) is as follows, requiring a helper function \mintinline{lexer.py:CustomLexer}|loopI|. As above, the methods are not an exact conversion from their recursive counterparts. Additionally, the \mintinline{lexer.py:CustomLexer}|isSortedR| function operates on Lists, so I have converted it to use sequences instead. 
 
-The helper method \lstinline|loopI| returns a boolean representing whether an integer \lstinline|p| prepended to a list of integers \lstinline|l| is a list sorted in non-decreasing order. The function's postcondition verifies this by finding whether the list \lstinline|l| is sorted, and whether \lstinline|p| is less than or equal to the first value in \lstinline|l| (if \lstinline|l| is non-empty). \lstinline|loopI| implements this by maintaining a `rolling' comparison of adjacent list elements. It starts by comparing \lstinline|p| and the first element of \lstinline|l|, and continues by comparing adjacent elements of \lstinline|l|. The variable \lstinline|next| represents how far the loop has progressed through the list \lstinline|l|. The \lstinline|isSortedRI| method calls the helper method \lstinline|loopI| for non-empty lists and returns \lstinline|true| for empty lists:
+The helper method \mintinline{lexer.py:CustomLexer}|loopI| returns a boolean representing whether an integer \mintinline{lexer.py:CustomLexer}|p| prepended to a list of integers \mintinline{lexer.py:CustomLexer}|l| is a list sorted in non-decreasing order. The function's postcondition verifies this by finding whether the list \mintinline{lexer.py:CustomLexer}|l| is sorted, and whether \mintinline{lexer.py:CustomLexer}|p| is less than or equal to the first value in \mintinline{lexer.py:CustomLexer}|l| (if \mintinline{lexer.py:CustomLexer}|l| is non-empty). \mintinline{lexer.py:CustomLexer}|loopI| implements this by maintaining a `rolling' comparison of adjacent list elements. It starts by comparing \mintinline{lexer.py:CustomLexer}|p| and the first element of \mintinline{lexer.py:CustomLexer}|l|, and continues by comparing adjacent elements of \mintinline{lexer.py:CustomLexer}|l|. The variable \mintinline{lexer.py:CustomLexer}|next| represents how far the loop has progressed through the list \mintinline{lexer.py:CustomLexer}|l|. The \mintinline{lexer.py:CustomLexer}|isSortedRI| method calls the helper method \mintinline{lexer.py:CustomLexer}|loopI| for non-empty lists and returns \mintinline{lexer.py:CustomLexer}|true| for empty lists:
 
 \begin{minted}{lexer.py:CustomLexer}
 method loopI(p: int, l: seq<int>) returns (res: bool)
@@ -557,7 +556,7 @@ method isSortedRI(l: seq<int>) returns (res: bool)
 }
 \end{minted}
 %
-These methods can be used to construct a product program as follows, using the definition of \lstinline|loopI| given above:
+These methods can be used to construct a product program as follows, using the definition of \mintinline{lexer.py:CustomLexer}|loopI| given above:
 \begin{minted}{lexer.py:CustomLexer}
 method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool, bres: bool)
   requires lb == lr
@@ -596,11 +595,11 @@ method isSortedBI_RI_Equivalence(lb: seq<int>, lr: seq<int>) returns (rres: bool
 \end{minted}
 %
 
-The specification of this product program ensures that, since Dafny is able to verify this method, \lstinline|isSortedBI| and \lstinline|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \lstinline|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
+The specification of this product program ensures that, since Dafny is able to verify this method, \mintinline{lexer.py:CustomLexer}|isSortedBI| and \mintinline{lexer.py:CustomLexer}|isSortedRI| must be equivalent. Therefore, this process removes the need for the user to provide postconditions for the individual methods, that capture their behaviour fully. In this case, a postcondition for the \mintinline{lexer.py:CustomLexer}|loopI| helper function is still required, but the body of this method can also be copied into the product program, removing this requirement as well. However, the user must still provide the loop invariants and variants for the individual methods.
 
 \subsubsection{Equivalence of Methods and Functions}
 
-A similar problem to that discussed above is proving the equivalence of a method and a function. In this case, the user does not need to write a postcondition for the method, since the function can be called directly within the specification. The user still needs to provide loop invariants and variants for the method, however, these do not need to be as complicated as those detailed above, as again, they can be defined in terms of the function. For example, the function \lstinline|isSortedB| defined in \Cref{sec:imperative-equivalence} can be proven to be equivalent with the following imperative method:
+A similar problem to that discussed above is proving the equivalence of a method and a function. In this case, the user does not need to write a postcondition for the method, since the function can be called directly within the specification. The user still needs to provide loop invariants and variants for the method, however, these do not need to be as complicated as those detailed above, as again, they can be defined in terms of the function. For example, the function \mintinline{lexer.py:CustomLexer}|isSortedB| defined in \Cref{sec:imperative-equivalence} can be proven to be equivalent with the following imperative method:
 \begin{minted}{lexer.py:CustomLexer}
 method isSortedBI(l: seq<int>) returns (res: bool)
   ensures res == isSortedB(l)
@@ -625,7 +624,7 @@ Thus, the necessary specifications can be greatly simplified if they are defined
 
 \subsection{Equivalence of Higher-Order Functions}\label{sec:higher-order}
 
-Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two functions \lstinline|andThen1| and \lstinline|andThen2|, which compute function composition:
+Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two functions \mintinline{lexer.py:CustomLexer}|andThen1| and \mintinline{lexer.py:CustomLexer}|andThen2|, which compute function composition:
 \begin{minted}{lexer.py:CustomLexer}
 function andThen1<A, B, C>(f: A -> B, g: B -> C): A -> C { a => g(f(a)) }
 function andThen2<A, B, C>(ff: A -> B, gg: B -> C): A -> C { aa => gg(ff(aa)) }
@@ -638,7 +637,7 @@ lemma equivalenceAndThen<A, B, C>(f: A -> B, g: B -> C)
 {}
 \end{minted}
 %
-Here are two more such functions \lstinline|flip1| and \lstinline|flip2|, which each take a binary function as input, and output a function that computes the same output, but with the arguments flipped:
+Here are two more such functions \mintinline{lexer.py:CustomLexer}|flip1| and \mintinline{lexer.py:CustomLexer}|flip2|, which each take a binary function as input, and output a function that computes the same output, but with the arguments flipped:
 \begin{minted}{lexer.py:CustomLexer}
 function flip1<A, B, C>(f: (A, B) -> C): (B, A) -> C {
   (b, a) => f(a, b)

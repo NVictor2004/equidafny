@@ -46,7 +46,7 @@ lemma maxEquivalence(l: seq<int>)
 {}
 \end{minted}
 %
-This lemma states that, for any sequence of integers \lstinline|l|, the function calls \lstinline|maxC(l)| and \lstinline|maxR(l)| return the same output. Therefore, by proving this lemma, Dafny can prove that these functions are equivalent. However, in this case, Dafny requires the user to explicitly provide the length of the sequence \lstinline|l| as a variant to prove termination (this lemma is proven using induction).
+This lemma states that, for any sequence of integers \mintinline{lexer.py:CustomLexer}|l|, the function calls \mintinline{lexer.py:CustomLexer}|maxC(l)| and \mintinline{lexer.py:CustomLexer}|maxR(l)| return the same output. Therefore, by proving this lemma, Dafny can prove that these functions are equivalent. However, in this case, Dafny requires the user to explicitly provide the length of the sequence \mintinline{lexer.py:CustomLexer}|l| as a variant to prove termination (this lemma is proven using induction).
 
 For this example, the Boogie translation resulted in a file almost 3350 lines long. It begins with a series of type definitions and axioms, followed by the translation of each Dafny function, and ends with the translation of the equivalence lemma, taking only around 50 lines of code. Therefore, the Dafny programming language is highly expressive, allowing users to define functions in a concise manner. Meanwhile, the Dafny program verifier is capable of proving function equivalence, but it sometimes requires user assistance.
 
@@ -68,7 +68,7 @@ One part of Stainless's functionality that is especially relevant to this work i
 
 Consider the following example, taken from the equivalence tests in Stainless's GitHub repository \parencite{StainlessFrontendsBenchmarks}. This is also an example used by \textcite{milovancevicProvingDisprovingEquivalence2023}, which I converted to Dafny in \Cref{sec:dafny}. These two functions attempt to find the maximum element of a list of integers, by approaching the list in opposite directions:
 
-\begin{minted}{lexer.py:CustomLexer}
+\begin{minted}{scala}
 def maxR(lst: List[Int]): Int = {
     lst match {
         case Nil()           => -1
@@ -94,7 +94,7 @@ Stainless is able to prove the equivalence of these functions fully automaticall
 
 \subsection{KLEE}
 
-KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For example, here is an implementation of the \lstinline|sign| function. This example was taken from the KLEE tutorial \parencite{TutorialOneKLEE}:
+KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For example, here is an implementation of the \mintinline{lexer.py:CustomLexer}|sign| function. This example was taken from the KLEE tutorial \parencite{TutorialOneKLEE}:
 \begin{minted}{c}
 int sign(int x) {
   if (x == 0)
@@ -117,6 +117,6 @@ int main() {
 \end{minted}
 %
 
-Since there are three different paths through the \lstinline|sign| function (for each of the cases where \(x < 0\), \(x = 0\) and \(x > 0\) respectively), running KLEE on this program generates three test cases, one for each path respectively. 
+Since there are three different paths through the \mintinline{lexer.py:CustomLexer}|sign| function (for each of the cases where \(x < 0\), \(x = 0\) and \(x > 0\) respectively), running KLEE on this program generates three test cases, one for each path respectively. 
 
 For each path it explores, KLEE maintains the set of conditions needed for that path to have been taken, thus, if the path ends in an error, KLEE can use those conditions to generate a single test case that will create the error. Therefore, KLEE is a powerful tool, however, one of its main limitations is that the number of possible paths to keep track of can grow exponentially large when it is working with programs containing many loops and branches.

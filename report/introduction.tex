@@ -21,7 +21,7 @@ Therefore, the general aim of this project is to build a new tool, learning from
 
 After describing the current state-of-the-art tools, this project will focus solely on the Dafny program verifier. Dafny is a popular tool under active development by Amazon \parencite{leinoDafnyAutomaticProgram2010}, therefore, building a tool on Dafny would be highly relevant to modern software engineering projects. This is especially true since Dafny can be compiled into a variety of popular languages, including C\#, Java and Python, allowing verified code to easily be integrated into existing codebases. 
 
-To find an understanding of Dafny's capabilities, I used the set of program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. After converting them from Scala to Dafny I attempted to prove equivalence for each pair of functions. Using this I identified a number of challenges Dafny encounters. One of the main challenges involved generating equivalence lemmas for helper functions, and calling them with the correct arguments and under the correct conditions. Since the Dafny verifier often proves lemmas through induction, further challenges included the verifier often requiring a variant to prove termination, and sometimes requiring an explicit statement of the induction scheme. An example that demonstrates all three of these challenges is as follows. Here are two functions called \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1| that each generate a specified number of random numbers, and insert them into a sorted list while maintaining its order.
+To find an understanding of Dafny's capabilities, I used the set of program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. After converting them from Scala to Dafny I attempted to prove equivalence for each pair of functions. Using this I identified a number of challenges Dafny encounters. One of the main challenges involved generating equivalence lemmas for helper functions, and calling them with the correct arguments and under the correct conditions. Since the Dafny verifier often proves lemmas through induction, further challenges included the verifier often requiring a variant to prove termination, and sometimes requiring an explicit statement of the induction scheme. An example that demonstrates all three of these challenges is as follows. Here are two functions called \mintinline{lexer.py:CustomLexer}|insertRandomSortedM| and \mintinline{lexer.py:CustomLexer}|insertRandomSorted1| that each generate a specified number of random numbers, and insert them into a sorted list while maintaining its order.
 
 \begin{minted}{lexer.py:CustomLexer}
 function insertRandomSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, xs: List<int>): List<int>
@@ -41,7 +41,7 @@ function insertRandomSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: Li
 }
 \end{minted}
 %
-In both functions, the parameter `seed' is the current random generation seed, `next' is the random generation function outputting the next seed and the generated number, `count' is the number of random numbers to generate and `xs' is the current sorted list. Each function uses a helper function called \lstinline|insertM| and \lstinline|insert1| respectively to insert a single number into a sorted list while maintaining its order:
+In both functions, the parameter `seed' is the current random generation seed, `next' is the random generation function outputting the next seed and the generated number, `count' is the number of random numbers to generate and `xs' is the current sorted list. Each function uses a helper function called \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| respectively to insert a single number into a sorted list while maintaining its order:
 
 \begin{minted}{lexer.py:CustomLexer}
 function insertM(xs: List<int>, t: int): List<int>
@@ -66,7 +66,7 @@ function insert1(t: int, xs: List<int>): List<int>
 \end{minted}
 %
 
-The Dafny verifier requires the following lemmas to prove the equivalence of \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1|:
+The Dafny verifier requires the following lemmas to prove the equivalence of \mintinline{lexer.py:CustomLexer}|insertRandomSortedM| and \mintinline{lexer.py:CustomLexer}|insertRandomSorted1|:
 
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceInsert(t: int, xs: List<int>)
@@ -120,4 +120,4 @@ After creating a few more tests myself, I tested EquiDafny on a dataset of 51 te
   \label{tbl:intro-results}
 \end{table}
 
-Thus, EquiDafny outperforms the standard Dafny verifier. In particular, the tool is able to verify the equivalence of \lstinline|insertRandomSortedM| and \lstinline|insertRandomSorted1| as shown above. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala' \parencite{IntroductionStainless091}). 
+Thus, EquiDafny outperforms the standard Dafny verifier. In particular, the tool is able to verify the equivalence of \mintinline{lexer.py:CustomLexer}|insertRandomSortedM| and \mintinline{lexer.py:CustomLexer}|insertRandomSorted1| as shown above. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala' \parencite{IntroductionStainless091}). 
