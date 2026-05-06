@@ -46,7 +46,7 @@
 
 \begin{document}
 
-\input{title/title.tex}
+\include{title/title}
 
 \footnote{In abstract, show outcome of evaluation}
 
@@ -56,15 +56,14 @@ Two programs are equivalent if they produce the same output for any input. Provi
 
 \tableofcontents
 
-\input{introduction.tex}
-\input{background.tex}
-\input{audit.tex}
-% \input{plans.tex}
-\input{design.tex}
-\input{implementation.tex}
-\input{evaluation.tex}
-\input{conclusions.tex}
-\input{declarations.tex}
+\include{introduction}
+\include{background}
+% \include{plans}
+\include{design}
+\include{implementation}
+\include{evaluation}
+\include{conclusions}
+\include{declarations}
 
 \footnote{appendix: short diff between my dafny and actual dafny}
 
