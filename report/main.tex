@@ -27,6 +27,11 @@
     bgcolor=gray!5,
 }
 
+% Disable minted temporarily
+\usepackage{verbatim}
+\renewenvironment{minted}[2][]{\verbatim}{\endverbatim}
+\DeclareRobustCommand{\mintinline}[2]{{\ttfamily #2}}
+
 % Hyperlink settings
 \usepackage{hyperref}
 % Define colours
@@ -42,7 +47,7 @@
 \usepackage{cleveref}
 
 \title{Proving Program Equivalence In Dafny}
-\author{Nathaniel Victor}
+\author{Nathaniel Victor} 
 
 \begin{document}
 

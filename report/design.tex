@@ -147,8 +147,8 @@ lemma lengthEquivalence<T>(l: List<T>)
 }
 \end{minted}
 %
-
-The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \mintinline{lexer.py:CustomLexer}|A| and \mintinline{lexer.py:CustomLexer}|B|, the expressions \mintinline{lexer.py:CustomLexer}|A && B| and \mintinline{lexer.py:CustomLexer}|if A then B else false| are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+% TODO: Wrap A && B in inline code
+The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \mintinline{lexer.py:CustomLexer}|A| and \mintinline{lexer.py:CustomLexer}|B|, the expressions A \&\& B and \mintinline{lexer.py:CustomLexer}|if A then B else false| are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
 
 \footnote{Translate one into the other, which way round?}
 

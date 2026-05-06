@@ -353,23 +353,24 @@ Therefore, to prove the equivalence of two functions that both use helper functi
 
 \subsection{Generating Auxiliary Lemmas}\label{sec:auxiliary-lemmas}
 
-Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two functions \mintinline{lexer.py:CustomLexer}|limit3_1| and \mintinline{lexer.py:CustomLexer}|limit3_2|, which attempt to compute the triangular number of a given integer \mintinline{lexer.py:CustomLexer}|n| (the functions return \mintinline{lexer.py:CustomLexer}|n| when n is negative):
+Sometimes, to prove the equivalence of two functions, Dafny requires helper lemmas that will be difficult to generate automatically, since they require an understanding of what the functions being compared do. For example, consider the following two functions \mintinline{lexer.py:CustomLexer}|limitM| and \mintinline{lexer.py:CustomLexer}|limit1|, which attempt to compute the triangular number of a given integer \mintinline{lexer.py:CustomLexer}|n| (the functions return \mintinline{lexer.py:CustomLexer}|n| when n is negative):
+
 \begin{minted}{lexer.py:CustomLexer}
-function limit3_1(n: int): int {
+function limitM(n: int): int {
   if (n <= 1) then n
-  else n + limit3_1(n-1)
+  else n + limitM(n-1)
 }
 
-function limit3_2(n: int): int {
+function limit1(n: int): int {
   if (n <= 1) then n
   else
-    var r := limit3_2(n-1);
+    var r := limit1(n-1);
     if (r >= 0) then n + r
     else r
 }
 \end{minted}
 %
-The main difference between these two functions is in the \mintinline{lexer.py:CustomLexer}|else| branch of the \mintinline{lexer.py:CustomLexer}|limit3_2| function, where it will either output \mintinline{lexer.py:CustomLexer}|n + r| or \mintinline{lexer.py:CustomLexer}|r|, depending on whether \mintinline{lexer.py:CustomLexer}|r >= 0|. However, to reach this \mintinline{lexer.py:CustomLexer}|else| branch, we know that \mintinline{lexer.py:CustomLexer}|n| must be greater than or equal to 2, so \mintinline{lexer.py:CustomLexer}|n - 1| must be at least 1. Therefore, \mintinline{lexer.py:CustomLexer}|limit3_2(n-1)| will output a triangular number, which must be non-negative. This means that we should be able to prove that \mintinline{lexer.py:CustomLexer}|r| is always non-negative, so \mintinline{lexer.py:CustomLexer}|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
+The main difference between these two functions is in the \mintinline{lexer.py:CustomLexer}|else| branch of the \mintinline{lexer.py:CustomLexer}|limit1| function, where it will either output \mintinline{lexer.py:CustomLexer}|n + r| or \mintinline{lexer.py:CustomLexer}|r|, depending on whether \mintinline{lexer.py:CustomLexer}|r >= 0|. However, to reach this \mintinline{lexer.py:CustomLexer}|else| branch, we know that \mintinline{lexer.py:CustomLexer}|n| must be greater than or equal to 2, so \mintinline{lexer.py:CustomLexer}|n - 1| must be at least 1. Therefore, \mintinline{lexer.py:CustomLexer}|limit1(n-1)| will output a triangular number, which must be non-negative. This means that we should be able to prove that \mintinline{lexer.py:CustomLexer}|r| is always non-negative, so \mintinline{lexer.py:CustomLexer}|n + r| will always be returned. Dafny requires some help to realise this, and to prove equivalence:
 
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceLimit3_Helper(n: int)
@@ -549,13 +550,13 @@ lemma equivalenceSub(x: int, y: int)
 %
 In addition, if at least one of the functions requires a lemma or an assertion to prove termination, this must be copied into the equivalence lemma as well. For example, here are two implementations of a function to reduce a list down to its unique elements:
 \begin{minted}{lexer.py:CustomLexer}
-function solution_2(lst: List<int>): List<int>
+function solution2(lst: List<int>): List<int>
   decreases(length(lst)) {
   match lst {
     case Nil        => Nil
     case Cons(hd, tl) =>
       lemM(hd, tl);
-      Cons(hd, solution_2(drop_2(tl, hd)))
+      Cons(hd, solution2(drop2(tl, hd)))
   }
 }
 
@@ -570,24 +571,24 @@ function uniq2(lst: List<int>): List<int>
 }
 \end{minted}
 %
-The functions \mintinline{lexer.py:CustomLexer}|drop_2| and \mintinline{lexer.py:CustomLexer}|drop| are helper functions that remove all occurrences of an integer from a list of integers. The definitions of these functions are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
+The functions \mintinline{lexer.py:CustomLexer}|drop2| and \mintinline{lexer.py:CustomLexer}|drop| are helper functions that remove all occurrences of an integer from a list of integers. The definitions of these functions are irrelevant for this example, so I will omit them. All that is required is that they are equivalent, when the arguments are matched correctly:
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceDrop(a: int, lst: List<int>)
-  ensures (drop(a, lst) == drop_2(lst, a))
+  ensures (drop(a, lst) == drop2(lst, a))
 {}
 \end{minted}
 %
-To prove termination, Dafny requires the lists inputted into the recursive calls to \mintinline{lexer.py:CustomLexer}|solution_2| and \mintinline{lexer.py:CustomLexer}|uniq2| to be `smaller' than the lists provided in the original calls. Therefore, the outputs of \mintinline{lexer.py:CustomLexer}|drop_2| and \mintinline{lexer.py:CustomLexer}|drop| must be `smaller' than the original lists. Dafny cannot infer this by itself, therefore, the user must explicitly provide lemmas. \mintinline{lexer.py:CustomLexer}|solution_2| and \mintinline{lexer.py:CustomLexer}|uniq2| use the lemmas \mintinline{lexer.py:CustomLexer}|lemM| and \mintinline{lexer.py:CustomLexer}|lem2| respectively for this purpose. These lemmas are equivalent, so I will only provide \mintinline{lexer.py:CustomLexer}|lem2|. For this example, it is sufficient to prove one list is `smaller' than another by using their lengths:
+To prove termination, Dafny requires the lists inputted into the recursive calls to \mintinline{lexer.py:CustomLexer}|solution2| and \mintinline{lexer.py:CustomLexer}|uniq2| to be `smaller' than the lists provided in the original calls. Therefore, the outputs of \mintinline{lexer.py:CustomLexer}|drop2| and \mintinline{lexer.py:CustomLexer}|drop| must be `smaller' than the original lists. Dafny cannot infer this by itself, therefore, the user must explicitly provide lemmas. \mintinline{lexer.py:CustomLexer}|solution2| and \mintinline{lexer.py:CustomLexer}|uniq2| use the lemmas \mintinline{lexer.py:CustomLexer}|lemM| and \mintinline{lexer.py:CustomLexer}|lem2| respectively for this purpose. These lemmas are equivalent, so I will only provide \mintinline{lexer.py:CustomLexer}|lem2|. For this example, it is sufficient to prove one list is `smaller' than another by using their lengths:
 \begin{minted}{lexer.py:CustomLexer}
 lemma lem2(a: int, lst: List<int>)
   ensures length(drop(a, lst)) <= length(lst)
 {}
 \end{minted}
 %
-Using \mintinline{lexer.py:CustomLexer}|equivalenceDrop|, Dafny is able to prove the equivalence of \mintinline{lexer.py:CustomLexer}|solution_2| and \mintinline{lexer.py:CustomLexer}|uniq2|, but only if the user explicitly calls \mintinline{lexer.py:CustomLexer}|lem2|:
+Using \mintinline{lexer.py:CustomLexer}|equivalenceDrop|, Dafny is able to prove the equivalence of \mintinline{lexer.py:CustomLexer}|solution2| and \mintinline{lexer.py:CustomLexer}|uniq2|, but only if the user explicitly calls \mintinline{lexer.py:CustomLexer}|lem2|:
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalence_solution2_uniq2(lst: List<int>)
-  ensures (solution_2(lst) == uniq2(lst))
+  ensures (solution2(lst) == uniq2(lst))
   decreases(length(lst))
 {
   match lst
