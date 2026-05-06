@@ -14,7 +14,6 @@ private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 // TODO: Parse with Dafny parser first
 @main
 def main(): Unit = {
-  Thread.sleep(10000)
   scalaExamples.foreach(jsonExample => {
     val config = ujson.read(os.read(jsonExample))
     val scalaFile = dafnyPath / config("file").str
