@@ -22,21 +22,6 @@ function isSortedR(l: List<int>): bool
   case Cons(x, xs) => loop(x, xs)
 }
 
-// Defining isSortedB
-function isSortedB(l: List<int>): bool
-{
-  match l
-  case Nil => true
-  case Cons(x, Nil) => isSortedB(Nil)
-  case Cons(x, Cons(y, ys)) => x <= y && isSortedB(Cons(y, ys))
-}
-
-// Proving equivalence of both functions
-// Dafny can prove this automatically
-lemma isSortedEquivalence(l: List<int>)
-  ensures isSortedR(l) == isSortedB(l)
-{}
-
 // Defining isSortedC
 
 function chk(l: List<int>, p: int, a: bool): bool
@@ -70,13 +55,4 @@ lemma isSortedEquivalence2(l: List<int>)
   case Nil => {}
   case Cons(x, xs) =>
     isSortedEquivalence2Helper(x, xs);
-}
-
-// Prove equivalence of isSortedC with isSortedB
-// Dafny needs help again
-lemma isSortedEquivalence3(l: List<int>)
-  ensures isSortedC(l) == isSortedB(l)
-{
-  isSortedEquivalence(l);
-  isSortedEquivalence2(l);
 }

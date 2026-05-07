@@ -17,21 +17,6 @@ function norm(l: List<int>, f: int): int {
     case _   => f
 }
 
-// CANDIDATE 1
-
-function max1(l: List<int>): int
-  decreases(l) {
-  match l {
-    case Nil           => 42
-    case Cons(hd, Nil) => hd
-    case Cons(hd, tl)    => if (hd > max1(tl)) then hd else max1(tl)
-  }
-}
-
-lemma equivalenceMax1(l: List<int>)
-  ensures (norm(l, max1(l)) == norm(l, maxM(l)))
-{}
-
 // CANDIDATE 3
 
 function length<T>(l: List<T>): nat
