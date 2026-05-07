@@ -1,9 +1,5 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
-\footnote{metric scoring: how much user assistance is needed, different kinds of user annotations have different difficulty levels to the user}
-\footnote{Also need system profiling}
-
-\footnote{compare with stainless without dragana's tool}
 \footnote{Explain why some tests fail, with example}
 
 \section{Benchmark Comparison}
@@ -12,15 +8,11 @@ I tested EquiDafny on a dataset of 51 test files. These files were either conver
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|}
+  \begin{tabular}{|c|c|c|c|}
     \hline
-    Tool & Tests Verified (out of 51) \\
+    Tool & Dafny & EquiDafny & Stainless \\
     \hline
-    EquiDafny & 44 \\
-    \hline
-    Dafny Verifier with bodyless equivalence lemmas & 20 \\
-    \hline
-    Stainless equivalence checker & 50 \\
+    Tests Verified (out of 51) & 20 & 44 & 50 \\
     \hline
   \end{tabular}
   \caption{EquiDafny evaluation results}
@@ -64,7 +56,7 @@ After running EquiDafny on every test file, I measured the average time the tool
   \label{tbl:profiling-results}
 \end{table}
 
-Dafny verification takes significantly more time on average than any other component. The vast majority of this time is likely spent by the Z3 solver. This is expected, since proving program equivalence is a difficult problem in general. However, the parsing component also takes a significant amount of time. I used async-profiler to generate CPU and Memory Allocation flame graphs to attempt to diagnose this issue.
+Dafny verification takes significantly more time on average than any other component. The vast majority of this time is likely spent by the Z3 solver. This is expected, since proving program equivalence is a difficult problem in general. However, the parsing component also takes a significant amount of time. I used async-profiler to generate CPU and Memory Allocation flame graphs to attempt to diagnose this issue. All references to Parsley are highlighted in purple. 
 
 \begin{figure}[ht]
      \centering
@@ -83,3 +75,5 @@ Dafny verification takes significantly more time on average than any other compo
      \caption{Flame Graphs}
      \label{fig:flame-graphs}
 \end{figure}
+
+The flame graphs demonstrate that Parsley accounts for a significant amount of both EquiDafny's CPU and memory usages. The Parsley stack traces are also very deep (this could not easily be demonstrated in the above figures), reaching several hundreds of blocks deep. Specifically, the majority of the Parsley usages occur in `parsley/internal/deepembedding', where the parser is processed before it is executed. 
