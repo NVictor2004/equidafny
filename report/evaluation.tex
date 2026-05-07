@@ -49,15 +49,15 @@ Despite any assistance I provide, the Dafny verifier is unable to prove these fu
 
 \section{System Profiling}
 
-After running EquiDafny on every test file, I measured the average time the tool spends in each of the 4 main components: parsing, translation, equivalence lemma generation and formatting. The results are shown below.
+After running EquiDafny on every test file, I measured the average time the tool spends in each of the 5 main components: parsing, translation, lemma generation, formatting and Dafny verification. The results are shown below.
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|c|c|c|}
+  \begin{tabular}{|c|c|c|c|c|c|}
     \hline
-    Phase & Parsing & Translation & Equivalence lemma generation & Formatting \\
+    Phase & Parsing & Translation & Lemma generation & Formatting & Dafny verification \\
     \hline
-    Average Time (ms) & 15.016 & 1.892 & 1.549 & 1.725 \\
+    Average Time (ms) & 15.016 & 1.892 & 1.549 & 1.725 & 1517.340 \\
     \hline
   \end{tabular}
   \caption{Average time spent in each phase}
