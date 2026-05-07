@@ -6,6 +6,8 @@
 \footnote{compare with stainless without dragana's tool}
 \footnote{Explain why some tests fail, with example}
 
+\section{Benchmark Comparison}
+
 I tested EquiDafny on a dataset of 51 test files. These files were either converted from the Stainless equivalence tests or written myself. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:evaluation-results}:
 
 \begin{table}[ht]
@@ -44,3 +46,7 @@ function repeat2<A>(n: int, f: A -> A): A -> A
 \end{minted}
 
 Despite any assistance I provide, the Dafny verifier is unable to prove these functions equivalent.
+
+\section{System Profiling}
+
+% (15.01569536,1.89232732,1.5493749,1.72486034) in milliseconds

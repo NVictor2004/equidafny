@@ -14,15 +14,37 @@ private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 // TODO: Parse with Dafny parser first
 @main
 def main(): Unit = {
+  var totalParsing = 0.0
+  var totalTranslation = 0.0
+  var totalEquivalence = 0.0
+  var totalFormatting = 0.0
   scalaExamples.foreach(jsonExample => {
     val config = ujson.read(os.read(jsonExample))
     val scalaFile = dafnyPath / config("file").str
+    val file = os.read(scalaFile)
 
-    val parsedOutput = program.parse(os.read(scalaFile)).get
+    var before = System.nanoTime
+    val parsedOutput = program.parse(file).get
+    var elapsed = System.nanoTime - before
+    totalParsing += elapsed
+
+    before = System.nanoTime
     val translatedOutput = translateProgram(parsedOutput, config)
-    val equivalenceOutput = programEquivalence(translatedOutput)
+    elapsed = System.nanoTime - before
+    totalTranslation += elapsed
 
-    val outputFilePath = outputPath / scalaFile.last
-    formatProgram(equivalenceOutput, outputFilePath.toString)
+    before = System.nanoTime
+    val equivalenceOutput = programEquivalence(translatedOutput)
+    elapsed = System.nanoTime - before
+    totalEquivalence += elapsed
+
+    val outputFilePath = (outputPath / scalaFile.last).toString
+
+    before = System.nanoTime
+    formatProgram(equivalenceOutput, outputFilePath)
+    elapsed = System.nanoTime - before
+    totalFormatting += elapsed
   })
+  val number = scalaExamples.length
+  print(totalParsing / number, totalTranslation / number, totalEquivalence / number, totalFormatting / number)
 }
