@@ -232,8 +232,6 @@ lemma isSortedEquivalence(l: List<int>)
 \end{minted}
 %
 
-\footnote{Why does it provide an incorrect counter example?}
-
 However, it incorrectly provides \mintinline{lexer.py:CustomLexer}|Cons(-38, Cons(7681, Nil))| as a counterexample. As found by \textcite{putrueleMaskDToolMeasuring2022}, counterexamples may sometimes be incorrect due to the Z3 solver being incomplete. I extended the above proof to include and use a helper lemma, as shown below:
 \begin{minted}{lexer.py:CustomLexer}
 lemma isSortedEquivalenceHelper(x: int, xs: List<int>)

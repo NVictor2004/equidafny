@@ -1,87 +1,102 @@
 \chapter{Introduction}
 
 % NOTE! Introduction only includes things that work! Summary of entire project!
-\footnote{Clean up introduction using submission knowledge}
+\section{Background and Contributions}\label{sec:intro-background}
 
-\section{Background and Objectives}\label{sec:intro-background}
-
-Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. This can be formally defined using Hoare Triples: two programs \(C_1\) and \(C_2\) are equivalent if, for arbitrary precondition \(P\) and postcondition \(Q\): \[ \models \{P\}C_1\{Q\} \iff \models \{P\}C_2\{Q\} \]
+Proving Program Equivalence is the act of verifying that, for any input, two programs always give the same output. Formally, functions \(f\) and \(g\) are defined as equivalent if, for all arguments \(x_1\) to \(x_n\), and arguments \(y_1\) to \(y_n\) being a permutation of arguments \(x_1\) to \(x_n\): \[ f(x_1, \ldots, x_n) = g(y_1, \ldots, y_n) \]
 
 If this can be proven, then these programs are equivalent; one of these programs can be substituted for the other without affecting the behaviour of the overall system. This has applications in a variety of fields. For example, compiler developers can use this to ensure that optimisations always preserve the intended behaviour of the original program.
 
-Therefore, Program Equivalence is a critical field in Computer Science. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of tools are being developed to help prove equivalence automatically \parencite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}. These tools can make proving equivalence significantly easier for developers, especially when working with large codebases. They can also generate counterexamples when equivalence cannot be proven, making debugging much easier. The main drawback of these tools is that, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. The average software developer will not have the necessary expertise to provide these, thus, these tools will be inaccessible to them.
+Therefore, Program Equivalence is a critical field in Computer Science. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of program verifiers are being developed to help developers write proofs of program equivalence, including Dafny~\cite{leinoDafnyAutomaticProgram2010} and KeY~\cite{KeYBook2016}. These verifiers automate much of the proof generation and can generate counterexamples when equivalence cannot be proven. However, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. Recently, many equivalence checkers are being developed to make proving equivalence even easier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012,milovancevicProvingDisprovingEquivalence2023,FelsingEtAl,GodlinEtAl}.
 
-Therefore, the general aim of this project is to build a new tool, learning from the current state-of-the-art tools, that decreases the level of user assistance required as much as possible, thus allowing the average software developer to better reap the benefits of using program equivalence tools in their work. In particular, the main objectives of this project are as follows:
+Therefore, the aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. In particular, the main contributions of this project are as follows:
 
 \begin{itemize}
-    \item \nameref{sec:literature-review}: To describe the current state-of-the-art tools for proving program equivalence
-    \item \nameref{sec:audit}: To explore Dafny's capabilities in proving program equivalence
-    \item \nameref{chp:implementation}: To implement a tool on top of the Dafny verifier that will allow the user to prove the equivalence of two Dafny functions with as little user assistance as possible
-    \item \nameref{chp:evaluation}: To evaluate this tool against the current state-of-the-art tools
+    \item \nameref{sec:literature-review}: Described the current state-of-the-art tools for proving program equivalence
+    \item \nameref{sec:audit}: Explored Dafny's capabilities in proving program equivalence
+    \item Dataset of Equivalence tests: The conversion of Stainless tests into a dataset of pairs of equivalent Dafny functions
+    \item \nameref{chp:design}: Development of the Function Merging algorithm to automatically generate equivalence lemmas and to address the challenges the Dafny verifier faces 
+    \item \nameref{chp:implementation}: Implemented EquiDafny: a command-line tool on top of the Dafny verifier
+    \item \nameref{chp:evaluation}: Evaluated EquiDafny against the Dafny verifier and the Stainless equivalence checker
 \end{itemize}
 
-After describing the current state-of-the-art tools, this project will focus solely on the Dafny program verifier. Dafny is a popular tool under active development by Amazon \parencite{leinoDafnyAutomaticProgram2010}, therefore, building a tool on Dafny would be highly relevant to modern software engineering projects. This is especially true since Dafny can be compiled into a variety of popular languages, including C\#, Java and Python, allowing verified code to easily be integrated into existing codebases. 
+After describing the current state-of-the-art tools, this project focussed solely on the Dafny program verifier. Dafny is a popular tool used by Amazon \parencite{leinoDafnyAutomaticProgram2010}, therefore, building a tool on Dafny would be highly relevant to modern software engineering projects. This is especially true since Dafny can be compiled into a variety of popular languages, including C\#, Java and Python, allowing verified code to easily be integrated into existing codebases. 
 
-To find an understanding of Dafny's capabilities, I used the set of program equivalence tests in the GitHub repository for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. After converting them from Scala to Dafny I attempted to prove equivalence for each pair of functions. Using this I identified a number of challenges Dafny encounters. One of the main challenges involved generating equivalence lemmas for helper functions, and calling them with the correct arguments and under the correct conditions. Since the Dafny verifier often proves lemmas through induction, further challenges included the verifier often requiring a variant to prove termination, and sometimes requiring an explicit statement of the induction scheme. An example that demonstrates all three of these challenges is as follows. Here are two functions called \mintinline{lexer.py:CustomLexer}|insertRandomSortedM| and \mintinline{lexer.py:CustomLexer}|insertRandomSorted1| that each generate a specified number of random numbers, and insert them into a sorted list while maintaining its order.
+To find an understanding of Dafny's capabilities, I used the set of program equivalence tests for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. After converting them from Scala to Dafny I attempted to prove equivalence for each pair of functions. Using this I identified a number of challenges Dafny encounters. I will present an overview of EquiDafny with an example that demonstrates three of the challenges I identified. Below are two equivalent functions \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1|. Each function generates a specified number of random numbers, and inserts them into a sorted list while maintaining its order. In both functions, the parameter `seed' is the current random generation seed, `next' is the random generation function outputting the next seed and the generated number, `count' is the number of random numbers to generate and `xs' is the current sorted list.
 
+The first function uses the helper function \mintinline{lexer.py:CustomLexer}|insertM| to insert a single number into the sorted list while maintaining its order:
 \begin{minted}{lexer.py:CustomLexer}
-function insertRandomSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, xs: List<int>): List<int>
+function insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), 
+                             count: int, xs: List<int>): List<int>
   {
   if (count <= 0) then xs
   else
     var (nxtS, t) := next(seed);
-    insertRandomSortedM(nxtS, next, count - 1, insertM(xs, t))
+    insertSortedM(nxtS, next, count - 1, insertM(xs, t))
 }
 
-function insertRandomSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: List<int>, count: int): List<int>
-  decreases count {
-  if (count <= 0) then xs
-  else
-    var (nxtS, t) := next(seed);
-    insertRandomSorted1(nxtS, next, insert1(t, xs), count - 1)
-}
-\end{minted}
-%
-In both functions, the parameter `seed' is the current random generation seed, `next' is the random generation function outputting the next seed and the generated number, `count' is the number of random numbers to generate and `xs' is the current sorted list. Each function uses a helper function called \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| respectively to insert a single number into a sorted list while maintaining its order:
-
-\begin{minted}{lexer.py:CustomLexer}
 function insertM(xs: List<int>, t: int): List<int>
   decreases xs {
   match xs {
     case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
-      if (t <= hd) then Cons(t, xs)
-      else Cons(hd, insertM(tl, t))
+      if (t <= hd) then Cons(t, xs) else Cons(hd, insertM(tl, t))
   }
+}
+\end{minted}
+%
+The second function uses the same structure. It uses the helper function \mintinline{lexer.py:CustomLexer}|insert1| in the same way as \mintinline{lexer.py:CustomLexer}|insertM|:
+\begin{minted}{lexer.py:CustomLexer}
+function insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int),
+                             xs: List<int>, count: int): List<int>
+  decreases count {
+  if (!(count <= 0)) then 
+    var (nxtS, t) := next(seed);
+    insertSorted1(nxtS, next, insert1(t, xs), count - 1)
+  else xs
 }
 
 function insert1(t: int, xs: List<int>): List<int>
   decreases xs {
   match xs {
-    case Nil => Cons(t, Nil)
     case Cons(hd, tl) =>
-      if (t <= hd) then Cons(t, xs)
-      else Cons(hd, insert1(t, tl))
+      if (!(t <= hd)) then Cons(hd, insert1(t, tl)) else Cons(t, xs)
+    case Nil => Cons(t, Nil)
   }
 }
 \end{minted}
 %
-
-The Dafny verifier requires the following lemmas to prove the equivalence of \mintinline{lexer.py:CustomLexer}|insertRandomSortedM| and \mintinline{lexer.py:CustomLexer}|insertRandomSorted1|:
-
+The user can create an equivalence lemma for this example:
 \begin{minted}{lexer.py:CustomLexer}
-lemma equivalenceInsert(t: int, xs: List<int>)
+lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int), 
+                           xs: List<int>, count: int)
+  ensures insertSorted1(seed, next, xs, count) == 
+            insertSortedM(seed, next, count, xs)
+{}
+\end{minted}
+%
+However, the Dafny verifier is unable to prove this lemma automatically due to three challenges. 
+
+\paragraph{First:} Generate and call helper lemmas for helper functions. The \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| functions both use the helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \mintinline{lexer.py:CustomLexer}|eqInsert|, under the condition \mintinline{lexer.py:CustomLexer}|count > 0| and with the correct arguments.
+\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant for proving termination (\mintinline{lexer.py:CustomLexer}|count|), copied from the \mintinline{lexer.py:CustomLexer}|InsertSorted1| function.
+\paragraph{Third:} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \mintinline{lexer.py:CustomLexer}|eqInsertSorted| lemma to complete the proof. 
+
+Thus, EquiDafny generates the following:
+\begin{minted}{lexer.py:CustomLexer}
+lemma eqInsert(t: int, xs: List<int>)
   ensures (insert1(t, xs) == insertM(xs, t))
 {}
 
-lemma equivalenceInsertRandomSorted<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: List<int>, count: int)
-  ensures (insertRandomSorted1(seed, next, xs, count) == insertRandomSortedM(seed, next, count, xs))
+lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int), 
+                           xs: List<int>, count: int)
+  ensures (insertSorted1(seed, next, xs, count) 
+           == insertSortedM(seed, next, count, xs))
   decreases count
 {
   if count > 0 {
     var (nxtS, t) := next(seed);
-    equivalenceInsertRandomSorted(nxtS, next, insert1(t, xs), count - 1);
-    equivalenceInsert(t, xs);
+    eqInsertSorted(nxtS, next, insert1(t, xs), count - 1);
+    eqInsert(t, xs);
   }
 }
 \end{minted}
@@ -89,36 +104,25 @@ lemma equivalenceInsertRandomSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 
 \section{Implementation and Evaluation}
 
-The aim of this project is to implement a tool to address the challenges identified above. In particular, the main contributions of this project are as follows:
-
-\begin{itemize}
-    \item Dataset of Equivalence tests: The conversion of Stainless tests into a dataset of pairs of equivalent Dafny functions
-    \item Novel Algorithm: Development of the Function Merging algorithm to automatically generate equivalence lemmas 
-    \item Tool: Implemented EquiDafny: a command-line tool that implements this algorithm
-    \item \nameref{chp:evaluation}: An evaluation of EquiDafny against the Dafny verifier and the Stainless equivalence checker
-\end{itemize}
-
-The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. This algorithm has two outputs. The first is a set of mappings between the parameters of one of the functions to the parameters of the other. These mappings describe which parameters have the same purpose across the two functions. These mappings are used to ensure arguments are inserted correctly into the function calls within the postconditions of each lemma. The second output is the body of each lemma. This includes variable declarations and calls to any equivalence lemmas with the correct arguments and under the correct conditions. Additionally, the Function Merging algorithm involves many complex technical details, including how to merge function call arguments correctly and how to merge mutually recursive functions. These details are described in \Cref{sec:technical-details}. 
+The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together.
+This algorithm has two outputs. The first is a set of mappings between the parameters of one function to the parameters of the other. This is used to describe how the arguments passed into one function in an equivalence lemma must be permuted to form the arguments to the second function.
+The second output is the body of each lemma. In the above example, this involved the call to the helper equivalence lemma \mintinline{lexer.py:CustomLexer}|eqInsert|. Additionally, the algorithm involves merging function call arguments correctly and merging mutually recursive functions (these technical details are described in \Cref{sec:technical-details}).
 
 EquiDafny is implemented in Scala. The tool is called by passing in a single JSON configuration file. This file provides any important details EquiDafny needs to run, including the names of the functions to be compared and a path to a single Dafny file containing all necessary source code. EquiDafny is split into several components including parsing, translation and formatting. The parsing component parses the initial Dafny source file (implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}). The translation component converts the data structure outputted by the parser into a structure that is easier to work with. Finally, the formatting component outputs the final equivalence lemmas to a file so that they can be checked by the Dafny verifier.
 
-After creating a few more tests myself, I tested EquiDafny on a dataset of 51 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:intro-results}:
+After creating a few more tests myself, I tested EquiDafny on a dataset of 51 test files. This dataset is publicly available at \\\url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:intro-results}.
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|}
+  \begin{tabular}{|c|c|c|c|}
     \hline
-    Tool & Tests Verified (out of 51) \\
+    Tool & Dafny & EquiDafny & Stainless \\
     \hline
-    EquiDafny & 44 \\
-    \hline
-    Dafny Verifier with bodyless equivalence lemmas & 20 \\
-    \hline
-    Stainless equivalence checker & 50 \\
+    Tests Verified (out of 51) & 20 & 44 & 50 \\
     \hline
   \end{tabular}
   \caption{EquiDafny evaluation results}
   \label{tbl:intro-results}
 \end{table}
-
-Thus, EquiDafny outperforms the standard Dafny verifier. In particular, the tool is able to verify the equivalence of \mintinline{lexer.py:CustomLexer}|insertRandomSortedM| and \mintinline{lexer.py:CustomLexer}|insertRandomSorted1| as shown above. However, the Stainless equivalence checker is still more effective, as the tool is optimised for proving equivalence between programs within the functional paradigm (specifically functions that can be written in `Pure Scala' \parencite{IntroductionStainless091}). 
+% 
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. In particular, the tool is able to verify the equivalence of \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| as shown above.
