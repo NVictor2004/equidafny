@@ -63,3 +63,5 @@ After running EquiDafny on every test file, I measured the average time the tool
   \caption{Average time spent in each phase}
   \label{tbl:profiling-results}
 \end{table}
+
+Dafny verification takes significantly more time on average than any other component. The vast majority of this time is likely spent by the Z3 solver. This is expected, since proving program equivalence is a difficult problem in general. However, the parsing component also takes a significant amount of time. I used async-profiler to generate CPU and Memory Allocation flame graphs to attempt to diagnose this issue. 
