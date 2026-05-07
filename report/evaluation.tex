@@ -49,4 +49,17 @@ Despite any assistance I provide, the Dafny verifier is unable to prove these fu
 
 \section{System Profiling}
 
-% (15.01569536,1.89232732,1.5493749,1.72486034) in milliseconds
+After running EquiDafny on every test file, I measured the average time the tool spends in each of the 4 main components: parsing, translation, equivalence lemma generation and formatting. The results are shown below.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    Phase & Parsing & Translation & Equivalence lemma generation & Formatting \\
+    \hline
+    Average Time (ms) & 15.016 & 1.892 & 1.549 & 1.725 \\
+    \hline
+  \end{tabular}
+  \caption{Average time spent in each phase}
+  \label{tbl:profiling-results}
+\end{table}
