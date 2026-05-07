@@ -83,7 +83,7 @@ KEYWORDS = ('abstract',
       'yield',
       'yields')
 
-OPERATORS = ('=', '|', '=>', '<==>', '<==', '==>', '&&', '||', '==', '!=', '<', '<=', '>', '>=', '+', '-', '*', '/', '%')
+OPERATORS = ('..', '::', ':=', '!', '=', '|', '=>', '<==>', '<==', '==>', '&&', '||', '==', '!=', '<', '<=', '>', '>=', '+', '-', '*', '/', '%')
 
 class CustomLexer(RegexLexer):
     name = 'Dafny'
@@ -112,7 +112,8 @@ class CustomLexer(RegexLexer):
         ],
         'single_type': [
             (r"\n", Whitespace, "#pop"),
-            (r"[,\)\{]", Punctuation, "#pop"),
+            (r"[,\)\{;]", Punctuation, "#pop"),
+            (r"::", Operator, "#pop"),
             (r"\s+", Whitespace),
             (r"->", Operator),
             (r"\b[A-Za-z_?\'][A-Za-z0-9_?\']*\b", Keyword.Type),
