@@ -26,6 +26,6 @@ function transform(xs: List<Bean>): (int, int)
 {count(xs)}
 
 lemma finalBeanList_finalBeanPair_Equivalence(jar: List<Bean>)
-ensures (finalBeanList(jar) == finalBeanPair(jar))
+ensures (finalBeanList(jar) == finalBeanPair(transform(jar)))
 {{}}
 

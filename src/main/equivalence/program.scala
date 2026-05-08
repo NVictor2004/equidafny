@@ -43,10 +43,7 @@ def mergeFunction(
 
   val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
       case (accMappings, (modelType, modelCount)) => {
-          val candType = program.typeFunctions.get(modelType) match {
-            case None => modelType
-            case Some(func) => func.returnType
-          }
+          val candType = program.typeFunctions.get(modelType).fold(modelType)(_.returnType)
           val candCount = candTypeCounts.getOrElse(candType, 0)
           if (modelCount != candCount) {
               throw new IllegalArgumentException("Types can't be matched")
@@ -73,7 +70,8 @@ def mergeFunction(
 
   // Generate remaining mappings
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
-      val (candName, _) = candParamsLeft.find((_, currentType) => currentType == program.typeFunctions.get(modelType).fold(modelType)(_.returnType)).get
+      val candType = program.typeFunctions.get(modelType).fold(modelType)(_.returnType)
+      val (candName, _) = candParamsLeft.find((_, currentType) => currentType == candType).get
       candParamsLeft = candParamsLeft.removed(candName)
       (candName, modelName)
   })
@@ -82,11 +80,20 @@ def mergeFunction(
   currentMappings ++= remainingMappings
   val mapping = currentMappings.toMap
 
-  val modelIdents = model.params.keys
-  val candidateIdents = candidate.params.keys.map(paramName => mapping(paramName))
-
-  val modelMap = ListMap(model.params.zip(modelIdents).map((p, i) => (p._1, Ident(i, Nil))).toList*)
-  val candMap = ListMap(candidate.params.zip(candidateIdents).map((p, i) => (p._1, Ident(i, Nil))).toList*)
+  val modelMap = ListMap(model.params.map((name, _) => (name, Ident(name, Nil))).toList*)
+  val candMap = ListMap(candidate.params.map((name, _) => {
+    val modelName = mapping(name)
+    val modelType = model.params(modelName)
+    val ident = Ident(modelName, Nil)
+    val finalArg = program.typeFunctions.get(modelType) match {
+      case None => ident
+      case Some(typeFunc) => {
+        val paramName = typeFunc.params.keys.head
+        TrueFunctionCall(typeFunc.name, List(ListMap(paramName -> ident)))
+      }
+    }
+    (name, finalArg)
+  }).toList*)
 
   val (params, modelArgs, candArgs) = getArgData(model.params, List(modelMap), List(candMap), model.returnType, model.body.basicExpr)
 
