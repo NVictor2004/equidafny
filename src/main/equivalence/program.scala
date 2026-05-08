@@ -37,10 +37,12 @@ def mergeFunction(
   currentLemmas += (model.name -> None)
 
   // Mappings are generated through merging the function bodies and through type matching
-  // Find Type mappings
+
+  // Map the types in each set of function parameters to the number of times that type occurs
   val modelTypeCounts = mapTypesToCounts(model.params)
   val candTypeCounts = mapTypesToCounts(candidate.params)
 
+  // Generate type mappings
   val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
       case (accMappings, (modelType, modelCount)) => {
           val candType = program.typeFunctions.get(modelType).fold(modelType)(_.returnType)
@@ -80,11 +82,16 @@ def mergeFunction(
   currentMappings ++= remainingMappings
   val mapping = currentMappings.toMap
 
+  // Create mappings from parameter names to arguments
+  // These will be used to create the function calls in the lemma's postcondition
   val modelMap = ListMap(model.params.map((name, _) => (name, Ident(name, Nil))).toList*)
   val candMap = ListMap(candidate.params.map((name, _) => {
+    // The argument can either be an identifier or a function call if a type transformation is needed
     val modelName = mapping(name)
     val modelType = model.params(modelName)
     val ident = Ident(modelName, Nil)
+    // If a type transformation is needed, construct the corresponding function call
+    // Otherwise, return an identifier
     val finalArg = program.typeFunctions.get(modelType) match {
       case None => ident
       case Some(typeFunc) => {
@@ -95,11 +102,16 @@ def mergeFunction(
     (name, finalArg)
   }).toList*)
 
+  // Create further lemma parameters and function call arguments when the model and candidate functions
+  // output lambda functions
   val (params, modelArgs, candArgs) = getArgData(model.params, List(modelMap), List(candMap), model.returnType, model.body.basicExpr)
 
+  // Create the function calls to be used in the lemma's postcondition
   val modelFunctionCall = TrueFunctionCall(model.name, modelArgs)
   val candFunctionCall = TrueFunctionCall(candidate.name, candArgs)
 
+  // Use the normalisation function if provided
+  // Only use it on the original model and candidate functions, not on any helper functions
   val (finalModelFunctionCall, finalCandFunctionCall) = program.normFunction match {
     case Some(normFunction) if model.name == program.modelFunction.name => {
       val functionName = normFunction.name
@@ -110,6 +122,7 @@ def mergeFunction(
     case _ => (modelFunctionCall, candFunctionCall)
   }
 
+  // Create the equivalence lemma
   val equiv = Lemma(
     generateLemmaName(model.name, candidate.name),
     model.generic,
@@ -126,7 +139,10 @@ def mergeFunction(
       ),
     Some(BlockStmt(stmts))
   )
+
+  // Remove the mapping for the current equivalence lemma since it has finished generating
   currentLemmas -= model.name
+
   ((model.name, Some(equiv)), mapping)
 }
 
