@@ -23,19 +23,16 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
   val (data, functions, lemmas) =
     prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData))
 
+  // Find the model function
   val modelFunctionName = config("model").str
-  val candidateFunctionNames = config("candidates").arr.map(_.str)
-
-  val normFunctionName = config.obj.get("norm").map(_.str)
-  val normFunction = normFunctionName.map(name => functions.find(_.name == name).getOrElse(
-    throw new Exception(s"Normalisation function ${name} not found")
-  ))
-
   val modelFunction = functions
     .find(_.name == modelFunctionName)
     .getOrElse(
       throw new Exception(s"Model function ${modelFunctionName} not found")
     )
+  
+  // Find the candidate functions
+  val candidateFunctionNames = config("candidates").arr.map(_.str)
 
   val candidateFunctions =
     functions.filter(function => candidateFunctionNames.contains(function.name))
@@ -48,22 +45,39 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     )
   }
 
+  // Find the normalisation function, if defined
+  val normFunctionName = config.obj.get("norm").map(_.str)
+  val normFunction = normFunctionName.map(name => functions.find(_.name == name).getOrElse(
+    throw new Exception(s"Normalisation function ${name} not found")
+  ))
+
+  // Find the type transformation function, if defined
+  // Create a map from the initial type to the function
+  val typeFunctionName = config.obj.get("transform").map(_.str)
+  val typeFunction = typeFunctionName.map(name => functions.find(_.name == name).getOrElse(
+    throw new Exception(s"Type transformation function ${name} not found")
+  ))
+  val typeFunctions = typeFunction.fold(Map())(func => Map(func.params.values.head -> func))
+
+  // Create map of all remaining functions
   val helperFunctionsList = functions.filterNot(function =>
     function.name == modelFunctionName || 
     normFunctionName.fold(false)(name => function.name == name) || 
+    typeFunctionName.fold(false)(name => function.name == name) || 
     candidateFunctionNames.contains(
       function.name
     )
   )
-
   val helperFunctionsMap = helperFunctionsList.map(func => (func.name, func)).toMap
 
+  // Create and output a Program
   Program(
     data,
     modelFunction,
     candidateFunctions,
     helperFunctionsMap,
     normFunction,
+    typeFunctions,
     Nil,
     Nil,
     lemmas

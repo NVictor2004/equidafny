@@ -42,14 +42,18 @@ def mergeFunction(
   val candTypeCounts = mapTypesToCounts(candidate.params)
 
   val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
-      case (accMappings, (paramType, modelCount)) => {
-          val candCount = candTypeCounts.getOrElse(paramType, 0)
+      case (accMappings, (modelType, modelCount)) => {
+          val candType = program.typeFunctions.get(modelType) match {
+            case None => modelType
+            case Some(func) => func.returnType
+          }
+          val candCount = candTypeCounts.getOrElse(candType, 0)
           if (modelCount != candCount) {
               throw new IllegalArgumentException("Types can't be matched")
           }
           if (modelCount == 1) {
-              val modelName = model.params.find((_, currentType) => currentType == paramType).get._1
-              val candName = candidate.params.find((_, currentType) => currentType == paramType).get._1
+              val modelName = model.params.find((_, currentType) => currentType == modelType).get._1
+              val candName = candidate.params.find((_, currentType) => currentType == candType).get._1
               (candName, modelName) :: accMappings
           } else {
               accMappings
@@ -69,7 +73,7 @@ def mergeFunction(
 
   // Generate remaining mappings
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
-      val (candName, _) = candParamsLeft.find((_, currentType) => currentType == modelType).get
+      val (candName, _) = candParamsLeft.find((_, currentType) => currentType == program.typeFunctions.get(modelType).fold(modelType)(_.returnType)).get
       candParamsLeft = candParamsLeft.removed(candName)
       (candName, modelName)
   })

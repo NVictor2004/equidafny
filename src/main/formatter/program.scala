@@ -22,6 +22,7 @@ def formatProgram(
     candidateFunctions,
     helperFunctions,
     normFunction,
+    typeFunctions,
     mainLemma,
     helperLemmas,
     auxiliaryLemmas
@@ -32,6 +33,7 @@ def formatProgram(
   candidateFunctions.foreach(formatFunction)
   helperFunctions.values.foreach(formatFunction)
   normFunction.foreach(formatFunction)
+  typeFunctions.values.foreach(formatFunction)
   mainLemma.foreach(formatLemma)
   helperLemmas.foreach(formatLemma)
   auxiliaryLemmas.foreach(formatLemma)
