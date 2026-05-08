@@ -32,13 +32,13 @@ The keys `file', `model' and `candidates' are necessary for a configuration file
 
 \section{System Architecture}
 
-% TODO: System architecture diagram?
+\footnote{System architecture diagram?}
 
 EquiDafny was implemented in Scala. The tool is divided into several components. The most important component is the generation of Dafny data structures to facilitate the equivalence proof; this was described in \Cref{chp:design}. Similarly, the evaluation component is described in \Cref{chp:evaluation}. The remaining components are described in this section. 
 
 \subsection{Parsing}
 
-% Why parser combinator? And why Parsley?
+\footnote{Why parser combinator? And why Parsley?}
 
 The first component is a parser. This system is used to parse the input Dafny program into a Scala data structure, so that it can be easily processed by the rest of the system. This parser was implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}. 
 
