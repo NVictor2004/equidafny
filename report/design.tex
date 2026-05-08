@@ -224,11 +224,11 @@ function f(a: int, b: bool, c: bool): int
 function g(x: bool, y: int, z: bool): int
 \end{minted}
 %
-Parameters \mintinline{lexer.py:CustomLexer}|a| and \mintinline{lexer.py:CustomLexer}|y| can immediately be mapped together, since they are each the only \mintinline{lexer.py:CustomLexer}|int| parameter in their respective functions. However, parameters \mintinline{lexer.py:CustomLexer}|b|, \mintinline{lexer.py:CustomLexer}|c|, \mintinline{lexer.py:CustomLexer}|x| and \mintinline{lexer.py:CustomLexer}|z| cannot be mapped in this way. Parameter mappings are stored by mapping candidate function parameters to model function parameters.
+Parameters \mintinline{lexer.py:CustomLexer}|a| and \mintinline{lexer.py:CustomLexer}|y| can immediately be mapped together, since they are each the only \mintinline{lexer.py:CustomLexer}|int| parameter in their respective functions. However, parameters \mintinline{lexer.py:CustomLexer}|b|, \mintinline{lexer.py:CustomLexer}|c|, \mintinline{lexer.py:CustomLexer}|x| and \mintinline{lexer.py:CustomLexer}|z| cannot be mapped in this way. Mappings can also be generated when the model parameter's type can be transformed into the candidate parameter's type through a type transformation function (see \Cref{sec:type-transformations}). Parameter mappings are stored by mapping candidate function parameters to model function parameters.
 
 After these mappings are generated, the bodies of the functions are merged together to generate further mappings (as described in \Cref{sec:worked-example}). During the Function Merging process, the map of mappings is continuously updated. A reference to it is passed through all merging functions so that the algorithm always has access to the most up-to-date set of mappings. This is necessary when merging Function Calls (see \Cref{sec:merging-calls}). 
 
-After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with the same type. This ensures that every parameter is mapped. 
+After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with compatible types (either the same type or when the model parameter's type can be transformed into the candidate parameter's type). This ensures that every parameter is mapped. 
 
 \subsection{Mutually Recursive Functions}
 Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| which each output whether a given integer is even or not. They use the helper functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
@@ -315,3 +315,57 @@ lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
 TODO \footnote{Write this when match expressions are finished}
 
 % \subsection{Standardisation of Generic Variables}
+
+\section{Extensions}
+
+\subsection{Type Transformations}\label{sec:type-transformations}
+
+Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. For example, here are the functions \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1|. \mintinline{lexer.py:CustomLexer}|sumM| calculates the sum of a sequence of integers using the inbuilt Dafny sequence type ({lexer.py:CustomLexer}|seq|). However, \mintinline{lexer.py:CustomLexer}|sum1| calculates the sum of a list of integers using the user-defined data structure provided in \Cref{sec:list-structure}. These functions can be proven equivalent if another function is provided that transforms a Dafny \mintinline{lexer.py:CustomLexer}|seq| into the user-defined \mintinline{lexer.py:CustomLexer}|List|. One possible such function is provided below:
+\begin{minted}{lexer.py:CustomLexer}
+function seqToList(l: seq<int>): List<int> {
+    if |l| == 0 then Nil
+    else Cons(l[0], seqToList(l[1..]))
+}
+\end{minted}
+% 
+The implementations of \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| are provided below. They each use a tail recursive helper function (\mintinline{lexer.py:CustomLexer}|sumAccM| and \mintinline{lexer.py:CustomLexer}|sumAcc1| respectively) to assist in calculating the sum:
+\begin{minted}{lexer.py:CustomLexer}
+function sumM(l: seq<int>): int {
+    sumAccM(0, l)
+}
+
+function sumAccM(acc: int, l: seq<int>): int
+    decreases l
+{
+    if |l| == 0 then acc
+    else sumAccM(acc + l[0], l[1..])
+}
+
+function sum1(l: List<int>): int {
+    sumAcc1(l, 0)
+}
+
+function sumAcc1(l: List<int>, acc: int): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(h, t) => sumAcc1(t, acc + h)
+    }
+}
+\end{minted}
+% 
+Thus, \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| can be proven equivalent using the type transformation function \mintinline{lexer.py:CustomLexer}|seqToList| with the following equivalence lemmas:
+\begin{minted}{lexer.py:CustomLexer}
+lemma equivalenceHelper(acc: int, l: seq<int>)
+  ensures sumAccM(acc, l) == sumAcc1(seqToList(l), acc)
+  decreases l
+{}
+
+lemma equivalence(l: seq<int>)
+  ensures sumM(l) == sum1(seqToList(l))
+{
+    equivalenceHelper(0, l);
+}
+\end{minted}
+% 
