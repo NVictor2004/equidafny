@@ -10,10 +10,10 @@ stages:
 build-job:
   stage: build
   script:
-    - scala compile .
+    - scala-cli compile .
 
 test-job:
   stage: test
   script:
-    - scala test .
+    - scala-cli test .
 
