@@ -14,6 +14,11 @@ build-job:
 
 test-job:
   stage: test
+  before_script:
+    - apt-get update && apt-get install -y wget unzip dotnet-runtime-6.0
+    - wget https://github.com/dafny-lang/dafny/releases/download/v4.4.0/dafny-4.4.0-x64-ubuntu-20.04.zip
+    - unzip dafny-4.4.0-x64-ubuntu-20.04.zip -d /opt/dafny
+    - export PATH=$PATH:/opt/dafny/dafny
   script:
     - scala-cli test .
 
