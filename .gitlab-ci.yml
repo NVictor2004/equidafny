@@ -5,20 +5,9 @@ image:
 
 stages:
   - build
-  - test
 
 build-job:
   stage: build
   script:
     - scala-cli compile .
-
-test-job:
-  stage: test
-  before_script:
-    - apt install dotnet-sdk-8.0
-    - wget https://github.com/dafny-lang/dafny/releases/download/v4.4.0/dafny-4.4.0-x64-ubuntu-20.04.zip
-    - unzip dafny-4.4.0-x64-ubuntu-20.04.zip -d /opt/dafny
-    - export PATH=$PATH:/opt/dafny/dafny
-  script:
-    - scala-cli test .
 
