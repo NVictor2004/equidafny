@@ -1,4 +1,6 @@
 
+image: virtuslab/scala-cli:latest
+
 stages:
   - build
   - test
