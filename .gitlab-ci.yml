@@ -1,5 +1,7 @@
 
-image: virtuslab/scala-cli:latest
+image:
+  name: virtuslab/scala-cli:latest
+  entrypoint: [""]
 
 stages:
   - build
