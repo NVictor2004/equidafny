@@ -16,11 +16,11 @@ Our tool is accessed from the command line by passing in a single JSON configura
 }
 \end{minted}
 %
-The keys `file', `model' and `candidates' are necessary for a configuration file to be valid, while the keys `norm' and `transform' are optional. Their purposes are described below.
+The keys `file', `model' and `candidates' are necessary for a configuration file to be valid, while the keys `norm' and `transform' are optional. Their purposes are described below. The keys `model', `norm', `transform' and `candidates' each provide function names; if the corresponding functions cannot be found, EquiDafny throws an error. 
 
 \paragraph{file} Provides a path to a single Dafny file. This file must contain all the necessary Dafny code to perform program equivalence. This includes the model and candidate functions, all helper functions and any auxiliary lemmas.
 
-\paragraph{model} Provides the name of the single model function. If this function cannot be found, EquiDafny throws an error.
+\paragraph{model} Provides the name of the single model function.
 
 \paragraph{norm} Provides the name of a normalisation function, if one is necessary. 
 
