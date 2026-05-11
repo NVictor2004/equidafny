@@ -60,9 +60,17 @@ Since this process is very general, it is not limited to program equivalence. Fo
 
 \subsection{Stainless}
 
-\footnote{Examples of specifications and counterexamples}
-
-Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. Stainless performs these verifications by passing each part of the program through a series of transformations, until it can be used by the Inox solver \parencite{EpfllaraInox2026}. However, an important restriction of Stainless is that it only supports a subset of Scala's features. This subset only includes the functional paradigm; the full description is in the Stainless documentation. The Stainless developers called this subset `Pure Scala'.
+Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. For example, here is an implementation of a function to return the maximum of two integers~\parencite{piskacProceedings21stConference2021}. This property is enforced by the function's postcondition:
+\begin{minted}{scala}
+def max(x: Int, y: Int): Int = {
+    val d = x - y
+    if (d > 0) x
+    else y
+} ensuring(res => x <= res && y <= res && (res == x || res == y))
+\end{minted}
+%
+However, this function is incorrect due to subtraction overflow when calculating \mintinline{scala}|d|. Stainless can identify this and provides several counterexamples, for example, when \mintinline{scala}|x = 0| and \mintinline{scala}|y = -2147483648|. This can be fixed by changing the types of \mintinline{scala}|x| and \mintinline{scala}|y| to \mintinline{scala}|BigInt|. After this, Stainless confirms that the postcondition is now correct. 
+Stainless performs these verifications by passing each part of the program through a series of transformations, until it can be used by the Inox solver \parencite{EpfllaraInox2026}. However, an important restriction of Stainless is that it only supports a subset of Scala's features. This subset only includes the functional paradigm; the full description is in the Stainless documentation. The Stainless developers called this subset `Pure Scala'.
 
 One part of Stainless's functionality that is especially relevant to this work is its equivalence checker \parencite{IntroductionStainless091,milovancevicProvingDisprovingEquivalence2023}. The abilities of this system will be a great inspiration for the rest of this project. In particular, its ability to automatically generate and prove equivalence lemmas for helper functions is especially important, as this is the main contribution our tool should provide. 
 

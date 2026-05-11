@@ -24,6 +24,41 @@
   isbn = {978-3-540-78800-3}
 }
 
+@book{ahrendtDeductiveSoftwareVerification2016,
+  title = {Deductive {{Software Verification}} – {{The KeY Book}}},
+  editor = {Ahrendt, Wolfgang and Beckert, Bernhard and Bubel, Richard and Hähnle, Reiner and Schmitt, Peter H. and Ulbrich, Mattias},
+  date = {2016},
+  series = {Lecture {{Notes}} in {{Computer Science}}},
+  volume = {10001},
+  publisher = {Springer International Publishing},
+  location = {Cham},
+  doi = {10.1007/978-3-319-49812-6},
+  url = {http://link.springer.com/10.1007/978-3-319-49812-6},
+  urldate = {2026-05-11},
+  isbn = {978-3-319-49811-9 978-3-319-49812-6},
+  keywords = {case studies,compilation,debugging tool,deductive verification,first-order logic,formal methods,formal software analysis,formal specification,formal verification,integer semantics,partial evaluation,program transformation,programming language,semantic constraints,software development,specification language,symbolic execution,test case generation,visualization},
+  file = {/home/nathan/Zotero/storage/IGX99JQC/Ahrendt et al. - 2016 - Deductive Software Verification – The KeY Book.pdf}
+}
+
+@incollection{ahrendtUsingKeYProver2016,
+  title = {Using the {{KeY Prover}}},
+  booktitle = {Deductive {{Software Verification}} – {{The KeY Book}}: {{From Theory}} to {{Practice}}},
+  author = {Ahrendt, Wolfgang and Grebing, Sarah},
+  editor = {Ahrendt, Wolfgang and Beckert, Bernhard and Bubel, Richard and Hähnle, Reiner and Schmitt, Peter H. and Ulbrich, Mattias},
+  date = {2016},
+  pages = {495--539},
+  publisher = {Springer International Publishing},
+  location = {Cham},
+  doi = {10.1007/978-3-319-49812-6_15},
+  url = {https://doi.org/10.1007/978-3-319-49812-6_15},
+  urldate = {2026-05-11},
+  abstract = {This chapter is a self-contained introduction into the usage of the  KeY prover, a tool for proving formulas of a program logic called  Java Dynamic Logic. It does not assume the reader to have read any  other chapter of the book in advance. Here, we discuss the usage of  the KeY prover in isolation. For a tutorial on the most common  context of the prover, i.e., the KeY verification process, we refer  to the chapter `Formal Verification with KeY: A Tutorial'. The  present chapter takes entirely the user's perspective on the KeY  prover, and the GUI plays an important role. However, we do not only  introduce the various ways of using, and interacting with, the KeY  prover. Rather, the various visible artifacts the prover acts on, in  particular the logic and the taclet language, are introduced on the  side, on demand, and example driven, in a light-weight manner. This  chapter is meant to be read with the KeY system up and running, such  that every step can be tried out immediately in the system. The  concepts that will be introduced along with the usage of the prover  include KeY problem files, propositional, first-order, and dynamic  logic, sequent calculus, proof construction, proof navigation and  manipulation, taclets, interactive and automated proving, quantifier  instantiation, and symbolic execution. Most of these topics are  discussed in much greater detail in other chapters within this book,  but appear here in the context of using the KeY prover.},
+  isbn = {978-3-319-49812-6},
+  langid = {english},
+  keywords = {Dynamic Logic,Open Goal,Proof Obligation,Sequent Calculus,Symbolic Execution},
+  file = {/home/nathan/Zotero/storage/W6CIS7DY/Ahrendt and Grebing - 2016 - Using the KeY Prover.pdf}
+}
+
 @inproceedings{badihiEqBenchDatasetEquivalent2021,
   title = {{{EqBench}}: {{A Dataset}} of {{Equivalent}} and {{Non-equivalent Program Pairs}}},
   shorttitle = {{{EqBench}}},
@@ -59,6 +94,42 @@
   urldate = {2026-01-20},
   abstract = {Solver for higher-order functional programs, used by Stainless},
   organization = {EPFL-LARA}
+}
+
+@inproceedings{felsingAutomatingRegressionVerification2014,
+  title = {Automating Regression Verification},
+  booktitle = {Proceedings of the 29th {{ACM}}/{{IEEE International Conference}} on {{Automated Software Engineering}}},
+  author = {Felsing, Dennis and Grebing, Sarah and Klebanov, Vladimir and Rümmer, Philipp and Ulbrich, Mattias},
+  date = {2014-09-15},
+  series = {{{ASE}} '14},
+  pages = {349--360},
+  publisher = {Association for Computing Machinery},
+  location = {New York, NY, USA},
+  doi = {10.1145/2642937.2642987},
+  url = {https://dl.acm.org/doi/10.1145/2642937.2642987},
+  urldate = {2026-05-05},
+  abstract = {Regression verification is an approach complementing regression testing with formal verification. The goal is to formally prove that two versions of a program behave either equally or differently in a precisely specified way. In this paper, we present a novel automatic approach for regression verification that reduces the equivalence of two related imperative integer programs to Horn constraints over uninterpreted predicates. Subsequently, state-of-the-art SMT solvers are used to solve the constraints. We have implemented the approach, and our experiments show non-trivial integer programs that can now be proved equivalent without further user input.},
+  isbn = {978-1-4503-3013-8},
+  file = {/home/nathan/Zotero/storage/AWJ4LDIU/Felsing et al. - 2014 - Automating regression verification.pdf}
+}
+
+@article{godlinRegressionVerificationProving2013,
+  title = {Regression Verification: Proving the Equivalence of Similar Programs},
+  shorttitle = {Regression Verification},
+  author = {Godlin, Benny and Strichman, Ofer},
+  date = {2013},
+  journaltitle = {Software Testing, Verification and Reliability},
+  volume = {23},
+  number = {3},
+  pages = {241--258},
+  issn = {1099-1689},
+  doi = {10.1002/stvr.1472},
+  url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/stvr.1472},
+  urldate = {2026-05-05},
+  abstract = {SUMMARYProving the equivalence of successive, closely related versions of a program has the potential of being easier in practice than functional verification, although both problems are undecidable. There are three main reasons for this claim: (i) it circumvents the problem of specifying what the program should do; (ii) the problem can be naturally decomposed and hence is computationally easier; and (iii) there is an automatic invariant that enables to prove equivalence of loops and recursive functions in most practical cases. Theoretical and practical aspects of this problem are considered. Copyright © 2012 John Wiley \& Sons, Ltd.},
+  langid = {english},
+  keywords = {equivalence checking,software verification},
+  file = {/home/nathan/Zotero/storage/3G9RPFNQ/Godlin and Strichman - 2013 - Regression verification proving the equivalence of similar programs.pdf;/home/nathan/Zotero/storage/2ZT44PZ3/stvr.html}
 }
 
 @online{hoIncrementalProofDevelopment2024,
@@ -182,6 +253,24 @@
   file = {/home/nathan/Zotero/storage/ZJYXGAE3/klee-smarter-test-generation-for-reliable-code-dfbd0f89fb44.html}
 }
 
+@online{piskacProceedings21stConference2021,
+  title = {Proceedings of the 21st {{Conference}} on {{Formal Methods}} in {{Computer-Aided Design}} – {{FMCAD}} 2021},
+  author = {Piskac, Ruzica and Whalen, Michael W.},
+  editor = {Piskac, Ruzica and Whalen, Michael W.},
+  namea = {{TU Wien}},
+  nameatype = {collaborator},
+  date = {2021-10},
+  eprinttype = {TU Wien},
+  doi = {10.34727/2021/ISBN.978-3-85448-046-4},
+  url = {https://repositum.tuwien.at/handle/20.500.12708/18607},
+  urldate = {2026-05-11},
+  abstract = {Stainless ( https://stainless.epfl.ch ) is an open-source tool for verifying and finding errors in programs written in the Scala programming language. This tutorial will not assume any knowledge of Scala. It aims to get first-time users started with verification tasks by introducing the language, providing modelling and verification tips, and giving a glimpse of the tool’s inner workings (encoding into functional programs, function unfolding, and using theories of satisfiability modulo theory solvers Z3 and CVC4).},
+  langid = {english},
+  pubstate = {prepublished},
+  keywords = {automated and formal reasoning,automatisches Schlussfolgern,computer-aided system design,formal methods,formal verification,formale Logik,formale Methode,formale Verifikation,hardware and system verification,Hardwareverifikation,rechnerunterstützte Systementwicklung,specification,Spezifikation,Synthese und Testung,synthesis and testing,Systemverifikation},
+  file = {/home/nathan/Zotero/storage/PPTMFZR3/Piskac and Whalen - 2021 - Proceedings of the 21st Conference on Formal Methods in Computer-Aided Design – FMCAD 2021.pdf}
+}
+
 @incollection{putrueleMaskDToolMeasuring2022,
   title = {{{MaskD}}: {{A Tool}} for {{Measuring Masking Fault-Tolerance}}},
   shorttitle = {{{MaskD}}},
@@ -228,50 +317,4 @@
   urldate = {2026-04-16},
   abstract = {A fast and modern parser combinator library for Scala},
   keywords = {parser,parser-combinators,performant-parser,scala}
-}
-
-@book{KeYBook2016,
-  title = {Deductive Software Verification - The KeY Book - From Theory to Practice},
-  editor = {Wolfgang Ahrendt and Bernhard Beckert and Richard Bubel and Reiner H\"{a}hnle and Peter H. Schmitt and Mattias Ulbrich},
-  url = {http://dx.doi.org/10.1007/978-3-319-49812-6},
-  doi = {10.1007/978-3-319-49812-6},
-  isbn = {978-3-319-49811-9},
-  year  = {2016},
-  date = {2016-12-16},
-  volume = {10001},
-  publisher = {Springer},
-  series = {Lecture Notes in Computer Science},
-  keywords = {},
-  pubstate = {published},
-  tppubtype = {book}
-}
-
-@inproceedings{FelsingEtAl,
-  title = {Automating regression verification},
-  author = {Felsing, Dennis and Grebing, Sarah and Klebanov, Vladimir and Rummer, Philipp and Ulbrich, Mattias},
-  year = 2014,
-  month = sep,
-  journal = {Proceedings of the 29th ACM/IEEE International Conference on Automated Software Engineering},
-  pages = {928--951},
-  doi = {10.1145/2642937.2642987},
-  isbn = {978-1-4503-3013-8},
-  howpublished = {https://dl.acm.org/doi/10.1145/2642937.2642987},
-  urldate = {2026-05-05},
-  abstract = {Regression verification is an approach complementing regression testing with formal verification. The goal is to formally prove that two versions of a program behave either equally or differently in a precisely specified way. In this paper, we present a novel automatic approach for regression verification that reduces the equivalence of two related imperative integer programs to Horn constraints over uninterpreted predicates. Subsequently, state-of-the-art SMT solvers are used to solve the constraints. We have implemented the approach, and our experiments show non-trivial integer programs that can now be proved equivalent without further user input.},
-}
-
-@article{GodlinEtAl,
-  title = {Regression verification: proving the equivalence of similar programs},
-  shorttitle = {Regression verification},
-  author = {Godlin, Benny and Strichman, Ofer},
-  year = 2013,
-  volume = {23},
-  journal = {Software Testing, Verification and Reliability},
-  pages = {241--258},
-  doi = {10.1002/stvr.1472},
-  urldate = {2026-05-05},
-  howpublished = {https://onlinelibrary.wiley.com/doi/abs/10.1002/stvr.1472},
-  issn = {1099-1689},
-  rights = {Copyright © 2012 John Wiley & Sons, Ltd.},
-  abstract = {SUMMARYProving the equivalence of successive, closely related versions of a program has the potential of being easier in practice than functional verification, although both problems are undecidable. There are three main reasons for this claim: (i) it circumvents the problem of specifying what the program should do; (ii) the problem can be naturally decomposed and hence is computationally easier; and (iii) there is an automatic invariant that enables to prove equivalence of loops and recursive functions in most practical cases. Theoretical and practical aspects of this problem are considered. Copyright © 2012 John Wiley & Sons, Ltd.},
 }
