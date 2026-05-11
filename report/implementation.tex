@@ -28,7 +28,7 @@ The keys `file', `model' and `candidates' are necessary for a configuration file
 
 \paragraph{candidates} Provides a list of the names of candidate functions. EquiDafny attempts to prove equivalence between the model function and each candidate function. 
 
-\section{System Architecture}
+\section{Main Structure}
 
 EquiDafny was implemented in Scala. The tool is divided into several components. The most important component is the generation of Dafny data structures to facilitate the equivalence proof; this was described in \Cref{chp:design}. The remaining components are described in this section. \Cref{fig:structure} depicts EquiDafny's general structure.
 
@@ -61,8 +61,8 @@ The data structure outputted by the parser is specifically designed to be easy t
 
 Finally, after generating the equivalence proof, the data structure must be converted back into text and stored in a file before it can be processed by Dafny. This is achieved through the formatting component. To increase efficiency, this system directly writes to the file as it processes the program. This avoids the memory overhead of creating a large string before writing it to the file. 
 
-\subsection{Testing}
+\section{Other System Components}
 
-I tested EquiDafny using the ScalaTest tool. To create the tests, I wrote a JSON configuration file for each file in my dataset of equivalence tests (as described in \Cref{chp:introduction}). These JSON files are organised in directories based on what challenges the Dafny verifier faces when it attempts to prove equivalence. This allowed me to control testing according to which challenges I had addressed. For each JSON file, all components in EquiDafny's main pipeline are executed in order as described above (Parsing, Translation, Lemma Generation and Formatting). After this, if I have addressed all the challenges within this test, the Dafny verifier is executed to verify the generated equivalence lemmas. If I have not addressed all the challenges, the Dafny verifier only checks that the outputted file is syntactically and semantically valid.
+\paragraph{Testing} I tested EquiDafny using the ScalaTest tool. To create the tests, I wrote a JSON configuration file for each file in my dataset of equivalence tests (as described in \Cref{chp:introduction}). These JSON files are organised in directories based on what challenges the Dafny verifier faces when it attempts to prove equivalence. This allowed me to control testing according to which challenges I had addressed. For each JSON file, all components in EquiDafny's main pipeline are executed in order as described above (Parsing, Translation, Lemma Generation and Formatting). After this, if I have addressed all the challenges within this test, the Dafny verifier is executed to verify the generated equivalence lemmas. If I have not addressed all the challenges, the Dafny verifier only checks that the outputted file is syntactically and semantically valid.
 
-\subsection{CI Pipeline} \footnote{CI Pipeline section TODO}
+\paragraph{CI Pipeline} I created a CI pipeline to check that EquiDafny's Scala source code compiles on every push. \footnote{Update this as pipeline is updated}
