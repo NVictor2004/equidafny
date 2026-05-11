@@ -37,7 +37,19 @@ case Succ(n0) => n0
 }
 }
 
-lemma isEven2Equivalence(un: UnaryNat)
-ensures isEven1(un) == isEven2(un)
-{{}}
+lemma isEven1_isEven2_Equivalence(un: UnaryNat)
+ensures (isEven1(un) == isEven2(un))
+{{match un {
+case Zero =>
+case Succ(pred) =>isOdd1_isOdd2_Equivalence(pred);
+}
+}}
+
+lemma isOdd1_isOdd2_Equivalence(un: UnaryNat)
+ensures (isOdd1(un) == isOdd2(un))
+{{match un {
+case Zero =>
+case Succ(pred) =>isEven1_isEven2_Equivalence(pred);
+}
+}}
 

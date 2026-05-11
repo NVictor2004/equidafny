@@ -1,0 +1,79 @@
+\chapter{Evaluation}\label{chp:evaluation}
+
+\footnote{Explain why some tests fail, with example}
+
+\section{Benchmark Comparison}
+
+I tested EquiDafny on a dataset of 51 test files. These files were either converted from the Stainless equivalence tests or written myself. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:evaluation-results}:
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Tool & Dafny & EquiDafny & Stainless \\
+    \hline
+    Tests Verified (out of 51) & 20 & 44 & 50 \\
+    \hline
+  \end{tabular}
+  \caption{EquiDafny evaluation results}
+  \label{tbl:evaluation-results}
+\end{table}
+
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. EquiDafny is unable to prove 7 of the 51 tests. Dafny can prove none of these tests while Stainless can prove 6 of them. The test that neither EquiDafny nor Stainless are able to prove is described below. The functions \mintinline{lexer.py:CustomLexer}|repeat1| and \mintinline{lexer.py:CustomLexer}|repeat2| each output a lambda function that applies a given function a given number of times:
+\begin{minted}{lexer.py:CustomLexer}
+function repeat1<A>(n: int, f: A -> A): A -> A
+  requires (n >= 0)
+  decreases(n) {
+  a =>
+    if (n == 0) then a
+    else repeat1(n - 1, f)(f(a))
+}
+
+function repeat2<A>(n: int, f: A -> A): A -> A
+  requires (n >= 0)
+  decreases(n) {
+  if (n == 0) then a => a
+  else a => repeat2(n - 1, f)(f(a))
+}
+\end{minted}
+
+Despite any assistance I provide, the Dafny verifier is unable to prove these functions equivalent.
+
+\section{System Profiling}
+
+After running EquiDafny on every test file, I measured the average time the tool spends in each of the 5 main components: parsing, translation, lemma generation, formatting and Dafny verification. The results are shown below.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    Phase & Parsing & Translation & Lemma generation & Formatting & Dafny verification \\
+    \hline
+    Average Time (ms) & 15.016 & 1.892 & 1.549 & 1.725 & 1517.340 \\
+    \hline
+  \end{tabular}
+  \caption{Average time spent in each phase}
+  \label{tbl:profiling-results}
+\end{table}
+
+Dafny verification takes significantly more time on average than any other component. The vast majority of this time is likely spent by the Z3 solver. This is expected, since proving program equivalence is a difficult problem in general. However, the parsing component also takes a significant amount of time. I used async-profiler to generate CPU and Memory Allocation flame graphs to attempt to diagnose this issue. All references to Parsley are highlighted in purple. 
+
+\begin{figure}[ht]
+     \centering
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{images/cpu.pdf}
+         \caption{CPU}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.49\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{images/memory.pdf}
+         \caption{Memory Allocation}
+     \end{subfigure}
+     
+     \caption{Flame Graphs}
+     \label{fig:flame-graphs}
+\end{figure}
+
+The flame graphs demonstrate that Parsley accounts for a significant amount of both EquiDafny's CPU and memory usages. The Parsley stack traces are also very deep (this could not easily be demonstrated in the above figures), reaching several hundreds of blocks deep. Specifically, the majority of the Parsley usages occur in `parsley/internal/deepembedding', where Parsley processes the user-defined parser before it is executed. Therefore, this high Parsley CPU and memory usage cannot be easily removed. To maximise EquiDafny's performance, I would need to switch from Parsley to a parser generator (such as ANTLR~\parencite{DefinitiveANTLR4}) as they are written to maximise performance, however, such a change has other drawbacks that should be considered, including an extra compilation step and the generated code often being difficult to step through and debug.  

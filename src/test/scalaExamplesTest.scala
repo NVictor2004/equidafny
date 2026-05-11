@@ -20,7 +20,7 @@ private val dafnyPath =
   os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp"
 private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
-private val VerifiedDirs = Set("automatic")
+private val NotVerifiedDirs = Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction")
 
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
   scalaExamples.foreach(jsonExample =>
@@ -43,7 +43,7 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 
       val directoryName = (jsonExample / os.up).last
       val action =
-        if (VerifiedDirs.contains(directoryName)) "verify" else "resolve"
+        if (NotVerifiedDirs.contains(directoryName)) "resolve" else "verify"
 
       val result =
         proc("dafny", action, "--allow-warnings", outputFilePath.toString)

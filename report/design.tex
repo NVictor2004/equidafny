@@ -1,0 +1,371 @@
+\chapter{Design}\label{chp:design}
+
+\footnote{use AI to convert some C examples into functions, focus on iteration examples}
+
+\paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
+
+\section{Function Merging}\label{sec:function-merging}
+
+This tool will use an approach that I have called `Function Merging'. This is where the bodies of the model and candidate functions are processed simultaneously, creating a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. 
+
+\subsection{Worked Example}\label{sec:worked-example}
+
+To demonstrate how this process works, I will use the two functions \mintinline{lexer.py:CustomLexer}|unique| and \mintinline{lexer.py:CustomLexer}|distinct| (this example was also used in \Cref{sec:equivalence-lemmas}). These functions each take two lists as input, and compute the unique elements of their union:
+
+\begin{minted}{lexer.py:CustomLexer}
+function unique(l: List<int>, r: List<int>): List<int>
+{
+  match l
+  case Nil => r
+  case Cons(hd, tl) =>
+    if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil)))
+    else unique(tl, r)
+}
+
+function distinct(a: List<int>, b: List<int>): List<int>
+  decreases b
+{
+  match b
+  case Nil => a
+  case Cons(hd, tl) =>
+    if isin(hd, a) then distinct(a, tl)
+    else distinct(append(a, Cons(hd, Nil)), tl)
+}
+\end{minted}
+%
+
+I will refer to the \mintinline{lexer.py:CustomLexer}|unique| function as the model function, and the \mintinline{lexer.py:CustomLexer}|distinct| function as the candidate function.
+
+As described in \Cref{sec:equivalence-lemmas}, there are two problems we must address to create an equivalence lemma for these functions. First, the parameters of the model function must each be matched to one of the parameters of the candidate function that serves the same purpose. In simpler examples, the types of the parameters can be used to construct these mappings, however, since in this example each function has multiple parameters with the same type, we must process the bodies of the functions to construct these mappings.
+
+Second, the model and candidate functions each refer to the functions \mintinline{lexer.py:CustomLexer}|find| and \mintinline{lexer.py:CustomLexer}|isin| respectively. Therefore, these helper functions must also be merged recursively, an equivalence lemma must be created for them, and this lemma must be called in the main equivalence lemma for the \mintinline{lexer.py:CustomLexer}|unique| and \mintinline{lexer.py:CustomLexer}|distinct| functions, with the correct arguments and under the correct conditions. 
+
+Therefore, the Function Merging process will work as follows. Since the bodies of the two functions have the same structure (they are both match expressions), these structures can be split up into smaller components, which can then each be merged one at a time. First, the expressions \mintinline{lexer.py:CustomLexer}|l| and \mintinline{lexer.py:CustomLexer}|b| are merged. This creates the parameter mapping \mintinline{lexer.py:CustomLexer}|b -> l| (parameter mappings are always from candidate parameters to model parameters). Next, we merge the \mintinline{lexer.py:CustomLexer}|case| expressions. In this case, the patterns in the two match expressions are the same, thus we can merge the \mintinline{lexer.py:CustomLexer}|case| expressions corresponding to the same pattern together. Merging the expressions corresponding to the \mintinline{lexer.py:CustomLexer}|Nil| pattern creates the parameter mapping \mintinline{lexer.py:CustomLexer}|a -> r|. Thus, we have now created mappings between all function parameters. Merging the expressions corresponding to the \mintinline{lexer.py:CustomLexer}|Cons| pattern requires merging the functions \mintinline{lexer.py:CustomLexer}|find| and \mintinline{lexer.py:CustomLexer}|isin|. This is achieved using the same process recursively. Let us assume that this process resulting in the following equivalence lemma:
+
+\begin{minted}{lexer.py:CustomLexer}
+lemma findEquivalence(l: List<int>, n: int)
+  ensures find(l, n) == isin(n, l)
+{}
+\end{minted}
+%
+Equivalence lemmas are generated in such a way that they must be called by copying the arguments used in the model function. Therefore, this lemma must be called with \mintinline{lexer.py:CustomLexer}|findEquivalence(r, hd)|.
+
+Finally, the main equivalence lemma must be created. Using the parameter mappings \mintinline{lexer.py:CustomLexer}|b -> l| and \mintinline{lexer.py:CustomLexer}|a -> r|, we can determine that the order of the arguments passed into the model function should be swapped when they are passed into the candidate function. This results in the lemma's postcondition being \mintinline{lexer.py:CustomLexer}|unique(l, r) == distinct(r, l)|. To create the body of the lemma, we will copy the match expression in the model function, replacing the \mintinline{lexer.py:CustomLexer}|case| expressions with the statements created by merging them with the corresponding expressions in the candidate function. This results in the following equivalence lemma:
+
+\begin{minted}{lexer.py:CustomLexer}
+lemma uniqueEquivalence(l: List<int>, r: List<int>)
+  ensures unique(l, r) == distinct(r, l)
+{
+  match l
+  case Nil => {}
+  case Cons(hd, tl) => findEquivalence(r, hd);
+}
+\end{minted}
+
+\subsection{Benefits and Drawbacks}
+
+As described in \Cref{sec:equivalence-lemmas}, to prove the equivalence of two functions that both use helper functions, the tool must generate equivalence lemmas between the helper functions and call these lemmas within the main equivalence lemma under the correct conditions and with the correct arguments. As demonstrated in \Cref{sec:worked-example}, the Function Merging process is capable of this. 
+
+However, one major drawback with this approach is that it requires the bodies of the functions to have the same structure. For example, here are two functions \mintinline{lexer.py:CustomLexer}|lengthM| and \mintinline{lexer.py:CustomLexer}|length1|, which each calculate the length of a list:
+\begin{minted}{lexer.py:CustomLexer}
+function lengthM<T>(l: List<T>): int {
+    match l {
+        case Nil => 0
+        case Cons(_, t) => 1 + lengthM(t)
+    }
+}
+
+function length1<T>(l: List<T>): int {
+    if l == Nil then 0 else 1 + length1(l.tail)
+}
+\end{minted}
+%
+
+The bodies of these two functions have different structures, therefore, the Function Merging process will fail. The tool uses two methods to attempt to mitigate this issue.
+
+First, the tool will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
+
+\begin{minted}{lexer.py:CustomLexer}
+lemma lengthEquivalence<T>(l: List<T>)
+    ensures lengthM(l) == length1(l)
+{}
+\end{minted}
+%
+In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, the tool can still prove equivalence in some cases despite the Merging process failing. However, this method does not work for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
+\begin{minted}{lexer.py:CustomLexer}
+function lengthTailM<T>(acc: int, l: List<T>): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(_, t) => lengthTailM(acc + 1, t)
+    }
+}
+
+function lengthTail1<T>(l: List<T>, acc: int): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(_, t) => lengthTail1(t, acc + 1)
+    }
+}
+\end{minted}
+%
+
+I can now reimplement functions \mintinline{lexer.py:CustomLexer}|lengthM| and \mintinline{lexer.py:CustomLexer}|length1| to use these tail-recursive helper functions:
+\begin{minted}{lexer.py:CustomLexer}
+function lengthM<T>(l: List<T>): int {
+    match l {
+        case Nil => 0
+        case Cons(_, t) => lengthTailM(1, t)
+    }
+}
+
+function length1<T>(l: List<T>): int {
+    if l == Nil then 0 else lengthTail1(l.tail, 1)
+}
+\end{minted}
+%
+
+In this case, the tool will still generate the empty equivalence lemma shown above, however, this is no longer sufficient to prove equivalence. The Dafny verifier requires the following to prove equivalence:
+\begin{minted}{lexer.py:CustomLexer}
+lemma lengthTailEquivalence<T>(acc: int, l: List<T>)
+    decreases l
+    ensures lengthTailM(acc, l) == lengthTail1(l, acc)
+{}
+
+lemma lengthEquivalence<T>(l: List<T>)
+    ensures lengthM(l) == length1(l)
+{
+    match l {
+        case Nil => 
+        case Cons(_, t) => lengthTailEquivalence(1, t);
+    }
+}
+\end{minted}
+%
+% TODO: Wrap A && B in inline code
+The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \mintinline{lexer.py:CustomLexer}|A| and \mintinline{lexer.py:CustomLexer}|B|, the expressions A \&\& B and \mintinline{lexer.py:CustomLexer}|if A then B else false| are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+
+This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \mintinline{lexer.py:CustomLexer}|A|, \mintinline{lexer.py:CustomLexer}|B| and \mintinline{lexer.py:CustomLexer}|C|, the expression \mintinline{lexer.py:CustomLexer}|if !A then C else B| can be simplified into \mintinline{lexer.py:CustomLexer}|if A then B else C|. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
+
+\section{Technical Audit Challenges}
+
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the challenge this refers to is described in \Cref{sec:equivalence-lemmas}). 
+
+\footnote{Make sure these names are kept up to date}
+
+\subsection{Explicitly enforcing induction to prove lemmas}
+As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement challenge.
+
+\subsection{Providing Variants to prove termination}
+As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
+
+\footnote{Complete this section after looking at Dragana copy decreases benchmarks}
+\footnote{Also need to implement copying of termination lemmas and assertions}
+
+\subsection{Equivalence of Higher-Order Functions}
+As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
+
+To resolve this challenge, when generating the postconditions for lemmas, our tool will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
+
+\begin{minted}{lexer.py:CustomLexer}
+function uncurry1<A, B, C>(f: A -> B -> C): (A, B) -> C {
+    (a, b) => f(a)(b)
+}
+
+function uncurry2<A, B, C>(f: A -> B -> C): (A, B) -> C {
+    (a, b) => var res := f(a)(b); res
+}
+\end{minted}
+%
+When generating the corresponding equivalence lemma, instead of attempting to prove equivalence on the lambda functions themselves (\mintinline{lexer.py:CustomLexer}|uncurry1(f)| and \mintinline{lexer.py:CustomLexer}|uncurry2(f)|), the tool will pass the same arguments to both lambda functions so that the function bodies can be directly compared:
+
+\begin{minted}{lexer.py:CustomLexer}
+lemma uncurry1_uncurry2_Equivalence<A, B, C>(f: A -> B -> C, a: A, b: B)
+ensures (uncurry1(f)(a, b) == uncurry2(f)(a, b))
+{}
+\end{minted}
+%
+If the bodies of the outputted lambda functions are themselves lambda functions, our tool will repeatedly pass the same arguments to both functions, until it reaches the body of the innermost lambda function. For example, here are two functions that implement currying:
+
+\begin{minted}{lexer.py:CustomLexer}
+function curry1<A, B, C>(f: (A, B) -> C): A -> B -> C {
+    a => b => f(a, b)
+}
+
+function curry2<A, B, C>(f: (A, B) -> C): A -> B -> C {
+    aa => bb => var res := f(aa, bb); res
+}
+\end{minted}
+%
+
+Our tool will produce the following equivalence lemma:
+\begin{minted}{lexer.py:CustomLexer}
+lemma curry1_curry2_Equivalence<A, B, C>(f: (A, B) -> C, a: A, b: B)
+ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
+{}
+\end{minted}
+%
+
+\subsection{Generating Auxiliary Lemmas}
+As described in \Cref{sec:auxiliary-lemmas}, proving equivalence sometimes requires auxiliary lemmas that would be difficult for our tool or Dafny to automatically generate. Therefore, these lemmas must be written by the user and provided to our tool. As described in \Cref{sec:user-interface}, the user must provide the path to a Dafny file in the JSON configuration file. The user can provide our tool with any necessary auxiliary lemmas by writing them in this Dafny file.
+
+Thus, the lemmas themselves can be provided, however, they must still be called within the generated equivalence lemmas, with the correct arguments and under the correct conditions. These conditions and arguments cannot be easily generated, since this requires an understanding of what each auxiliary lemma proves and how it would be useful when proving an equivalence lemma. Thus, this is a difficult problem that EquiDafny does not currently solve. 
+
+\section{Technical Details}\label{sec:technical-details}
+
+\subsection{Generating Parameter Mappings}
+
+Parameter Mappings are generated in multiple stages. First, if only a single parameter in each function is of a specific type, then these parameters must be mapped together. For example, given the following signatures for the functions \mintinline{lexer.py:CustomLexer}|f| and \mintinline{lexer.py:CustomLexer}|g|:
+\begin{minted}{lexer.py:CustomLexer}
+function f(a: int, b: bool, c: bool): int
+function g(x: bool, y: int, z: bool): int
+\end{minted}
+%
+Parameters \mintinline{lexer.py:CustomLexer}|a| and \mintinline{lexer.py:CustomLexer}|y| can immediately be mapped together, since they are each the only \mintinline{lexer.py:CustomLexer}|int| parameter in their respective functions. However, parameters \mintinline{lexer.py:CustomLexer}|b|, \mintinline{lexer.py:CustomLexer}|c|, \mintinline{lexer.py:CustomLexer}|x| and \mintinline{lexer.py:CustomLexer}|z| cannot be mapped in this way. Mappings can also be generated when the model parameter's type can be transformed into the candidate parameter's type through a type transformation function (see \Cref{sec:type-transformations}). Parameter mappings are stored by mapping candidate function parameters to model function parameters.
+
+After these mappings are generated, the bodies of the functions are merged together to generate further mappings (as described in \Cref{sec:worked-example}). During the Function Merging process, the map of mappings is continuously updated. A reference to it is passed through all merging functions so that the algorithm always has access to the most up-to-date set of mappings. This is necessary when merging Function Calls (see \Cref{sec:merging-calls}). 
+
+After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with compatible types (either the same type or when the model parameter's type can be transformed into the candidate parameter's type). This ensures that every parameter is mapped. 
+
+\subsection{Mutually Recursive Functions}
+Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| which each output whether a given integer is even or not. They use the helper functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
+
+\begin{minted}{lexer.py:CustomLexer}
+function isEven(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !isOdd(x - 1)
+}
+
+function myIsEven(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x < 0) then false
+  else if (x == 0) then true
+  else !myIsOdd(x - 1)
+}
+
+function isOdd(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !isEven(x - 1)
+}
+
+function myIsOdd(x: int): bool
+  decreases(if (x <= 0) then 0 else x) {
+  if (x <= 0) then false
+  else if (x == 1) then true
+  else !myIsEven(x - 1)
+}
+\end{minted}
+
+Let the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| be the model and candidate functions respectively. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in our tool attempting to merge the function calls \mintinline{lexer.py:CustomLexer}|isOdd(x - 1)| and \mintinline{lexer.py:CustomLexer}|myIsOdd(x - 1)|. This requires the functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
+
+Our tool solves this problem in the following way. During Function Merging, the process has access to the lemmas currently being generated. This is stored in a map from the name of the model function to an optional lemma (represented using the Scala data structure \mintinline{lexer.py:CustomLexer}|Option|). When the Merging process encounters two function calls, this map is consulted to determine how the process should proceed.
+
+There are three possibilities. First, if the model function name is not a key in this map, then the functions themselves should be merged together. In the above example, when processing the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| for the first time and encountering the function calls to \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd|, \mintinline{lexer.py:CustomLexer}|isOdd| should not be a key in the map, leading to the functions themselves being merged. Second, if the name of the model function is mapped to a lemma (wrapped in a \mintinline{lexer.py:CustomLexer}|Some| object), then the corresponding lemma has already been generated. Thus, this lemma can be called without further merging. This also prevents the generation of the same lemma multiple times.
+
+Finally, if the model function's name is mapped to the \mintinline{lexer.py:CustomLexer}|None| object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| and encountering the function calls to \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven|, \mintinline{lexer.py:CustomLexer}|isEven| should be mapped to the \mintinline{lexer.py:CustomLexer}|None| object since the process reached this point during the Merging of \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven|. Our tool responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, our tool can successfully deal with mutually recursive functions. 
+
+\subsection{Merging Function Calls}\label{sec:merging-calls}
+During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| that each implement the insertion sort algorithm:
+\begin{minted}{lexer.py:CustomLexer}
+function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
+  {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
+  }
+}
+
+function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
+  decreases insert
+ {
+  match insert {
+    case Nil => sorted
+    case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
+  }
+}
+\end{minted}
+%
+These functions rely on helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{sec:intro-background}. Thus, the arguments in the function calls to \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| is necessary. This results in the following equivalence lemmas:
+
+\begin{minted}{lexer.py:CustomLexer}
+lemma equivalenceInsertSorted5(t: int, xs: List<int>)
+  ensures (insert1(t, xs) == insertM(xs, t))
+{}
+
+lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
+  ensures (insertSorted1(sorted, insert) == insertSortedM(insert, sorted))
+{
+    match insert {
+        case Nil => {}
+        case Cons(x, xs) => equivalenceInsertSorted5(x, sorted);
+    }
+}
+\end{minted}
+% 
+
+\subsection{Merging Match Expressions}
+
+TODO \footnote{Write this when match expressions are finished}
+
+% \subsection{Standardisation of Generic Variables}
+
+\section{Extensions}
+
+\subsection{Type Transformations}\label{sec:type-transformations}
+
+Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. For example, here are the functions \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1|. \mintinline{lexer.py:CustomLexer}|sumM| calculates the sum of a sequence of integers using the inbuilt Dafny sequence type ({lexer.py:CustomLexer}|seq|). However, \mintinline{lexer.py:CustomLexer}|sum1| calculates the sum of a list of integers using the user-defined data structure provided in \Cref{sec:list-structure}. These functions can be proven equivalent if another function is provided that transforms a Dafny \mintinline{lexer.py:CustomLexer}|seq| into the user-defined \mintinline{lexer.py:CustomLexer}|List|. One possible such function is provided below:
+\begin{minted}{lexer.py:CustomLexer}
+function seqToList(l: seq<int>): List<int> {
+    if |l| == 0 then Nil
+    else Cons(l[0], seqToList(l[1..]))
+}
+\end{minted}
+% 
+The implementations of \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| are provided below. They each use a tail recursive helper function (\mintinline{lexer.py:CustomLexer}|sumAccM| and \mintinline{lexer.py:CustomLexer}|sumAcc1| respectively) to assist in calculating the sum:
+\begin{minted}{lexer.py:CustomLexer}
+function sumM(l: seq<int>): int {
+    sumAccM(0, l)
+}
+
+function sumAccM(acc: int, l: seq<int>): int
+    decreases l
+{
+    if |l| == 0 then acc
+    else sumAccM(acc + l[0], l[1..])
+}
+
+function sum1(l: List<int>): int {
+    sumAcc1(l, 0)
+}
+
+function sumAcc1(l: List<int>, acc: int): int
+    decreases l
+{
+    match l {
+        case Nil => acc
+        case Cons(h, t) => sumAcc1(t, acc + h)
+    }
+}
+\end{minted}
+% 
+Thus, \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| can be proven equivalent using the type transformation function \mintinline{lexer.py:CustomLexer}|seqToList| with the following equivalence lemmas:
+\begin{minted}{lexer.py:CustomLexer}
+lemma equivalenceHelper(acc: int, l: seq<int>)
+  ensures sumAccM(acc, l) == sumAcc1(seqToList(l), acc)
+  decreases l
+{}
+
+lemma equivalence(l: seq<int>)
+  ensures sumM(l) == sum1(seqToList(l))
+{
+    equivalenceHelper(0, l);
+}
+\end{minted}
+% 

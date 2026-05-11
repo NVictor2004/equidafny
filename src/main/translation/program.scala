@@ -6,21 +6,33 @@ import translation.expression.translateExpr
 import translation.types.translateType
 import translation.specification.translateSpec
 import translation.statement.translateBlockStmt
+import translation.translation.Context
 
 import ujson.Value
 
+import scala.collection.immutable.ListMap
+
 def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
+
+  val functionData = prog.collect {
+    case Parsers.Function(name, _, params, _, _, _) => 
+      name -> params.map { case Parsers.Parameter(name, _) => name
+        }
+  }.toMap
+
   val (data, functions, lemmas) =
-    prog.foldLeft((Nil, Nil, Nil))(translateTopLevel)
+    prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData))
 
+  // Find the model function
   val modelFunctionName = config("model").str
-  val candidateFunctionNames = config("candidates").arr.map(_.str)
-
   val modelFunction = functions
     .find(_.name == modelFunctionName)
     .getOrElse(
       throw new Exception(s"Model function ${modelFunctionName} not found")
     )
+  
+  // Find the candidate functions
+  val candidateFunctionNames = config("candidates").arr.map(_.str)
 
   val candidateFunctions =
     functions.filter(function => candidateFunctionNames.contains(function.name))
@@ -33,34 +45,56 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     )
   }
 
-  val helperFunctions = functions.filterNot(function =>
-    function.name == modelFunctionName || candidateFunctionNames.contains(
+  // Find the normalisation function, if defined
+  val normFunctionName = config.obj.get("norm").map(_.str)
+  val normFunction = normFunctionName.map(name => functions.find(_.name == name).getOrElse(
+    throw new Exception(s"Normalisation function ${name} not found")
+  ))
+
+  // Find the type transformation function, if defined
+  // Create a map from the initial type to the function
+  val typeFunctionName = config.obj.get("transform").map(_.str)
+  val typeFunction = typeFunctionName.map(name => functions.find(_.name == name).getOrElse(
+    throw new Exception(s"Type transformation function ${name} not found")
+  ))
+  val typeFunctions = typeFunction.fold(Map())(func => Map(func.params.values.head -> func))
+
+  // Create map of all remaining functions
+  val helperFunctionsList = functions.filterNot(function =>
+    function.name == modelFunctionName || 
+    normFunctionName.fold(false)(name => function.name == name) || 
+    typeFunctionName.fold(false)(name => function.name == name) || 
+    candidateFunctionNames.contains(
       function.name
     )
   )
+  val helperFunctionsMap = helperFunctionsList.map(func => (func.name, func)).toMap
 
+  // Create and output a Program
   Program(
     data,
     modelFunction,
     candidateFunctions,
-    helperFunctions,
+    helperFunctionsMap,
+    normFunction,
+    typeFunctions,
     Nil,
     Nil,
     lemmas
   )
 }
 
-def translateDeclaredType(decl: Parsers.DeclaredType): DeclaredType =
+def translateDeclaredType(decl: Parsers.DeclaredType)(using Context): DeclaredType =
   DeclaredType(
     decl.name,
-    decl.typeParams.map(_.map { case Parsers.Parameter(name, paramType) =>
-      Parameter(name, translateType(paramType))
-    })
+    decl.typeParams.map(typeParamList => ListMap(typeParamList.map { case Parsers.Parameter(name, paramType) =>
+      (name, translateType(paramType))
+    }*)).getOrElse(ListMap())
   )
 
 def translateGeneric(
     generic: Option[List[(String, Option[Parsers.GOption])]]
-): Option[List[(String, Option[GOption])]] =
+): List[(String, Option[GOption])] = 
   generic.map(_.map { case (gname, gopt) =>
     (
       gname,
@@ -69,7 +103,7 @@ def translateGeneric(
         case Parsers.NotNew => NotNew
       }
     )
-  })
+  }).getOrElse(Nil)
 
 def translateTopLevel(
     acc: (
@@ -77,26 +111,36 @@ def translateTopLevel(
         functions: List[Function],
         lemmas: List[Lemma]
     ),
-    toplevel: Parsers.TopLevel
-): (List[Datatype], List[Function], List[Lemma]) =
+    toplevel: Parsers.TopLevel,
+    functionData: Map[String, List[String]]
+): (List[Datatype], List[Function], List[Lemma]) = {
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
+      val mapping = 
+        generic.map(_.map(_._1)).getOrElse(Nil)
+               .zip(('A' to 'Z').map(_.toString)).toMap
+      given context: Context = Context(functionData, mapping)
+
       val item = Datatype(
         name,
-        translateGeneric(generic),
+        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
         types.map(translateDeclaredType)
       )
       (item :: acc.data, acc.functions, acc.lemmas)
     }
 
     case Parsers.Function(name, generic, params, returnType, specs, body) => {
+      val types = generic.map(_.map(_._1)).getOrElse(Nil)
+      val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
+      given context: Context = Context(functionData, mapping)
+
       val item = Function(
         false,
         name,
-        translateGeneric(generic),
-        params.map { case Parsers.Parameter(name, paramType) =>
-          Parameter(name, translateType(paramType))
-        },
+        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        ListMap(params.map { case Parsers.Parameter(name, paramType) =>
+          (name, translateType(paramType))
+        }*),
         translateType(returnType),
         specs.map(translateSpec),
         translateExpr(body)
@@ -111,13 +155,17 @@ def translateTopLevel(
           specs,
           body
         ) => {
+      val types = generic.map(_.map(_._1)).getOrElse(Nil)
+      val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
+      given context: Context = Context(functionData, mapping)
+      
       val item = Function(
         true,
         name,
-        translateGeneric(generic),
-        params.map { case Parsers.Parameter(name, paramType) =>
-          Parameter(name, translateType(paramType))
-        },
+        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        ListMap(params.map { case Parsers.Parameter(name, paramType) =>
+          (name, translateType(paramType))
+        }*),
         translateType(returnType),
         specs.map(translateSpec),
         translateExpr(body)
@@ -125,12 +173,16 @@ def translateTopLevel(
       (acc.data, item :: acc.functions, acc.lemmas)
     }
     case Parsers.Lemma(name, generic, params, specs, body) => {
+      val types = generic.map(_.map(_._1)).getOrElse(Nil)
+      val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
+      given context: Context = Context(functionData, mapping)
+
       val item = Lemma(
         name,
-        translateGeneric(generic),
-        params.map { case Parsers.Parameter(name, paramType) =>
-          Parameter(name, translateType(paramType))
-        },
+        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        ListMap(params.map { case Parsers.Parameter(name, paramType) =>
+          (name, translateType(paramType))
+        }*),
         specs.map(translateSpec),
         body.map { case Parsers.BlockStmt(stmts) =>
           translateBlockStmt(stmts)
@@ -139,3 +191,5 @@ def translateTopLevel(
       (acc.data, acc.functions, item :: acc.lemmas)
     }
   }
+}
+  

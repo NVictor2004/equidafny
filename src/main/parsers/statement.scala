@@ -1,7 +1,7 @@
 package parsers.statement
 
 import parsley.Parsley
-import parsley.Parsley.{many, atomic}
+import parsley.Parsley.many
 import parsley.combinator.{option, sepBy}
 
 import scala.language.implicitConversions
@@ -26,11 +26,12 @@ private lazy val stmt: Parsley[Stmt] =
         | many("case" ~> (pattern <~ "=>") <~> many(stmt))
     )
     | AssertStmt("assert" ~> basic <~ ";")
-    | LetStmt(atomic("var" ~> lvalue <~ ":="), basic <~ ";")
-    | LetOrFailStmt("var" ~> ident <~ ":|", basic <~ ";")
+    | "var" ~> (
+      (("(" ~> sepBy(ident, ",") <~ ")" <~ ":=") <~> (basic <~ ";")).map((lvalues, right) => LetStmt(lvalues, right))
+      | ident <**> (
+        (":=" ~> basic <~ ";").map(right => ((lvalue: String) => LetStmt(List(lvalue), right)))
+        | (":|" ~> basic <~ ";").map(right => ((lvalue: String) => LetOrFailStmt(lvalue, right)))
+      )
+    )
     | condStmt
     | block
-
-private lazy val lvalue =
-  "(" ~> sepBy(ident, ",") <~ ")"
-    | ident.map(List(_))

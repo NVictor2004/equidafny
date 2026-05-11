@@ -7,7 +7,7 @@ case class CondStmt(
     thenBranch: BlockStmt,
     elseBranch: Option[CondStmt | BlockStmt]
 ) extends Stmt
-case class CallStmt(name: String, args: List[BasicExpr]) extends Stmt
+case class CallStmt(name: String, args: List[List[BasicExpr]]) extends Stmt
 case class MatchStmt(expr: BasicExpr, cases: List[(Pattern, List[Stmt])])
     extends Stmt
 case class AssertStmt(expr: BasicExpr) extends Stmt

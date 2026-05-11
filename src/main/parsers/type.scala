@@ -1,7 +1,6 @@
 package parsers.types
 
 import parsley.Parsley
-import parsley.Parsley.atomic
 import parsley.combinator.{sepBy, option}
 
 import scala.language.implicitConversions
@@ -10,7 +9,7 @@ import parsers.lexer.*
 import parsers.lexer.implicits.implicitSymbol
 import parsers.structure.*
 
-private lazy val domainType: Parsley[Type] =
+private lazy val domainType: Parsley[DomainType] =
   ("int" as TypeInt)
     | ("bool" as TypeBool)
     | ("string" as TypeString)
@@ -21,6 +20,7 @@ private lazy val domainType: Parsley[Type] =
     | TupleType("(" ~> sepBy(typeParser, ",") <~ ")")
     | NamedType(ident, option("<" ~> sepBy(typeParser, ",") <~ ">"))
 
-private lazy val arrowType = ArrowType(atomic(domainType <~ "->"), typeParser)
-
-lazy val typeParser: Parsley[Type] = arrowType | domainType
+lazy val typeParser: Parsley[Type] = domainType <**> (
+  "->" ~> typeParser.map(rightType => ((leftType: DomainType) => ArrowType(leftType, rightType)))
+  </> identity[Type]
+)

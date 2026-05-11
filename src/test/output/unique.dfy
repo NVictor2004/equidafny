@@ -1,4 +1,4 @@
-datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+datatype List<A> = Nil | Cons(head: A, tail: List<A>)
 
 function uniqR(lst: List<int>): List<int>
 {unique(lst, Nil)}
@@ -6,32 +6,32 @@ function uniqR(lst: List<int>): List<int>
 function uniqA(lst: List<int>): List<int>
 {distinct(Nil, lst)}
 
-function distinct(a: List<int>, b: List<int>): List<int>
-decreases b
-{match b {
-case Nil => a
-case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a, Cons(hd, Nil)), tl)
+function find(lst: List<int>, n: int): bool
+{match lst {
+case Nil => false
+case Cons(hd, tl) => if (n == hd) then true else find(tl, n)
 }
 }
 
 function isin(a: int, lst: List<int>): bool
 {match lst {
 case Nil => false
-case Cons(hd, tl) => a == hd || isin(a, tl)
+case Cons(hd, tl) => if (a == hd) then true else isin(a, tl)
+}
+}
+
+function distinct(a: List<int>, b: List<int>): List<int>
+decreases (b)
+{match b {
+case Nil => a
+case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a, Cons(hd, Nil)), tl)
 }
 }
 
 function unique(l: List<int>, r: List<int>): List<int>
 {match l {
 case Nil => r
-case Cons(hd, tl) => if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil))) else unique(tl, r)
-}
-}
-
-function find(lst: List<int>, n: int): bool
-{match lst {
-case Nil => false
-case Cons(hd, tl) => n == hd || find(tl, n)
+case Cons(hd, tl) => if find(r, hd) then unique(tl, r) else unique(tl, append(r, Cons(hd, Nil)))
 }
 }
 
@@ -42,7 +42,23 @@ case Cons(hd, tl) => Cons(hd, append(tl, l2))
 }
 }
 
-lemma uniqAEquivalence(lst: List<int>)
-ensures uniqR(lst) == uniqA(lst)
-{{}}
+lemma uniqR_uniqA_Equivalence(lst: List<int>)
+ensures (uniqR(lst) == uniqA(lst))
+{{unique_distinct_Equivalence(lst, Nil);}}
+
+lemma find_isin_Equivalence(lst: List<int>, n: int)
+ensures (find(lst, n) == isin(n, lst))
+{{match lst {
+case Nil =>
+case Cons(hd, tl) =>if (n == hd){}else {find_isin_Equivalence(tl, n);}
+}
+}}
+
+lemma unique_distinct_Equivalence(l: List<int>, r: List<int>)
+ensures (unique(l, r) == distinct(r, l))
+{{match l {
+case Nil =>
+case Cons(hd, tl) =>find_isin_Equivalence(r, hd);if find(r, hd){unique_distinct_Equivalence(tl, r);}else {unique_distinct_Equivalence(tl, append(r, Cons(hd, Nil)));}
+}
+}}
 

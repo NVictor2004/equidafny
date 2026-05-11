@@ -1,5 +1,7 @@
 package translation.structure
 
+import scala.collection.immutable.ListMap
+
 sealed trait BasicExpr
 sealed trait LiteralExpr extends BasicExpr
 sealed trait ExtendedExpr
@@ -17,9 +19,7 @@ case object Null extends LiteralExpr
 
 enum BinaryOperator {
   case Iff, LeftImplies, RightImplies, BoolAnd, BoolOr, Eq, Neq, LT, LTE, GT,
-    GTE,
-    In, NotIn, Disjoint, LeftShift, RightShift, Add, Sub, Mul, Div, Mod,
-    BitOr, BitAnd, BitXor
+    GTE, Add, Sub, Mul, Div, Mod
 }
 
 enum UnaryOperator {
@@ -45,10 +45,11 @@ case class Quantified(
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr
 case class Cardinality(expr: BasicExpr) extends BasicExpr
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
-case class Brackets(expr: BasicExpr) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
     extends BasicExpr
-case class FunctionCall(name: String, args: List[List[BasicExpr]])
+case class TrueFunctionCall(name: String, args: List[ListMap[String, BasicExpr]])
+    extends BasicExpr
+case class OtherFunctionCall(name: String, args: List[List[BasicExpr]])
     extends BasicExpr
 case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
 case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)])

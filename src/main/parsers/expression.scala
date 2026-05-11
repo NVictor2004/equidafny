@@ -14,10 +14,6 @@ import parsers.pattern.pattern
 import parsers.types.typeParser
 import parsers.index.index
 
-// TODO: ==> and <== should not be interchangeable
-// TODO: Within each group, different operators should not associate
-// TODO: Parentheses need to be used
-
 lazy val basic: Parsley[BasicExpr] =
   precedence(
     basicHigher,
@@ -26,11 +22,6 @@ lazy val basic: Parsley[BasicExpr] =
     Ops(Prefix)(
       Not from "!",
       Neg from "-"
-    ),
-    Ops(InfixL)(
-      // BitOr from atomic("|" <~ notFollowedBy("|")), TODO: Add this back in
-      BitAnd from atomic("&" <~ notFollowedBy("&")),
-      BitXor from "^"
     ),
     Ops(InfixL)(
       Mul from "*",
@@ -42,19 +33,12 @@ lazy val basic: Parsley[BasicExpr] =
       Sub from "-"
     ),
     Ops(InfixL)(
-      LeftShift from "<<",
-      RightShift from ">>"
-    ),
-    Ops(InfixL)(
       Eq from atomic("==" <~ notFollowedBy(">")),
       Neq from "!=",
       LTE from atomic("<=" <~ notFollowedBy("=>")),
       GTE from ">=",
       LT from atomic("<" <~ notFollowedBy("==>")),
-      GT from ">",
-      In from "in",
-      NotIn from "!in",
-      Disjoint from "!!"
+      GT from ">"
     ),
     Ops(InfixL)(
       BoolAnd from "&&",
@@ -71,9 +55,7 @@ lazy val basic: Parsley[BasicExpr] =
     )
   )
 
-// TODO: Something was wrong with the bool parser here
-// TODO: move literal back up in the precedence atom list to see
-lazy val literal: Parsley[LiteralExpr] =
+val literal: Parsley[LiteralExpr] =
   BoolLiteral(bool)
     | ("null" as Null)
     | IntLiteral(integer)
@@ -90,47 +72,51 @@ private lazy val basicHigher =
       "{" ~> many("case" ~> (pattern <~ "=>") <~> expr) <~ "}"
         | many("case" ~> (pattern <~ "=>") <~> expr)
     )
-    | Forall(
-      "forall" ~> ident,
-      option(atomic(":" ~> typeParser)),
-      "::" ~> basic
+    | "forall" ~> ident <**> (
+      "::" ~> basic.map(expr => ((varName: String) => Forall(varName, None, expr)))
+      | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) => ((varName: String) => Forall(varName, Some(t), expr)))
     )
-    | Exists(
-      "exists" ~> ident,
-      option(atomic(":" ~> typeParser)),
-      "::" ~> basic
+    | "exists" ~> ident <**> (
+      "::" ~> basic.map(expr => ((varName: String) => Exists(varName, None, expr)))
+      | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) => ((varName: String) => Exists(varName, Some(t), expr)))
     )
     | Set("{" ~> sepBy(basic, ",") <~ "}")
     | Seq("[" ~> sepBy(basic, ",") <~ "]")
     | Cardinality("|" ~> basic <~ "|")
-    | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
-    | lambda
     | ident <**> (
-      some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
-        FunctionCall(_: String, args)
-      )
+      "=>" ~> expr.map(exprBlock => ((ident: String) => Lambda(List((ident, None)), exprBlock)))
+      | some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
+          FunctionCall(_: String, args)
+        )
         | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
         | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
-    | Brackets(atomic("(" ~> basic <~ ")"))
-    | Tuple("(" ~> sepBy(basic, ",") <~ ")")
+    // TODO: These three cases all start with "(", the lambda case starting with an ident has already been covered
+    | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
+    | lambda
+    | "(" ~> basic <**> (
+      "," ~> sepBy(basic, ",").map(basics => ((basic: BasicExpr) => Tuple(basic :: basics)))
+      </> identity[BasicExpr]
+    ) <~ ")"
 
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
-private lazy val extendedHigher: Parsley[ExtendedExpr] =
-  Let(atomic("var" ~> lvalue <~ ":="), basic)
-    | atomic(
+private val extendedHigher: Parsley[ExtendedExpr] =
+  atomic(
       MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
         ";"
       )
     )
-    | LetOrFail(
-      "var" ~> ident,
-      option(atomic(":" ~> typeParser)),
-      ":|" ~> basic
-    )
+    | "var" ~> (
+      (("(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")" <~ ":=") <~> basic).map((lvalues, right) => Let(lvalues, right))
+      | ident <**> (
+        ":=" ~> basic.map(expr => ((varName: String) => Let(List((varName, None)), expr)))
+        | ":|" ~> basic.map(expr => ((varName: String) => LetOrFail(varName, None, expr)))
+        | ((":" ~> typeParser <~ ":|") <~> basic).map((t, expr) => ((varName: String) => LetOrFail(varName, Some(t), expr)))
+        )
+      )
     | Assert("assert" ~> basic)
 
-private lazy val lvalue =
+private val lvalue =
   "(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")"
     | ident.map(i => List((i, None)))

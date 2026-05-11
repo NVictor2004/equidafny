@@ -1,0 +1,38 @@
+import stainless.lang._
+import benchmarks_formula_defs._
+
+object ta_solutions_formula_solution {
+
+object ta_solutions_formula {
+  def evalM(f: Formula): Boolean = {
+    decreases(f.size)
+    f match {
+      case True_ => { true }
+      case False_ => { false }
+      case Not(f) => !(evalM(f))
+      case AndAlso(p1, p2) =>
+        lazy val p11 = evalM(p1)
+        lazy val p22 = evalM(p2)
+        p11 && p22
+      case OrElse(p1, p2) =>
+        lazy val p11 = evalM(p1)
+        lazy val p22 = evalM(p2)
+        p11 || p22
+      case Imply(p1, p2)  =>
+        lazy val p11 = evalM(p1)
+        lazy val p22 = evalM(p2)
+        !(p11) || p22
+      case Equal(p1, p2) =>
+        def exp_evalM(exp: Exp): Int = {
+          exp match {
+            case Num(n) => { n }
+            case Plus(e1, e2) => { exp_evalM(e1) + exp_evalM(e2) }
+            case Minus(e1, e2) => { exp_evalM(e1) - exp_evalM(e2) }
+          }
+        }
+        exp_evalM(p1) == exp_evalM(p2)
+    }
+  }
+}
+
+}

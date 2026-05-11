@@ -1,0 +1,66 @@
+\chapter{Implementation}\label{chp:implementation}
+
+\section{User Interface}\label{sec:user-interface}
+Our tool is accessed from the command line by passing in a single JSON configuration file. For example, a suitable JSON file may look like this:
+\begin{minted}{json}
+{
+  "file": "dup.dfy",
+  "model": "dupM",
+  "norm": "norm",
+  "transform": "seqToList",
+  "candidates": [
+    "dup1",
+    "dup2",
+    "dup3"
+  ]
+}
+\end{minted}
+%
+The keys `file', `model' and `candidates' are necessary for a configuration file to be valid, while the keys `norm' and `transform' are optional. Their purposes are described below. The keys `model', `norm', `transform' and `candidates' each provide function names; if the corresponding functions cannot be found, EquiDafny throws an error. 
+
+\paragraph{file} Provides a path to a single Dafny file. This file must contain all the necessary Dafny code to perform program equivalence. This includes the model and candidate functions, all helper functions and any auxiliary lemmas.
+
+\paragraph{model} Provides the name of the single model function.
+
+\paragraph{norm} Provides the name of a normalisation function, if one is necessary. 
+
+\paragraph{transform} Provides the name of a type transformation function, if one is necessary.
+
+\paragraph{candidates} Provides a list of the names of candidate functions. EquiDafny attempts to prove equivalence between the model function and each candidate function. 
+
+\section{Main Structure}
+
+EquiDafny was implemented in Scala. The tool is divided into several components. The most important component is the generation of Dafny data structures to facilitate the equivalence proof; this was described in \Cref{chp:design}. The remaining components are described in this section. \Cref{fig:structure} depicts EquiDafny's general structure.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/structure.pdf}
+    \caption{EquiDafny's general structure}
+    \label{fig:structure}
+\end{figure}
+
+\subsection{Parsing}
+
+The first component is a parser. This system is used to parse the input Dafny program into a Scala data structure, so that it can be easily processed by the rest of the system. This parser was implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}. 
+
+The parser should be as efficient as possible. One method to increase performance is by minimising the amount of backtracking. Some backtracking is essential due to ambiguity in the Dafny language, however, I have attempted to minimise this as much as possible by carefully ordering the execution of all sub-parsers and by left-factoring whenever possible.
+
+One example of when this occurs is when parsing types. The type of a function is called an arrow type, for example, the type of a function that takes two integers and outputs their sum is \((int, int) \rightarrow int\). Let all other types, such as \(int\) or \(bool\) be called domain types. Since arrow types are right-associative, the type on the left of an arrow must be a domain type, while the type on the right can be any type (either a domain type or an arrow type). Therefore, if we define \(D\) as a parser of domain types and \(T\) as a parser of all types, we can define \(T\) in PEG as follows: \[T \leftarrow D~`{\rightarrow}\textrm'~T~/~D\]
+
+When \(T\) tries to parse a domain type, it must first attempt and fail to parse an arrow type (the left hand side of the \(/\) operator). After this, the parser must then backtrack across what \(D\) parsed to attempt the right hand side. This backtracking decreases the efficiency of the parser and therefore must be removed. In this case, the PEG expression can be left-factored to create a new \(T\) parser: \[T \leftarrow D~(`{\rightarrow}\textrm'~T~/~\epsilon)\]
+
+Now, when \(T\) tries to parse a domain type, it will parse the type using the \(D\) parser, and then attempt to continue to parse the rest of an arrow type. However, now it will immediately fail when trying to parse the \(`{\rightarrow}\textrm'\) and move to the correct branch of the \(/\) operator. Since parsing failed on the first character, the parser no longer requires backtracking.  
+
+\subsection{Translation}
+
+The data structure outputted by the parser is specifically designed to be easy to parse into. This ensures that the parser is simple to implement and efficient to execute. However, this data structure is not ideal for equivalence proof generation. Therefore, this component is used to translate the data structure outputted by the parser into a different data structure that will be used throughout the rest of the system. This translation system allowed me to specifically design the latter data structure to make equivalence proof generation as simple and efficient as possible, without forcing me to update the parser accordingly. This design choice made development significantly easier, especially since the latter data structure constantly evolved over time.
+
+\subsection{Formatting}
+
+Finally, after generating the equivalence proof, the data structure must be converted back into text and stored in a file before it can be processed by Dafny. This is achieved through the formatting component. To increase efficiency, this system directly writes to the file as it processes the program. This avoids the memory overhead of creating a large string before writing it to the file. 
+
+\section{Other System Components}
+
+\paragraph{Testing} I tested EquiDafny using the ScalaTest tool. To create the tests, I wrote a JSON configuration file for each file in my dataset of equivalence tests (as described in \Cref{chp:introduction}). These JSON files are organised in directories based on what challenges the Dafny verifier faces when it attempts to prove equivalence. This allowed me to control testing according to which challenges I had addressed. For each JSON file, all components in EquiDafny's main pipeline are executed in order as described above (Parsing, Translation, Lemma Generation and Formatting). After this, if I have addressed all the challenges within this test, the Dafny verifier is executed to verify the generated equivalence lemmas. If I have not addressed all the challenges, the Dafny verifier only checks that the outputted file is syntactically and semantically valid.
+
+\paragraph{CI Pipeline} I created a CI pipeline to check that EquiDafny's Scala source code compiles on every push. \footnote{Update this as pipeline is updated}

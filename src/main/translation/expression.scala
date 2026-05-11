@@ -9,14 +9,17 @@ import translation.index.translateIndex
 import translation.structure.BinaryOperator.*
 import translation.structure.UnaryOperator.*
 import translation.structure.Quantifier.*
+import translation.translation.Context
 
-def translateExpr(expr: Parsers.ExprBlock): ExprBlock = {
+import scala.collection.immutable.ListMap
+
+def translateExpr(expr: Parsers.ExprBlock)(using Context): ExprBlock = {
   val extendedExprs = expr.extendedExprs.map(translateExtendedExpr)
   val basicExpr = translateBasicExpr(expr.basicExpr)
   ExprBlock(extendedExprs, basicExpr)
 }
 
-def translateExtendedExpr(expr: Parsers.ExtendedExpr): ExtendedExpr =
+def translateExtendedExpr(expr: Parsers.ExtendedExpr)(using Context): ExtendedExpr =
   expr match {
     case Parsers.MethodCall(name, args) =>
       MethodCall(name, args.map(translateBasicExpr))
@@ -44,22 +47,31 @@ def translateLiteralExpr(literal: Parsers.LiteralExpr): LiteralExpr =
     case Parsers.Null                 => Null
   }
 
-def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
+def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicExpr = expr match {
   case literal: Parsers.LiteralExpr  => translateLiteralExpr(literal)
   case Parsers.Ident(name, suffixes) => Ident(name, suffixes)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
-  case Parsers.Brackets(e)           => Brackets(translateBasicExpr(e))
   case Parsers.Iff(l, r)             =>
     Binary(Iff, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.LeftImplies(l, r) =>
     Binary(LeftImplies, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.RightImplies(l, r) =>
     Binary(RightImplies, translateBasicExpr(l), translateBasicExpr(r))
+
+  // TODO: Move to optimisation pass?
+  case Parsers.BoolAnd(Parsers.Not(l), r) => 
+    Cond(translateBasicExpr(l), ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, translateBasicExpr(r)))
+  case Parsers.BoolAnd(l, Parsers.Not(r)) => 
+    Cond(translateBasicExpr(r), ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, translateBasicExpr(l)))
+  
   case Parsers.BoolAnd(l, r) =>
     Binary(BoolAnd, translateBasicExpr(l), translateBasicExpr(r))
+
+  // TODO: Move to optimisation pass?
   case Parsers.BoolOr(l, r) =>
-    Binary(BoolOr, translateBasicExpr(l), translateBasicExpr(r))
+    Cond(translateBasicExpr(l), ExprBlock(Nil, BoolLiteral(true)), ExprBlock(Nil, translateBasicExpr(r)))
+
   case Parsers.Eq(l, r) =>
     Binary(Eq, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Neq(l, r) =>
@@ -72,16 +84,6 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
     Binary(GT, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.GTE(l, r) =>
     Binary(GTE, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.In(l, r) =>
-    Binary(In, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.NotIn(l, r) =>
-    Binary(NotIn, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Disjoint(l, r) =>
-    Binary(Disjoint, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.LeftShift(l, r) =>
-    Binary(LeftShift, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.RightShift(l, r) =>
-    Binary(RightShift, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Add(l, r) =>
     Binary(Add, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Sub(l, r) =>
@@ -92,12 +94,6 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
     Binary(Div, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Mod(l, r) =>
     Binary(Mod, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.BitOr(l, r) =>
-    Binary(BitOr, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.BitAnd(l, r) =>
-    Binary(BitAnd, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.BitXor(l, r) =>
-    Binary(BitXor, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Neg(e) => Unary(Neg, translateBasicExpr(e))
   case Parsers.Not(e) => Unary(Not, translateBasicExpr(e))
   case Parsers.Forall(variable, varType, body) =>
@@ -114,14 +110,36 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
       varType.map(translateType),
       translateBasicExpr(body)
     )
+
+  // TODO: Move to optimisation pass?
+  // If statements can sometimes provide preconditions for function calls
+  // Therefore, that will need to be dealt with
+  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false))) => 
+    Binary(BoolAnd, translateBasicExpr(cond), translateBasicExpr(thenBranch))
+
+  case Parsers.Cond(Parsers.Not(cond), thenBranch, elseBranch) => 
+    Cond(
+      translateBasicExpr(cond),
+      translateExpr(elseBranch),
+      translateExpr(thenBranch)
+    )
+
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(
       translateBasicExpr(cond),
       translateExpr(thenBranch),
       translateExpr(elseBranch)
     )
-  case Parsers.FunctionCall(name, args) =>
-    FunctionCall(name, args.map(_.map(translateBasicExpr)))
+  case Parsers.FunctionCall(name, args) => {
+    context.functionData.get(name) match {
+      case None => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
+      case Some(parameters) => {
+        val first = ListMap(parameters.zip(args(0).map(translateBasicExpr))*)
+        val rest = args.tail.map(exprs => ListMap(exprs.map(expr => ("_", translateBasicExpr(expr)))*))
+        TrueFunctionCall(name, first :: rest)
+      }
+    }
+  }
   case Parsers.LambdaCall(Parsers.Lambda(lvalues, body), args) =>
     LambdaCall(translateLambda(lvalues, body), args.map(translateBasicExpr))
   case Parsers.Match(expr, cases) =>
@@ -141,7 +159,7 @@ def translateBasicExpr(expr: Parsers.BasicExpr): BasicExpr = expr match {
 def translateLambda(
     lvalues: List[(String, Option[Parsers.Type])],
     body: Parsers.ExprBlock
-): Lambda = Lambda(
+)(using Context): Lambda = Lambda(
   lvalues.map { case (name, tpeOpt) => (name, tpeOpt.map(translateType)) },
   translateExpr(body)
 )

@@ -3,7 +3,7 @@ package formatter.types
 import translation.structure.*
 import formatter.formatter.*
 
-def formatType(t: Type)(using writer: Formatter): Unit = t match {
+def formatDomainType(t: DomainType)(using writer: Formatter): Unit = t match {
   case TypeInt              => writer.print("int")
   case TypeBool             => writer.print("bool")
   case TypeString           => writer.print("string")
@@ -17,16 +17,21 @@ def formatType(t: Type)(using writer: Formatter): Unit = t match {
     writer.print("set")
     formatBrackets("<", formatType(elementType), ">")
   }
-  case NamedType(name, generics) => {
+  case CreatedType(name, generics) => {
     writer.print(name)
-    generics.foreach(types =>
-      formatBrackets("<", formatList(types, formatType), ">")
-    )
+    if (generics != Nil) {
+      formatBrackets("<", formatList(generics, formatType), ">")
+    }
   }
+  case GenericType(name) => writer.print(name)
   case TupleType(elements) =>
     formatBrackets("(", formatList(elements, formatType), ")")
+}
+
+def formatType(t: Type)(using writer: Formatter): Unit = t match {
+  case t: DomainType => formatDomainType(t)
   case ArrowType(from, to) => {
-    formatType(from)
+    formatDomainType(from)
     writer.print(" -> ")
     formatType(to)
   }

@@ -51,3 +51,8 @@ function maxT(l: seq<int>): int
   if |l| == 0 then -1
   else foldLeft(bigger, l[0], l[1..])
 }
+
+lemma maxEquivalence2Helper(a: int, b: seq<int>)
+  ensures foldLeft(bigger, a, b) == maxR([a] + b)
+  decreases |b|
+{}

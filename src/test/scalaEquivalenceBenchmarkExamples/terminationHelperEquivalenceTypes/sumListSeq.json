@@ -1,0 +1,8 @@
+{
+  "file": "sumListSeq.dfy",
+  "model": "sumM",
+  "transform": "seqToList",
+  "candidates": [
+    "sum1"
+  ]
+}

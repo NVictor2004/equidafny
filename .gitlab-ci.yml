@@ -1,0 +1,13 @@
+
+image:
+  name: virtuslab/scala-cli:latest
+  entrypoint: [""]
+
+stages:
+  - build
+
+build-job:
+  stage: build
+  script:
+    - scala-cli compile .
+

@@ -1,26 +1,27 @@
 package translation.structure
 
-case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
+import scala.collection.immutable.ListMap
+
+case class DeclaredType(name: String, typeParams: ListMap[String, Type])
 case class Datatype(
     name: String,
-    generic: Option[List[(String, Option[GOption])]],
+    generic: List[(String, Option[GOption])],
     types: List[DeclaredType]
 )
 
-case class Parameter(name: String, paramType: Type)
 case class Function(
     ghost: Boolean,
     name: String,
-    generic: Option[List[(String, Option[GOption])]],
-    params: List[Parameter],
+    generic: List[(String, Option[GOption])],
+    params: ListMap[String, Type],
     returnType: Type,
     specs: List[Spec],
     body: ExprBlock
 )
 case class Lemma(
     name: String,
-    generic: Option[List[(String, Option[GOption])]],
-    params: List[Parameter],
+    generic: List[(String, Option[GOption])],
+    params: ListMap[String, Type],
     specs: List[Spec],
     body: Option[BlockStmt]
 )
@@ -29,7 +30,9 @@ case class Program(
     datatypes: List[Datatype],
     modelFunction: Function,
     candidateFunctions: List[Function],
-    helperFunctions: List[Function],
+    helperFunctions: Map[String, Function],
+    normFunction: Option[Function],
+    typeFunctions: Map[Type, Function],
     mainLemmas: List[Lemma],
     helperLemmas: List[Lemma],
     auxiliaryLemmas: List[Lemma]

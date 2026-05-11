@@ -61,23 +61,19 @@ class ParsersTest extends AnyFlatSpec {
           TypeInt,
           List(
             Requires(
-              Brackets(
                 GTE(
                   Ident("i", Nil),
                   IntLiteral(0)
                 )
-              )
             )
           ),
           ExprBlock(
             Nil,
             Cond(
-              Brackets(
                 Eq(
                   Ident("i", Nil),
                   IntLiteral(0)
-                )
-              ),
+                ),
               ExprBlock(Nil, Ident("j", Nil)),
               ExprBlock(
                 Nil,
@@ -115,22 +111,18 @@ class ParsersTest extends AnyFlatSpec {
           TypeInt,
           List(
             Requires(
-              Brackets(
                 GTE(
                   Ident("i", Nil),
                   IntLiteral(0)
                 )
-              )
             )
           ),
           ExprBlock(
             Nil,
             Cond(
-              Brackets(
-                Eq(
-                  Ident("i", Nil),
-                  IntLiteral(0)
-                )
+              Eq(
+                Ident("i", Nil),
+                IntLiteral(0)
               ),
               ExprBlock(Nil, Ident("j", Nil)),
               ExprBlock(
@@ -171,24 +163,22 @@ class ParsersTest extends AnyFlatSpec {
           ),
           List(
             Ensures(
-              Brackets(
-                Eq(
-                  FunctionCall(
-                    "funnyZip1",
+              Eq(
+                FunctionCall(
+                  "funnyZip1",
+                  List(
                     List(
-                      List(
-                        Ident("xs", Nil),
-                        Ident("ys", Nil)
-                      )
+                      Ident("xs", Nil),
+                      Ident("ys", Nil)
                     )
-                  ),
-                  FunctionCall(
-                    "funnyZipM",
+                  )
+                ),
+                FunctionCall(
+                  "funnyZipM",
+                  List(
                     List(
-                      List(
-                        Ident("xs", Nil),
-                        Ident("ys", Nil)
-                      )
+                      Ident("xs", Nil),
+                      Ident("ys", Nil)
                     )
                   )
                 )

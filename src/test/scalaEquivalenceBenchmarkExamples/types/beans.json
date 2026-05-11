@@ -1,0 +1,8 @@
+{
+  "file": "beans.dfy",
+  "model": "finalBeanList",
+  "transform": "transform",
+  "candidates": [
+    "finalBeanPair"
+  ]
+}

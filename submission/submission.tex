@@ -1,0 +1,150 @@
+\documentclass[runningheads]{llncs}
+
+\usepackage[T1]{fontenc}
+% Please use T1 fonts
+\usepackage{graphicx}
+% Display figures in EPS format
+
+% \usepackage{color}
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+% \urlstyle{rm}
+
+\usepackage[scale=0.85]{FiraMono}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{backcolour},   
+    basicstyle=\ttfamily\footnotesize
+}
+\lstset{style=codestyle}
+\lstset{captionpos=b}
+
+\begin{document}
+%
+\title{Proving Program Equivalence in Dafny}
+
+\author{Nathaniel Victor~\and Dragana Milovancevic \and Sophia Drossopoulou}
+
+\institute{Imperial College London}
+%
+\maketitle
+%
+\section{Introduction}
+
+Program verifiers such as Dafny~\cite{leinoDafnyAutomaticProgram2010} and KeY~\cite{KeYBook2016} allow developers to write proofs of program equivalence, however, they require a significant level of user assistance to complete proofs.
+Recently, many equivalence checkers are being developed to help proving program equivalence easier~\cite{lahiriSYMDIFFLanguageAgnosticSemantic2012,milovancevicProvingDisprovingEquivalence2023,FelsingEtAl,GodlinEtAl}. The aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. 
+EquiDafny improves over Dafny by automating equivalence proofs and decreasing the level of user assistance.
+
+\section{Design Overview} 
+
+I will present the overview of EquiDafny on an example of two equivalent functions: \lstinline|insertSortedM| and \lstinline|insertSorted1|. 
+The first function uses the helper function \lstinline|insertM|:
+\begin{lstlisting}
+function insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), 
+                             count: int, xs: List<int>): List<int>
+  {
+  if (count <= 0) then xs
+  else
+    var (nxtS, t) := next(seed);
+    insertSortedM(nxtS, next, count - 1, insertM(xs, t))
+}
+
+function insertM(xs: List<int>, t: int): List<int>
+  decreases xs {
+  match xs {
+    case Nil => Cons(t, Nil)
+    case Cons(hd, tl) =>
+      if (t <= hd) then Cons(t, xs) else Cons(hd, insertM(tl, t))
+  }
+}
+\end{lstlisting}
+%
+The second function uses the same structure, with the helper function \lstinline|insert1|:
+\begin{lstlisting}
+function insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int),
+                             xs: List<int>, count: int): List<int>
+  decreases count {
+  if (!(count <= 0)) then 
+    var (nxtS, t) := next(seed);
+    insertSorted1(nxtS, next, insert1(t, xs), count - 1)
+  else xs
+}
+
+function insert1(t: int, xs: List<int>): List<int>
+  decreases xs {
+  match xs {
+    case Cons(hd, tl) =>
+      if (!(t <= hd)) then Cons(hd, insert1(t, tl)) else Cons(t, xs)
+    case Nil => Cons(t, Nil)
+  }
+}
+\end{lstlisting}
+%
+
+The user can create an equivalence lemma for this example:
+\begin{lstlisting}
+lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int), 
+                           xs: List<int>, count: int)
+  ensures insertSorted1(seed, next, xs, count) == 
+            insertSortedM(seed, next, count, xs)
+{}
+\end{lstlisting}
+%
+However, the Dafny verifier is unable to prove this lemma automatically.
+
+This example illustrates three main challenges here when attempting to prove the equivalence lemma. 
+
+\paragraph{First:} Generate and call helper lemmas for helper functions. The \lstinline|insertSortedM| and \lstinline|insertSorted1| functions both use the helper functions \lstinline|insertM| and \lstinline|insert1| in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \lstinline|eqInsert|, under the condition \lstinline|count > 0| and with the correct arguments.
+\paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant for proving termination (\lstinline|count|), copied from the \lstinline|InsertSorted1| function.
+\paragraph{Third:} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \lstinline|eqInsertSorted| lemma to complete the proof.
+
+Thus, EquiDafny generates the following: 
+\begin{lstlisting}
+lemma eqInsert(t: int, xs: List<int>)
+  ensures (insert1(t, xs) == insertM(xs, t))
+{}
+
+lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int), 
+                           xs: List<int>, count: int)
+  ensures (insertSorted1(seed, next, xs, count) 
+           == insertSortedM(seed, next, count, xs))
+  decreases count
+{
+  if count > 0 {
+    var (nxtS, t) := next(seed);
+    eqInsertSorted(nxtS, next, insert1(t, xs), count - 1);
+    eqInsert(t, xs);
+  }
+}
+\end{lstlisting}
+%
+
+The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can be split into their constituent parts and recursively `merged' together.
+This algorithm has two outputs. The first is a set of mappings between the parameters of one function to the parameters of the other. This is used to describe how the arguments passed into one function in an equivalence lemma must be permuted to form the arguments to the second function. 
+The second output is the body of each lemma. In this example, this involves the call to the helper equivalence lemma \lstinline|eqInsert|. Additionally, the algorithm involves merging function call arguments correctly and merging mutually recursive functions.
+
+\section{Evaluation}
+To evaluate EquiDafny, I took the set of program equivalence tests from the Stainless verifier and converted them from Scala to Dafny. I additionally created a few new tests myself. This dataset is publicly available at \\\url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. The results of evaluation are shown below. Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. 
+\begin{center}
+  \begin{tabular}{|c|c|c|c|}
+  \hline
+  Tool & Dafny & EquiDafny & Stainless \\
+  \hline
+  Tests Verified (out of 51) & 20 & 44 & 50 \\
+  \hline
+  \end{tabular}
+\end{center}
+
+\section{Ongoing and Future Work}
+This section outlines how EquiDafny will be improved in the future.
+
+\paragraph{Datatype Transformations} Currently, EquiDafny, like other tools such as Stainless and REVE, requires equivalent programs to have identical type signatures. For example, changing \lstinline|next: Seed -> (Seed, int)| to \lstinline|next: Seed -> (int, Seed)| in one of the functions cannot be treated by EquiDafny. I plan to extend the tool with type transformations.
+
+\paragraph{User Interface} EquiDafny is currently running as a command line tool, but Dafny can also run in a VSCode plugin. I plan to implement a new plugin for EquiDafny to be used within VSCode.
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}

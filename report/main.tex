@@ -1,28 +1,40 @@
 \documentclass[a4paper, twoside]{report}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{subcaption}
 
 % Layout stuff, 1in is standard margin
 \usepackage[margin=1in]{geometry}
 
+% Encoding and font details
+\usepackage{sectsty}
+\allsectionsfont{\sffamily}
+\usepackage[T1]{fontenc}
+\usepackage{libertinus}
+\usepackage[scale=0.85]{FiraMono}
+\usepackage{microtype}
+
 % Bibliography settings
 \usepackage[backend=biber,style=numeric,uniquename=false]{biblatex}
 \addbibresource{references.bib}
-
-% Code listing settings
-\usepackage{listings}
+    
+% minted config
 \usepackage{xcolor}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\lstdefinestyle{codestyle}{
-    backgroundcolor=\color{backcolour},   
-    basicstyle=\ttfamily\footnotesize
+\usepackage{minted}
+\setminted{
+    style=tango,
+    fontsize=\footnotesize,
+    gobble=0,
+    breaklines=true,
+    bgcolor=gray!5,
 }
-\lstset{style=codestyle}
-\lstset{captionpos=b}
+
+% Disable minted temporarily
+\usepackage{verbatim}
+\renewenvironment{minted}[2][]{\verbatim}{\endverbatim}
+\DeclareRobustCommand{\mintinline}[2]{{\ttfamily #2}}
 
 % Hyperlink settings
-\usepackage{nameref}
 \usepackage{hyperref}
-\usepackage{cleveref}
 % Define colours
 \definecolor[named]{ACMPurple}{cmyk}{0.55,1,0,0.15}
 \definecolor[named]{ACMDarkBlue}{cmyk}{1,0.58,0,0.21}
@@ -33,28 +45,29 @@
     citecolor=ACMPurple,
     urlcolor=ACMDarkBlue,
     filecolor=ACMDarkBlue}
+\usepackage{cleveref}
 
 \title{Proving Program Equivalence In Dafny}
-\author{Nathaniel Victor}
+\author{Nathaniel Victor} 
 
 \begin{document}
 
-\input{title/title.tex}
+\include{title/title}
 
 \begin{abstract}
-Two programs are equivalent if they produce the same output for any input. Proving program equivalence has applications across a variety of fields, however, these proofs are often difficult to write. This has led to the development of a variety of tools to help mitigate this \parencite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}, but using them still requires significant mathematical expertise that the average software developer does not have. The aim of this project is to decrease the necessity for this as much as possible, focussing specifically on the Dafny program verifier. In this project, I will explore Dafny's capabilities and limitations in proving program equivalence. I will build a tool on top of Dafny to attempt to remove these limitations and allow the user to create equivalence proofs with as little user assistance as possible. Finally, I will evaluate this tool against the current state-of-the-art systems.
+Two programs are equivalent if they produce the same output for any input. Proving program equivalence has applications across a variety of fields, however, these proofs are often difficult to write. This has led to the development of a variety of tools to help mitigate this \parencite{leinoDafnyAutomaticProgram2010,lahiriSYMDIFFLanguageAgnosticSemantic2012,IntroductionStainless091,cadarKLEEUnassistedAutomatic}, but using them still requires significant mathematical expertise that the average software developer does not have. The aim of this project is to decrease the necessity for this as much as possible, focussing specifically on the Dafny program verifier. In this project, I explored Dafny's capabilities in proving program equivalence. I built EquiDafny, a tool on top of Dafny to attempt to address the challenges the Dafny verifier faces to allow the user to create equivalence proofs with as little user assistance as possible. Finally, I evaluated EquiDafny against Dafny and Stainless. The results showed that EquiDafny improves upon the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. 
 \end{abstract}
 
 \tableofcontents
-\lstlistoflistings
 
-\input{introduction.tex}
-\input{background.tex}
-\input{audit.tex}
-\input{plans.tex}
-\input{ethicalissues.tex}
-
-\footnote{appendix: short diff between my dafny and actual dafny}
+\include{introduction}
+\include{background}
+% \include{plans}
+\include{design}
+\include{implementation}
+\include{evaluation}
+\include{conclusions}
+\include{declarations}
 
 \printbibliography
 

@@ -1,13 +1,16 @@
 package translation.structure
 
 sealed trait Type
-case object TypeInt extends Type
-case object TypeBool extends Type
-case object TypeString extends Type
-case object TypeChar extends Type
-case object TypeNat extends Type
-case class SeqType(elementType: Type) extends Type
-case class SetType(elementType: Type) extends Type
-case class NamedType(name: String, generics: Option[List[Type]]) extends Type
-case class TupleType(elements: List[Type]) extends Type
-case class ArrowType(from: Type, to: Type) extends Type
+sealed trait DomainType extends Type
+
+case object TypeInt extends DomainType
+case object TypeBool extends DomainType
+case object TypeString extends DomainType
+case object TypeChar extends DomainType
+case object TypeNat extends DomainType
+case class SeqType(elementType: Type) extends DomainType
+case class SetType(elementType: Type) extends DomainType
+case class CreatedType(name: String, generics: List[Type]) extends DomainType
+case class GenericType(name: String) extends DomainType
+case class TupleType(elements: List[Type]) extends DomainType
+case class ArrowType(from: DomainType, to: Type) extends Type

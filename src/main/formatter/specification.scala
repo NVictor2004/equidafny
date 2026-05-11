@@ -1,7 +1,7 @@
 package formatter.specification
 
 import translation.structure.*
-import formatter.formatter.{Formatter, formatList}
+import formatter.formatter.{Formatter, formatList, formatBrackets}
 import formatter.expression.formatBasicExpr
 
 def formatSpec(spec: Spec)(using writer: Formatter): Unit = spec match {
@@ -15,6 +15,6 @@ def formatSpec(spec: Spec)(using writer: Formatter): Unit = spec match {
   }
   case Decreases(es) => {
     writer.print("decreases ")
-    formatList(es, formatBasicExpr)
+    formatBrackets("(", formatList(es, formatBasicExpr), ")")
   }
 }
