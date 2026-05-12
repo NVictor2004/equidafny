@@ -32,3 +32,15 @@ function Client1(x: int): int
   else 
     0
 }
+
+lemma Lib1Helper(x: int)
+  requires x > 0
+  ensures x % 2 == 0 ==> Lib1(x) > 0
+{}
+
+lemma equivalence(x: int)
+  requires x > 0
+  ensures ClientM(x) == Client1(x)
+{
+  Lib1Helper(x);
+}
