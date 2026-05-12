@@ -40,3 +40,14 @@ function f_loop1(i: int, j: int): int
     // Loop Exit: return j;
     j
 }
+
+lemma equivalenceHelper(n: int, i: int, j: int)
+  ensures f_loopM(n, i, j) == f_loop1(n + n - i, j)
+  decreases n + n - i
+{}
+
+lemma equivalence(n: int)
+  ensures fM(n) == f1(n)
+{
+  equivalenceHelper(n, 0, 0);
+}
