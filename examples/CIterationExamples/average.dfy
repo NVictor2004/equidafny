@@ -28,3 +28,18 @@ function AverageRecursive1(s: seq<int>, n: int): real
   if |s| == 0 then 0.0 
   else (s[0] as real / n as real) + AverageRecursive1(s[1..], n)
 }
+
+lemma equivalenceHelper(s: seq<int>, n: int)
+  requires n > 0
+  ensures (SumRecursiveM(s) as real) / (n as real) == AverageRecursive1(s, n)
+{
+  if |s| > 0 {equivalenceHelper(s[1..], n);}
+}
+
+lemma equivalence(a: seq<int>)
+  ensures AverageM(a) == Average1(a)
+{
+  if |a| > 0 {
+    equivalenceHelper(a, |a|);
+  }
+}

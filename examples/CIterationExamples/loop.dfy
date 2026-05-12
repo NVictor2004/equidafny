@@ -39,3 +39,14 @@ function f_loop1(n: real, i: real, j: real): real
     // Loop Exit: return j;
     j
 }
+
+lemma equivalenceHelper(n: real, i: real, j: real)
+  ensures f_loopM(n, i, j) == f_loop1(n, n - i, j)
+  decreases n - i
+{}
+
+lemma equivalence(n: real)
+  ensures fM(n) == f1(n)
+{
+  equivalenceHelper(n, 0.0, 0.0);
+}

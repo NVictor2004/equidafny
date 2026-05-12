@@ -63,3 +63,7 @@ function LibLoop1(x: nat, i: int): int
 function Client1(x: nat): int {
   Lib1(x, 0)
 }
+
+lemma equivalence(x: nat)
+  ensures ClientM(x) == Client1(x)
+{}

@@ -65,3 +65,28 @@ function MultiplicationLoop21(n: int, i: int, x: int): int
 {
   if i <= n then MultiplicationLoop21(n, i + 1, x * 2) else x
 }
+
+lemma equivalenceMultiLoop1(n: int, i: int, x: int)
+  ensures MultiplicationLoop1M(n, i, x) == MultiplicationLoop11(n, i, x)
+  decreases n - i
+{}
+
+lemma equivalenceAdditionLoop(n: int, i: int, x: int)
+  ensures AdditionLoopM(n, i, x) == AdditionLoop1(n, i, x)
+  decreases n - i
+{}
+
+lemma equivalenceMultiLoop2(n: int, i: int, x: int)
+  ensures MultiplicationLoop2M(n, i, x) == MultiplicationLoop21(n, i, x)
+  decreases n - i
+{}
+
+lemma equivalence(n: int)
+  ensures fM(n) == f1(n)
+{
+  var x1 := MultiplicationLoop1M(n, 1, 1);
+  var x2 := AdditionLoopM(n, 0, x1);
+  equivalenceMultiLoop1(n, 1, 1);
+  equivalenceAdditionLoop(n, 0, x1);
+  equivalenceMultiLoop2(n, 1, x2);
+}

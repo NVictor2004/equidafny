@@ -59,3 +59,21 @@ function SumLoop1(n: int, i: int, x: int): int
   else 
     x
 }
+
+lemma equivalencePowerLoop(n: int, i: int, x: int)
+  ensures f_loop1M(n, i, x) == PowerLoop1(n, i, x)
+  decreases n - i
+{}
+
+lemma equivalenceSumLoop(n: int, i: int, x: int)
+  ensures f_loop2M(n, i, x) == SumLoop1(n, i, x)
+  decreases n - i
+{}
+
+lemma equivalence(n: int)
+  ensures fM(n) == f1(n)
+{
+  var x1 := f_loop1M(n, 1, 1);
+  equivalencePowerLoop(n, 1, 1);
+  equivalenceSumLoop(n, 0, x1);
+}

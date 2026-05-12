@@ -28,7 +28,7 @@ function LibLoopM(x: nat, i: int): int
 
 // The client function
 function ClientM(x: nat): int {
-  if (x < 19) then LibM(20, 1)
+  if (x <= 19) then LibM(20, 1)
   else LibM(x, 1)
 }
 
@@ -62,6 +62,10 @@ function LibLoop1(x: nat, i: int): int
 
 // The client function
 function Client1(x: nat): int {
-  if (x < 19) then Lib1(20, 1)
+  if (x <= 19) then Lib1(20, 1)
   else Lib1(x, 1)
 }
+
+lemma equivalence(x: nat)
+  ensures ClientM(x) == Client1(x)
+{}

@@ -95,3 +95,7 @@ function ClientLoop1(x: nat, i: int): int
     // Increment i and continue searching
     ClientLoop1(x, i + 1)
 }
+
+lemma equivalence(x: nat)
+  ensures ClientM(x) == Client1(x)
+{}

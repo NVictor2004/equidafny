@@ -45,3 +45,7 @@ function f_loop1(x: int): int
     // Loop condition (x < 10) is false
     x
 }
+
+lemma equivalence(z: int)
+  ensures fM(z) == f1(z)
+{}

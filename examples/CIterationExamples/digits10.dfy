@@ -58,3 +58,13 @@ function f_loop1(n: int, result: int): int
           // After this, the while loop would repeat
           f_loop1(n3 / 10, r3 + 1)
 }
+
+lemma equivalenceHelper(n: int, result: int)
+  ensures f_loopM(n, result) == f_loop1(n / 10, result)
+{}
+
+lemma equivalence(n: int)
+  ensures fM(n) == f1(n)
+{
+  equivalenceHelper(n, 1);
+}
