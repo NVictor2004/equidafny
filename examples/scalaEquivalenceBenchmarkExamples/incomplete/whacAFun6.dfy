@@ -10,10 +10,10 @@ function rep2<A>(n: int, f: A -> A, a: A): A
 }
 
 lemma equivalenceRep<A>(n: int, f: A -> A, a: A)
-  requires (n >= 0)
-  ensures (rep1(n, f, a) == rep2(n, f, a))
+  requires n >= 0
+  ensures rep1(n, f, a) == rep2(n, f, a)
 {
-  equivalenceRepeat12(n, f);
+  equivalenceRepeat12(n, f, a);
 }
 
 // Said to be non-equivalent, even though they are :(
@@ -32,9 +32,11 @@ function repeat2<A>(n: int, f: A -> A): A -> A
   else a => repeat2(n - 1, f)(f(a))
 }
 
-lemma equivalenceRepeat12<A>(n: int, f: A -> A)
-  requires (n >= 0)
-  ensures (repeat1(n, f) == repeat2(n, f))
+lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
+  requires n >= 0
+  ensures repeat1(n, f)(a) == repeat2(n, f)(a)
 {
-  assert forall a: A :: repeat1(n, f)(a) == repeat2(n, f)(a);
+  if n > 0 {
+    equivalenceRepeat12(n - 1, f, f(a));
+  }
 }
