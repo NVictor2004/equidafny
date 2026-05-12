@@ -71,3 +71,14 @@ function f_inner1(x: int, g: int, i: int): (int, int)
   else
     (x, g)
 }
+
+lemma equivalenceOuter(x: int, g: int, i: int)
+  ensures f_outerM(x, g, i) == f_outer1(x, g, i)
+  decreases x - i
+{}
+
+lemma equivalence(x: int, g: int)
+  ensures fM(x, g) == f1(x, g)
+{
+  equivalenceOuter(x, g, 0);
+}

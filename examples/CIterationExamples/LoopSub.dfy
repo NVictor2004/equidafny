@@ -39,3 +39,7 @@ function FooLoop1(a: int, i: int, c: int): int
     // Loop exit: return c;
     c
 }
+
+lemma equivalence(a: int, b: int)
+  ensures FooM(a, b) == Foo1(b, a)
+{}

@@ -48,3 +48,15 @@ function f_loop1(t: int, c: int, x: int): int
     // Loop exit: return x
     x
 }
+
+lemma equivalenceLoop(t: int, c: int, x: int)
+  requires t > 0
+  ensures f_loopM(c, x) == f_loop1(t, c, x)
+{}
+
+lemma equivalence(t: int, c: int)
+  requires t > 0
+  ensures fM(t, c) == f1(t, c)
+{
+  equivalenceLoop(t, c, 0);
+}

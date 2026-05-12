@@ -38,3 +38,24 @@ function FooLoop1(a: int, b: int, i: int, c: int): int
     // Loop Exit: return c;
     c
 }
+
+lemma FooLoopHelper(a: int, b: int, i: int, c: int, k: int)
+  ensures FooLoopM(a, b, i, c + k) == FooLoopM(a, b, i, c) + k
+  decreases a - i
+{
+  if i < a {
+    FooLoopHelper(a, b, i + 1, c + b, k);
+  }
+}
+
+lemma equivalenceFooLoop(a: int, b: int, i: int, c: int)
+  ensures FooLoopM(a, b, i, c) == FooLoop1(a, b, i, c)
+  decreases a - i
+{}
+
+lemma equivalence(a: int, b: int)
+  ensures FooM(a, b) == Foo1(a, b)
+{
+  FooLoopHelper(a, b, 0, 0, 1);
+  equivalenceFooLoop(a, b, 0, 1);
+}

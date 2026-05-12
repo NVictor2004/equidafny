@@ -48,3 +48,19 @@ function Client1(x: int): int {
     // Logic: return lib(x);
     Lib1(x)
 }
+
+lemma LibEquivalence(x: int)
+  requires x <= 0
+  ensures LibM(x) == Lib1(x)
+  decreases -x
+{}
+
+lemma equivalence(x: int)
+  ensures ClientM(x) == Client1(x)
+{
+  if x > 0 {
+    LibEquivalence(-x);
+  } else {
+    LibEquivalence(x);
+  }
+}

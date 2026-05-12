@@ -31,3 +31,7 @@ function f_loop1(i: int): int
   else 
     i // The return value when the condition (i <= 10) fails
 }
+
+lemma equivalence(z: int)
+  ensures fM(z) == f1(z)
+{}

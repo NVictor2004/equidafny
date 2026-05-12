@@ -56,3 +56,23 @@ function F1(m: int): int {
   else
     0
 }
+
+lemma equivalenceTrLoop(n: int, i: int, result: int)
+  ensures TrLoopM(n, i, result) == TrLoop1(n, i, result)
+  decreases n - i
+{}
+
+lemma TrLoopNonNegative(n: int, i: int, res: int)
+  requires res >= 0 && i >= 0
+  ensures TrLoopM(n, i, res) >= 0
+  decreases n - i
+{}
+
+lemma equivalence(m: int)
+  ensures FM(m) == F1(m)
+{
+  if m > 0 {
+    equivalenceTrLoop(m - 1, 0, 0); 
+    TrLoopNonNegative(m - 1, 0, 0);
+  }
+}

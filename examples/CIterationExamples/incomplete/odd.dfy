@@ -20,7 +20,6 @@ function ClientM(x: int): int
 // The recursive function implementing the logic of lib(int x)
 function Lib1(x: int): int
   requires x > 0
-  decreases x
 {
   if x % 2 == 0 then
     1 + Lib1(x / 2) // counter++ and recurse
