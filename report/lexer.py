@@ -83,7 +83,7 @@ KEYWORDS = ('abstract',
       'yield',
       'yields')
 
-OPERATORS = ('..', '::', ':=', '!', '=', '|', '=>', '<==>', '<==', '==>', '&&', '||', '==', '!=', '<', '<=', '>', '>=', '+', '-', '*', '/', '%')
+OPERATORS = ('..', '::', ':=', '!', '=', '|', '<==>', '<==', '==>', '&&', '||', '==', '!=', '<', '<=', '>', '>=', '+', '-', '*', '/', '%')
 
 class CustomLexer(RegexLexer):
     name = 'Dafny'
@@ -94,6 +94,8 @@ class CustomLexer(RegexLexer):
             (r"\s+", Whitespace),
             (r"//.*?$", Comment.Single),
             (words(KEYWORDS, suffix=r'\b'), Keyword),
+            (r"=>", Punctuation),
+            (r"\.(?!\.)", Punctuation),
             (words(OPERATORS), Operator),
             (r"\d+", Number),
             (r"\"[^\"]*\"", String),
