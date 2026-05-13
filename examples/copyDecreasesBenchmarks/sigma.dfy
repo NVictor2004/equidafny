@@ -1,7 +1,7 @@
-import stainless.collection._
-import stainless.lang._
-object C_sigma_sol26 {
-  def sigma(f: BigInt => BigInt, a: BigInt, b: BigInt): BigInt = {
-    if (a > b) BigInt(0) else f(a) + sigma(f, a + BigInt(1), b)
-  }
+
+// Needed to add a decreases clause here
+function sigma(f: int -> int, a: int, b: int): int
+  decreases b - a
+{
+  if (a > b) then 0 else f(a) + sigma(f, a + 1, b)
 }
