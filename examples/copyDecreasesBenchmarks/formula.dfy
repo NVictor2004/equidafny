@@ -23,27 +23,63 @@ function size(f: Formula): int
   }
 }
 
-function evall(e: Exp): int {
+// MODEL
+
+function exp_evalM(exp: Exp): int {
+  match exp {
+    case Num(n) => n
+    case Plus(e1, e2) => exp_evalM(e1) + exp_evalM(e2)
+    case Minus(e1, e2) => exp_evalM(e1) - exp_evalM(e2)
+  }
+}
+
+function evalM(f: Formula): bool
+  decreases(size(f))
+{
+  match f {
+    case True_ => true
+    case False_ => false
+    case Not(f) => !(evalM(f))
+    case AndAlso(p1, p2) =>
+      var p11 := evalM(p1);
+      var p22 := evalM(p2);
+      p11 && p22
+    case OrElse(p1, p2) =>
+      var p11 := evalM(p1);
+      var p22 := evalM(p2);
+      p11 || p22
+    case Imply(p1, p2)  =>
+      var p11 := evalM(p1);
+      var p22 := evalM(p2);
+      !(p11) || p22
+    case Equal(p1, p2) =>
+      exp_evalM(p1) == exp_evalM(p2)
+  }
+}
+
+// CANDIDATE
+
+function evallC(e: Exp): int {
   match e {
     case Num(a) => a
-    case Plus(a, b) => evall(a) + evall(b)
-    case Minus(a, b) => evall(a) - evall(b)
+    case Plus(a, b) => evallC(a) + evallC(b)
+    case Minus(a, b) => evallC(a) - evallC(b)
   }
 }
 
 // The termination clause here needed to be manually put in
-function eval(f: Formula): bool
+function evalC(f: Formula): bool
   decreases size(f)
 {
   match f {
     case True_ => true
     case False_ => false
-    case Not(a) => if (eval(a)) then false else true
-    case AndAlso(a, b) => eval(a) && eval(b)
-    case OrElse(a, b) => eval(a) || eval(b)
+    case Not(a) => if (evalC(a)) then false else true
+    case AndAlso(a, b) => evalC(a) && evalC(b)
+    case OrElse(a, b) => evalC(a) || evalC(b)
     case Imply(a, b) =>
       assert size(Not(AndAlso(a, Not(b)))) < size(Imply(a, b));
-      eval(Not(AndAlso(a, Not(b))))
-    case Equal(a, b) => if (evall(a) == evall(b)) then true else false
+      evalC(Not(AndAlso(a, Not(b))))
+    case Equal(a, b) => if (evallC(a) == evallC(b)) then true else false
   }
 }

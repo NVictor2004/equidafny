@@ -1,3 +1,4 @@
+// MODEL
 
 /* Copyright 2022 EPFL, Lausanne */
 
@@ -60,6 +61,8 @@ function isPrimeM2(n: int): bool
   else
     innterM2(n, 2)
 }
+
+// CANDIDATE
 
 function isPrimeHelperC(n: int, i: int): bool
   requires i >= 0 // Added this line
