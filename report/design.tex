@@ -316,9 +316,9 @@ TODO \footnote{Write this when match expressions are finished}
 
 % \subsection{Standardisation of Generic Variables}
 
-\section{Extensions}
-
-\subsection{Type Transformations}\label{sec:type-transformations}
+\section{Type Transformations}\label{sec:type-transformations}
+\footnote{check input and output types when adding type transform function}
+\footnote{make it clear that equivalence lemmas are generated not given, all else is given, also make it clear that this is something that Stainless does not do}
 
 Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. For example, here are the functions \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1|. \mintinline{lexer.py:CustomLexer}|sumM| calculates the sum of a sequence of integers using the inbuilt Dafny sequence type ({lexer.py:CustomLexer}|seq|). However, \mintinline{lexer.py:CustomLexer}|sum1| calculates the sum of a list of integers using the user-defined data structure provided in \Cref{sec:list-structure}. These functions can be proven equivalent if another function is provided that transforms a Dafny \mintinline{lexer.py:CustomLexer}|seq| into the user-defined \mintinline{lexer.py:CustomLexer}|List|. One possible such function is provided below:
 \begin{minted}{lexer.py:CustomLexer}

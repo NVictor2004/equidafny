@@ -52,7 +52,7 @@ For this example, the Boogie translation resulted in a file almost 3350 lines lo
 
 \subsection{SymDiff}
 
-\footnote{example as with other sections}
+\footnote{example, use from symdiff paper, put ... for product program}
 
 SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}. The system works by combining the two programs being compared into a single program called a `product program'. This product program contains the bodies of the individual programs to simulate both of their executions. Symdiff attempts to prove postconditions on this product program to verify the relationship between the individual functions. These postconditions are called `mutual summaries'. The postconditions can be proven by passing the product program to the Boogie program verifier. 
 
