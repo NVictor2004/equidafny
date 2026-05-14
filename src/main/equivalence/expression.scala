@@ -82,10 +82,11 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
 
             val finalMatchStmts = modelCases.map((modelPattern, modelBlock) => {
-                val matchingCandBlocks = candCases.collect {
-                    case (candPattern, candBlock) if mergePattern(modelPattern, candPattern) => candBlock
-                }
-                val stmts = matchingCandBlocks.flatMap(candBlock => mergeExprBlock(currentLemmas, currentMappings, modelBlock, modelFunc, candBlock, candidateFunc))
+                val stmts = for {
+                    (candPattern, candBlock) <- candCases
+                    if mergePattern(modelPattern, candPattern)
+                    stmt <- mergeExprBlock(currentLemmas, currentMappings, modelBlock, modelFunc, candBlock, candidateFunc)
+                } yield stmt
                 (modelPattern, stmts)
             })
 
