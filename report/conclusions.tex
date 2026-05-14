@@ -1,4 +1,16 @@
 \chapter{Conclusions and Future Work}
+\footnote{Finish conclusions section}
 
-\footnote{Extension: Fix counter examples}
-\footnote{Extension: Autogen product programs, maybe without invariants}
+\section{Achievements and Limitations}
+
+\section{Future Work}
+
+There is great scope for extending EquiDafny in the future. Some suggestions are listed below. 
+
+\paragraph{Evaluation testsuite extension}
+
+\paragraph{Improving counter example generation} As described in \Cref{sec:counterexamples}, Dafny counterexamples can be unnecessarily complex and are sometimes inaccurate. These counterexamples could be processed before being presented to the user to check that they are valid and to simplify them whenever possible.
+
+\paragraph{Product Program generation}\footnote{Maybe without invariants}
+
+\paragraph{Parser Optimisation} As described in \Cref{sec:system-profiling}, EquiDafny's parsing component consumes a significant amount of time and memory. This can be decreased by using a parser generator (such as ANTLR~\parencite{DefinitiveANTLR4}) instead of the Parsley parser combinator library~\parencite{willisJmie6Parsley2026}, though such a change has other drawbacks that should be considered. It is important to note that the majority of the overall time taken will still be spent during the final Dafny verification component, thus optimising the parser will only improve overall performance slightly.
