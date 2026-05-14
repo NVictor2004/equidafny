@@ -50,8 +50,7 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                 case _ => condStmts ++ List(CondStmt(modelCond, BlockStmt(thenStmts), Some(BlockStmt(elseStmts))))
             }
         }
-        // TODO: Same length tuples? In which case, the match expression pattern matching needs to be fixed
-        case (Tuple(modelElements), Tuple(candElements)) =>
+        case (Tuple(modelElements), Tuple(candElements)) if modelElements.length == candElements.length =>
             modelElements.zip(candElements).flatMap((modelElem, candElem) => mergeBasicExpr(currentLemmas, currentMappings, modelElem, modelFunc, candElem, candidateFunc))
 
         case (Binary(modelOp, 
@@ -102,18 +101,15 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
         case (Match(modelExpr, modelCases), Match(candExpr, candCases)) => {
             val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
 
-            // Create mappings between the identifiers in the model match expression's expression and each model case's pattern
-            val modelPatternMappings = modelCases.map((pattern, _) => mapBasicExprToPattern(modelExpr, pattern))
+            val finalMatchStmts = modelCases.map((modelPattern, modelBlock) => {
+                val matchingCandBlocks = candCases.collect {
+                    case (candPattern, candBlock) if mergePattern(modelPattern, candPattern) => candBlock
+                }
+                val stmts = matchingCandBlocks.flatMap(candBlock => mergeExprBlock(currentLemmas, currentMappings, modelBlock, modelFunc, candBlock, candidateFunc))
+                (modelPattern, stmts)
+            })
 
-            // For each model case, create a pattern to merge with every candidate case
-            val modelPatterns = modelPatternMappings.map(patternMappings => createPattern(candExpr, currentMappings.toMap, patternMappings))
-
-            val candExprBlocks = modelPatterns.map(modelPattern => candCases.filter(candCase => mergePattern(modelPattern, candCase._1)).map(_._2))
-            val exprBlockMappings = modelCases.map(_._2).zip(candExprBlocks)
-
-            val stmts = exprBlockMappings.map((modelExprBlock, candExprBlocks) => candExprBlocks.flatMap(candExprBlock => mergeExprBlock(currentLemmas, currentMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)))
-
-            exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
+            exprStmts :+ MatchStmt(modelExpr, finalMatchStmts)
         }
         case _ => Nil
     }
