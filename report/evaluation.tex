@@ -38,7 +38,7 @@ function repeat2<A>(n: int, f: A -> A): A -> A
   else a => repeat2(n - 1, f)(f(a))
 }
 \end{minted}
-
+%
 Despite any assistance I provide, the Dafny verifier is unable to prove these functions equivalent.
 
 \section{System Profiling}

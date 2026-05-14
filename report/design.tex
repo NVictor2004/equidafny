@@ -231,7 +231,7 @@ After merging the function bodies, if some parameters have still not been mapped
 \subsection{Mutually Recursive Functions}
 Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| which each output whether a given integer is even or not. They use the helper functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
 
-\begin{minted}{lexer.py:CustomLexer}
+\begin{minted}[highlightlines={5,12,19,26}]{lexer.py:CustomLexer}
 function isEven(x: int): bool
   decreases(if (x <= 0) then 0 else x) {
   if (x < 0) then false
@@ -261,7 +261,7 @@ function myIsOdd(x: int): bool
 }
 \end{minted}
 
-Let the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| be the model and candidate functions respectively. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in our tool attempting to merge the function calls \mintinline{lexer.py:CustomLexer}|isOdd(x - 1)| and \mintinline{lexer.py:CustomLexer}|myIsOdd(x - 1)|. This requires the functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
+Let the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| be the model and candidate functions respectively. All function calls are highlighted. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in our tool attempting to merge the function calls \mintinline{lexer.py:CustomLexer}|isOdd(x - 1)| and \mintinline{lexer.py:CustomLexer}|myIsOdd(x - 1)|. This requires the functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
 
 Our tool solves this problem in the following way. During Function Merging, the process has access to the lemmas currently being generated. This is stored in a map from the name of the model function to an optional lemma (represented using the Scala data structure \mintinline{lexer.py:CustomLexer}|Option|). When the Merging process encounters two function calls, this map is consulted to determine how the process should proceed.
 
@@ -271,7 +271,7 @@ Finally, if the model function's name is mapped to the \mintinline{lexer.py:Cust
 
 \subsection{Merging Function Calls}\label{sec:merging-calls}
 During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| that each implement the insertion sort algorithm:
-\begin{minted}{lexer.py:CustomLexer}
+\begin{minted}[highlightlines={5,14}]{lexer.py:CustomLexer}
 function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
   {
   match insert {
@@ -290,7 +290,7 @@ function insertSorted1(sorted: List<int>, insert: List<int>): List<int>
 }
 \end{minted}
 %
-These functions rely on helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{sec:intro-background}. Thus, the arguments in the function calls to \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| is necessary. This results in the following equivalence lemmas:
+These functions rely on helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| that each insert a single integer into a sorted list while maintaining its order. Their implementations are in \Cref{sec:intro-background}. Thus, the arguments in the function calls to \mintinline{lexer.py:CustomLexer}|insertSortedM| and \mintinline{lexer.py:CustomLexer}|insertSorted1| must themselves be merged to discover that an equivalence lemma between the helper functions \mintinline{lexer.py:CustomLexer}|insertM| and \mintinline{lexer.py:CustomLexer}|insert1| is necessary (the corresponding lines are highlighted above). This results in the following equivalence lemmas:
 
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceInsertSorted5(t: int, xs: List<int>)
@@ -351,8 +351,8 @@ function sumAcc1(l: List<int>, acc: int): int
 }
 \end{minted}
 % 
-Thus, EquiDafny can prove \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| equivalent by generating the following equivalence lemmas using the \mintinline{lexer.py:CustomLexer}|seqToList| function:
-\begin{minted}{lexer.py:CustomLexer}
+Thus, EquiDafny can prove \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| equivalent by generating the following equivalence lemmas (the lines where the \mintinline{lexer.py:CustomLexer}|seqToList| function is used are highlighted):
+\begin{minted}[highlightlines={2,7}]{lexer.py:CustomLexer}
 lemma equivalenceHelper(acc: int, l: seq<int>)
   ensures sumAccM(acc, l) == sumAcc1(seqToList(l), acc)
   decreases l
