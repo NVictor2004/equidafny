@@ -16,9 +16,19 @@
 % Bibliography settings
 \usepackage[backend=biber,style=numeric,uniquename=false]{biblatex}
 \addbibresource{references.bib}
+
+% Code listing settings
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{backcolour},   
+    basicstyle=\ttfamily\footnotesize
+}
+\lstset{style=codestyle}
+\lstset{captionpos=b}
     
 % minted config
-\usepackage{xcolor}
 \usepackage{minted}
 \setminted{
     style=tango,
