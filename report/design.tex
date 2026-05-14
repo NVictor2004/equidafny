@@ -315,9 +315,8 @@ TODO \footnote{Write this when match expressions are finished}
 % \subsection{Standardisation of Generic Variables}
 
 \section{Type Transformations}\label{sec:type-transformations}
-\footnote{make it clear that equivalence lemmas are generated not given, all else is given, also make it clear that this is something that Stainless does not do}
 
-Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. For example, here are the functions \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1|. \mintinline{lexer.py:CustomLexer}|sumM| calculates the sum of a sequence of integers using the inbuilt Dafny sequence type ({lexer.py:CustomLexer}|seq|). However, \mintinline{lexer.py:CustomLexer}|sum1| calculates the sum of a list of integers using the user-defined data structure provided in \Cref{sec:list-structure}. These functions can be proven equivalent if another function is provided that transforms a Dafny \mintinline{lexer.py:CustomLexer}|seq| into the user-defined \mintinline{lexer.py:CustomLexer}|List|. One possible such function is provided below:
+Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. Such functions cannot be proven equivalent by the Stainless equivalence checker, however, this is possible in EquiDafny. For example, here are the functions \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1|. \mintinline{lexer.py:CustomLexer}|sumM| calculates the sum of a sequence of integers using the inbuilt Dafny sequence type ({lexer.py:CustomLexer}|seq|). However, \mintinline{lexer.py:CustomLexer}|sum1| calculates the sum of a list of integers using the user-defined data structure provided in \Cref{sec:list-structure}. EquiDafny can prove these functions equivalent if the user provides another function that transforms a Dafny \mintinline{lexer.py:CustomLexer}|seq| into the user-defined \mintinline{lexer.py:CustomLexer}|List|. The following function \mintinline{lexer.py:CustomLexer}|seqToList| is one possible such function:
 \begin{minted}{lexer.py:CustomLexer}
 function seqToList(l: seq<int>): List<int> {
     if |l| == 0 then Nil
@@ -352,7 +351,7 @@ function sumAcc1(l: List<int>, acc: int): int
 }
 \end{minted}
 % 
-Thus, \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| can be proven equivalent using the type transformation function \mintinline{lexer.py:CustomLexer}|seqToList| with the following equivalence lemmas:
+Thus, EquiDafny can prove \mintinline{lexer.py:CustomLexer}|sumM| and \mintinline{lexer.py:CustomLexer}|sum1| equivalent by generating the following equivalence lemmas using the \mintinline{lexer.py:CustomLexer}|seqToList| function:
 \begin{minted}{lexer.py:CustomLexer}
 lemma equivalenceHelper(acc: int, l: seq<int>)
   ensures sumAccM(acc, l) == sumAcc1(seqToList(l), acc)
