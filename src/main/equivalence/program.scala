@@ -85,21 +85,21 @@ def mergeFunction(
   // Create mappings from parameter names to arguments
   // These will be used to create the function calls in the lemma's postcondition
   val modelMap = ListMap(model.params.map((name, _) => (name, Ident(name, Nil))).toList*)
-  val candMap = ListMap(candidate.params.map((name, _) => {
+  val candMap = ListMap(candidate.params.map((candName, candType) => {
     // The argument can either be an identifier or a function call if a type transformation is needed
-    val modelName = mapping(name)
+    val modelName = mapping(candName)
     val modelType = model.params(modelName)
     val ident = Ident(modelName, Nil)
     // If a type transformation is needed, construct the corresponding function call
     // Otherwise, return an identifier
     val finalArg = program.typeFunctions.get(modelType) match {
-      case None => ident
-      case Some(typeFunc) => {
+      case Some(typeFunc) if typeFunc.returnType == candType => {
         val paramName = typeFunc.params.keys.head
         TrueFunctionCall(typeFunc.name, List(ListMap(paramName -> ident)))
       }
+      case _ => ident
     }
-    (name, finalArg)
+    (candName, finalArg)
   }).toList*)
 
   // Create further lemma parameters and function call arguments when the model and candidate functions
