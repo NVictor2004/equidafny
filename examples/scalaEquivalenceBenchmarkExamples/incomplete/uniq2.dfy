@@ -169,8 +169,6 @@ function uniq2(lst: List<int>): List<int>
     case Nil => Nil
     case Cons(hd, tl) =>
       lem2(hd, tl);
-      assert(length(drop(hd, tl)) <= length(tl));
-      assert(length(drop(hd, tl)) < length(lst));
       Cons(hd, uniq2(drop(hd, tl)))
   }
 }
