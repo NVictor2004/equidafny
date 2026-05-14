@@ -78,26 +78,6 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             currentMappings += (candName -> modelName)
             Nil
         }
-        // TODO: When the match expressions have different numbers of cases
-        // TODO: When they have the same number, but are in a different order
-        // TODO: If variables introduced in a match pattern have the same names as parameters, both will be removed
-        case (Match(modelExpr, modelCases), Match(candExpr, unsortedCandCases)) if modelCases.length == unsortedCandCases.length && listContainsUnNamed(modelCases.map(_._1)) == listContainsUnNamed(unsortedCandCases.map(_._1)) => {
-            val candCases = 
-                if listContainsUnNamed(modelCases.map(_._1)) then unsortedCandCases
-                else modelCases.map((modelPattern, _) => unsortedCandCases.find(_._1 == modelPattern).get)
-                
-            val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
-            val stmts = modelCases.zip(candCases).map {
-                case ((modelPattern, modelExprBlock), (_, candExprBlock)) => {
-                    val stmts = mergeExprBlock(currentLemmas, currentMappings, modelExprBlock, modelFunc, candExprBlock, candidateFunc)
-                    val identsInModelPattern = getIdentsFromPattern(modelPattern)
-                    currentMappings.filterInPlace((_, model) => !identsInModelPattern.contains(model))
-                    stmts
-                }
-            }
-            
-            if stmts.forall(_.isEmpty) then exprStmts else exprStmts :+ MatchStmt(modelExpr, modelCases.map(_._1).zip(stmts))
-        }
         case (Match(modelExpr, modelCases), Match(candExpr, candCases)) => {
             val exprStmts = mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
 
@@ -109,7 +89,8 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
                 (modelPattern, stmts)
             })
 
-            exprStmts :+ MatchStmt(modelExpr, finalMatchStmts)
+            val allEmpty = finalMatchStmts.forall(_._2.isEmpty)
+            if allEmpty then exprStmts else exprStmts :+ MatchStmt(modelExpr, finalMatchStmts)
         }
         case _ => Nil
     }

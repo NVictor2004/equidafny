@@ -48,16 +48,5 @@ case Cons(_, t) => (1 + length(t))
 lemma binSumM_binSum1_Equivalence(l1: List<bool>, l2: List<bool>, c: bool)
 decreases ((length(l1) + length(l2)))
 ensures (binSumM(l1, l2, c) == binSum1(l1, l2, c))
-{{match (l1, l2) {
-case (Nil, Nil) =>
-case (Cons(true, t1), Cons(false, t2)) =>
-case (Cons(false, t1), Cons(true, t2)) =>
-case (Cons(false, t1), Cons(false, t2)) =>
-case (Cons(true, t1), Cons(true, t2)) =>
-case (Cons(true, t1), Nil) =>
-case (Cons(false, t1), Nil) =>
-case (Nil, Cons(true, t2)) =>
-case (Nil, Cons(false, t2)) =>
-}
-}}
+{{}}
 

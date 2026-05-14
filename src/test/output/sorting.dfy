@@ -25,9 +25,5 @@ case Cons(x, xs) => ((p <= x) && loop(x, xs))
 
 lemma isSortedR_isSortedB_Equivalence(l: List<int>)
 ensures (isSortedR(l) == isSortedB(l))
-{{match l {
-case Nil =>
-case Cons(x, xs) =>
-}
-}}
+{{}}
 
