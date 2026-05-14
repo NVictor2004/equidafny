@@ -1,7 +1,5 @@
 \chapter{Design}\label{chp:design}
 
-\footnote{use AI to convert some C examples into functions, focus on iteration examples}
-
 \paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
 \section{Function Merging}\label{sec:function-merging}
@@ -162,8 +160,8 @@ As described in \Cref{sec:induction}, when the functions being processed both re
 \subsection{Providing Variants to prove termination}
 As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
 
-\footnote{Complete this section after looking at Dragana copy decreases benchmarks}
-\footnote{Also need to implement copying of termination lemmas and assertions}
+\footnote{Complete this section using copy decreases benchmarks}
+\footnote{Implement copying of termination lemmas and assertions}
 
 \subsection{Equivalence of Higher-Order Functions}
 As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
