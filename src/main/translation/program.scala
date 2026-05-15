@@ -20,8 +20,13 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
         }
   }.toMap
 
+  val datatypeData = for {
+    case Parsers.Datatype(_, _, types) <- prog
+    case Parsers.DeclaredType(name, None | Some(Nil)) <- types
+  } yield name
+
   val (data, functions, lemmas) =
-    prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData))
+    prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData, datatypeData))
 
   // Find the model function
   val modelFunctionName = config("model").str
@@ -112,14 +117,15 @@ def translateTopLevel(
         lemmas: List[Lemma]
     ),
     toplevel: Parsers.TopLevel,
-    functionData: Map[String, List[String]]
+    functionData: Map[String, List[String]],
+    datatypeData: List[String],
 ): (List[Datatype], List[Function], List[Lemma]) = {
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
       val mapping = 
         generic.map(_.map(_._1)).getOrElse(Nil)
                .zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, mapping)
+      given context: Context = Context(functionData, datatypeData, mapping)
 
       val item = Datatype(
         name,
@@ -132,7 +138,7 @@ def translateTopLevel(
     case Parsers.Function(name, generic, params, returnType, specs, body) => {
       val types = generic.map(_.map(_._1)).getOrElse(Nil)
       val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, mapping)
+      given context: Context = Context(functionData, datatypeData, mapping)
 
       val item = Function(
         false,
@@ -157,7 +163,7 @@ def translateTopLevel(
         ) => {
       val types = generic.map(_.map(_._1)).getOrElse(Nil)
       val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, mapping)
+      given context: Context = Context(functionData, datatypeData, mapping)
       
       val item = Function(
         true,
@@ -175,7 +181,7 @@ def translateTopLevel(
     case Parsers.Lemma(name, generic, params, specs, body) => {
       val types = generic.map(_.map(_._1)).getOrElse(Nil)
       val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, mapping)
+      given context: Context = Context(functionData, datatypeData, mapping)
 
       val item = Lemma(
         name,
