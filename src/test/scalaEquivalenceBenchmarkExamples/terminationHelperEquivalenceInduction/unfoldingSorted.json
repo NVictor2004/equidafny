@@ -1,8 +1,0 @@
-{
-  "file": "unfoldingSorted.dfy",
-  "model": "unfoldingSortedM",
-  "candidates": [
-    "unfoldingSorted1",
-    "unfoldingSorted5"
-  ]
-}
