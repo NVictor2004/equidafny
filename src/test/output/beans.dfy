@@ -1,6 +1,6 @@
 datatype Bean = Red | Black
 
-datatype List<A> = Nil | Cons(head: A, tail: List<A>)
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function finalBeanList(jar: List<Bean>): Bean
 {var (red, _) := count(jar);

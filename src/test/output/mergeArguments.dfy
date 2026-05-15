@@ -1,4 +1,4 @@
-datatype List<A> = Nil | Cons(head: A, tail: List<A>)
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function insertSortedM(insert: List<int>, sorted: List<int>): List<int>
 {match insert {

@@ -1,4 +1,4 @@
-datatype List<A> = Nil | Cons(head: A, tail: List<A>)
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function solution_3(lst: List<int>): List<int>
 {unique_3(lst, Nil)}
@@ -38,7 +38,7 @@ case Cons(hd, tl) => if is_in_3(lst2, hd) then unique_3(tl, lst2) else unique_3(
 }
 }
 
-function snoc<A>(l: List<A>, elem: A): List<A>
+function snoc<T>(l: List<T>, elem: T): List<T>
 {match l {
 case Nil => Cons(elem, Nil)
 case Cons(hd, tl) => Cons(hd, snoc(tl, elem))

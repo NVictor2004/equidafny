@@ -122,28 +122,25 @@ def translateTopLevel(
 ): (List[Datatype], List[Function], List[Lemma]) = {
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
-      val mapping = 
-        generic.map(_.map(_._1)).getOrElse(Nil)
-               .zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, datatypeData, mapping)
+      val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
+      given context: Context = Context(functionData, datatypeData, genericTypeData)
 
       val item = Datatype(
         name,
-        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        translateGeneric(generic),
         types.map(translateDeclaredType)
       )
       (item :: acc.data, acc.functions, acc.lemmas)
     }
 
     case Parsers.Function(name, generic, params, returnType, specs, body) => {
-      val types = generic.map(_.map(_._1)).getOrElse(Nil)
-      val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, datatypeData, mapping)
+      val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
+      given context: Context = Context(functionData, datatypeData, genericTypeData)
 
       val item = Function(
         false,
         name,
-        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        translateGeneric(generic),
         ListMap(params.map { case Parsers.Parameter(name, paramType) =>
           (name, translateType(paramType))
         }*),
@@ -161,14 +158,13 @@ def translateTopLevel(
           specs,
           body
         ) => {
-      val types = generic.map(_.map(_._1)).getOrElse(Nil)
-      val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, datatypeData, mapping)
+      val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
+      given context: Context = Context(functionData, datatypeData, genericTypeData)
       
       val item = Function(
         true,
         name,
-        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        translateGeneric(generic),
         ListMap(params.map { case Parsers.Parameter(name, paramType) =>
           (name, translateType(paramType))
         }*),
@@ -179,13 +175,12 @@ def translateTopLevel(
       (acc.data, item :: acc.functions, acc.lemmas)
     }
     case Parsers.Lemma(name, generic, params, specs, body) => {
-      val types = generic.map(_.map(_._1)).getOrElse(Nil)
-      val mapping = types.zip(('A' to 'Z').map(_.toString)).toMap
-      given context: Context = Context(functionData, datatypeData, mapping)
+      val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
+      given context: Context = Context(functionData, datatypeData, genericTypeData)
 
       val item = Lemma(
         name,
-        translateGeneric(generic.map(_.map((t, g) => (mapping(t), g)))),
+        translateGeneric(generic),
         ListMap(params.map { case Parsers.Parameter(name, paramType) =>
           (name, translateType(paramType))
         }*),

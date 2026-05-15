@@ -1,4 +1,4 @@
-datatype List<A> = Nil | Cons(head: A, tail: List<A>)
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function solution_2(lst: List<int>): List<int>
 decreases (length(lst))
@@ -34,7 +34,7 @@ case Cons(hd, tl) => if (hd == n) then drop_2(tl, n) else Cons(hd, drop_2(tl, n)
 }
 }
 
-function length<A>(lst: List<A>): nat
+function length<T>(lst: List<T>): nat
 decreases (lst)
 {match lst {
 case Nil => 0

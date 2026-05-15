@@ -1,6 +1,6 @@
 datatype Animal = Sheep(id: int) | Goat(id: int)
 
-datatype List<A> = Nil | Cons(head: A, tail: List<A>)
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function separateM(xs: List<Animal>): (List<Animal>, List<Animal>)
 {match xs {

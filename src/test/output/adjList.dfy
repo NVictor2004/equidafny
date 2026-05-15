@@ -1,4 +1,4 @@
-datatype List<A> = Nil | Cons(head: A, tail: List<A>)
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 function validAdjListM(adjList: seq<List<int>>, N: int, pos: int): bool
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
