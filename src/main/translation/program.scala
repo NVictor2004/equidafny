@@ -26,7 +26,7 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
   } yield name
 
   val (data, functions, lemmas) =
-    prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData, datatypeData))
+    prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData, datatypeData.toSet))
 
   // Find the model function
   val modelFunctionName = config("model").str
@@ -118,7 +118,7 @@ def translateTopLevel(
     ),
     toplevel: Parsers.TopLevel,
     functionData: Map[String, List[String]],
-    datatypeData: List[String],
+    datatypeData: scala.collection.immutable.Set[String],
 ): (List[Datatype], List[Function], List[Lemma]) = {
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
