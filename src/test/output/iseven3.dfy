@@ -19,7 +19,7 @@ function isOdd2(un: UnaryNat): bool
 case Zero => false
 case Succ(Zero) => true
 case Succ(Succ(Zero)) => false
-case _ => isEven2(prev(un))
+case Succ(n) => isEven2(n)
 }
 }
 
@@ -27,13 +27,6 @@ function isOdd1(un: UnaryNat): bool
 {match un {
 case Zero => false
 case Succ(pred) => isEven1(pred)
-}
-}
-
-function prev(un: UnaryNat): UnaryNat
-{match un {
-case Zero => Zero
-case Succ(n0) => n0
 }
 }
 

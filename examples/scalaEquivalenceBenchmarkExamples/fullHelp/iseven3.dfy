@@ -1,11 +1,5 @@
 datatype UnaryNat = Zero | Succ(pred: UnaryNat)
 
-function prev(un: UnaryNat): UnaryNat {
-  match un
-  case Zero     => Zero
-  case Succ(n0) => n0
-}
-
 function isEven1(un: UnaryNat): bool {
   match un
   case Zero => true
@@ -29,7 +23,7 @@ function isOdd2(un: UnaryNat): bool {
   case Zero => false 
   case Succ(Zero) => true 
   case Succ(Succ(Zero)) => false 
-  case _ => isEven2(prev(un))
+  case Succ(n) => isEven2(n)
 }
 
 lemma equivalenceIsEven(un: UnaryNat)
@@ -37,7 +31,7 @@ lemma equivalenceIsEven(un: UnaryNat)
 {
   match un
   case Zero => {}
-  case Succ(_) => equivalenceIsOdd(prev(un));
+  case Succ(n) => equivalenceIsOdd(n);
 }
 
 lemma equivalenceIsOdd(un: UnaryNat)
@@ -45,5 +39,5 @@ lemma equivalenceIsOdd(un: UnaryNat)
 {
   match un
   case Zero => {}
-  case Succ(_) => equivalenceIsEven(prev(un));
+  case Succ(n) => equivalenceIsEven(n);
 }
