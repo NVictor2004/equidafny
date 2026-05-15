@@ -96,8 +96,9 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
         case _ => Nil
     }
 
-    val modelParamNames = modelFunc.params.map(_._1).toList
-    currentMappings.filterInPlace((_, modelName) => modelParamNames.contains(modelName))
+    val modelParamNames = modelFunc.params.keys.toSet
+    val candParamNames = candidateFunc.params.keys.toSet
+    currentMappings.filterInPlace((candName, modelName) => modelParamNames.contains(modelName) && candParamNames.contains(candName))
     finalStmts
 }
 
@@ -107,12 +108,15 @@ def mergeExprBlock(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
 
     val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelBasic, modelFunc, candBasic, candidateFunc)
 
-    val modelVariables = stmts match {
+    val modelExtendedStmts = stmts match {
         case Nil => Nil
-        case _ => modelExtended.collect {
+        case _ => modelExtended.map {
             case Let(left, right) => LetStmt(left.map(_._1), right)
+            case MethodCall(name, args) => CallStmt(name, List(args))
+            case Assert(expr) => AssertStmt(expr)
+            case LetOrFail(left, _, right) => LetOrFailStmt(left, right)
         }
     }
 
-    modelVariables ++ stmts
+    modelExtendedStmts ++ stmts
 }
