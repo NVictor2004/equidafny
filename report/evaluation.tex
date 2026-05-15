@@ -21,8 +21,8 @@ I tested EquiDafny on a dataset of 51 test files. These files were either conver
   \label{tbl:evaluation-results}
 \end{table}
 
-Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. EquiDafny is unable to prove 7 of the 51 tests. Dafny can prove none of these tests while Stainless can prove 6 of them. The test that neither EquiDafny nor Stainless are able to prove is described below. The functions \mintinline{lexer.py:CustomLexer}|repeat1| and \mintinline{lexer.py:CustomLexer}|repeat2| each output a lambda function that applies a given function a given number of times:
-\begin{minted}{lexer.py:CustomLexer}
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. EquiDafny is unable to prove 7 of the 51 tests. Dafny can prove none of these tests while Stainless can prove 6 of them. The test that neither EquiDafny nor Stainless are able to prove is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+\begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
   decreases(n) {
@@ -37,7 +37,7 @@ function repeat2<A>(n: int, f: A -> A): A -> A
   if (n == 0) then a => a
   else a => repeat2(n - 1, f)(f(a))
 }
-\end{minted}
+\end{dafny}
 %
 Despite any assistance I provide, the Dafny verifier is unable to prove these functions equivalent.
 

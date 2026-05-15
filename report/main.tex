@@ -38,10 +38,15 @@
     bgcolor=gray!5,
 }
 
+\newminted[dafny]{lexer.py:CustomLexer}{}
+\newmintinline[dafnyinline]{lexer.py:CustomLexer}{}
+
 % Disable minted temporarily
 \usepackage{verbatim}
 \renewenvironment{minted}[2][]{\verbatim}{\endverbatim}
 \DeclareRobustCommand{\mintinline}[2]{{\ttfamily #2}}
+\renewenvironment{dafny}[1][]{\verbatim}{\endverbatim}
+\DeclareRobustCommand{\dafnyinline}[2][]{{\ttfamily #2}}
 
 % Hyperlink settings
 \usepackage{hyperref}
