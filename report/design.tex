@@ -226,7 +226,7 @@ After these mappings are generated, the bodies of the functions are merged toget
 
 After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with compatible types (either the same type or when the model parameter's type can be transformed into the candidate parameter's type). This ensures that every parameter is mapped. 
 
-\subsection{Mutually Recursive Functions}
+\subsection{Mutually Recursive Functions}\label{sec:mutually-recursive}
 Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| which each output whether a given integer is even or not. They use the helper functions \mintinline{lexer.py:CustomLexer}|isOdd| and \mintinline{lexer.py:CustomLexer}|myIsOdd| respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
 
 \begin{minted}[highlightlines={5,12,19,26}]{lexer.py:CustomLexer}
@@ -308,7 +308,30 @@ lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
 
 \subsection{Merging Match Expressions}
 
-TODO \footnote{Write this when match expressions are finished}
+\footnote{Finish this section}
+
+Merging match expressions is complex, as two match expressions can be equivalent even when they are very different structurally. They can have different numbers of cases, containing different patterns in different orders. For example, below are the functions \mintinline{lexer.py:CustomLexer}|isOdd1| and \mintinline{lexer.py:CustomLexer}|isOdd2|. They each call the functions \mintinline{lexer.py:CustomLexer}|isEven1| and \mintinline{lexer.py:CustomLexer}|isEven2| respectively. These four functions are all implemented in a similar way to the functions \mintinline{lexer.py:CustomLexer}|isOdd|, \mintinline{lexer.py:CustomLexer}|myIsOdd|, \mintinline{lexer.py:CustomLexer}|isEven| and \mintinline{lexer.py:CustomLexer}|myIsEven| respectively in \Cref{sec:mutually-recursive}. However, they instead operate on natural numbers defined using the \mintinline{lexer.py:CustomLexer}|UnaryNat| datatype:
+\begin{minted}{lexer.py:CustomLexer}
+datatype UnaryNat = Zero | Succ(pred: UnaryNat)
+\end{minted}
+% 
+The functions are as follows (the definitions of \mintinline{lexer.py:CustomLexer}|isEven1| and \mintinline{lexer.py:CustomLexer}|isEven2| have been omitted as they are irrelevant for this example):
+\begin{minted}{lexer.py:CustomLexer}
+function isOdd1(un: UnaryNat): bool {
+  match un
+  case Zero => false 
+  case Succ(pred) => isEven1(pred)
+}
+
+function isOdd2(un: UnaryNat): bool {
+  match un
+  case Zero => false 
+  case Succ(Zero) => true 
+  case Succ(Succ(Zero)) => false 
+  case Succ(n) => isEven2(n)
+}
+\end{minted}
+% 
 
 % \subsection{Standardisation of Generic Variables}
 
