@@ -308,14 +308,12 @@ lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
 
 \subsection{Merging Match Expressions}
 
-\footnote{Finish this section}
-
 Merging match expressions is complex, as two match expressions can be equivalent even when they are very different structurally. They can have different numbers of cases, containing different patterns in different orders. For example, below are the functions \dafnyinline{isOdd1} and \dafnyinline{isOdd2}. They each call the functions \dafnyinline{isEven1} and \dafnyinline{isEven2} respectively. These four functions are all implemented in a similar way to the functions \dafnyinline{isOdd}, \dafnyinline{myIsOdd}, \dafnyinline{isEven} and \dafnyinline{myIsEven} respectively in \Cref{sec:mutually-recursive}. However, they instead operate on natural numbers defined using the \dafnyinline{UnaryNat} datatype:
 \begin{dafny}
 datatype UnaryNat = Zero | Succ(pred: UnaryNat)
 \end{dafny}
 % 
-The functions are as follows (the definitions of \dafnyinline{isEven1} and \dafnyinline{isEven2} have been omitted as they are irrelevant for this example):
+The functions are as follows:
 \begin{dafny}
 function isOdd1(un: UnaryNat): bool {
   match un
@@ -332,6 +330,40 @@ function isOdd2(un: UnaryNat): bool {
 }
 \end{dafny}
 %
+To provide full context, the functions \dafnyinline{isEven1} and \dafnyinline{isEven2} are provided below though they are irrelevant for this example:
+\begin{dafny}
+function isEven1(un: UnaryNat): bool {
+  match un
+  case Zero => true
+  case Succ(pred) => isOdd1(pred)
+}
+
+function isEven2(un: UnaryNat): bool {
+  match un
+  case Zero => true
+  case Succ(pred) => isOdd2(pred)
+}
+\end{dafny}
+
+The case with the pattern \dafnyinline{Succ(pred)} in the \dafnyinline{isOdd1} function has been expanded to form the last three cases of the \dafnyinline{isOdd2} function. Therefore, the body of the \dafnyinline{Succ(pred)} case (\dafnyinline{isEven1(pred)}) must be merged with each of the bodies of the last three cases (\dafnyinline{true}, \dafnyinline{false} and \dafnyinline{isEven2(n)} respectively). The statements resulting from these merges must then be concatenated to form the body of the \dafnyinline{Succ(pred)} case in the equivalence lemma for the \dafnyinline{isOdd1} and \dafnyinline{isOdd2} functions. This results in the following equivalence lemmas:
+\begin{dafny}
+lemma equivalenceIsOdd(un: UnaryNat)
+  ensures (isOdd1(un) == isOdd2(un))
+{
+  match un
+  case Zero => {}
+  case Succ(pred) => equivalenceIsEven(pred);
+}
+
+lemma equivalenceIsEven(un: UnaryNat)
+  ensures (isEven1(un) == isEven2(un))
+{
+  match un
+  case Zero => {}
+  case Succ(pred) => equivalenceIsOdd(pred);
+}
+\end{dafny}
+
 
 % \subsection{Standardisation of Generic Variables}
 

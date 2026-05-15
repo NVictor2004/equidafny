@@ -31,7 +31,7 @@ lemma equivalenceIsEven(un: UnaryNat)
 {
   match un
   case Zero => {}
-  case Succ(n) => equivalenceIsOdd(n);
+  case Succ(pred) => equivalenceIsOdd(pred);
 }
 
 lemma equivalenceIsOdd(un: UnaryNat)
@@ -39,5 +39,5 @@ lemma equivalenceIsOdd(un: UnaryNat)
 {
   match un
   case Zero => {}
-  case Succ(n) => equivalenceIsEven(n);
+  case Succ(pred) => equivalenceIsEven(pred);
 }
