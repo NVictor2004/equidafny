@@ -58,20 +58,10 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(LeftImplies, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.RightImplies(l, r) =>
     Binary(RightImplies, translateBasicExpr(l), translateBasicExpr(r))
-
-  // TODO: Move to optimisation pass?
-  case Parsers.BoolAnd(Parsers.Not(l), r) => 
-    Cond(translateBasicExpr(l), ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, translateBasicExpr(r)))
-  case Parsers.BoolAnd(l, Parsers.Not(r)) => 
-    Cond(translateBasicExpr(r), ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, translateBasicExpr(l)))
-  
   case Parsers.BoolAnd(l, r) =>
     Binary(BoolAnd, translateBasicExpr(l), translateBasicExpr(r))
-
-  // TODO: Move to optimisation pass?
   case Parsers.BoolOr(l, r) =>
-    Cond(translateBasicExpr(l), ExprBlock(Nil, BoolLiteral(true)), ExprBlock(Nil, translateBasicExpr(r)))
-
+    Binary(BoolOr, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Eq(l, r) =>
     Binary(Eq, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Neq(l, r) =>
@@ -110,20 +100,6 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
       varType.map(translateType),
       translateBasicExpr(body)
     )
-
-  // TODO: Move to optimisation pass?
-  // If statements can sometimes provide preconditions for function calls
-  // Therefore, that will need to be dealt with
-  case Parsers.Cond(cond, Parsers.ExprBlock(Nil, thenBranch), Parsers.ExprBlock(Nil, Parsers.BoolLiteral(false))) => 
-    Binary(BoolAnd, translateBasicExpr(cond), translateBasicExpr(thenBranch))
-
-  case Parsers.Cond(Parsers.Not(cond), thenBranch, elseBranch) => 
-    Cond(
-      translateBasicExpr(cond),
-      translateExpr(elseBranch),
-      translateExpr(thenBranch)
-    )
-
   case Parsers.Cond(cond, thenBranch, elseBranch) =>
     Cond(
       translateBasicExpr(cond),
@@ -160,6 +136,6 @@ def translateLambda(
     lvalues: List[(String, Option[Parsers.Type])],
     body: Parsers.ExprBlock
 )(using Context): Lambda = Lambda(
-  lvalues.map { case (name, tpeOpt) => (name, tpeOpt.map(translateType)) },
+  lvalues.map { case (name, optionalType) => (name, optionalType.map(translateType)) },
   translateExpr(body)
 )

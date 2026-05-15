@@ -5,6 +5,7 @@ import parsley.Success
 
 import parsers.program.program
 import translation.program.translateProgram
+import optimisation.program.optimiseProgram
 import formatter.program.formatProgram
 import equivalence.program.programEquivalence
 
@@ -36,7 +37,8 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
       }
 
       val translatedOutput = translateProgram(parsedOutput, config)
-      val equivalenceOutput = programEquivalence(translatedOutput)
+      val optimisedOutput = optimiseProgram(translatedOutput)
+      val equivalenceOutput = programEquivalence(optimisedOutput)
 
       val outputFilePath = outputPath / scalaFile.last
       formatProgram(equivalenceOutput, outputFilePath.toString)
