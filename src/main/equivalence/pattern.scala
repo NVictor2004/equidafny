@@ -7,5 +7,11 @@ def mergePattern(modelPattern: Pattern, candPattern: Pattern): Boolean = (modelP
     case (UnNamed, _) => true
     case (PatternTuple(modelElements), PatternTuple(candElements)) if modelElements.length == candElements.length => 
         modelElements.zip(candElements).forall((model, cand) => mergePattern(model, cand))
-    case (model, cand) => model == cand
+    case (Basic(modelName, modelValues), Basic(candName, candValues)) if modelName == candName => 
+        modelValues.zip(candValues).forall((model, cand) => mergePattern(model, cand))
+    case (DatatypeConstant(modelValue), DatatypeConstant(candValue)) => modelValue == candValue
+    case (PatternIdent(_), _) => true
+    case (_, PatternIdent(_)) => true
+    case (Constant(modelValue), Constant(candValue)) => modelValue == candValue
+    case _ => false
 }
