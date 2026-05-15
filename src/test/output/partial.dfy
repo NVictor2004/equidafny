@@ -34,7 +34,7 @@ lemma fM_f_Equivalence(x: int, p: int -> bool)
 requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))
 decreases (if p(x) then (x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))) else 0)
 ensures (fM(x, p) == f(x, p))
-{{}}
+{{if p(x){termM(x, p);}else {}}}
 
 lemma equivalence_f(x: int, p: int -> bool)
 requires if !p(x) then true else existsM((j: int) => ((j < x) && maxNegPM(j, p)))

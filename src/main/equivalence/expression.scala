@@ -108,15 +108,18 @@ def mergeExprBlock(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
 
     val stmts = mergeBasicExpr(currentLemmas, currentMappings, modelBasic, modelFunc, candBasic, candidateFunc)
 
-    val modelExtendedStmts = stmts match {
+    val assertionsAndLemmaCalls = modelExtended.collect {
+        case MethodCall(name, args) => CallStmt(name, List(args))
+        case Assert(expr) => AssertStmt(expr)
+    }
+
+    val modelVariables = stmts match {
         case Nil => Nil
-        case _ => modelExtended.map {
+        case _ => modelExtended.collect {
             case Let(left, right) => LetStmt(left.map(_._1), right)
-            case MethodCall(name, args) => CallStmt(name, List(args))
-            case Assert(expr) => AssertStmt(expr)
             case LetOrFail(left, _, right) => LetOrFailStmt(left, right)
         }
     }
 
-    modelExtendedStmts ++ stmts
+    assertionsAndLemmaCalls ++ modelVariables ++ stmts
 }
