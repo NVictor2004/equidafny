@@ -92,15 +92,15 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
 def translateDeclaredType(decl: Parsers.DeclaredType)(using Context): DeclaredType =
   DeclaredType(
     decl.name,
-    decl.typeParams.map(typeParamList => ListMap(typeParamList.map { case Parsers.Parameter(name, paramType) =>
+    decl.typeParams.fold(ListMap())(typeParamList => ListMap(typeParamList.map { case Parsers.Parameter(name, paramType) =>
       (name, translateType(paramType))
-    }*)).getOrElse(ListMap())
+    }*))
   )
 
 def translateGeneric(
     generic: Option[List[(String, Option[Parsers.GOption])]]
 ): List[(String, Option[GOption])] = 
-  generic.map(_.map { case (gname, gopt) =>
+  generic.fold(Nil)(_.map { case (gname, gopt) =>
     (
       gname,
       gopt.map {
@@ -108,7 +108,7 @@ def translateGeneric(
         case Parsers.NotNew => NotNew
       }
     )
-  }).getOrElse(Nil)
+  })
 
 def translateTopLevel(
     acc: (

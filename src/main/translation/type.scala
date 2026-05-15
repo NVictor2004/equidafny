@@ -15,7 +15,7 @@ def translateDomainType(t: Parsers.DomainType)(using context: Context): DomainTy
   case Parsers.SetType(elementType)      => SetType(translateType(elementType))
   case Parsers.NamedType(name, generics) =>
     if context.genericTypeData.contains(name) then GenericType(name) 
-    else CreatedType(name, generics.map(_.map(translateType)).getOrElse(Nil))
+    else CreatedType(name, generics.fold(Nil)(_.map(translateType)))
   case Parsers.TupleType(elements) => TupleType(elements.map(translateType))
 }
 
