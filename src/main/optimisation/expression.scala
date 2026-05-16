@@ -1,5 +1,7 @@
 package optimisation.expression
 
+import scala.annotation.tailrec
+
 import translation.structure.*
 import translation.structure.BinaryOperator.*
 import translation.structure.UnaryOperator.*
@@ -7,22 +9,26 @@ import translation.structure.UnaryOperator.*
 def optimiseExprBlock(block: ExprBlock): ExprBlock = 
     block.copy(basicExpr = optimiseBasicExpr(block.basicExpr))
 
-// TODO: If statements can sometimes provide preconditions for function calls
-private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = expr match {
-    // Optimisation cases
+@tailrec
+private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
     case Binary(BoolAnd, Unary(Not, l), r) => 
-        optimiseBasicExpr(Cond(l, ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, r)))
+        applyOptimisations(Cond(l, ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, r)))
     case Binary(BoolAnd, l, Unary(Not, r)) => 
-        optimiseBasicExpr(Cond(r, ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, l)))
+        applyOptimisations(Cond(r, ExprBlock(Nil, BoolLiteral(false)), ExprBlock(Nil, l)))
     case Binary(BoolOr, l, r) => 
-        optimiseBasicExpr(Cond(l, ExprBlock(Nil, BoolLiteral(true)), ExprBlock(Nil, r)))
+        applyOptimisations(Cond(l, ExprBlock(Nil, BoolLiteral(true)), ExprBlock(Nil, r)))
     case Cond(cond, ExprBlock(Nil, thenBranch), ExprBlock(Nil, BoolLiteral(false))) => 
-        optimiseBasicExpr(Binary(BoolAnd, cond, thenBranch))
+        applyOptimisations(Binary(BoolAnd, cond, thenBranch))
     case Cond(Unary(Not, cond), thenBranch, elseBranch) => 
-        optimiseBasicExpr(Cond(cond, elseBranch, thenBranch))
+        applyOptimisations(Cond(cond, elseBranch, thenBranch))
+    case _ => expr
+}
 
-    // If no optimisation cases match, break expression into its constituent parts
-    // and continue optimisation on the individual parts
+// TODO: If statements can sometimes provide preconditions for function calls
+// First, apply optimisations until no more can be applied
+// Then, break expression into its constituent parts
+// and continue optimisation on the individual parts
+private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = applyOptimisations(expr) match {
     case expr: (LiteralExpr | Ident | SeqIndex) => expr
     case Binary(operator, left, right) => Binary(operator, optimiseBasicExpr(left), optimiseBasicExpr(right))
     case Unary(operator, expr) => Unary(operator, optimiseBasicExpr(expr))
