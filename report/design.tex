@@ -178,10 +178,9 @@ In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of chall
 As described in \Cref{sec:induction}, when the functions being processed both recurse in the same way, the Dafny verifier sometimes requires the user to call the equivalence lemma the user is trying to prove recursively. I could not find a rule to determine whether the verifier would need such a call to be written, therefore, our tool will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement challenge.
 
 \subsection{\nameref*{sec:termination}}
-As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant to prove termination, as it is unable to infer one itself. 
+As described in \Cref{sec:termination}, the Dafny verifier sometimes requires the user to provide a variant, lemmas or assertions to help the Dafny verifier prove termination. EquiDafny resolves this problem by copying these termination measures from the model function into each equivalence lemma.
 
 \footnote{Complete this section using copy decreases benchmarks}
-\footnote{Implement copying of termination lemmas and assertions}
 
 \subsection{\nameref*{sec:higher-order}}
 As described in \Cref{sec:higher-order}, the Dafny verifier is not able to prove the equivalence of all higher-order functions automatically, despite being able to prove that the outputted functions give the same output for the same inputs.
