@@ -29,8 +29,8 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
         applyOptimisations(Match(cond, List(elseCase, thenCase)))
     }
     case Match(Binary(Eq, ident: Ident, literal: LiteralExpr), cases) => {
-        val trueBlock = cases.find(_._1 == Constant(BoolLiteral(true))).get._2
-        val falseBlock = cases.find(_._1 == Constant(BoolLiteral(false))).get._2
+        val trueBlock = cases.find((pattern, _) => pattern == Constant(BoolLiteral(true)) || pattern == UnNamed).get._2
+        val falseBlock = cases.find((pattern, _) => pattern == Constant(BoolLiteral(false)) || pattern == UnNamed).get._2
         Match(ident, List((Constant(literal), trueBlock), (UnNamed, falseBlock)))
     }
     case _ => expr
