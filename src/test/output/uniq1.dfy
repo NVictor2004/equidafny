@@ -54,7 +54,11 @@ decreases (lst1)
 ensures (unique_3(lst1, lst2) == app(lst1, lst2))
 {{match lst1 {
 case Nil =>
-case Cons(hd, tl) =>is_in_3_check_Equivalence(lst2, hd);if is_in_3(lst2, hd){unique_3_app_Equivalence(tl, lst2);}else {unique_3_app_Equivalence(tl, snoc(lst2, hd));}
+case Cons(hd, tl) =>is_in_3_check_Equivalence(lst2, hd);match is_in_3(lst2, hd) {
+case false =>unique_3_app_Equivalence(tl, snoc(lst2, hd));
+case true =>unique_3_app_Equivalence(tl, lst2);
+}
+
 }
 }}
 
@@ -63,7 +67,11 @@ decreases (lst)
 ensures (is_in_3(lst, a) == check(a, lst))
 {{match lst {
 case Nil =>
-case Cons(hd, tl) =>if (a == hd){}else {is_in_3_check_Equivalence(tl, a);}
+case Cons(hd, tl) =>match (a == hd) {
+case false =>is_in_3_check_Equivalence(tl, a);
+case true =>
+}
+
 }
 }}
 

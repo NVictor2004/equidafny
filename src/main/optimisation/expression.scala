@@ -23,15 +23,27 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
         applyOptimisations(Cond(cond, elseBranch, thenBranch))
     case Cond(cond, ExprBlock(Nil, Lambda(thenLvalues, thenBlock)), ExprBlock(Nil, Lambda(elseLvalues, elseBlock))) if thenLvalues == elseLvalues =>
         applyOptimisations(Lambda(thenLvalues, ExprBlock(Nil, Cond(cond, thenBlock, elseBlock))))
+    case Cond(cond, thenBranch, elseBranch) => {
+        val elseCase = (Constant(BoolLiteral(false)), elseBranch)
+        val thenCase = (Constant(BoolLiteral(true)), thenBranch)
+        applyOptimisations(Match(cond, List(elseCase, thenCase)))
+    }
+    case Match(Binary(Eq, ident: Ident, DatatypeConstant(const)), cases) => {
+        val trueBlock = cases.find(_._1 == Constant(BoolLiteral(true))).get._2
+        val falseBlock = cases.find(_._1 == Constant(BoolLiteral(false))).get._2
+        Match(ident, List((PatternDatatypeConstant(const), trueBlock), (UnNamed, falseBlock)))
+    }
     case _ => expr
 }
 
 // TODO: If statements can sometimes provide preconditions for function calls
+// TODO: Lambdas are not optimised, since converting from if expressions to match expressions
+// does not work
 // First, apply optimisations until no more can be applied
 // Then, break expression into its constituent parts
 // and continue optimisation on the individual parts
 private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = applyOptimisations(expr) match {
-    case expr: (LiteralExpr | Ident | SeqIndex) => expr
+    case expr: (LiteralExpr | Ident | SeqIndex | DatatypeConstant) => expr
     case Binary(operator, left, right) => Binary(operator, optimiseBasicExpr(left), optimiseBasicExpr(right))
     case Unary(operator, expr) => Unary(operator, optimiseBasicExpr(expr))
     case Quantified(quantifier, variable, varType, body) =>
@@ -45,17 +57,12 @@ private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = applyOptimisations(e
     case OtherFunctionCall(name, args) =>
         OtherFunctionCall(name, args.map(_.map(optimiseBasicExpr)))
     case LambdaCall(lambda, args) =>
-        LambdaCall(optimiseLambda(lambda), args.map(optimiseBasicExpr))
+        LambdaCall(lambda, args.map(optimiseBasicExpr))
     case Match(expr, cases) =>
         Match(optimiseBasicExpr(expr), cases.map((pattern, block) => (pattern, optimiseExprBlock(block))))
     case Set(elements) =>
         Set(elements.map(optimiseBasicExpr))
     case Seq(elements) =>
         Seq(elements.map(optimiseBasicExpr))
-    case lambda: Lambda => optimiseLambda(lambda)
-}
-
-private def optimiseLambda(lambda: Lambda): Lambda = {
-    val Lambda(lvalues, body) = lambda
-    Lambda(lvalues, optimiseExprBlock(body))
+    case lambda: Lambda => lambda
 }

@@ -6,5 +6,9 @@ function limit2_2(n: int): int
 
 lemma limit2_1_limit2_2_Equivalence(n: int)
 ensures (limit2_1(n) == limit2_2(n))
-{{if (n <= 0){}else {limit2_1_limit2_2_Equivalence((n - 1));}}}
+{{match (n <= 0) {
+case false =>limit2_1_limit2_2_Equivalence((n - 1));
+case true =>
+}
+}}
 

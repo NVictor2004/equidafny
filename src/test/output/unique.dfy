@@ -50,7 +50,11 @@ lemma find_isin_Equivalence(lst: List<int>, n: int)
 ensures (find(lst, n) == isin(n, lst))
 {{match lst {
 case Nil =>
-case Cons(hd, tl) =>if (n == hd){}else {find_isin_Equivalence(tl, n);}
+case Cons(hd, tl) =>match (n == hd) {
+case false =>find_isin_Equivalence(tl, n);
+case true =>
+}
+
 }
 }}
 
@@ -58,7 +62,11 @@ lemma unique_distinct_Equivalence(l: List<int>, r: List<int>)
 ensures (unique(l, r) == distinct(r, l))
 {{match l {
 case Nil =>
-case Cons(hd, tl) =>find_isin_Equivalence(r, hd);if find(r, hd){unique_distinct_Equivalence(tl, r);}else {unique_distinct_Equivalence(tl, append(r, Cons(hd, Nil)));}
+case Cons(hd, tl) =>find_isin_Equivalence(r, hd);match find(r, hd) {
+case false =>unique_distinct_Equivalence(tl, append(r, Cons(hd, Nil)));
+case true =>unique_distinct_Equivalence(tl, r);
+}
+
 }
 }}
 

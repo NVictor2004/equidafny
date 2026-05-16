@@ -6,5 +6,9 @@ function sum2(n: int): int
 
 lemma sum1_sum2_Equivalence(n: int)
 ensures (sum1(n) == sum2(n))
-{{if (n <= 1){}else {sum1_sum2_Equivalence((n - 2));}}}
+{{match (n <= 1) {
+case false =>sum1_sum2_Equivalence((n - 2));
+case true =>
+}
+}}
 

@@ -27,14 +27,22 @@ case Cons(hd, tl) => if (t <= hd) then Cons(t, xs) else Cons(hd, insertM(tl, t))
 
 lemma insertSortedM_insertSorted1_Equivalence<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, xs: List<int>)
 ensures (insertSortedM(seed, next, count, xs) == insertSorted1(seed, next, xs, count))
-{{if (count <= 0){}else {var (nxtS, t) := next(seed);insertM_insert1_Equivalence(xs, t);insertSortedM_insertSorted1_Equivalence(nxtS, next, (count - 1), insertM(xs, t));}}}
+{{match (count <= 0) {
+case false =>var (nxtS, t) := next(seed);insertM_insert1_Equivalence(xs, t);insertSortedM_insertSorted1_Equivalence(nxtS, next, (count - 1), insertM(xs, t));
+case true =>
+}
+}}
 
 lemma insertM_insert1_Equivalence(xs: List<int>, t: int)
 decreases (xs)
 ensures (insertM(xs, t) == insert1(t, xs))
 {{match xs {
 case Nil =>
-case Cons(hd, tl) =>if (t <= hd){}else {insertM_insert1_Equivalence(tl, t);}
+case Cons(hd, tl) =>match (t <= hd) {
+case false =>insertM_insert1_Equivalence(tl, t);
+case true =>
+}
+
 }
 }}
 

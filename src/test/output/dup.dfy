@@ -22,12 +22,20 @@ function norm<S, T>(n: int, s: S, t: T, res: List<(S, T)>): List<(S, T)>
 lemma dupM_dup5_Equivalence<S, T>(n: int, s: S, t: T)
 decreases (if (n <= 0) then 0 else n)
 ensures (norm(n, s, t, dupM(n, s, t)) == norm(n, s, t, dup5(n, s, t)))
-{{if (n <= 0){}else {dupM_dup5_Equivalence((n - 1), s, t);}}}
+{{match (n <= 0) {
+case false =>dupM_dup5_Equivalence((n - 1), s, t);
+case true =>
+}
+}}
 
 lemma dupM_dup3_Equivalence<S, T>(n: int, s: S, t: T)
 decreases (if (n <= 0) then 0 else n)
 ensures (norm(n, s, t, dupM(n, s, t)) == norm(n, s, t, dup3(n, t, s)))
-{{if (n <= 0){}else {dupM_dup3_Equivalence((n - 1), s, t);}}}
+{{match (n <= 0) {
+case false =>dupM_dup3_Equivalence((n - 1), s, t);
+case true =>
+}
+}}
 
 lemma dupM_dup1_Equivalence<S, T>(n: int, s: S, t: T)
 decreases (if (n <= 0) then 0 else n)

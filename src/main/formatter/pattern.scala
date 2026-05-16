@@ -16,6 +16,6 @@ def formatPattern(pattern: Pattern)(using writer: Formatter): Unit =
     case Constant(value)        => formatLiteral(value)
     case PatternTuple(elements) =>
       formatBrackets("(", formatList(elements, formatPattern), ")")
-    case DatatypeConstant(value) => writer.format(value)
+    case PatternDatatypeConstant(value) => writer.format(value)
     case PatternIdent(value) => writer.format(value)
   }

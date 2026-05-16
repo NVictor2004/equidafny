@@ -31,7 +31,11 @@ ensures (norm(lst, maxM(lst)) == norm(lst, max1(lst)))
 {{match lst {
 case Nil =>
 case Cons(hd, Nil) =>
-case Cons(hd, tl) =>maxM_max1_Equivalence(tl);if (hd > maxM(tl)){}else {maxM_max1_Equivalence(tl);}
+case Cons(hd, tl) =>maxM_max1_Equivalence(tl);match (hd > maxM(tl)) {
+case false =>maxM_max1_Equivalence(tl);
+case true =>
+}
+
 }
 }}
 

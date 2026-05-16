@@ -15,5 +15,9 @@ lemma validLengthIncreasingM_validLengthIncreasing_Equivalence(a: seq<seq<int>>,
 requires (((((N > 0) && (N == |a|)) && (M > 0)) && (k >= 0)) && (k <= N))
 decreases ((N - k))
 ensures (validLengthIncreasingM(a, N, M, k) == validLengthIncreasing(a, N, M, k))
-{{if (k == N){}else {validLengthIncreasingM_validLengthIncreasing_Equivalence(a, N, M, succM(k));}}}
+{{match (k == N) {
+case false =>validLengthIncreasingM_validLengthIncreasing_Equivalence(a, N, M, succM(k));
+case true =>
+}
+}}
 

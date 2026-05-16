@@ -6,5 +6,29 @@ function p2(n: int, m: int): int
 
 lemma p1_p2_Equivalence(n: int, m: int)
 ensures (p1(n, m) == p2(n, m))
-{{if if if (m < 1) then true else (n < 1) then true else (m > n){}else {if if if (m == 1) then true else (n == 1) then true else (m == n){}else {p1_p2_Equivalence((n - 1), m);}}}}
+{{match match match (m < 1) {
+case false => (n < 1)
+case true => true
+}
+ {
+case false => (m > n)
+case true => true
+}
+ {
+case false =>match match match (m == 1) {
+case false => (n == 1)
+case true => true
+}
+ {
+case false => (m == n)
+case true => true
+}
+ {
+case false =>p1_p2_Equivalence((n - 1), m);
+case true =>
+}
+
+case true =>
+}
+}}
 

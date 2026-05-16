@@ -49,7 +49,9 @@ def translateLiteralExpr(literal: Parsers.LiteralExpr): LiteralExpr =
 
 def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicExpr = expr match {
   case literal: Parsers.LiteralExpr  => translateLiteralExpr(literal)
-  case Parsers.Ident(name, suffixes) => Ident(name, suffixes)
+  case Parsers.Ident(name, suffixes) => 
+    if context.datatypeData.contains(name) then DatatypeConstant(name)
+    else Ident(name, suffixes)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
   case Parsers.Iff(l, r)             =>

@@ -12,5 +12,9 @@ function length1<T>(l: List<T>): int
 
 lemma lengthM_length1_Equivalence<T>(l: List<T>)
 ensures (lengthM(l) == length1(l))
-{{}}
+{{match l {
+case Nil =>
+case Cons(_, t) =>lengthM_length1_Equivalence(t);
+}
+}}
 

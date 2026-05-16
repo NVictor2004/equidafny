@@ -35,5 +35,9 @@ lemma maxHeapifyM_maxHeapify_Equivalence(a: seq<int>, N: int, i: int)
 requires ((((i >= 0) && (i < N)) && (N <= |a|)) && (N <= 100000))
 decreases ((N - i))
 ensures (maxHeapifyM(a, N, i) == maxHeapify(a, N, i))
-{{var l := leftM(i);var r := rightM(i);var largest := if ((l < N) && (a[l] > a[i])) then l else i;var largest2 := if ((r < N) && (a[r] > a[largest])) then r else largest;if (largest2 != i){var temp := a[i];maxHeapifyM_maxHeapify_Equivalence(a[i := a[largest2]][largest2 := temp], N, largest2);}else {}}}
+{{var l := leftM(i);var r := rightM(i);var largest := if ((l < N) && (a[l] > a[i])) then l else i;var largest2 := if ((r < N) && (a[r] > a[largest])) then r else largest;match (largest2 != i) {
+case false =>
+case true =>var temp := a[i];maxHeapifyM_maxHeapify_Equivalence(a[i := a[largest2]][largest2 := temp], N, largest2);
+}
+}}
 

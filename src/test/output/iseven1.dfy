@@ -27,10 +27,26 @@ ensures (isEvenTopLvlM(x) == isEvenTopLvl1(x))
 lemma isEven_myIsEven_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isEven(x) == myIsEven(x))
-{{if (x < 0){}else {if (x == 0){}else {isOdd_myIsOdd_Equivalence((x - 1));}}}}
+{{match (x < 0) {
+case false =>match (x == 0) {
+case false =>isOdd_myIsOdd_Equivalence((x - 1));
+case true =>
+}
+
+case true =>
+}
+}}
 
 lemma isOdd_myIsOdd_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isOdd(x) == myIsOdd(x))
-{{if (x <= 0){}else {if (x == 1){}else {isEven_myIsEven_Equivalence((x - 1));}}}}
+{{match (x <= 0) {
+case false =>match (x == 1) {
+case false =>isEven_myIsEven_Equivalence((x - 1));
+case true =>
+}
+
+case true =>
+}
+}}
 

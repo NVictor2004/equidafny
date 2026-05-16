@@ -1,0 +1,7 @@
+{
+  "file": "length2.dfy",
+  "model": "lengthM",
+  "candidates": [
+    "length1"
+  ]
+}

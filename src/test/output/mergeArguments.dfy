@@ -44,7 +44,11 @@ decreases (xs)
 ensures (insertM(xs, t) == insert1(t, xs))
 {{match xs {
 case Nil =>
-case Cons(hd, tl) =>if (t <= hd){}else {insertM_insert1_Equivalence(tl, t);}
+case Cons(hd, tl) =>match (t <= hd) {
+case false =>insertM_insert1_Equivalence(tl, t);
+case true =>
+}
+
 }
 }}
 

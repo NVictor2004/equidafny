@@ -22,15 +22,35 @@ decreases (if (x <= 0) then 0 else x)
 
 lemma isEvenTopLvlM_isEvenTopLvl1_Equivalence(x: int)
 ensures (isEvenTopLvlM(x) == isEvenTopLvl1(x))
-{{isOdd_myIsOdd_Equivalence(x);if isOdd(x){}else {isEven_myIsEven_Equivalence(x);}}}
+{{isOdd_myIsOdd_Equivalence(x);match isOdd(x) {
+case false =>isEven_myIsEven_Equivalence(x);
+case true =>
+}
+}}
 
 lemma isEven_myIsEven_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isEven(x) == myIsEven(x))
-{{if (x < 0){}else {if (x == 0){}else {isEven_myIsEven_Equivalence((x - 2));}}}}
+{{match (x < 0) {
+case false =>match (x == 0) {
+case false =>isEven_myIsEven_Equivalence((x - 2));
+case true =>
+}
+
+case true =>
+}
+}}
 
 lemma isOdd_myIsOdd_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isOdd(x) == myIsOdd(x))
-{{if (x <= 0){}else {if (x == 1){}else {isEven_myIsEven_Equivalence((x - 1));}}}}
+{{match (x <= 0) {
+case false =>match (x == 1) {
+case false =>isEven_myIsEven_Equivalence((x - 1));
+case true =>
+}
+
+case true =>
+}
+}}
 

@@ -56,7 +56,11 @@ decreases (lst)
 ensures (drop_2(lst, n) == drop(n, lst))
 {{match lst {
 case Nil =>
-case Cons(hd, tl) =>if (hd == n){drop_2_drop_Equivalence(tl, n);}else {drop_2_drop_Equivalence(tl, n);}
+case Cons(hd, tl) =>match (hd == n) {
+case false =>drop_2_drop_Equivalence(tl, n);
+case true =>drop_2_drop_Equivalence(tl, n);
+}
+
 }
 }}
 

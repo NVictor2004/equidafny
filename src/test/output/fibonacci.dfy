@@ -6,5 +6,13 @@ function f2(n: int): int
 
 lemma f1_f2_Equivalence(n: int)
 ensures (f1(n) == f2(n))
-{{if (n < 1){}else {if (n <= 2){}else {f1_f2_Equivalence((n - 2));}}}}
+{{match (n < 1) {
+case false =>match (n <= 2) {
+case false =>f1_f2_Equivalence((n - 2));
+case true =>
+}
+
+case true =>
+}
+}}
 
