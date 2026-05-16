@@ -21,6 +21,8 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
         applyOptimisations(Binary(BoolAnd, cond, thenBranch))
     case Cond(Unary(Not, cond), thenBranch, elseBranch) => 
         applyOptimisations(Cond(cond, elseBranch, thenBranch))
+    case Cond(cond, ExprBlock(Nil, Lambda(thenLvalues, thenBlock)), ExprBlock(Nil, Lambda(elseLvalues, elseBlock))) if thenLvalues == elseLvalues =>
+        applyOptimisations(Lambda(thenLvalues, ExprBlock(Nil, Cond(cond, thenBlock, elseBlock))))
     case _ => expr
 }
 

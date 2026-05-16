@@ -93,6 +93,8 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             val allEmpty = finalMatchStmts.forall(_._2.isEmpty)
             if allEmpty then exprStmts else exprStmts :+ MatchStmt(modelExpr, finalMatchStmts)
         }
+        case (Lambda(modelLvalues, modelBlock), Lambda(candLvalues, candBlock)) if modelLvalues.length == candLvalues.length =>
+            mergeExprBlock(currentLemmas, currentMappings, modelBlock, modelFunc, candBlock, candidateFunc)
         case _ => Nil
     }
 
