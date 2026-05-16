@@ -21,7 +21,7 @@ I tested EquiDafny on a dataset of 51 test files. These files were either conver
   \label{tbl:evaluation-results}
 \end{table}
 
-Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. EquiDafny is unable to prove 7 of the 51 tests. Dafny can prove none of these tests while Stainless can prove 6 of them. The test that neither EquiDafny nor Stainless are able to prove is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. Stainless is unable to prove 3 of these 51 tests. However, EquiDafny can prove all three of these tests. Two of these tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
@@ -39,7 +39,17 @@ function repeat2<A>(n: int, f: A -> A): A -> A
 }
 \end{dafny}
 %
-Despite any assistance I provide, the Dafny verifier is unable to prove these functions equivalent.
+EquiDafny can prove these functions equivalent through the following equivalence lemma:
+\begin{dafny}
+lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
+  requires n >= 0
+  ensures repeat1(n, f)(a) == repeat2(n, f)(a)
+{
+  if n > 0 {
+    equivalenceRepeat12(n - 1, f, f(a));
+  }
+}
+\end{dafny}
 
 \section{System Profiling}\label{sec:system-profiling}
 
