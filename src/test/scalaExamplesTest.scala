@@ -41,7 +41,7 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
       val equivalenceOutput = programEquivalence(optimisedOutput)
 
       val outputFilePath = outputPath / scalaFile.last
-      formatProgram(equivalenceOutput, outputFilePath.toString)
+      formatProgram(translatedOutput, equivalenceOutput, outputFilePath.toString)
 
       val directoryName = (jsonExample / os.up).last
       val action =

@@ -1,8 +1,8 @@
 function isEvenTopLvlM(x: int): bool
-{if isOdd(x) then false else isEven(x)}
+{(isEven(x) && !isOdd(x))}
 
 function isEvenTopLvl1(x: int): bool
-{if myIsOdd(x) then false else myIsEven(x)}
+{(!myIsOdd(x) && myIsEven(x))}
 
 function myIsEven(x: int): bool
 decreases (if (x <= 0) then 0 else x)

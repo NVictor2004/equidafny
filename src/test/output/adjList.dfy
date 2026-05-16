@@ -8,12 +8,12 @@ decreases (pos)
 function validAdjList(adjList: seq<List<int>>, N: int, pos: int): bool
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
 decreases (pos)
-{if (pos == 0) then true else (validAdjList(adjList, N, (pos - 1)) && validList(N, adjList[(pos - 1)]))}
+{if (pos == 0) then true else if validAdjList(adjList, N, (pos - 1)) then validList(N, adjList[(pos - 1)]) else false}
 
 function validList(N: int, l: List<int>): bool
 requires (N >= 1)
 {match l {
-case Cons(h, t) => (((h >= 0) && (h < N)) && validList(N, t))
+case Cons(h, t) => if ((h >= 0) && (h < N)) then validList(N, t) else false
 case Nil => true
 }
 }

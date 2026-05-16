@@ -6,13 +6,13 @@ insertSortedM(nxtS, next, (count - 1), insertM(xs, t))}
 
 function insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: List<int>, count: int): List<int>
 decreases (count)
-{if (count <= 0) then xs else var (nxtS, t) := next(seed);
-insertSorted1(nxtS, next, insert1(t, xs), (count - 1))}
+{if !(count <= 0) then var (nxtS, t) := next(seed);
+insertSorted1(nxtS, next, insert1(t, xs), (count - 1)) else xs}
 
 function insert1(t: int, xs: List<int>): List<int>
 decreases (xs)
 {match xs {
-case Cons(hd, tl) => if (t <= hd) then Cons(t, xs) else Cons(hd, insert1(t, tl))
+case Cons(hd, tl) => if !(t <= hd) then Cons(hd, insert1(t, tl)) else Cons(t, xs)
 case Nil => Cons(t, Nil)
 }
 }

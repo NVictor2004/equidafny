@@ -28,7 +28,7 @@ ghost function existsM<T(!new)>(p: T -> bool): bool
 {!forall t: T :: !p(t)}
 
 ghost function maxNegPM(j: int, p: int -> bool): bool
-{if p(j) then false else forall k :: (!p(k) ==> (k <= j))}
+{(!p(j) && forall k :: (!p(k) ==> (k <= j)))}
 
 lemma fM_f_Equivalence(x: int, p: int -> bool)
 requires (!p(x) || existsM((j: int) => ((j < x) && maxNegPM(j, p))))

@@ -9,14 +9,14 @@ function uniqA(lst: List<int>): List<int>
 function find(lst: List<int>, n: int): bool
 {match lst {
 case Nil => false
-case Cons(hd, tl) => if (n == hd) then true else find(tl, n)
+case Cons(hd, tl) => ((n == hd) || find(tl, n))
 }
 }
 
 function isin(a: int, lst: List<int>): bool
 {match lst {
 case Nil => false
-case Cons(hd, tl) => if (a == hd) then true else isin(a, tl)
+case Cons(hd, tl) => ((a == hd) || isin(a, tl))
 }
 }
 
@@ -31,7 +31,7 @@ case Cons(hd, tl) => if isin(hd, a) then distinct(a, tl) else distinct(append(a,
 function unique(l: List<int>, r: List<int>): List<int>
 {match l {
 case Nil => r
-case Cons(hd, tl) => if find(r, hd) then unique(tl, r) else unique(tl, append(r, Cons(hd, Nil)))
+case Cons(hd, tl) => if !find(r, hd) then unique(tl, append(r, Cons(hd, Nil))) else unique(tl, r)
 }
 }
 

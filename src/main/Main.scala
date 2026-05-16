@@ -1,5 +1,6 @@
 import parsers.program.program
 import translation.program.translateProgram
+import optimisation.program.optimiseProgram
 import formatter.program.formatProgram
 import equivalence.program.programEquivalence
 
@@ -16,6 +17,7 @@ private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 def main(): Unit = {
   var totalParsing = 0.0
   var totalTranslation = 0.0
+  var totalOptimisation = 0.0
   var totalEquivalence = 0.0
   var totalFormatting = 0.0
   scalaExamples.foreach(jsonExample => {
@@ -34,17 +36,22 @@ def main(): Unit = {
     totalTranslation += elapsed
 
     before = System.nanoTime
-    val equivalenceOutput = programEquivalence(translatedOutput)
+    val optimisedOutput = optimiseProgram(translatedOutput)
+    elapsed = System.nanoTime - before
+    totalOptimisation += elapsed
+
+    before = System.nanoTime
+    val equivalenceOutput = programEquivalence(optimisedOutput)
     elapsed = System.nanoTime - before
     totalEquivalence += elapsed
 
     val outputFilePath = (outputPath / scalaFile.last).toString
 
     before = System.nanoTime
-    formatProgram(equivalenceOutput, outputFilePath)
+    formatProgram(translatedOutput, equivalenceOutput, outputFilePath)
     elapsed = System.nanoTime - before
     totalFormatting += elapsed
   })
   val number = scalaExamples.length
-  print(totalParsing / number, totalTranslation / number, totalEquivalence / number, totalFormatting / number)
+  print(totalParsing / number, totalTranslation / number, totalOptimisation / number, totalEquivalence / number, totalFormatting / number)
 }
