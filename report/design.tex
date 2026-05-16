@@ -89,7 +89,7 @@ lemma lengthEquivalence<T>(l: List<T>)
 {}
 \end{dafny}
 %
-In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, the tool can still prove equivalence in some cases despite the Merging process failing. However, this method does not work for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
+In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, EquiDafny can still prove equivalence in some cases despite the Merging process failing. However, this method is not sufficient for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
 \begin{dafny}
 function lengthTailM<T>(acc: int, l: List<T>): int
     decreases l
@@ -125,8 +125,34 @@ function length1<T>(l: List<T>): int {
 }
 \end{dafny}
 %
+% TODO: Wrap A && B in inline code
+In this case, EquiDafny will still generate the empty equivalence lemma shown above, however, this is no longer sufficient to prove equivalence. The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \dafnyinline{A} and \dafnyinline{B}, the expressions A \&\& B and \dafnyinline{if A then B else false} are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
 
-In this case, the tool will still generate the empty equivalence lemma shown above, however, this is no longer sufficient to prove equivalence. The Dafny verifier requires the following to prove equivalence:
+This example requires two translations on the \dafnyinline{length1} function's body before it has the same structure as the \dafnyinline{lengthM} function's body. First, the if expression that forms the \dafnyinline{length1} function's body can be translated into a match expression. In general, for arbitrary expressions \dafnyinline{A}, \dafnyinline{B} and \dafnyinline{C}, the expression \dafnyinline{if A then B else C} is equivalent to the following match expression:
+\begin{dafny}
+match A {
+    case true => B
+    case false => C
+}
+\end{dafny}
+%
+Therefore, the body of the \dafnyinline{length1} function will be translated into the following:
+\begin{dafny}
+match l == Nil {
+    case true => 0
+    case false => lengthTail1(l.tail, 1)
+}
+\end{dafny}
+%
+Second, this match expression can be simplified by splitting up the equality operation between \dafnyinline{l} and \dafnyinline{Nil} and moving the \dafnyinline{Nil} literal into the match case patterns. This results in the following match expression:
+\begin{dafny}
+match l {
+    case Nil => 0
+    case _ => lengthTail1(l.tail, 1)
+}
+\end{dafny}
+%
+This final match expression has the same structure as the body of the \dafnyinline{lengthM} function. This allows Function Merging to proceed, leading EquiDafny to produce the following equivalence lemmas:
 \begin{dafny}
 lemma lengthTailEquivalence<T>(acc: int, l: List<T>)
     decreases l
@@ -143,10 +169,6 @@ lemma lengthEquivalence<T>(l: List<T>)
 }
 \end{dafny}
 %
-% TODO: Wrap A && B in inline code
-The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \dafnyinline{A} and \dafnyinline{B}, the expressions A \&\& B and \dafnyinline{if A then B else false} are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
-
-This translation process can also be used to simplify expressions with the same structure. For example, for arbitrary Boolean formulae \dafnyinline{A}, \dafnyinline{B} and \dafnyinline{C}, the expression \dafnyinline{if !A then C else B} can be simplified into \dafnyinline{if A then B else C}. In this way, simplifying the bodies of both functions increases the likelihood that the resulting bodies will have the same structure, allowing Function Merging to proceed.
 
 \section{Technical Audit Challenges}
 
