@@ -28,10 +28,10 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
         val thenCase = (Constant(BoolLiteral(true)), thenBranch)
         applyOptimisations(Match(cond, List(elseCase, thenCase)))
     }
-    case Match(Binary(Eq, ident: Ident, DatatypeConstant(const)), cases) => {
+    case Match(Binary(Eq, ident: Ident, const: DatatypeConstant), cases) => {
         val trueBlock = cases.find(_._1 == Constant(BoolLiteral(true))).get._2
         val falseBlock = cases.find(_._1 == Constant(BoolLiteral(false))).get._2
-        Match(ident, List((PatternDatatypeConstant(const), trueBlock), (UnNamed, falseBlock)))
+        Match(ident, List((Constant(const), trueBlock), (UnNamed, falseBlock)))
     }
     case _ => expr
 }
@@ -43,7 +43,7 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
 // Then, break expression into its constituent parts
 // and continue optimisation on the individual parts
 private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = applyOptimisations(expr) match {
-    case expr: (LiteralExpr | Ident | SeqIndex | DatatypeConstant) => expr
+    case expr: (LiteralExpr | Ident | SeqIndex) => expr
     case Binary(operator, left, right) => Binary(operator, optimiseBasicExpr(left), optimiseBasicExpr(right))
     case Unary(operator, expr) => Unary(operator, optimiseBasicExpr(expr))
     case Quantified(quantifier, variable, varType, body) =>

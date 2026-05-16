@@ -15,6 +15,7 @@ case class CharLiteral(value: Int) extends LiteralExpr
 case class IntLiteral(value: BigInt) extends LiteralExpr
 case class StringLiteral(value: String) extends LiteralExpr
 case class RealLiteral(value: BigDecimal) extends LiteralExpr
+case class DatatypeConstant(name: String) extends LiteralExpr
 case object Null extends LiteralExpr
 
 enum BinaryOperator {
@@ -43,7 +44,6 @@ case class Quantified(
 
 // Basic Higher-level Expressions
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr
-case class DatatypeConstant(name: String) extends BasicExpr
 case class Cardinality(expr: BasicExpr) extends BasicExpr
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)

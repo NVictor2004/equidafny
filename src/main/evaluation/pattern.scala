@@ -11,6 +11,5 @@ def evaluatePattern(pattern: Pattern): Double = pattern match {
     BasicPatternCost + values.map(evaluatePattern).sum
   case PatternTuple(elements) =>
     PatternTupleCost + elements.map(evaluatePattern).sum
-  case PatternDatatypeConstant(_) => DatatypeConstantCost
   case PatternIdent(_) => PatternIdentCost
 }

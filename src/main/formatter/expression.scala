@@ -16,6 +16,7 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
     case IntLiteral(value)    => writer.print(value.toString)
     case StringLiteral(value) => writer.format("\"%s\"", value)
     case RealLiteral(value)   => writer.format("%f", value)
+    case DatatypeConstant(name) => writer.format(name)
     case Null                 => writer.format("null")
   }
 
@@ -78,7 +79,6 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       writer.format(name)
       suffixes.foreach(s => writer.format(".%s", s))
     }
-    case DatatypeConstant(name) => writer.format(name)
     case Cardinality(e) => formatBrackets("|", formatBasicExpr(e), "|")
     case Tuple(es) => formatBrackets("(", formatList(es, formatBasicExpr), ")")
     case Cond(cond, thenBranch, elseBranch) => {

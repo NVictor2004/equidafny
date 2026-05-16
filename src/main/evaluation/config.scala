@@ -47,7 +47,6 @@ final val UnNamedPatternCost = 1.0
 final val ConstantPatternCost = 1.0
 final val BasicPatternCost = 1.0
 final val PatternTupleCost = 1.0
-final val DatatypeConstantCost = 1.0
 final val PatternIdentCost = 1.0
 
 // Index Costs

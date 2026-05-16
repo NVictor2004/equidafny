@@ -13,7 +13,6 @@ def evaluateBasicExpr(expr: BasicExpr): Double = expr match {
   case Unary(_, expr)            => UnaryOperatorCost + evaluateBasicExpr(expr)
   case Quantified(_, _, varType, body) => QuantifiedCost + varType.fold(0.0)(_ => TypeCost) + evaluateBasicExpr(body)
   case Ident(_, suffixes) => IdentCost + suffixes.length * IdentSuffixCost
-  case DatatypeConstant(_) => IdentCost
   case Cardinality(expr)  => CardinalityCost + evaluateBasicExpr(expr)
   case Tuple(elements)    => TupleCost + elements.map(evaluateBasicExpr).sum
   case Cond(cond, thenBranch, elseBranch) => 
@@ -36,6 +35,7 @@ def evaluateLiteralExpr(expr: LiteralExpr): Double = expr match {
   case _: IntLiteral    => IntLiteralCost
   case _: StringLiteral => StringLiteralCost
   case _: RealLiteral   => RealLiteralCost
+  case _: DatatypeConstant => IdentCost
   case Null             => NullLiteralCost
 }
 
