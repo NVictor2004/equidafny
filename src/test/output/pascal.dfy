@@ -15,9 +15,9 @@ case false => (m > n)
 case true => true
 }
  {
-case false =>match match match (m == 1) {
-case false => (n == 1)
-case true => true
+case false =>match match match m {
+case 1 => true
+case _ => (n == 1)
 }
  {
 case false => (m == n)

@@ -30,9 +30,9 @@ lemma validAdjListM_validAdjList_Equivalence(adjList: seq<List<int>>, N: int, po
 requires ((((N >= 1) && (pos >= 0)) && (pos <= N)) && (N == |adjList|))
 decreases (pos)
 ensures (validAdjListM(adjList, N, pos) == validAdjList(adjList, N, pos))
-{{match (pos == 0) {
-case false =>validListM_validList_Equivalence(adjList[(pos - 1)], N);validAdjListM_validAdjList_Equivalence(adjList, N, (pos - 1));
-case true =>
+{{match pos {
+case 0 =>
+case _ =>validListM_validList_Equivalence(adjList[(pos - 1)], N);validAdjListM_validAdjList_Equivalence(adjList, N, (pos - 1));
 }
 }}
 

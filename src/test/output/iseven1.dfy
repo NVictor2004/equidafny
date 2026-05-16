@@ -28,9 +28,9 @@ lemma isEven_myIsEven_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isEven(x) == myIsEven(x))
 {{match (x < 0) {
-case false =>match (x == 0) {
-case false =>isOdd_myIsOdd_Equivalence((x - 1));
-case true =>
+case false =>match x {
+case 0 =>
+case _ =>isOdd_myIsOdd_Equivalence((x - 1));
 }
 
 case true =>
@@ -41,9 +41,9 @@ lemma isOdd_myIsOdd_Equivalence(x: int)
 decreases (if (x <= 0) then 0 else x)
 ensures (isOdd(x) == myIsOdd(x))
 {{match (x <= 0) {
-case false =>match (x == 1) {
-case false =>isEven_myIsEven_Equivalence((x - 1));
-case true =>
+case false =>match x {
+case 1 =>
+case _ =>isEven_myIsEven_Equivalence((x - 1));
 }
 
 case true =>

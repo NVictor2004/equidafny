@@ -35,39 +35,39 @@ ensures (evalM(x, y) == eval1(x, y))
 lemma add_myAdd_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures (add(x, y) == myAdd(x, y))
-{{match (x == 0) {
-case false =>match (x > 0) {
+{{match x {
+case 0 =>
+case _ =>match (x > 0) {
 case false =>add_myAdd_Equivalence((x + 1), (y - 1));
 case true =>add_myAdd_Equivalence((x - 1), (y + 1));
 }
 
-case true =>
 }
 }}
 
 lemma sub_mySub_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures (sub(x, y) == mySub(y, x))
-{{match (x == 0) {
-case false =>match (x > 0) {
+{{match x {
+case 0 =>
+case _ =>match (x > 0) {
 case false =>sub_mySub_Equivalence((x + 1), (y + 1));
 case true =>sub_mySub_Equivalence((x - 1), (y - 1));
 }
 
-case true =>
 }
 }}
 
 lemma mul_myMul_Equivalence(x: int, y: int)
 decreases (if (x <= 0) then -x else x)
 ensures (mul(x, y) == myMul(x, y))
-{{match (x == 0) {
-case false =>match (x > 0) {
+{{match x {
+case 0 =>
+case _ =>match (x > 0) {
 case false =>mul_myMul_Equivalence((x + 1), y);sub_mySub_Equivalence(mul((x + 1), y), y);
 case true =>mul_myMul_Equivalence((x - 1), y);add_myAdd_Equivalence(mul((x - 1), y), y);
 }
 
-case true =>
 }
 }}
 
