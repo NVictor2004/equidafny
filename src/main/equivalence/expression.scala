@@ -9,8 +9,8 @@ import scala.collection.mutable.Map as MutableMap
 
 private def numberOfArguments[A, B](data: List[ListMap[A, B]]): Int = data.map(_.size).sum
 
-def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMappings: MutableMap[String, String], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): List[Stmt] = {
-    val finalStmts = (modelExpr, candidateExpr) match {
+def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMappings: MutableMap[String, String], modelExpr: BasicExpr, modelFunc: Function, candidateExpr: BasicExpr, candidateFunc: Function)(using program: Program): List[Stmt] =
+    (modelExpr, candidateExpr) match {
         case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCandidate, calledInCandidateArgs))
         if calledInModel != calledInCandidate && numberOfArguments(calledInModelArgs) == numberOfArguments(calledInCandidateArgs) => {
             
@@ -75,7 +75,9 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             mergeBasicExpr(currentLemmas, currentMappings, modelExpr, modelFunc, candExpr, candidateFunc)
 
         case (Ident(modelName, Nil), Ident(candName, Nil)) => {
-            currentMappings += (candName -> modelName)
+            if (modelFunc.params.isDefinedAt(modelName) && candidateFunc.params.isDefinedAt(candName)) {
+                currentMappings += (candName -> modelName)
+            }
             Nil
         }
         case (Match(modelExpr, modelCases), Match(candExpr, candCases)) => {
@@ -97,12 +99,6 @@ def mergeBasicExpr(currentLemmas: MutableMap[String, Option[Lemma]], currentMapp
             mergeExprBlock(currentLemmas, currentMappings, modelBlock, modelFunc, candBlock, candidateFunc)
         case _ => Nil
     }
-
-    val modelParamNames = modelFunc.params.keys.toSet
-    val candParamNames = candidateFunc.params.keys.toSet
-    currentMappings.filterInPlace((candName, modelName) => modelParamNames.contains(modelName) && candParamNames.contains(candName))
-    finalStmts
-}
 
 def mergeExprBlock(currentLemmas: MutableMap[String, Option[Lemma]], currentMappings: MutableMap[String, String], modelExprBlock: ExprBlock, modelFunc: Function, candidateExprBlock: ExprBlock, candidateFunc: Function)(using program: Program): List[Stmt] = {
     val ExprBlock(modelExtended, modelBasic) = modelExprBlock
