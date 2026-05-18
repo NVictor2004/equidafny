@@ -4,7 +4,7 @@ import translation.structure.*
 import translation.structure.BinaryOperator.*
 
 import equivalence.expression.mergeExprBlock
-import equivalence.types.getListOfTypes
+import equivalence.types.{getListOfTypes, compatibleTypes}
 
 import scala.collection.immutable.ListMap
 import scala.collection.mutable.Map as MutableMap
@@ -38,25 +38,25 @@ def mergeFunction(
 
   // Mappings are generated through merging the function bodies and through type matching
 
-  // Map the types in each set of function parameters to the number of times that type occurs
-  val modelTypeCounts = mapTypesToCounts(model.params)
-  val candTypeCounts = mapTypesToCounts(candidate.params)
+  var candLeft = candidate.params
 
   // Generate type mappings
-  val typeMappings = modelTypeCounts.foldLeft(List[(String, String)]()) {
-      case (accMappings, (modelType, modelCount)) => {
-          val candType = program.typeFunctions.get(modelType).fold(modelType)(_.returnType)
-          val candCount = candTypeCounts.getOrElse(candType, 0)
-          if (modelCount != candCount) {
-              throw new IllegalArgumentException("Types can't be matched")
-          }
-          if (modelCount == 1) {
-              val modelName = model.params.find((_, currentType) => currentType == modelType).get._1
-              val candName = candidate.params.find((_, currentType) => currentType == candType).get._1
-              (candName, modelName) :: accMappings
-          } else {
-              accMappings
-          }
+  val typeMappings = model.params.foldLeft(List[(String, String)]()) {
+      case (accMappings, (modelName, modelType)) => {
+        val typeFunctionsList = program.typeFunctions.toList
+        val compatibleParams = candLeft.filter((_, candType) => compatibleTypes(modelType, candType, typeFunctionsList)).toList
+        if (compatibleParams.isEmpty) {
+          throw IllegalArgumentException(
+            s"Parameter types of functions ${model.name} and ${candidate.name} can't be matched"
+          )
+        }
+        if (compatibleParams.length == 1) {
+          val candName = compatibleParams(0)._1
+          candLeft = candLeft.removed(candName)
+          (candName, modelName) :: accMappings
+        } else {
+          accMappings
+        }
       }
   }
 
@@ -71,6 +71,7 @@ def mergeFunction(
   var candParamsLeft = candidate.params.removedAll(currentMappings.keys)
 
   // Generate remaining mappings
+  // TODO: Check for compatible types here
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
       val candType = program.typeFunctions.get(modelType).fold(modelType)(_.returnType)
       val (candName, _) = candParamsLeft.find((_, currentType) => currentType == candType).get
