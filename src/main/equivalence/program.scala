@@ -73,8 +73,17 @@ def mergeFunction(
   // Generate remaining mappings
   // TODO: Check for compatible types here
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
-      val candType = program.typeFunctions.get(modelType).fold(modelType)(_.returnType)
-      val (candName, _) = candParamsLeft.find((_, currentType) => currentType == candType).get
+      val typeFunctionsList = program.typeFunctions.toList
+
+      // Find a candidate parameter with a compatible type
+      // Prioritise parameters with the same name as the model parameter
+      // As these are more likely to be the correct parameter to map to 
+      val candName = candParamsLeft.foldLeft(Option.empty[String]) {
+        case (_, (candName, candType)) if modelName == candName && compatibleTypes(modelType, candType, typeFunctionsList) => Some(candName)
+        case (None, (candName, candType)) if compatibleTypes(modelType, candType, typeFunctionsList) => Some(candName)
+        case (currentName, _) => currentName
+      }.get
+      
       candParamsLeft = candParamsLeft.removed(candName)
       (candName, modelName)
   })
