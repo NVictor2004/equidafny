@@ -159,11 +159,3 @@ private def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[Str
     }
     case _ => (params, modelMap, candMap)
 }
-
-private def mapTypesToCounts(params: ListMap[String, Type]): Map[Type, Int] = 
-    params.foldLeft(MutableMap[Type, Int]()) {
-        case (accMap, (_, paramType)) => {
-            val count = accMap.getOrElse(paramType, 0)
-            accMap += (paramType -> (count + 1))
-        }
-    }.toMap
