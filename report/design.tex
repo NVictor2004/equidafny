@@ -235,17 +235,25 @@ Thus, the lemmas themselves can be provided, however, they must still be called 
 
 \subsection{Generating Parameter Mappings}
 
-Parameter Mappings are generated in multiple stages. First, if only a single parameter in each function is of a specific type, then these parameters must be mapped together. For example, given the following signatures for the functions \dafnyinline{f} and \dafnyinline{g}:
+Parameter Mappings are generated in multiple stages. Before processing the function bodies, parameters are first mapped based on their types. For each of the parameters in the model function, if only a single parameter in the candidate function has a compatible type, then these parameters must be mapped together. Types are compatible in three different cases. First, they are compatible when the types are equal. For example, here are the signatures for the functions \dafnyinline{f} and \dafnyinline{g}:
 \begin{dafny}
 function f(a: int, b: bool, c: bool): int
 function g(x: bool, y: int, z: bool): int
 \end{dafny}
 %
-Parameters \dafnyinline{a} and \dafnyinline{y} can immediately be mapped together, since they are each the only \dafnyinline{int} parameter in their respective functions. However, parameters \dafnyinline{b}, \dafnyinline{c}, \dafnyinline{x} and \dafnyinline{z} cannot be mapped in this way. Mappings can also be generated when the model parameter's type can be transformed into the candidate parameter's type through a type transformation function (see \Cref{sec:type-transformations}). Parameter mappings are stored by mapping candidate function parameters to model function parameters.
+Parameters \dafnyinline{a} and \dafnyinline{y} can immediately be mapped together, since they are each the only \dafnyinline{int} parameter in their respective functions. However, parameters \dafnyinline{b}, \dafnyinline{c}, \dafnyinline{x} and \dafnyinline{z} cannot be mapped in this way. 
+
+Second, types are compatible when they use generic types in the same way, even when the types are named differently. For example, here are the signatures for the functions \dafnyinline{f2} and \dafnyinline{g2}:
+\begin{dafny}
+function f2<A>(a: List<A>, b: bool, c: bool): int
+function g2<B>(x: bool, y: bool, z: List<B>): int
+\end{dafny}
+%
+Parameters \dafnyinline{a} and \dafnyinline{z} can be mapped together, since they use the generic types \dafnyinline{A} and \dafnyinline{B} in the same way. Third, types are compatible when the model parameter's type can be transformed into the candidate parameter's type through a type transformation function (see \Cref{sec:type-transformations}). When a mapping between parameters with compatible types is found, the mapping is stored by mapping the candidate function parameter to the model function parameter.
 
 After these mappings are generated, the bodies of the functions are merged together to generate further mappings (as described in \Cref{sec:worked-example}). During the Function Merging process, the map of mappings is continuously updated. A reference to it is passed through all merging functions so that the algorithm always has access to the most up-to-date set of mappings. This is necessary when merging Function Calls (see \Cref{sec:merging-calls}). 
 
-After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with compatible types (either the same type or when the model parameter's type can be transformed into the candidate parameter's type). This ensures that every parameter is mapped. 
+After merging the function bodies, if some parameters have still not been mapped, EquiDafny generates mappings between any pair of the remaining parameters with compatible types. This ensures that every parameter is mapped. EquiDafny gives higher priority to parameters that also have the same name, since these parameters are more likely to have the same purpose within the functions.
 
 \subsection{Mutually Recursive Functions}\label{sec:mutually-recursive}
 Mutually recursive functions must be dealt with carefully during the Function Merging process. For example, here are two functions \dafnyinline{isEven} and \dafnyinline{myIsEven} which each output whether a given integer is even or not. They use the helper functions \dafnyinline{isOdd} and \dafnyinline{myIsOdd} respectively to achieve this, where these helper functions each output whether a given integer is odd or not. The implementations of all four functions are as follows:
@@ -384,9 +392,6 @@ lemma equivalenceIsEven(un: UnaryNat)
   case Succ(pred) => equivalenceIsOdd(pred);
 }
 \end{dafny}
-
-
-% \subsection{Standardisation of Generic Variables}
 
 \section{Type Transformations}\label{sec:type-transformations}
 
