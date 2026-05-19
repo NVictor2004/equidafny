@@ -1,4 +1,4 @@
-// Can't figure out proof, but it likely requires auxiliary lemmas
+// Can't figure out proof, but it should require auxiliary lemmas
 
 // MODEL
 
