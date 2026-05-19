@@ -83,3 +83,19 @@ function evalC(f: Formula): bool
     case Equal(a, b) => if (evallC(a) == evallC(b)) then true else false
   }
 }
+
+lemma equivalenceHelper(e: Exp)
+  ensures exp_evalM(e) == evallC(e)
+{}
+
+lemma equivalence(f: Formula)
+  ensures evalM(f) == evalC(f)
+  decreases(size(f))
+{
+  match f {
+    case Imply(p1, p2)  =>
+      assert evalC(Not(AndAlso(p1, Not(p2)))) == !evalC(AndAlso(p1, Not(p2)));
+    case Equal(p1, p2) => {equivalenceHelper(p1); equivalenceHelper(p2);}
+    case _ =>
+  }
+}
