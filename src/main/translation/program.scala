@@ -16,8 +16,9 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
 
   val functionData = prog.collect {
     case Parsers.Function(name, _, params, _, _, _) => 
-      name -> params.map { case Parsers.Parameter(name, _) => name
-        }
+      name -> params.map(_.name)
+    case Parsers.GhostFunction(name, _, params, _, _, _) => 
+      name -> params.map(_.name)
   }.toMap
 
   val datatypeData = for {

@@ -36,17 +36,9 @@ decreases (if !p(x) then 0 else (x - eliminate_existsM((j: int) => ((j < x) && m
 ensures (fM(x, p) == f(x, p))
 {{match p(x) {
 case false =>
-case true =>termM(x, p);
+case true =>termM(x, p);fM_f_Equivalence((x - 1), p);
 }
 }}
-
-lemma equivalence_f(x: int, p: int -> bool)
-requires (!p(x) || existsM((j: int) => ((j < x) && maxNegPM(j, p))))
-requires (!p(x) || existsF((j: int) => ((j < x) && maxNegP(p, j))))
-decreases (if !p(x) then 0 else equiv(x, p);
-(x - eliminate_existsM((j: int) => ((j < x) && maxNegPM(j, p)))))
-ensures (fM(x, p) == f(x, p))
-{{if p(x){termM(x, p);termF(x, p);equivalence_f((x - 1), p);}}}
 
 lemma termF(x: int, p: int -> bool)
 requires existsF((j: int) => ((j < x) && maxNegP(p, j)))
