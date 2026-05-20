@@ -5,7 +5,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 function maxM(lst: List<int>): int
   decreases(lst) {
   match lst {
-    case Nil             => -999999999999 // represent very small number
+    case Nil             => -1
     case Cons(hd, Nil)   => hd
     case Cons(hd, tl)    => if (hd > maxM(tl)) then hd else maxM(tl)
   }
@@ -30,7 +30,7 @@ function length<T>(l: List<T>): nat
 function max3(l: List<int>): int
   decreases(length(l)) {
   match l
-    case Nil => -999999999999 // represent very small number
+    case Nil => -1
     case Cons(hd, tl) =>
       match tl {
         case Nil => hd
