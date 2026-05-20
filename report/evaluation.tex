@@ -193,6 +193,9 @@ lemma equivalence(l: List<(int, int)>)
 }
 \end{dafny}
 %
+\subsection{Merging match expressions when scrutinees have different structures}
+
+Match expressions can be equivalent even when their scrutinees have different structures. An example that demonstrates this is in \Cref{sec:induction}. In this example, the scrutinees are \dafnyinline{(l1, l2)} and \dafnyinline{(l1, l2, c)}. They have different structures since they are tuples with different lengths. EquiDafny cannot merge the patterns in these match expressions, since they are also tuples with different lengths. Thus, EquiDafny cannot prove the equivalence of these functions. 
 
 \section{System Profiling}\label{sec:system-profiling}
 
