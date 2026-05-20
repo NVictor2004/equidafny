@@ -335,7 +335,7 @@ lemma equivalenceGo5(insert: List<int>, sorted: List<int>)
 \end{dafny}
 % 
 
-\subsection{Merging Match Expressions}
+\subsection{Merging Match Expressions}\label{sec:merging-match-expressions}
 
 Merging match expressions is complex, as two match expressions can be equivalent even when they are very different structurally. They can have different numbers of cases, containing different patterns in different orders. For example, below are the functions \dafnyinline{isOdd1} and \dafnyinline{isOdd2}. They each call the functions \dafnyinline{isEven1} and \dafnyinline{isEven2} respectively. These four functions are all implemented in a similar way to the functions \dafnyinline{isOdd}, \dafnyinline{myIsOdd}, \dafnyinline{isEven} and \dafnyinline{myIsEven} respectively in \Cref{sec:mutually-recursive}. However, they instead operate on natural numbers defined using the \dafnyinline{UnaryNat} datatype:
 \begin{dafny}

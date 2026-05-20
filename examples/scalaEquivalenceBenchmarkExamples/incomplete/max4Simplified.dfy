@@ -35,11 +35,13 @@ function max3(l: List<int>): int
   }
 }
 
-lemma equivalenceMax3(l: List<int>)
-  ensures (max3(l) == maxM(l))
-  decreases(length(l))
+lemma equivalenceMax3(lst: List<int>)
+  ensures (max3(lst) == maxM(lst))
+  decreases(length(lst))
 {
-  match l
-    case Cons(hd, Cons(hd1, tl1)) => assert length(Cons(hd, tl1)) < length(l);
-    case _ =>
+  match lst {
+    case Nil => {}
+    case Cons(hd, Nil) => {}
+    case Cons(hd, Cons(hd1, tl1)) => assert length(Cons(hd, tl1)) < length(lst);
+  }
 }
