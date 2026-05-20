@@ -3,6 +3,8 @@
 \footnote{Explain why some tests fail, with example}
 \footnote{Show time for parsing before and after parsley optimisation}
 \footnote{flamegraphs, explain what the different colours mean}
+\footnote{Highlight lines in examples}
+\footnote{Separate section for translation optimisations? mention that only match expressions need to be flattened since if expressions are removed}
 
 \section{Benchmark Comparison}
 
@@ -50,6 +52,52 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
   }
 }
 \end{dafny}
+%
+
+There are several tests which EquiDafny fails to prove but Stainless succeeds. Here are some of the reasons why EquiDafny fails to verify these tests. 
+
+\subsection{Flattening match expressions}
+
+Nested match expressions should be flattened into a single match expression so that they can be merged effectively. For example, here are two functions called \dafnyinline{maxM} and \dafnyinline{max3} that find the maximum of a list. Similar to the example in \Cref{sec:dafny}, these functions process the list in opposite directions. However, these functions use a user-defined \dafnyinline{List} type instead of Dafny's inbuilt \dafnyinline{seq} type:
+\begin{dafny}
+function maxM(lst: List<int>): int
+  decreases(lst) {
+  match lst {
+    case Nil             => -1
+    case Cons(hd, Nil)   => hd
+    case Cons(hd, tl)    => if (hd > maxM(tl)) then hd else maxM(tl)
+  }
+}
+
+function max3(l: List<int>): int
+  decreases(length(l)) {
+  match l {
+    case Nil => -1
+    case Cons(hd, tl) =>
+      match tl {
+        case Nil => hd
+        case Cons(hd1, tl1) =>
+          assert length(Cons(hd, tl1)) < length(l);
+          if (hd > hd1) then max3(Cons(hd, tl1)) else max3(Cons(hd1, tl1))
+      }
+  }
+}
+\end{dafny}
+%
+The \dafnyinline{max3} function uses the \dafnyinline{length} function in its variant and requires an assertion to prove termination. These will be addressed in \Cref{sec:candidate-copying}. The nested match expression in the body of the \dafnyinline{max3} function must be flattened into the following single match expression:
+\begin{dafny}
+match l {
+  case Nil => -1
+  case Cons(hd, Nil) => hd
+  case Cons(hd, Cons(hd1, tl1)) => 
+    assert length(Cons(hd, tl1)) < length(l);
+    if (hd > hd1) then max3(Cons(hd, tl1)) else max3(Cons(hd1, tl1))
+}
+\end{dafny}
+%
+Now, the bodies of the two functions can be correctly merged together. I will provide the lemma that proves their equivalence in \Cref{sec:candidate-copying}. 
+
+\subsection{Copying from candidate functions}\label{sec:candidate-copying}\footnote{Finish this section}
 
 \section{System Profiling}\label{sec:system-profiling}
 
