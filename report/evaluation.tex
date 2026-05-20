@@ -53,7 +53,9 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
 \end{dafny}
 %
 
-There are several tests which EquiDafny fails to prove but Stainless succeeds. Here are some of the reasons why EquiDafny fails to verify these tests. 
+\section{Limitations}
+
+There are several tests which EquiDafny fails to prove but Stainless succeeds. Here are the reasons why EquiDafny fails to verify these tests. 
 
 \subsection{Flattening match expressions}\label{sec:match-flattening}
 
@@ -193,9 +195,54 @@ lemma equivalence(l: List<(int, int)>)
 }
 \end{dafny}
 %
-\subsection{Merging match expressions when scrutinees have different structures}
+\subsection{Sub-Expression equivalence assumption}
 
-Match expressions can be equivalent even when their scrutinees have different structures. An example that demonstrates this is in \Cref{sec:induction}. In this example, the scrutinees are \dafnyinline{(l1, l2)} and \dafnyinline{(l1, l2, c)}. They have different structures since they are tuples with different lengths. EquiDafny cannot merge the patterns in these match expressions, since they are also tuples with different lengths. Thus, EquiDafny cannot prove the equivalence of these functions. 
+The Function Merging algorithm assumes that, when expressions are equivalent and have the same structure, their sub-expressions are also equivalent. This allows the algorithm to split up expressions into their constituent parts and recursively merge them together. However, this assumption does not always hold. 
+
+For example, match expressions can be equivalent even when their scrutinees have different structures. An example that demonstrates this is in \Cref{sec:induction}. In this example, the scrutinees are \dafnyinline{(l1, l2)} and \dafnyinline{(l1, l2, c)}. They have different structures since they are tuples with different lengths. EquiDafny cannot merge the patterns in these match expressions, since they are also tuples with different lengths. Thus, EquiDafny cannot prove the equivalence of these functions.
+
+Another example of when this assumption does not always hold is when calling helper functions. Helper functions do not need to be equivalent for the main functions to be equivalent, even when the helper functions are called in the same way. For example, here are the functions \dafnyinline{oddM} and \dafnyinline{odd1}. Each function determines whether a given integer is odd or even by outputting 1 for odd numbers and 0 for even numbers. They each use the helper functions \dafnyinline{libM} and \dafnyinline{lib1} respectively:
+\begin{dafny}
+function oddM(x: int): int 
+{
+  if libM(x) == 0 then 1 
+  else 0
+}
+
+function libM(x: int): int
+{
+  (x + 1) % 2
+}
+
+function odd1(x: int): int 
+  requires x > 0
+{
+  if lib1(x) == 0 then 1 
+  else 0
+}
+
+function lib1(x: int): int
+  requires x > 0
+{
+  if x % 2 == 0 then 1 + lib1(x / 2)
+  else 0
+}
+\end{dafny}
+%
+EquiDafny assumes that, since the functions \dafnyinline{oddM} and \dafnyinline{odd1} have the same structure and call the helper functions \dafnyinline{libM} and \dafnyinline{lib1} in the same way, the helper functions themselves must be equivalent. However, in this case, this is not true. The \dafnyinline{libM} function outputs whether \dafnyinline{x + 1} is even or not. Therefore, the function outputs 0 when given an odd number and outputs 1 when given an even number. Meanwhile, the \dafnyinline{lib1} function outputs 0 when given an odd number and outputs a number greater than 0 when given an even number. Therefore, the helper functions are not equivalent. However, the main functions \dafnyinline{oddM} and \dafnyinline{odd1} only check whether the helper functions output 0. The helper functions are equivalent in this respect: both output 0 when they are given an odd number and neither output 0 when they are given an even number. Therefore, the main functions \dafnyinline{oddM} and \dafnyinline{odd1} are equivalent, despite the helper functions not being equivalent. EquiDafny does not realise this and so is unable to prove equivalence. Equivalence can be proven with the following lemmas:
+\begin{dafny}
+lemma lib1Helper(x: int)
+  requires x > 0
+  ensures x % 2 == 0 ==> lib1(x) > 0
+{}
+
+lemma equivalence(x: int)
+  requires x > 0
+  ensures oddM(x) == odd1(x)
+{
+  lib1Helper(x);
+}
+\end{dafny}
 
 \section{System Profiling}\label{sec:system-profiling}
 
