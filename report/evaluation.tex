@@ -53,7 +53,7 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
 \end{dafny}
 %
 
-\section{Limitations}
+\section{Limitations}\label{sec:eval-limitations}
 
 There are several tests which EquiDafny fails to prove but Stainless succeeds. Here are the reasons why EquiDafny fails to verify these tests. 
 
@@ -126,7 +126,7 @@ lemma equivalenceMax3(lst: List<int>)
 }
 \end{dafny}
 %
-\subsection{Variable Substitution}
+\subsection{Variable Inlining}
 
 Dafny functions can be defined using variables declarations. The bodies of these variables must sometimes be merged together. For example, here are two functions \dafnyinline{mapM} and \dafnyinline{map1}. Each function takes a list of tuples each containing two integers. Each function outputs a list containing the sums of the integers in each tuple. The functions \dafnyinline{mapM} and \dafnyinline{map1} use helper functions \dafnyinline{sumM} and \dafnyinline{sum1} respectively:
 \begin{dafny}

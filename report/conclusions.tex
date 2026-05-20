@@ -5,11 +5,15 @@
 
 \section{Future Work}
 
-\footnote{Add any more future work ideas here}
-
 There is great scope for extending EquiDafny in the future. Some suggestions are listed below. 
 
 \paragraph{Evaluation testsuite extension} Currently, I have converted only a small proportion of the EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} into Dafny to form some of the equivalence tests in EquiDafny's evaluation testsuite. The remaining tests can be converted to increase the size and coverage of the testsuite.
+
+\paragraph{Addressing Evaluation limitations} In \Cref{sec:eval-limitations}, I describe several limitations of EquiDafny and of the Function Merging algorithm. Many of these limitations can be addressed by adding features to EquiDafny's implementation, including match expression flattening and variable inlining. 
+
+\paragraph{Automatic auxiliary lemma generation} The evaluation testsuite contains several tests which EquiDafny is unable to prove since they require auxiliary lemmas. These lemmas also need to be called with the correct arguments and under the correct conditions. These lemmas and corresponding calls could be automatically generated, removing the current necessity for users to write and provide their own auxiliary lemmas.
+
+\paragraph{Formal verification of optimisation translations} EquiDafny's Optimisation component contains several translations to convert function bodies into simpler structures to increase the effectiveness of the function merging algorithm. However, these translations have not been formally proven to be sound. This could be proven to ensure that EquiDafny's implementation is mathematically robust.
 
 \paragraph{Improving counter example generation} As described in \Cref{sec:counterexamples}, Dafny counterexamples can be unnecessarily complex and are sometimes inaccurate. These counterexamples could be processed before being presented to the user to check that they are valid and to simplify them whenever possible.
 
