@@ -233,7 +233,7 @@ Thus, the lemmas themselves can be provided, however, they must still be called 
 
 \section{Technical Details}\label{sec:technical-details}
 
-\subsection{Generating Parameter Mappings}
+\subsection{Generating Parameter Mappings}\label{sec:parameter-mappings}
 
 Parameter Mappings are generated in multiple stages. Before processing the function bodies, parameters are first mapped based on their types. For each of the parameters in the model function, if only a single parameter in the candidate function has a compatible type, then these parameters must be mapped together. Types are compatible in three different cases. First, they are compatible when the types are equal. For example, here are the signatures for the functions \dafnyinline{f} and \dafnyinline{g}:
 \begin{dafny}
