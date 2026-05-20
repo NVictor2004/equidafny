@@ -122,7 +122,77 @@ lemma equivalenceMax3(lst: List<int>)
     case Cons(hd, Cons(hd1, tl1)) => assert length(Cons(hd, tl1)) < length(lst);
   }
 }
-\end{dafny} 
+\end{dafny}
+%
+\subsection{Variable Substitution}
+
+Dafny functions can be defined using variables declarations. The bodies of these variables must sometimes be merged together. For example, here are two functions \dafnyinline{mapM} and \dafnyinline{map1}. Each function takes a list of tuples each containing two integers. Each function outputs a list containing the sums of the integers in each tuple. The functions \dafnyinline{mapM} and \dafnyinline{map1} use helper functions \dafnyinline{sumM} and \dafnyinline{sum1} respectively:
+\begin{dafny}
+function mapM(l: List<(int, int)>): List<int> {
+  match l {
+    case Nil => Nil
+    case Cons((h1, h2), t) => 
+      var hM := sumM(h1, h2);
+      Cons(hM, mapM(t))
+  }
+}
+
+function sumM(x: int, y: int): int
+  decreases if x > 0 then x else -x
+{
+  if x == 0 then y
+  else if x < 0 then sumM(x + 1, y - 1)
+  else sumM(x - 1, y + 1)
+}
+
+function map1(l: List<(int, int)>): List<int> {
+  match l {
+    case Nil => Nil
+    case Cons((h1, h2), t) => 
+      var h1 := sum1(h1, h2);
+      Cons(h1, map1(t))
+  }
+}
+
+function sum1(x: int, y: int): int {
+  x + y
+}
+\end{dafny}
+%
+To create the equivalence lemma between functions \dafnyinline{mapM} and \dafnyinline{map1}, EquiDafny must create an equivalence lemma between the helper functions \dafnyinline{sumM} and \dafnyinline{sum1}. EquiDafny will only realise this if it tries to merge the function calls \dafnyinline{sumM(h1, h2)} and \dafnyinline{sum1(h1, h2)}. Therefore, the bodies of the declarations of the variables \dafnyinline{hM} and \dafnyinline{h1} must be merged together. However, variable declarations cannot be arbitrarily merged together since they can be used for any purpose. EquiDafny should only merge expressions if they are used for the same purpose. Therefore, one solution to this is to substitute the bodies of variable declarations into the places where they are used. This will make it clear to EquiDafny what each variable was used for, making sure it only merges expressions with the same purpose. In this example, the functions \dafnyinline{mapM} and \dafnyinline{map1} will become the following:
+\begin{dafny}
+function mapM(l: List<(int, int)>): List<int> {
+  match l {
+    case Nil => Nil
+    case Cons((h1, h2), t) => Cons(sumM(h1, h2), mapM(t))
+  }
+}
+
+function map1(l: List<(int, int)>): List<int> {
+  match l {
+    case Nil => Nil
+    case Cons((h1, h2), t) => Cons(sum1(h1, h2), map1(t))
+  }
+}
+\end{dafny}
+%
+After this transformation, EquiDafny would be able to generate the following equivalence lemmas:
+\begin{dafny}
+lemma sumEquivalence(x: int, y: int)
+  ensures sumM(x, y) == sum1(x, y)
+  decreases if x > 0 then x else -x
+{}
+
+lemma equivalence(l: List<(int, int)>)
+  ensures mapM(l) == map1(l)
+{
+  match l {
+    case Nil => {}
+    case Cons((h1, h2), t) => sumEquivalence(h1, h2);
+  }
+}
+\end{dafny}
+%
 
 \section{System Profiling}\label{sec:system-profiling}
 
