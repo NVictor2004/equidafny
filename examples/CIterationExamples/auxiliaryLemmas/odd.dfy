@@ -1,46 +1,40 @@
 // MODEL
 
-function LibM(x: int): int
+function libM(x: int): int
 {
   (x + 1) % 2
 }
 
-function ClientM(x: int): int 
+function oddM(x: int): int 
 {
-  if LibM(x) == 0 then 
-    1 
-  else 
-    0
+  if libM(x) == 0 then 1 
+  else 0
 }
 
 // CANDIDATE
 
-function Lib1(x: int): int
+function lib1(x: int): int
   requires x > 0
 {
-  if x % 2 == 0 then
-    1 + Lib1(x / 2)
-  else
-    0
+  if x % 2 == 0 then 1 + lib1(x / 2)
+  else 0
 }
 
-function Client1(x: int): int 
+function odd1(x: int): int 
   requires x > 0
 {
-  if Lib1(x) == 0 then 
-    1 
-  else 
-    0
+  if lib1(x) == 0 then 1 
+  else 0
 }
 
-lemma Lib1Helper(x: int)
+lemma lib1Helper(x: int)
   requires x > 0
-  ensures x % 2 == 0 ==> Lib1(x) > 0
+  ensures x % 2 == 0 ==> lib1(x) > 0
 {}
 
 lemma equivalence(x: int)
   requires x > 0
-  ensures ClientM(x) == Client1(x)
+  ensures oddM(x) == odd1(x)
 {
-  Lib1Helper(x);
+  lib1Helper(x);
 }
