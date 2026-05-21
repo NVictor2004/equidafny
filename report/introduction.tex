@@ -9,11 +9,11 @@ If this can be proven, then these programs are equivalent; one of these programs
 
 Therefore, Program Equivalence is a critical field in Computer Science. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of program verifiers are being developed to help developers write proofs of program equivalence, including Dafny~\cite{leinoDafnyAutomaticProgram2010} and KeY~\cite{ahrendtUsingKeYProver2016}. These verifiers automate much of the proof generation and can generate counterexamples when equivalence cannot be proven. However, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. Recently, many equivalence checkers are being developed to make proving equivalence even easier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012,milovancevicProvingDisprovingEquivalence2023,felsingAutomatingRegressionVerification2014,godlinRegressionVerificationProving2013}.
 
-Therefore, the aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. In particular, the main contributions of this project are as follows:
+Therefore, the aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. EquiDafny will focus on proving equivalence between Dafny functions only, as this provides enough complexity by itself. In particular, the main contributions of this project are as follows:
 
 \begin{itemize}
     \item \nameref{sec:literature-review}: Described the current state-of-the-art tools for proving program equivalence
-    \item \nameref{sec:audit}: Explored Dafny's capabilities in proving program equivalence
+    \item \nameref{sec:audit}: Explored Dafny's capabilities in proving program equivalence between Dafny functions
     \item Dataset of Equivalence tests: The conversion of Stainless tests into a dataset of pairs of equivalent Dafny functions
     \item \nameref{chp:design}: Development of the Function Merging algorithm to automatically generate equivalence lemmas and to address the challenges the Dafny verifier faces 
     \item \nameref{chp:implementation}: Implemented EquiDafny: a command-line tool on top of the Dafny verifier
