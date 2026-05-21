@@ -244,15 +244,15 @@ lemma equivalence(x: int)
 
 \section{System Profiling}\label{sec:system-profiling}
 
-After running EquiDafny on every test file, I measured the average time the tool spends in each of the 5 main components: parsing, translation, lemma generation, formatting and Dafny verification. The results are shown below.
+After running EquiDafny on every test file, I measured the average time the tool spends in each of the 6 main components: parsing, translation, optimisation, lemma generation, formatting and Dafny verification. The results are shown below.
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|c|c|c|c|}
+  \begin{tabular}{|p{0.09\linewidth}|c|c|c|c|c|c|}
     \hline
-    Phase & Parsing & Translation & Lemma generation & Formatting & Dafny verification \\
+    Phase & Parsing & Translation & Optimisation & Lemma generation & Formatting & Dafny verification \\
     \hline
-    Average Time (ms) & 15.016 & 1.892 & 1.549 & 1.725 & 1517.340 \\
+    Average Time (ms) & 13.099 & 1.545 & 0.214 & 1.169 & 1.459 & 1517.340 \\
     \hline
   \end{tabular}
   \caption{Average time spent in each phase}
