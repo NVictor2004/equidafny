@@ -1,7 +1,7 @@
 {
-  "file": "bug15.dfy",
-  "model": "fM",
+  "file": "sigma.dfy",
+  "model": "solution_2",
   "candidates": [
-    "f1"
+    "sigmaC"
   ]
 }

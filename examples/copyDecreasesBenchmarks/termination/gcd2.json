@@ -1,7 +1,7 @@
 {
-  "file": "bug15.dfy",
-  "model": "fM",
+  "file": "gcd2.dfy",
+  "model": "gcdM2",
   "candidates": [
-    "f1"
+    "gcdC"
   ]
 }

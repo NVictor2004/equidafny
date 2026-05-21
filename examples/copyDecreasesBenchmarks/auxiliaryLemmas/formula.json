@@ -1,7 +1,7 @@
 {
-  "file": "bug15.dfy",
-  "model": "fM",
+  "file": "formula.dfy",
+  "model": "evalM",
   "candidates": [
-    "f1"
+    "evalC"
   ]
 }
