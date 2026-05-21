@@ -1,22 +1,43 @@
 \chapter{Conclusions and Future Work}
 \footnote{Finish conclusions section}
 
-\section{Achievements and Limitations}
+\section{Achievements}
+
+The aim of this project was to minimise the level of user assistance required to create program equivalence proofs. We achieved this by implementing EquiDafny, an equivalence checker on top of Dafny.
+
+EquiDafny implements a novel algorithm called function merging. By exploiting structural similarities between the bodies of Dafny functions, EquiDafny can generate lemmas to prove that the functions are equivalent. I created a dataset of tests containing pairs of equivalent Dafny functions. Using these tests, I identified a variety of challenges that the Dafny verifier faces when attempting to prove equivalence. EquiDafny can mitigate many of these challenges, thus, EquiDafny can verify the majority of my equivalence tests. This presents a substantial improvement over the base Dafny verifier.
+\footnote{Quote evaluation numbers, numbers of tests verified, time profile, proved tests that Stainless cant}
+
+\section{Limitations}
+
+However, despite EquiDafny's achievements, the tool has many limitations. An important assumption that the tool makes is that, when expressions are equivalent and have the same structure, their sub-expressions must also be equivalent. However, this is not true in general. EquiDafny also relies on a series of translation rules to convert expressions into the same structure so that they can be merged together. Some of my tests require complex translations that have not been implemented yet, restricting EquiDafny's effectiveness. 
 
 \section{Future Work}
 
 There is great scope for extending EquiDafny in the future. Some suggestions are listed below. 
 
-\paragraph{Evaluation testsuite extension} Currently, I have converted only a small proportion of the EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} into Dafny to form some of the equivalence tests in EquiDafny's evaluation testsuite. The remaining tests can be converted to increase the size and coverage of the testsuite.
+\subsection{Algorithm extensions}
 
-\paragraph{Addressing Evaluation limitations} In \Cref{sec:eval-limitations}, I describe several limitations of EquiDafny and of the Function Merging algorithm. Many of these limitations can be addressed by adding features to EquiDafny's implementation, including match expression flattening and variable inlining. 
+These suggestions involve increasing the effectiveness of the function merging algorithm. 
+
+\paragraph{Addressing Evaluation limitations} In \Cref{sec:eval-limitations}, I describe several limitations of the Function Merging algorithm. Many of these limitations can be addressed by adding features to EquiDafny's implementation, including match expression flattening and variable inlining. 
 
 \paragraph{Automatic auxiliary lemma generation} The evaluation testsuite contains several tests which EquiDafny is unable to prove since they require auxiliary lemmas. These lemmas also need to be called with the correct arguments and under the correct conditions. These lemmas and corresponding calls could be automatically generated, removing the current necessity for users to write and provide their own auxiliary lemmas.
 
-\paragraph{Formal verification of optimisation translations} EquiDafny's Optimisation component contains several translations to convert function bodies into simpler structures to increase the effectiveness of the function merging algorithm. However, these translations have not been formally proven to be sound. This could be proven to ensure that EquiDafny's implementation is mathematically robust.
+\subsection{Extensions to EquiDafny's scope}
+
+Currently, EquiDafny is only able to generate equivalence lemmas, specifically for Dafny functions. EquiDafny can be extended beyond this.
 
 \paragraph{Improving counter example generation} As described in \Cref{sec:counterexamples}, Dafny counterexamples can be unnecessarily complex and are sometimes inaccurate. These counterexamples could be processed before being presented to the user to check that they are valid and to simplify them whenever possible.
 
 \paragraph{Product program generation} As described in \Cref{sec:imperative-equivalence}, imperative methods cannot be proven equivalent using lemmas. Instead, the methods can be proven equivalent by combining them to create a product program and proving postconditions on this program. These product programs can be generated automatically. However, for these programs to be verifiable, they often require complicated invariants that are difficult to generate. Thus, these should be provided by the user and copied into the generated product program.
+
+\subsection{Further extensions}
+
+These extensions will improve EquiDafny and its evaluation testsuite as a whole. 
+
+\paragraph{Evaluation testsuite extension} Currently, I have converted only a small proportion of the EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} into Dafny to form some of the equivalence tests in EquiDafny's evaluation testsuite. The remaining tests can be converted to increase the size and coverage of the testsuite.
+
+\paragraph{Formal verification of optimisation translations} EquiDafny's Optimisation component contains several translations to convert function bodies into simpler structures to increase the effectiveness of the function merging algorithm. However, these translations have not been formally proven to be sound. This could be proven to ensure that EquiDafny's implementation is mathematically robust.
 
 \paragraph{Parser Optimisation} As described in \Cref{sec:system-profiling}, EquiDafny's parsing component consumes a significant amount of time and memory. This can be decreased by using a parser generator (such as ANTLR~\parencite{DefinitiveANTLR4}) instead of the Parsley parser combinator library~\parencite{willisJmie6Parsley2026}, though such a change has other drawbacks that should be considered. It is important to note that the majority of the overall time taken will still be spent during the final Dafny verification component, thus optimising the parser will only improve overall performance slightly.
