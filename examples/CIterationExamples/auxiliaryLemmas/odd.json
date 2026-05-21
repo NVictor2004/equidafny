@@ -1,7 +1,7 @@
 {
-  "file": "bug15.dfy",
-  "model": "fM",
+  "file": "odd.dfy",
+  "model": "oddM",
   "candidates": [
-    "f1"
+    "odd1"
   ]
 }

@@ -1,7 +1,7 @@
 {
-  "file": "bug15.dfy",
-  "model": "fM",
+  "file": "triangularMod.dfy",
+  "model": "FM",
   "candidates": [
-    "f1"
+    "F1"
   ]
 }
