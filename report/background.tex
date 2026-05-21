@@ -121,7 +121,7 @@ Stainless performs these verifications by passing each part of the program throu
 
 One part of Stainless's functionality that is especially relevant to this work is its equivalence checker \parencite{IntroductionStainless091,milovancevicProvingDisprovingEquivalence2023}. The abilities of this system will be a great inspiration for the rest of this project. In particular, its ability to automatically generate and prove equivalence lemmas for helper functions is especially important, as this is the main contribution EquiDafny should provide. 
 
-Consider the following example, taken from the equivalence tests in Stainless's GitHub repository \parencite{StainlessFrontendsBenchmarks}. This is also an example used by \textcite{milovancevicProvingDisprovingEquivalence2023}, which I converted to Dafny in \Cref{sec:dafny}. These two functions attempt to find the maximum element of a list of integers, by approaching the list in opposite directions:
+Consider the following example, taken from the equivalence tests in Stainless's GitHub repository \parencite{StainlessFrontendsBenchmarks}. This is also an example used by \textcite{milovancevicProvingDisprovingEquivalence2023}, which I converted to Dafny in \Cref{sec:dafny}:
 
 \begin{minted}{scala}
 def maxR(lst: List[Int]): Int = {
@@ -527,34 +527,7 @@ lemma equivalenceBinSum(l1: List<bool>, l2: List<bool>, c: bool)
 
 \subsection{Providing Variants to prove termination}\label{sec:termination}
 
-Here, I provide two implementations of a function to find the maximum element in a sequence of integers. These are the same functions as listed in \Cref{sec:dafny}. The first is as follows:
-\begin{dafny}
-function maxR(l: seq<int>): int
-{
-  if |l| == 0 then -1
-  else if |l| == 1 then l[0]
-  else
-    var m := maxR(l[1..]);
-    if l[0] > m then l[0] else m
-}
-\end{dafny}
-%
-The second is as follows:
-\begin{dafny}
-function maxC(l: seq<int>): int
-  decreases |l|
-{
-  if |l| == 0 then -1
-  else if |l| == 1 then l[0]
-  else
-    if l[0] > l[1] then
-      maxC([l[0]] + l[2..])
-    else
-      maxC(l[1..])
-}
-\end{dafny}
-%
-As described in \Cref{sec:dafny}, these two functions process the list in opposite directions, but Dafny is able to prove equivalence with almost no help from the user:
+Here, I will use the same example I used in \Cref{sec:dafny}. I have copied the equivalence lemma below:
 \begin{dafny}[highlightlines=3]
 lemma maxEquivalence(l: seq<int>)
   ensures maxC(l) == maxR(l)
