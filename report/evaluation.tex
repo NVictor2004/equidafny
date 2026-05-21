@@ -1,9 +1,7 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
-\footnote{Explain why some tests fail, with example}
 \footnote{Show time for parsing before and after parsley optimisation}
 \footnote{flamegraphs, explain what the different colours mean}
-\footnote{Highlight lines in examples}
 
 \section{Benchmark Comparison}
 
@@ -60,7 +58,7 @@ There are several tests which EquiDafny fails to prove but Stainless succeeds. H
 \subsection{Flattening match expressions}\label{sec:match-flattening}
 
 Nested match expressions should be flattened into a single match expression so that they can be merged effectively. Nested if expressions should also be flattened, however, since all if expressions are converted into match expressions (as described in \Cref{sec:benefits-drawbacks}), a separate process for if expressions is not necessary. For example, here are two functions called \dafnyinline{maxM} and \dafnyinline{max3} that find the maximum of a list. Similar to the example in \Cref{sec:dafny}, these functions process the list in opposite directions. However, these functions use a user-defined \dafnyinline{List} type instead of Dafny's inbuilt \dafnyinline{seq} type:
-\begin{dafny}
+\begin{dafny}[highlightlines={11,18}]
 function maxM(lst: List<int>): int
   decreases(lst) {
   match lst {
@@ -85,7 +83,7 @@ function max3(l: List<int>): int
 }
 \end{dafny}
 %
-The \dafnyinline{max3} function uses the \dafnyinline{length} function in its variant and requires an assertion to prove termination. These will be addressed in \Cref{sec:candidate-copying}. The nested match expression in the body of the \dafnyinline{max3} function must be flattened into the following single match expression:
+The \dafnyinline{max3} function uses the \dafnyinline{length} function in its variant and requires an assertion to prove termination (as highlighted). These will be addressed in \Cref{sec:candidate-copying}. There is a nested match expression in the \dafnyinline{Cons(hd, tl)} case in the body of the \dafnyinline{max3} function. This must be flattened into the following single match expression:
 \begin{dafny}
 match l {
   case Nil => -1
@@ -112,6 +110,7 @@ function length<T>(l: List<T>): nat
 \end{dafny}
 %
 Because of this, the corresponding equivalence lemma must use the termination structures from the \dafnyinline{max3} function rather than the \dafnyinline{maxM} function, as the Dafny verifier is unable to prove termination otherwise. Thus, the variant and assertion from the candidate function \dafnyinline{max3} must be copied into the equivalence lemma. However, these structures refer to variables defined within the candidate function. For example, both the variant and the assertion refer to the variable \dafnyinline{l}. The corresponding variable in the model function is called \dafnyinline{lst}. Therefore, since variables are all defined using structures from the model function, the \dafnyinline{l} variable will be undefined. One solution to this is to replace all candidate variables with their corresponding model variables. As described in \Cref{sec:parameter-mappings}, a mapping between corresponding parameters is maintained during the merging process, thus, this could be used to replace the variables. 
+
 Further problems with variables occur when merging match patterns (as described in \Cref{sec:merging-match-expressions}) since the patterns themselves can define variables. When merging the bodies of the \dafnyinline{maxM} and \dafnyinline{max3} functions, the pattern \dafnyinline{Cons(hd, tl)} will be merged with the pattern \dafnyinline{Cons(hd, Cons(hd1, tl1))} (after match expression flattening, as described in \Cref{sec:match-flattening}). This is necessary for the assertion to be found and copied into the correct place in the equivalence lemma. However, the candidate pattern defines the variable \dafnyinline{tl1}, which is used in the assertion. Thus, if the pattern from the model function (\dafnyinline{Cons(hd, tl)}) is used, the variable \dafnyinline{tl1} will be undefined. Therefore, the pattern from the candidate function (\dafnyinline{Cons(hd, Cons(hd1, tl1))}) must be used instead. This results in the following equivalence lemma:
 \begin{dafny}
 lemma equivalenceMax3(lst: List<int>)
@@ -129,7 +128,7 @@ lemma equivalenceMax3(lst: List<int>)
 \subsection{Variable Inlining}
 
 Dafny functions can be defined using variables declarations. The bodies of these variables must sometimes be merged together. For example, here are two functions \dafnyinline{mapM} and \dafnyinline{map1}. Each function takes a list of tuples each containing two integers. Each function outputs a list containing the sums of the integers in each tuple. The functions \dafnyinline{mapM} and \dafnyinline{map1} use helper functions \dafnyinline{sumM} and \dafnyinline{sum1} respectively:
-\begin{dafny}
+\begin{dafny}[highlightlines={5,22}]
 function mapM(l: List<(int, int)>): List<int> {
   match l {
     case Nil => Nil
@@ -161,7 +160,7 @@ function sum1(x: int, y: int): int {
 }
 \end{dafny}
 %
-To create the equivalence lemma between functions \dafnyinline{mapM} and \dafnyinline{map1}, EquiDafny must create an equivalence lemma between the helper functions \dafnyinline{sumM} and \dafnyinline{sum1}. EquiDafny will only realise this if it tries to merge the function calls \dafnyinline{sumM(h1, h2)} and \dafnyinline{sum1(h1, h2)}. Therefore, the bodies of the declarations of the variables \dafnyinline{hM} and \dafnyinline{h1} must be merged together. However, variable declarations cannot be arbitrarily merged together since they can be used for any purpose. EquiDafny should only merge expressions if they are used for the same purpose. Therefore, one solution to this is to substitute the bodies of variable declarations into the places where they are used. This will make it clear to EquiDafny what each variable was used for, making sure it only merges expressions with the same purpose. In this example, the functions \dafnyinline{mapM} and \dafnyinline{map1} will become the following:
+To create the equivalence lemma between functions \dafnyinline{mapM} and \dafnyinline{map1}, EquiDafny must create an equivalence lemma between the helper functions \dafnyinline{sumM} and \dafnyinline{sum1}. EquiDafny will only realise this if it tries to merge the function calls \dafnyinline{sumM(h1, h2)} and \dafnyinline{sum1(h1, h2)}. Therefore, the bodies of the declarations of the variables \dafnyinline{hM} and \dafnyinline{h1} must be merged together (the variable declarations are highlighted). However, variable declarations cannot be arbitrarily merged together since they can be used for any purpose. EquiDafny should only merge expressions if they are used for the same purpose. Therefore, one solution to this is to substitute the bodies of variable declarations into the places where they are used. This will make it clear to EquiDafny what each variable was used for, making sure it only merges expressions with the same purpose. In this example, the functions \dafnyinline{mapM} and \dafnyinline{map1} will become the following:
 \begin{dafny}
 function mapM(l: List<(int, int)>): List<int> {
   match l {
@@ -201,8 +200,8 @@ The Function Merging algorithm assumes that, when expressions are equivalent and
 
 For example, match expressions can be equivalent even when their scrutinees have different structures. An example that demonstrates this is in \Cref{sec:induction}. In this example, the scrutinees are \dafnyinline{(l1, l2)} and \dafnyinline{(l1, l2, c)}. They have different structures since they are tuples with different lengths. EquiDafny cannot merge the patterns in these match expressions, since they are also tuples with different lengths. Thus, EquiDafny cannot prove the equivalence of these functions.
 
-Another example of when this assumption does not always hold is when calling helper functions. Helper functions do not need to be equivalent for the main functions to be equivalent, even when the helper functions are called in the same way. For example, here are the functions \dafnyinline{oddM} and \dafnyinline{odd1}. Each function determines whether a given integer is odd or even by outputting 1 for odd numbers and 0 for even numbers. They each use the helper functions \dafnyinline{libM} and \dafnyinline{lib1} respectively:
-\begin{dafny}
+Another example of when this assumption does not always hold is when calling helper functions. Helper functions do not need to be equivalent for the main functions to be equivalent, even when the helper functions are called in the same way. For example, here are the functions \dafnyinline{oddM} and \dafnyinline{odd1}. Each function determines whether a given integer is odd or even by outputting 1 for odd numbers and 0 for even numbers. They each use the helper functions \dafnyinline{libM} and \dafnyinline{lib1} respectively (the calls to these helper functions are highlighted):
+\begin{dafny}[highlightlines={3,15}]
 function oddM(x: int): int 
 {
   if libM(x) == 0 then 1 
