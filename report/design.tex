@@ -1,6 +1,6 @@
 \chapter{Design}\label{chp:design}
 
-\paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that the tool is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. The tool this project describes can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
+\paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that EquiDafny is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. EquiDafny can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
 \section{Function Merging}\label{sec:function-merging}
 
@@ -62,7 +62,7 @@ lemma uniqueEquivalence(l: List<int>, r: List<int>)
 
 \subsection{Benefits and Drawbacks}\label{sec:benefits-drawbacks}
 
-As described in \Cref{sec:equivalence-lemmas}, to prove the equivalence of two functions that both use helper functions, the tool must generate equivalence lemmas between the helper functions and call these lemmas within the main equivalence lemma under the correct conditions and with the correct arguments. As demonstrated in \Cref{sec:worked-example}, the Function Merging process is capable of this. 
+As described in \Cref{sec:equivalence-lemmas}, to prove the equivalence of two functions that both use helper functions, EquiDafny must generate equivalence lemmas between the helper functions and call these lemmas within the main equivalence lemma under the correct conditions and with the correct arguments. As demonstrated in \Cref{sec:worked-example}, the Function Merging process is capable of this. 
 
 However, one major drawback with this approach is that it requires the bodies of the functions to have the same structure. For example, here are two functions \dafnyinline{lengthM} and \dafnyinline{length1}, which each calculate the length of a list:
 \begin{dafny}
@@ -79,9 +79,9 @@ function length1<T>(l: List<T>): int {
 \end{dafny}
 %
 
-The bodies of these two functions have different structures, therefore, the Function Merging process will fail. The tool uses two methods to attempt to mitigate this issue.
+The bodies of these two functions have different structures, therefore, the Function Merging process will fail. EquiDafny uses two methods to attempt to mitigate this issue.
 
-First, the tool will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
+First, EquiDafny will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
 
 \begin{dafny}
 lemma lengthEquivalence<T>(l: List<T>)
@@ -172,7 +172,7 @@ lemma lengthEquivalence<T>(l: List<T>)
 
 \section{Technical Audit Challenges}
 
-In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how our tool attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the challenge this refers to is described in \Cref{sec:equivalence-lemmas}). 
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the challenge this refers to is described in \Cref{sec:equivalence-lemmas}). 
 
 \subsection{\nameref*{sec:induction}}
 I could not find a rule to determine when the Dafny verifier needs the user to call the equivalence lemma they are trying to prove recursively. Therefore, EquiDafny will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement challenge.
@@ -193,7 +193,7 @@ function uncurry2<A, B, C>(f: A -> B -> C): (A, B) -> C {
 }
 \end{dafny}
 %
-When generating the corresponding equivalence lemma, instead of attempting to prove equivalence on the lambda functions themselves (\dafnyinline{uncurry1(f)} and \dafnyinline{uncurry2(f)}), the tool will pass the same arguments to both lambda functions so that the function bodies can be directly compared:
+When generating the corresponding equivalence lemma, instead of attempting to prove equivalence on the lambda functions themselves (\dafnyinline{uncurry1(f)} and \dafnyinline{uncurry2(f)}), EquiDafny will pass the same arguments to both lambda functions so that the function bodies can be directly compared:
 
 \begin{dafny}
 lemma uncurry1_uncurry2_Equivalence<A, B, C>(f: A -> B -> C, a: A, b: B)
@@ -284,13 +284,13 @@ function myIsOdd(x: int): bool
 }
 \end{dafny}
 
-Let the functions \dafnyinline{isEven} and \dafnyinline{myIsEven} be the model and candidate functions respectively. All function calls are highlighted. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in our tool attempting to merge the function calls \dafnyinline{isOdd(x - 1)} and \dafnyinline{myIsOdd(x - 1)}. This requires the functions \dafnyinline{isOdd} and \dafnyinline{myIsOdd} themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \dafnyinline{isEven} and \dafnyinline{myIsEven} needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
+Let the functions \dafnyinline{isEven} and \dafnyinline{myIsEven} be the model and candidate functions respectively. All function calls are highlighted. During the Function Merging process for these two functions, since their bodies have the same structure, this will result in EquiDafny attempting to merge the function calls \dafnyinline{isOdd(x - 1)} and \dafnyinline{myIsOdd(x - 1)}. This requires the functions \dafnyinline{isOdd} and \dafnyinline{myIsOdd} themselves to be merged. However, when processing these two functions in the same way, this will lead to the functions \dafnyinline{isEven} and \dafnyinline{myIsEven} needing to be merged again, leading to an infinite loop. Therefore, a successful Function Merging implementation must account for mutual recursive functions. 
 
-Our tool solves this problem in the following way. During Function Merging, the process has access to the lemmas currently being generated. This is stored in a map from the name of the model function to an optional lemma (represented using the Scala data structure \dafnyinline{Option}). When the Merging process encounters two function calls, this map is consulted to determine how the process should proceed.
+EquiDafny solves this problem in the following way. During Function Merging, the process has access to the lemmas currently being generated. This is stored in a map from the name of the model function to an optional lemma (represented using the Scala data structure \dafnyinline{Option}). When the Merging process encounters two function calls, this map is consulted to determine how the process should proceed.
 
 There are three possibilities. First, if the model function name is not a key in this map, then the functions themselves should be merged together. In the above example, when processing the functions \dafnyinline{isEven} and \dafnyinline{myIsEven} for the first time and encountering the function calls to \dafnyinline{isOdd} and \dafnyinline{myIsOdd}, \dafnyinline{isOdd} should not be a key in the map, leading to the functions themselves being merged. Second, if the name of the model function is mapped to a lemma (wrapped in a \dafnyinline{Some} object), then the corresponding lemma has already been generated. Thus, this lemma can be called without further merging. This also prevents the generation of the same lemma multiple times.
 
-Finally, if the model function's name is mapped to the \dafnyinline{None} object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \dafnyinline{isOdd} and \dafnyinline{myIsOdd} and encountering the function calls to \dafnyinline{isEven} and \dafnyinline{myIsEven}, \dafnyinline{isEven} should be mapped to the \dafnyinline{None} object since the process reached this point during the Merging of \dafnyinline{isEven} and \dafnyinline{myIsEven}. Our tool responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, our tool can successfully deal with mutually recursive functions. 
+Finally, if the model function's name is mapped to the \dafnyinline{None} object, this means that the corresponding lemma is currently being generated. In our example, when processing the functions \dafnyinline{isOdd} and \dafnyinline{myIsOdd} and encountering the function calls to \dafnyinline{isEven} and \dafnyinline{myIsEven}, \dafnyinline{isEven} should be mapped to the \dafnyinline{None} object since the process reached this point during the Merging of \dafnyinline{isEven} and \dafnyinline{myIsEven}. EquiDafny responds to this by creating a call to the corresponding lemma before the lemma is completely generated. This is possible since the names and parameters of lemmas are always generated consistently. Therefore, by using this map and by carefully updating it during Function Merging, EquiDafny can successfully deal with mutually recursive functions. 
 
 \subsection{Merging Function Calls}\label{sec:merging-calls}
 During the merging of a pair of functions, a pair of function calls may be encountered. If this occurs with functions that have not been encountered yet, the functions themselves must be merged in a recursive manner, resulting in an equivalence lemma and a set of mappings between the parameters of the functions. However, in addition to this, the corresponding arguments in the function calls must also be merged together to identify further calls to helper functions and to create further mappings between the parameters of the original functions. Mappings between arguments are created using the mappings between the corresponding function parameters. For example, here are two functions called \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1} that each implement the insertion sort algorithm:
