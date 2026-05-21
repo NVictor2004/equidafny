@@ -175,13 +175,13 @@ lemma lengthEquivalence<T>(l: List<T>)
 In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges. The process of generating and calling equivalence lemmas for helper functions has already been described in \Cref{sec:worked-example} (the challenge this refers to is described in \Cref{sec:equivalence-lemmas}). 
 
 \subsection{\nameref*{sec:induction}}
-I could not find a rule to determine when the Dafny verifier needs the user to call the equivalence lemma they are trying to prove recursively. Therefore, EquiDafny will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement challenge.
+The corresponding challenge is described in \Cref{sec:induction}. I could not find a rule to determine when the Dafny verifier needs the user to call the equivalence lemma they are trying to prove recursively. Therefore, EquiDafny will recursively call the equivalence lemma it is currently proving every time the functions being compared both recurse. This approach leads to some equivalence lemma bodies being larger and more complex than the Dafny verifier requires them to be, however, this technique resolves the induction enforcement challenge.
 
 \subsection{\nameref*{sec:termination}}
-EquiDafny copies all termination measures from the model function into each equivalence lemma. This provides the Dafny verifier with the variant, lemmas and assertions it needs to prove termination. 
+The corresponding challenge is described in \Cref{sec:termination}. EquiDafny copies all termination measures from the model function into each equivalence lemma. This provides the Dafny verifier with the variant, lemmas and assertions it needs to prove termination. 
 
 \subsection{\nameref*{sec:higher-order}}
-When generating the postconditions for lemmas, EquiDafny will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
+The corresponding challenge is described in \Cref{sec:higher-order}. When generating the postconditions for lemmas, EquiDafny will pass in the same arguments to both lambda functions so that the Dafny verifier will prove equivalence on the bodies of the lambda functions rather than the lambda functions themselves. For example, here are two functions that implement uncurrying:
 
 \begin{dafny}
 function uncurry1<A, B, C>(f: A -> B -> C): (A, B) -> C {
@@ -223,7 +223,7 @@ ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
 %
 
 \subsection{\nameref*{sec:auxiliary-lemmas}}
-It is difficult for EquiDafny to automatically generate auxiliary lemmas. Therefore, these lemmas must be written by the user and provided to EquiDafny. As described in \Cref{sec:user-interface}, the user must provide the path to a Dafny file in the JSON configuration file. The user can provide EquiDafny with any necessary auxiliary lemmas by writing them in this Dafny file.
+The corresponding challenge is described in \Cref{sec:auxiliary-lemmas}. It is difficult for EquiDafny to automatically generate auxiliary lemmas. Therefore, these lemmas must be written by the user and provided to EquiDafny. As described in \Cref{sec:user-interface}, the user must provide the path to a Dafny file in the JSON configuration file. The user can provide EquiDafny with any necessary auxiliary lemmas by writing them in this Dafny file.
 
 Thus, the lemmas themselves can be provided, however, they must still be called within the generated equivalence lemmas, with the correct arguments and under the correct conditions. These conditions and arguments cannot be easily generated, since this requires an understanding of what each auxiliary lemma proves and how it would be useful when proving an equivalence lemma. Thus, this is a difficult problem that EquiDafny does not currently solve. 
 
