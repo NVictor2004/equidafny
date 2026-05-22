@@ -9,6 +9,7 @@ def formatDomainType(t: DomainType)(using writer: Formatter): Unit = t match {
   case TypeString           => writer.print("string")
   case TypeChar             => writer.print("char")
   case TypeNat              => writer.print("nat")
+  case TypeReal             => writer.print("real")
   case SeqType(elementType) => {
     writer.print("seq")
     formatBrackets("<", formatType(elementType), ">")

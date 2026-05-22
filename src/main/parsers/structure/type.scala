@@ -10,6 +10,7 @@ case object TypeBool extends DomainType
 case object TypeString extends DomainType
 case object TypeChar extends DomainType
 case object TypeNat extends DomainType
+case object TypeReal extends DomainType
 case class SeqType(elementType: Type) extends DomainType
 object SeqType extends PureParserBridge1[Type, SeqType]
 case class SetType(elementType: Type) extends DomainType

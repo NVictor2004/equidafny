@@ -15,6 +15,7 @@ private lazy val domainType: Parsley[DomainType] =
     | ("string" as TypeString)
     | ("char" as TypeChar)
     | ("nat" as TypeNat)
+    | ("real" as TypeReal)
     | SeqType("seq" ~> "<" ~> typeParser <~ ">")
     | SetType("set" ~> "<" ~> typeParser <~ ">")
     | TupleType("(" ~> sepBy(typeParser, ",") <~ ")")

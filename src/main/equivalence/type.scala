@@ -14,6 +14,7 @@ def compatibleTypes(modelType: Type, candType: Type, typeFunctions: List[(Type, 
     case (TypeString, TypeString) => true
     case (TypeChar, TypeChar) => true
     case (TypeNat, TypeNat) => true
+    case (TypeReal, TypeReal) => true
     case (SeqType(modelType), SeqType(candType)) => compatibleTypesHelper(modelType, candType)
     case (CreatedType(modelName, modelGenerics), CreatedType(candName, candGenerics)) 
       if modelName == candName && modelGenerics.length == candGenerics.length => 

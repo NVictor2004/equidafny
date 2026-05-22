@@ -11,6 +11,7 @@ def translateDomainType(t: Parsers.DomainType)(using context: Context): DomainTy
   case Parsers.TypeString                => TypeString
   case Parsers.TypeChar                  => TypeChar
   case Parsers.TypeNat                   => TypeNat
+  case Parsers.TypeReal                  => TypeReal
   case Parsers.SeqType(elementType)      => SeqType(translateType(elementType))
   case Parsers.SetType(elementType)      => SetType(translateType(elementType))
   case Parsers.NamedType(name, generics) =>
