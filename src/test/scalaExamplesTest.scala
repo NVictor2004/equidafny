@@ -10,50 +10,86 @@ import formatter.program.formatProgram
 import equivalence.program.programEquivalence
 
 import os.proc
+import os.Path
 import org.scalatest.ParallelTestExecution
 
 import ujson.*
 
-private val jsonPath =
-  os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
-private val outputPath = os.pwd / "src" / "test" / "output"
-private val dafnyPath =
-  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp"
-private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
+// Helper data structure to set test configurations
+private case class Config(
+  dafny: Path,
+  output: Path,
+  NotVerified: Set[String]
+)
 
-private val NotVerifiedDirs = Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction")
+// Helper function to create a single test
+private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Config): Unit = {
+  val config = ujson.read(os.read(jsonPath))
+  val dafnySourcePath = testConfig.dafny / config("file").str
+
+  val output = program.parse(os.read(dafnySourcePath))
+
+  val parsedOutput = output match {
+    case Failure(msg)  => fail(msg)
+    case Success(data) => data
+  }
+
+  val translatedOutput = translateProgram(parsedOutput, config)
+  val optimisedOutput = optimiseProgram(translatedOutput)
+  val equivalenceOutput = programEquivalence(optimisedOutput)
+
+  val outputFilePath = testConfig.output / config("file").str
+  formatProgram(translatedOutput, equivalenceOutput, outputFilePath.toString)
+
+  val directoryName = (jsonPath / os.up).last
+  val action =
+    if (testConfig.NotVerified.contains(directoryName)) "resolve" else "verify"
+
+  val result =
+    proc("dafny", action, "--allow-warnings", outputFilePath.toString)
+      .call()
+  result.exitCode match {
+    case 0    =>
+    case code => fail(s"Dafny verification failed with exitcode $code")
+  }
+}
+
+// Tests from Stainless
+
+private val StainlessConfig = Config(
+  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp",
+  os.pwd / "src" / "test" / "stainlessOutput",
+  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction")
+)
+
+private val stainlessJsonPath =
+  os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
+private val stainlessJsonFiles = os.walk(stainlessJsonPath).filter(os.isFile(_))
 
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
-  scalaExamples.foreach(jsonExample =>
-    jsonExample.last should "be parsed and formatted correctly" in {
-      val config = ujson.read(os.read(jsonExample))
-      val scalaFile = dafnyPath / config("file").str
+  stainlessJsonFiles.foreach(jsonPath =>
+    jsonPath.last should "be parsed and formatted correctly" in {
+      createTest(jsonPath, msg => fail(msg), StainlessConfig)
+    }
+  )
+}
 
-      val output = program.parse(os.read(scalaFile))
+// Tests from EqBench
 
-      val parsedOutput = output match {
-        case Failure(msg)  => fail(msg)
-        case Success(data) => data
-      }
+private val EqBenchConfig = Config(
+  os.pwd / "examples" / "CIterationExamples" / "noHelp",
+  os.pwd / "src" / "test" / "eqBenchOutput",
+  Set("auxiliaryLemmas", "terminationAuxiliaryLemmas", "terminationHelperEquivalenceAuxiliaryLemmas")
+)
 
-      val translatedOutput = translateProgram(parsedOutput, config)
-      val optimisedOutput = optimiseProgram(translatedOutput)
-      val equivalenceOutput = programEquivalence(optimisedOutput)
+private val EqBenchJsonPath =
+  os.pwd / "src" / "test" / "CIterationExamples"
+private val EqBenchJsonFiles = os.walk(EqBenchJsonPath).filter(os.isFile(_))
 
-      val outputFilePath = outputPath / scalaFile.last
-      formatProgram(translatedOutput, equivalenceOutput, outputFilePath.toString)
-
-      val directoryName = (jsonExample / os.up).last
-      val action =
-        if (NotVerifiedDirs.contains(directoryName)) "resolve" else "verify"
-
-      val result =
-        proc("dafny", action, "--allow-warnings", outputFilePath.toString)
-          .call()
-      result.exitCode match {
-        case 0    =>
-        case code => fail(s"Dafny verification failed with exitcode $code")
-      }
+class EqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
+  EqBenchJsonFiles.foreach(jsonPath =>
+    jsonPath.last should "be parsed and formatted correctly" in {
+      createTest(jsonPath, msg => fail(msg), EqBenchConfig)
     }
   )
 }
