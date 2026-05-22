@@ -58,8 +58,8 @@ lazy val basic: Parsley[BasicExpr] =
 val literal: Parsley[LiteralExpr] =
   BoolLiteral(bool)
     | ("null" as Null)
+    | RealLiteral(atomic(real <~ notFollowedBy(".")))
     | IntLiteral(integer)
-    | RealLiteral(real)
     | CharLiteral(char)
     | StringLiteral(string)
 

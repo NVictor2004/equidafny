@@ -15,7 +15,7 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
     case CharLiteral(value)   => writer.format("'%s'", value.toString())
     case IntLiteral(value)    => writer.print(value.toString)
     case StringLiteral(value) => writer.format("\"%s\"", value)
-    case RealLiteral(value)   => writer.format("%f", value)
+    case RealLiteral(value)   => writer.format("%f", value.bigDecimal)
     case DatatypeConstant(name) => writer.format(name)
     case Null                 => writer.format("null")
   }
