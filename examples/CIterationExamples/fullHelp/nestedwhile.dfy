@@ -9,8 +9,7 @@ function f_outerM(x: int, g: int, i: int): int
 {
   if i < x then
     var next_i := i + 1;
-    var next_g := g - 2;
-    var next_g := next_g + 1;
+    var next_g := g - 1;
     
     var inner_res := f_innerM(x, next_g, next_i);
     

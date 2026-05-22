@@ -24,8 +24,7 @@ f_innerM(next_x, (g + 1), i) else (x, g)}
 function f_outerM(x: int, g: int, i: int): int
 decreases ((x - i))
 {if (i < x) then var next_i := (i + 1);
-var next_g := (g - 2);
-var next_g := (next_g + 1);
+var next_g := (g - 1);
 var inner_res := f_innerM(x, next_g, next_i);
 f_outerM(inner_res.0, inner_res.1, next_i) else g}
 
@@ -38,7 +37,7 @@ decreases ((x - i))
 ensures (f_outerM(x, g, i) == f_outer1(x, g, i))
 {{match (i < x) {
 case false =>
-case true =>var next_i := (i + 1);var next_g := (g - 2);var next_g := (next_g + 1);var inner_res := f_innerM(x, next_g, next_i);f_outerM_f_outer1_Equivalence(inner_res.0, inner_res.1, next_i);
+case true =>var next_i := (i + 1);var next_g := (g - 1);var inner_res := f_innerM(x, next_g, next_i);f_outerM_f_outer1_Equivalence(inner_res.0, inner_res.1, next_i);
 }
 }}
 
