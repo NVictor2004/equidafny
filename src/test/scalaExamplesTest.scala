@@ -93,3 +93,23 @@ class EqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
     }
   )
 }
+
+// Tests from Copy Decreases
+
+private val CopyDecreasesConfig = Config(
+  os.pwd / "examples" / "copyDecreasesBenchmarks" / "noHelp",
+  os.pwd / "src" / "test" / "copyDecreasesOutput",
+  Set("auxiliaryLemmas")
+)
+
+private val CopyDecreasesJsonPath =
+  os.pwd / "src" / "test" / "copyDecreasesBenchmarks"
+private val CopyDecreasesJsonFiles = os.walk(CopyDecreasesJsonPath).filter(os.isFile(_))
+
+class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
+  CopyDecreasesJsonFiles.foreach(jsonPath =>
+    jsonPath.last should "be parsed and formatted correctly" in {
+      createTest(jsonPath, msg => fail(msg), CopyDecreasesConfig)
+    }
+  )
+}
