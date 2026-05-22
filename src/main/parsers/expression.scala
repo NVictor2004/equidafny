@@ -16,7 +16,10 @@ import parsers.index.index
 
 lazy val basic: Parsley[BasicExpr] =
   precedence(
-    basicHigher,
+    basicHigher <**> (
+      "as" ~> typeParser.map(t => ((expr: BasicExpr) => TypeCast(expr, t)))
+      </> identity[BasicExpr]
+    ),
     literal
   )(
     Ops(Prefix)(

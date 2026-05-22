@@ -55,6 +55,7 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
   case Parsers.TupleExtraction(ident, index) => TupleExtraction(ident, index)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
+  case Parsers.TypeCast(expr, t) => TypeCast(translateBasicExpr(expr), translateType(t))
   case Parsers.Iff(l, r)             =>
     Binary(Iff, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.LeftImplies(l, r) =>

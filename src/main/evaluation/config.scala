@@ -31,6 +31,7 @@ final val SetConstructionCost = 1.0
 final val SeqConstructionCost = 1.0
 final val SeqIndexCost = 1.0
 final val TupleExtractionCost = 1.0
+final val TypeCastCost = 1.0
 
 // Cost of providing a type for a variable
 final val TypeCost = 1.0

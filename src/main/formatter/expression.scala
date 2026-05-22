@@ -83,6 +83,11 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       writer.format("%s.%s", ident, index.toString)
 
     }
+    case TypeCast(expr, t) => {
+      formatBasicExpr(expr)
+      writer.print(" as ")
+      formatType(t)
+    }
     case Cardinality(e) => formatBrackets("|", formatBasicExpr(e), "|")
     case Tuple(es) => formatBrackets("(", formatList(es, formatBasicExpr), ")")
     case Cond(cond, thenBranch, elseBranch) => {

@@ -44,6 +44,7 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
 // and continue optimisation on the individual parts
 private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = applyOptimisations(expr) match {
     case expr: (LiteralExpr | Ident | SeqIndex | TupleExtraction) => expr
+    case TypeCast(expr, t) => TypeCast(optimiseBasicExpr(expr), t)
     case Binary(operator, left, right) => Binary(operator, optimiseBasicExpr(left), optimiseBasicExpr(right))
     case Unary(operator, expr) => Unary(operator, optimiseBasicExpr(expr))
     case Quantified(quantifier, variable, varType, body) =>
