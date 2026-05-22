@@ -29,17 +29,20 @@ function f_loop1(n: int, result: int): int
   if n <= 0 then
     result
   else
-    var n1, r1 := n / 10, result + 1;
+    var n1 := n / 10;
+    var r1 := result + 1;
     
     if n1 <= 0 then 
       f_loop1(n1, r1)
     else
-      var n2, r2 := n1 / 10, r1 + 1;
+      var n2 := n1 / 10;
+      var r2 := r1 + 1;
       
       if n2 <= 0 then 
         f_loop1(n2, r2)
       else
-        var n3, r3 := n2 / 10, r2 + 1;
+        var n3 := n2 / 10;
+        var r3 := r2 + 1;
         
         if n3 <= 0 then 
           f_loop1(n3, r3)
