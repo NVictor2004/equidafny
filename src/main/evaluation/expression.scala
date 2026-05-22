@@ -8,6 +8,7 @@ import evaluation.config.*
 
 def evaluateBasicExpr(expr: BasicExpr): Double = expr match {
   case lit: LiteralExpr       => evaluateLiteralExpr(lit)
+  case TupleExtraction(_, _) => TupleExtractionCost
   case Binary(_, left, right) =>
     BinaryOperatorCost + evaluateBasicExpr(left) + evaluateBasicExpr(right)
   case Unary(_, expr)            => UnaryOperatorCost + evaluateBasicExpr(expr)

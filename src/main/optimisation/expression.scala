@@ -43,7 +43,7 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
 // Then, break expression into its constituent parts
 // and continue optimisation on the individual parts
 private def optimiseBasicExpr(expr: BasicExpr): BasicExpr = applyOptimisations(expr) match {
-    case expr: (LiteralExpr | Ident | SeqIndex) => expr
+    case expr: (LiteralExpr | Ident | SeqIndex | TupleExtraction) => expr
     case Binary(operator, left, right) => Binary(operator, optimiseBasicExpr(left), optimiseBasicExpr(right))
     case Unary(operator, expr) => Unary(operator, optimiseBasicExpr(expr))
     case Quantified(quantifier, variable, varType, body) =>

@@ -52,6 +52,7 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
   case Parsers.Ident(name, suffixes) => 
     if context.datatypeData.contains(name) then DatatypeConstant(name)
     else Ident(name, suffixes)
+  case Parsers.TupleExtraction(ident, index) => TupleExtraction(ident, index)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
   case Parsers.Iff(l, r)             =>

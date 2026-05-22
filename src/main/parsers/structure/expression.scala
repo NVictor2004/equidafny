@@ -76,6 +76,8 @@ object Exists extends PureParserBridge3[String, Option[Type], BasicExpr, Exists]
 // Basic Higher-level Expressions
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr
 object Ident extends PureParserBridge2[String, List[String], Ident]
+case class TupleExtraction(ident: String, index: BigInt) extends BasicExpr
+object TupleExtraction extends PureParserBridge2[String, BigInt, TupleExtraction]
 case class Cardinality(expr: BasicExpr) extends BasicExpr
 object Cardinality extends PureParserBridge1[BasicExpr, Cardinality]
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr

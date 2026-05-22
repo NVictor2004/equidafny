@@ -44,6 +44,7 @@ case class Quantified(
 
 // Basic Higher-level Expressions
 case class Ident(name: String, suffixes: List[String]) extends BasicExpr
+case class TupleExtraction(ident: String, index: BigInt) extends BasicExpr
 case class Cardinality(expr: BasicExpr) extends BasicExpr
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
 case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)

@@ -79,6 +79,10 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
       writer.format(name)
       suffixes.foreach(s => writer.format(".%s", s))
     }
+    case TupleExtraction(ident, index) => {
+      writer.format("%s.%s", ident, index.toString)
+
+    }
     case Cardinality(e) => formatBrackets("|", formatBasicExpr(e), "|")
     case Tuple(es) => formatBrackets("(", formatList(es, formatBasicExpr), ")")
     case Cond(cond, thenBranch, elseBranch) => {

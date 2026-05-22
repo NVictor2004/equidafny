@@ -85,6 +85,7 @@ private lazy val basicHigher =
     | Cardinality("|" ~> basic <~ "|")
     | ident <**> (
       "=>" ~> expr.map(exprBlock => ((ident: String) => Lambda(List((ident, None)), exprBlock)))
+      | atomic("." ~> integer).map(index => ((ident: String) => TupleExtraction(ident, index)))
       | some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
           FunctionCall(_: String, args)
         )
