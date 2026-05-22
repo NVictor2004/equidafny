@@ -6,7 +6,7 @@ import optimisation.expression.optimiseExprBlock
 
 def optimiseProgram(program: Program): Program = {
     val Program(
-        _, modelFunction, candidateFunctions, helperFunctions, _, _, _, _, _
+        _, _, modelFunction, candidateFunctions, helperFunctions, _, _, _, _, _
     ) = program
     
     program.copy(

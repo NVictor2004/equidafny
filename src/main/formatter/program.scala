@@ -19,6 +19,7 @@ def formatProgram(
 
   val Program(
     datatypes,
+    constants,
     modelFunction,
     candidateFunctions,
     helperFunctions,
@@ -29,9 +30,10 @@ def formatProgram(
     auxiliaryLemmas
   ) = originalProgram
 
-  val Program(_, _, _, _, _, _, mainLemmas, helperLemmas, _) = equivalenceProgram
+  val Program(_, _, _, _, _, _, _, mainLemmas, helperLemmas, _) = equivalenceProgram
 
   datatypes.foreach(formatDatatype)
+  constants.foreach(formatTopLevelConstant)
   formatFunction(modelFunction)
   candidateFunctions.foreach(formatFunction)
   helperFunctions.values.foreach(formatFunction)
@@ -42,6 +44,19 @@ def formatProgram(
   auxiliaryLemmas.foreach(formatLemma)
 
   writer.close()
+}
+
+def formatTopLevelConstant(const: TopLevelConstant)(using writer: Formatter): Unit = {
+  val TopLevelConstant(name, t, data) = const
+  writer.format("const %s: ", name)
+  formatType(t)
+  writer.print(" := [")
+  data.init.foreach(num => {
+    writer.print(num.toString())
+    writer.print(", ")
+  })
+  writer.print(data.last.toString())
+  writer.print("]\n\n")
 }
 
 def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {

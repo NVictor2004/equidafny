@@ -8,7 +8,11 @@ case class Datatype(
     generic: List[(String, Option[GOption])],
     types: List[DeclaredType]
 )
-
+case class TopLevelConstant(
+    name: String,
+    t: Type,
+    data: List[BigInt]
+)
 case class Function(
     ghost: Boolean,
     name: String,
@@ -28,6 +32,7 @@ case class Lemma(
 
 case class Program(
     datatypes: List[Datatype],
+    constants: List[TopLevelConstant],
     modelFunction: Function,
     candidateFunctions: List[Function],
     helperFunctions: Map[String, Function],

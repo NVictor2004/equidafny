@@ -12,8 +12,9 @@ import parsers.types.typeParser
 import parsers.specification.spec
 import parsers.expression.expr
 import parsers.statement.block
-import parsers.lexer.fully
+import parsers.lexer.{fully, integer}
 
+private val listIntegers = "[" ~> sepBy(integer, ",") <~ "]"
 private val gOption =
   ("==" as Equals)
     | ("!new" as NotNew)
@@ -44,5 +45,7 @@ private val lemma =
   Lemma("lemma" ~> ident, generics, parameters, spec, option(block))
 private val datatype =
   Datatype("datatype" ~> ident, generics, "=" ~> sepBy(declaredType, "|"))
+private val topLevelConstant = 
+  TopLevelConstant("const" ~> ident, ":" ~> typeParser, ":=" ~> listIntegers)
 
-val program = fully(many(datatype | function | ghostFunction | lemma))
+val program = fully(many(datatype | function | ghostFunction | lemma | topLevelConstant))

@@ -10,7 +10,8 @@ function LibM(x: nat, b: int): int {
 }
 
 function LibLoopM(x: nat, i: int): int
-  requires 0 <= i <= |PRIMESM|
+  requires 0 <= i
+  requires i <= |PRIMESM|
   decreases |PRIMESM| - i
 {
   if i == |PRIMESM| then 
@@ -40,7 +41,8 @@ function Lib1(x: nat, b: int): int {
 }
 
 function LibLoop1(x: nat, i: int): int
-  requires 0 <= i <= |PRIMES1|
+  requires 0 <= i
+  requires i <= |PRIMES1|
   decreases |PRIMES1| - i
 {
   if i == |PRIMES1| then 
@@ -57,3 +59,7 @@ function Client1(x: nat): int {
   if (x <= 19) then Lib1(20, 1)
   else Lib1(x, 1)
 }
+
+lemma equivalence(x: nat)
+  ensures ClientM(x) == Client1(x)
+{}

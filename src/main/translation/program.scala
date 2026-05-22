@@ -26,8 +26,8 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     case Parsers.DeclaredType(name, None | Some(Nil)) <- types
   } yield name
 
-  val (data, functions, lemmas) =
-    prog.foldLeft((Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData, datatypeData.toSet))
+  val (data, constants, functions, lemmas) =
+    prog.foldLeft((Nil, Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData, datatypeData.toSet))
 
   // Find the model function
   val modelFunctionName = config("model").str
@@ -79,6 +79,7 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
   // Create and output a Program
   Program(
     data,
+    constants,
     modelFunction,
     candidateFunctions,
     helperFunctionsMap,
@@ -114,13 +115,14 @@ def translateGeneric(
 def translateTopLevel(
     acc: (
         data: List[Datatype],
+        constants: List[TopLevelConstant],
         functions: List[Function],
         lemmas: List[Lemma]
     ),
     toplevel: Parsers.TopLevel,
     functionData: Map[String, List[String]],
     datatypeData: scala.collection.immutable.Set[String],
-): (List[Datatype], List[Function], List[Lemma]) = {
+): (List[Datatype], List[TopLevelConstant], List[Function], List[Lemma]) = {
   toplevel match {
     case Parsers.Datatype(name, generic, types) => {
       val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
@@ -131,9 +133,14 @@ def translateTopLevel(
         translateGeneric(generic),
         types.map(translateDeclaredType)
       )
-      (item :: acc.data, acc.functions, acc.lemmas)
+      (item :: acc.data, acc.constants, acc.functions, acc.lemmas)
     }
-
+    case Parsers.TopLevelConstant(name, t, data) => {
+      val genericTypeData = scala.collection.immutable.Set.empty[String]
+      given context: Context = Context(functionData, datatypeData, genericTypeData)
+      val item = TopLevelConstant(name, translateType(t), data)
+      (acc.data, item :: acc.constants, acc.functions, acc.lemmas)
+    }
     case Parsers.Function(name, generic, params, returnType, specs, body) => {
       val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
       given context: Context = Context(functionData, datatypeData, genericTypeData)
@@ -149,7 +156,7 @@ def translateTopLevel(
         specs.map(translateSpec),
         translateExpr(body)
       )
-      (acc.data, item :: acc.functions, acc.lemmas)
+      (acc.data, acc.constants, item :: acc.functions, acc.lemmas)
     }
     case Parsers.GhostFunction(
           name,
@@ -173,7 +180,7 @@ def translateTopLevel(
         specs.map(translateSpec),
         translateExpr(body)
       )
-      (acc.data, item :: acc.functions, acc.lemmas)
+      (acc.data, acc.constants, item :: acc.functions, acc.lemmas)
     }
     case Parsers.Lemma(name, generic, params, specs, body) => {
       val genericTypeData = generic.fold(Nil)(_.map(_._1)).toSet
@@ -190,7 +197,7 @@ def translateTopLevel(
           translateBlockStmt(stmts)
         }
       )
-      (acc.data, acc.functions, item :: acc.lemmas)
+      (acc.data, acc.constants, acc.functions, item :: acc.lemmas)
     }
   }
 }
