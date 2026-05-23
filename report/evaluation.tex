@@ -50,7 +50,7 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
   \label{tbl:evaluation-results}
 \end{table}
 % 
-Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. Stainless is unable to prove some of these 91 tests. However, EquiDafny can prove three of the tests that Stainless fails to verify. Two of these three tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+Thus, EquiDafny improves the base Dafny verifier. Stainless is unable to prove some of these 91 tests. However, EquiDafny can prove three of the tests that Stainless fails to verify. Two of these three tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
