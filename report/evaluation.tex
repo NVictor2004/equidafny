@@ -43,12 +43,14 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
     \hline
     Self-Written & 9 & 1 & 6 & Unknown \\
     \hline
+    Total & 91 & 25 & 56 & Unknown \\
+    \hline
   \end{tabular}
   \caption{Evaluation results for Dafny, EquiDafny and Stainless}
   \label{tbl:evaluation-results}
 \end{table}
 % 
-Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. Stainless is unable to prove three of these 91 tests. However, EquiDafny can prove all three of these tests. Two of these tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. Stainless is unable to prove some of these 91 tests. However, EquiDafny can prove three of the tests that Stainless fails to verify. Two of these three tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
@@ -277,11 +279,11 @@ After running EquiDafny on every test file, I measured the average time the tool
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|p{0.09\linewidth}|c|c|c|c|c|c|}
+  \begin{tabular}{|p{0.09\linewidth}|c|c|c|p{0.1\linewidth}|c|p{0.10\linewidth}|c|}
     \hline
-    Phase & Parsing & Translation & Optimisation & Lemma generation & Formatting & Dafny verification \\
+    Phase & Parsing & Translation & Optimisation & Lemma generation & Formatting & Dafny \newline verification & Total \\
     \hline
-    Average Time (ms) & 13.099 & 1.545 & 0.214 & 1.169 & 1.459 & 1517.340 \\
+    Average Time (ms) & 13.099 & 1.545 & 0.214 & 1.169 & 1.459 & 1517.340 & 1534.826 \\
     \hline
   \end{tabular}
   \caption{Average time spent in each phase}
