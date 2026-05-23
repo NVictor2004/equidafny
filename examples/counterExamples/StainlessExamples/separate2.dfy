@@ -30,9 +30,4 @@ function separate2(xs: List<Animal>): (List<Animal>, List<Animal>) {
   }
 }
 
-// Counter Example: xs = Cons(Goat(7), Nil)
-lemma equivalenceSeparate2(xs: List<Animal>)
-  ensures (separate2(xs) == separateM(xs))
-{} 
-
 

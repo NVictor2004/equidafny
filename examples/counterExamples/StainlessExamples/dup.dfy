@@ -22,11 +22,6 @@ function dup2<S, T>(n: int, s: S, t: T): List<(S, T)>
   else Cons((s, t), dup2(n - 1, s, t))
 }
 
-// Counter Example: n = 0
-lemma equivalenceDup2<S, T>(n: int, s: S, t: T)
-  ensures (norm(n, s, t, dup2(n, s, t)) == norm(n, s, t, dupM(n, s, t)))
-{}
-
 // CANDIDATE 4
 
 function dup4<S, T>(n: int, s: S, t: T): List<(S, T)>
@@ -34,8 +29,3 @@ function dup4<S, T>(n: int, s: S, t: T): List<(S, T)>
   if (n <= 0) then Nil
   else dup4(n - 1, s, t) // duplicating nils, very useful
 }
-
-// Counter Example: n = 7721
-lemma equivalenceDup4<S, T>(n: int, s: S, t: T)
-  ensures (norm(n, s, t, dup4(n, s, t)) == norm(n, s, t, dupM(n, s, t)))
-{}

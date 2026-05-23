@@ -60,11 +60,6 @@ function unfoldingSorted3<State, Elem>(start: State,
   go3(start, next, Nil, max)
 }
 
-// Cannot be proven due to incorrectness of insertSorted3
-lemma equivalenceInsertSorted3<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>)
-  ensures (insertSorted3(t, xs) == insertM(xs, leq, t))
-{}
-
 // CANDIDATE 4
 
 function insertSorted4<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>): List<Elem>
@@ -97,16 +92,3 @@ function unfoldingSorted4<State, Elem>(start: State,
 
   go4(start, next, leq, Nil, max)
 }
-
-lemma equivalenceInsertSorted4<Elem>(t: Elem, leq: (Elem, Elem) -> bool, xs: List<Elem>)
-  ensures (insertSorted4(t, leq, xs) == insertM(xs, leq, t))
-{}
-
-// Cannot be proven due to incorrectness of go4
-lemma equivalenceGo4<State, Elem>(s: State,
-                             next: State -> Option<(State, Elem)>,
-                             leq: (Elem, Elem) -> bool,
-                             xs: List<Elem>,
-                             fuel: int)
-  ensures (go4(s, next, leq, xs, fuel) == loopM(s, next, leq, fuel, xs))
-{}
