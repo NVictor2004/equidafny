@@ -1,11 +1,12 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
 \footnote{Show time for parsing before and after parsley optimisation}
-\footnote{Update test numbers and flamegraphs}
+\footnote{Update flamegraphs}
 
 \section{Benchmark Comparison}
 
 I created an evaluation testsuite containing 91 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. \Cref{tbl:testsuite-categorisation} categorises where these tests were taken from and what language they were converted from: 
+
 \begin{table}[ht]
   \centering
   \begin{tabular}{|c|c|c|c|}
@@ -19,27 +20,36 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
     Measure Transfer Artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
     \hline
     Self-Written & None & None & 9 \\
+    \hline
   \end{tabular}
   \caption{Categorisation of evaluation testsuite tests}
   \label{tbl:testsuite-categorisation}
 \end{table}
 
 \Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify:
-% Tests Verified (out of 51) & 20 & 44 & 50
+
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|c|c|}
+  \begin{tabular}{|c|c|c|c|c|}
     \hline
-    Original Source & Tools \\
+    \multirow{2}{*}{Original Source} & \multirow{2}{*}{Number of Tests} & \multicolumn{3}{|c|}{Tools} \\
+    \cline{3-5}
+    & & Dafny & EquiDafny & Stainless \\
     \hline
-    
+    Stainless equivalence tests & 53 & 21 & 43 & 52 \\
+    \hline
+    EqBench dataset & 22 & 3 & 5 & Unknown \\
+    \hline
+    Measure Transfer Artifact & 7 & 0 & 2 & Unknown \\
+    \hline
+    Self-Written & 9 & 1 & 6 & Unknown \\
     \hline
   \end{tabular}
-  \caption{EquiDafny evaluation results on Stainless equivalence tests}
+  \caption{Evaluation results for Dafny, EquiDafny and Stainless}
   \label{tbl:evaluation-results}
 \end{table}
-
-Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. Stainless is unable to prove 3 of these 51 tests. However, EquiDafny can prove all three of these tests. Two of these tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+% 
+Thus, EquiDafny improves the base Dafny verifier and is almost on par with the state-of-the-art checker Stainless. Stainless is unable to prove three of these 91 tests. However, EquiDafny can prove all three of these tests. Two of these tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)

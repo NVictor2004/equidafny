@@ -37,7 +37,6 @@
     breaklines=true,
     bgcolor=gray!5,
 }
-
 \newminted[dafny]{lexer.py:CustomLexer}{}
 \newmintinline[dafnyinline]{lexer.py:CustomLexer}{}
 
@@ -47,6 +46,9 @@
 \DeclareRobustCommand{\mintinline}[2]{{\ttfamily #2}}
 \renewenvironment{dafny}[1][]{\verbatim}{\endverbatim}
 \DeclareRobustCommand{\dafnyinline}[2][]{{\ttfamily #2}}
+
+% Table settings
+\usepackage{multirow}
 
 % Hyperlink settings
 \usepackage{hyperref}
