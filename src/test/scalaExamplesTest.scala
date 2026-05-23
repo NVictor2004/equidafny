@@ -19,7 +19,8 @@ import ujson.*
 private case class Config(
   dafny: Path,
   output: Path,
-  NotVerified: Set[String]
+  NotVerified: Set[String],
+  shouldSucceed: Boolean
 )
 
 // Helper function to create a single test
@@ -49,8 +50,9 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
     proc("dafny", action, "--allow-warnings", outputFilePath.toString)
       .call()
   result.exitCode match {
-    case 0    =>
-    case code => fail(s"Dafny verification failed with exitcode $code")
+    case 0 if !testConfig.shouldSucceed => fail(s"Dafny verification succeeded but should have failed")
+    case code if code != 0 && testConfig.shouldSucceed => fail(s"Dafny verification failed with exitcode $code, but should have succeeded")
+    case _ => 
   }
 }
 
@@ -59,7 +61,8 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
 private val StainlessConfig = Config(
   os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp",
   os.pwd / "src" / "test" / "stainlessOutput",
-  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction")
+  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction"),
+  true
 )
 
 private val stainlessJsonPath =
@@ -79,7 +82,8 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val EqBenchConfig = Config(
   os.pwd / "examples" / "CIterationExamples" / "noHelp",
   os.pwd / "src" / "test" / "eqBenchOutput",
-  Set("auxiliaryLemmas", "terminationAuxiliaryLemmas", "terminationHelperEquivalenceAuxiliaryLemmas")
+  Set("auxiliaryLemmas", "terminationAuxiliaryLemmas", "terminationHelperEquivalenceAuxiliaryLemmas"),
+  true
 )
 
 private val EqBenchJsonPath =
@@ -99,7 +103,8 @@ class EqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val CopyDecreasesConfig = Config(
   os.pwd / "examples" / "copyDecreasesBenchmarks" / "noHelp",
   os.pwd / "src" / "test" / "copyDecreasesOutput",
-  Set("auxiliaryLemmas")
+  Set("auxiliaryLemmas"),
+  true
 )
 
 private val CopyDecreasesJsonPath =
