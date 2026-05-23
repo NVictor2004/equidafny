@@ -5,18 +5,37 @@
 
 \section{Benchmark Comparison}
 
-I tested EquiDafny on a dataset of 51 test files. These files were either converted from the Stainless equivalence tests or written myself. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. The results are shown in \Cref{tbl:evaluation-results}:
-
+I created an evaluation testsuite containing 91 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. \Cref{tbl:testsuite-categorisation} categorises where these tests were taken from and what language they were converted from: 
 \begin{table}[ht]
   \centering
   \begin{tabular}{|c|c|c|c|}
     \hline
-    Tool & Dafny & EquiDafny & Stainless \\
+    Original Source & Reference & Original language & Number of tests \\
     \hline
-    Tests Verified (out of 51) & 20 & 44 & 50 \\
+    Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 53 \\
+    \hline
+    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 22 \\
+    \hline
+    Measure Transfer Artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
+    \hline
+    Self-Written & None & None & 9 \\
+  \end{tabular}
+  \caption{Categorisation of evaluation testsuite tests}
+  \label{tbl:testsuite-categorisation}
+\end{table}
+
+\Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify:
+% Tests Verified (out of 51) & 20 & 44 & 50
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Original Source & Tools \\
+    \hline
+    
     \hline
   \end{tabular}
-  \caption{EquiDafny evaluation results}
+  \caption{EquiDafny evaluation results on Stainless equivalence tests}
   \label{tbl:evaluation-results}
 \end{table}
 
