@@ -172,26 +172,30 @@ lemma lengthEquivalence<T>(l: List<T>)
 
 \section{Technical Audit Challenges}
 
-In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges. \Cref{tbl:challenge-addressing-mapping} provides links to the sections describing how each challenge that EquiDafny mitigates is addressed.  
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges. \Cref{tbl:challenge-addressing-mapping} describes which challenges have been addressed. For each challenge that EquiDafny addresses, the table provides a link to a section describing how EquiDafny addresses that challenge.
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c| } 
+  \begin{tabular}{ |c|c|c| } 
   \hline
-  Challenge Addressed & Section Identifier \\
+  Type of Challenge & Addressed? & Section Identifier \\
   \hline
-  \nameref{sec:equivalence-lemmas} & \Cref{sec:worked-example} \\
+  \nameref{sec:counterexamples} & No & None \\
+  \hline
+  \nameref{sec:equivalence-lemmas} & Yes & \Cref{sec:worked-example} \\
   \hline 
-  \nameref{sec:induction} & \Cref{sec:addressing-induction} \\
-  \hline
-  \nameref{sec:termination} & \Cref{sec:addressing-termination} \\
-  \hline
-  \nameref{sec:higher-order} & \Cref{sec:addressing-higher-order} \\
+  \nameref{sec:auxiliary-lemmas} & Partially & \Cref{sec:addressing-auxiliary-lemmas} \\
   \hline 
-  \nameref{sec:auxiliary-lemmas} & \Cref{sec:addressing-auxiliary-lemmas} \\
+  \nameref{sec:induction} & Yes & \Cref{sec:addressing-induction} \\
+  \hline
+  \nameref{sec:termination} & Yes & \Cref{sec:addressing-termination} \\
+  \hline
+  \nameref{sec:imperative-equivalence} & No & None \\
+  \hline
+  \nameref{sec:higher-order} & Yes & \Cref{sec:addressing-higher-order} \\
   \hline
   \end{tabular}
-  \caption{Links to the sections describing how each challenge that EquiDafny mitigates is addressed}
+  \caption{Description of how each challenge is addressed}
   \label{tbl:challenge-addressing-mapping}
 \end{table}
 

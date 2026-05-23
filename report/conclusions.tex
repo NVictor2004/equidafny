@@ -18,7 +18,7 @@ Out of the 91 tests in my dataset of equivalence tests, the base Dafny verifier 
 
 However, despite EquiDafny's achievements, the tool has many limitations. An important assumption that EquiDafny makes is that, when expressions are equivalent and have the same structure, their sub-expressions must also be equivalent. However, this is not true in general. EquiDafny also relies on a series of translation rules to convert expressions into the same structure so that they can be merged together. Some of my tests require complex translations that have not been implemented yet, restricting EquiDafny's effectiveness. 
 
-\section{Future Work}
+\section{Future Work}\label{sec:future-work}
 
 There is great scope for extending EquiDafny in the future. Some suggestions are listed below. 
 
@@ -36,7 +36,7 @@ Currently, EquiDafny is only able to generate equivalence lemmas, specifically f
 
 \paragraph{Improving counter example generation} As described in \Cref{sec:counterexamples}, Dafny counterexamples can be unnecessarily complex and are sometimes inaccurate. These counterexamples could be processed before being presented to the user to check that they are valid and to simplify them whenever possible.
 
-\paragraph{Product program generation} As described in \Cref{sec:imperative-equivalence}, imperative methods cannot be proven equivalent using lemmas. Instead, the methods can be proven equivalent by combining them to create a product program and proving postconditions on this program. These product programs can be generated automatically. However, for these programs to be verifiable, they often require complicated invariants that are difficult to generate. Thus, these should be provided by the user and copied into the generated product program.
+\paragraph{Proving equivalence of imperative methods} As described in \Cref{sec:imperative-equivalence}, imperative methods cannot be proven equivalent using lemmas. Instead, the methods can be proven equivalent by combining them to create a product program and proving postconditions on this program. These product programs can be generated automatically. However, for these programs to be verifiable, they often require complicated invariants that are difficult to generate. Thus, these should be provided by the user and copied into the generated product program.
 
 \subsection{Further extensions}
 
