@@ -139,3 +139,24 @@ class NotEquivalentEqBenchExamplesTest extends AnyFlatSpec with ParallelTestExec
     }
   )
 }
+
+// Not equivalent tests from Stainless
+
+private val NotEquivalentStainlessConfig = Config(
+  os.pwd / "examples" / "counterExamples" / "StainlessExamples",
+  os.pwd / "src" / "test" / "counterExamplesOutput" / "StainlessExamples",
+  Set(),
+  false
+)
+
+private val NotEquivalentStainlessPath =
+  os.pwd / "src" / "test" / "counterExamples" / "StainlessExamples"
+private val NotEquivalentStainlessJsonFiles = os.walk(NotEquivalentStainlessPath).filter(os.isFile(_))
+
+class NotEquivalentStainlessExamplesTest extends AnyFlatSpec with ParallelTestExecution {
+  NotEquivalentStainlessJsonFiles.foreach(jsonPath =>
+    jsonPath.last should "be parsed and formatted correctly" in {
+      createTest(jsonPath, msg => fail(msg), NotEquivalentStainlessConfig)
+    }
+  )
+}
