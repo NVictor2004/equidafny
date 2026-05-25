@@ -2,7 +2,7 @@
 
 \footnote{Update flamegraphs and times for each phase}
 
-\section{Benchmark Comparison}
+\section{Benchmark Comparison}\label{sec:benchmark-comparison}
 \footnote{evaluate tests against Stainless, mention result of comparison between ED and stainless, e.g. 'on par' with stainless}
 I created an evaluation testsuite containing 91 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. \Cref{tbl:testsuite-categorisation} categorises where these tests were taken from and what language they were converted from: 
 
@@ -80,6 +80,27 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
 }
 \end{dafny}
 %
+
+\subsection{Non-Equivalent Tests}
+
+In addition to the testsuite described in \Cref{sec:benchmark-comparison}, I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from:
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Original Source & Reference & Original language & Number of tests \\
+    \hline
+    Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 5 \\
+    \hline
+    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
+    \hline
+  \end{tabular}
+  \caption{Categorisation of non-equivalent tests}
+  \label{tbl:non-equivalent-categorisation}
+\end{table}
+
+Neither the base Dafny verifier nor EquiDafny are able to verify any of these tests.
 
 \section{Limitations}\label{sec:eval-limitations}
 
