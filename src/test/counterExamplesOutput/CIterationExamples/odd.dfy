@@ -1,0 +1,30 @@
+function oddM(x: int): int
+requires (x > 0)
+{if (libM(x) == 0) then 1 else 0}
+
+function odd1(x: int): int
+requires (x > 0)
+{if (lib1(x) == 0) then 1 else 0}
+
+function lib1(x: int): int
+requires (x > 0)
+{if ((x % 2) == 0) then (1 + lib1((x / 2))) else 0}
+
+function libM(x: int): int
+requires (x > 0)
+{(helperLibM(x) + 1)}
+
+function helperLibM(x: int): int
+requires (x > 0)
+{if ((x % 2) == 0) then (1 + helperLibM((x / 2))) else 0}
+
+lemma oddM_odd1_Equivalence(x: int)
+requires (x > 0)
+ensures (oddM(x) == odd1(x))
+{{libM_lib1_Equivalence(x);}}
+
+lemma libM_lib1_Equivalence(x: int)
+requires (x > 0)
+ensures (libM(x) == lib1(x))
+{{}}
+

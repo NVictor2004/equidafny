@@ -48,7 +48,7 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
 
   val result =
     proc("dafny", action, "--allow-warnings", outputFilePath.toString)
-      .call()
+      .call(check = false)
   result.exitCode match {
     case 0 if !testConfig.shouldSucceed => fail(s"Dafny verification succeeded but should have failed")
     case code if code != 0 && testConfig.shouldSucceed => fail(s"Dafny verification failed with exitcode $code, but should have succeeded")
@@ -115,6 +115,27 @@ class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
   CopyDecreasesJsonFiles.foreach(jsonPath =>
     jsonPath.last should "be parsed and formatted correctly" in {
       createTest(jsonPath, msg => fail(msg), CopyDecreasesConfig)
+    }
+  )
+}
+
+// Not equivalent tests from EqBench
+
+private val NotEquivalentEqBenchConfig = Config(
+  os.pwd / "examples" / "counterExamples" / "CIterationExamples",
+  os.pwd / "src" / "test" / "counterExamplesOutput" / "CIterationExamples",
+  Set(),
+  false
+)
+
+private val NotEquivalentEqBenchPath =
+  os.pwd / "src" / "test" / "counterExamples" / "CIterationExamples"
+private val NotEquivalentEqBenchJsonFiles = os.walk(NotEquivalentEqBenchPath).filter(os.isFile(_))
+
+class NotEquivalentEqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
+  NotEquivalentEqBenchJsonFiles.foreach(jsonPath =>
+    jsonPath.last should "be parsed and formatted correctly" in {
+      createTest(jsonPath, msg => fail(msg), NotEquivalentEqBenchConfig)
     }
   )
 }
