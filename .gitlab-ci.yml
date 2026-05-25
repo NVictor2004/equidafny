@@ -1,7 +1,5 @@
 
-image:
-  name: virtuslab/scala-cli:latest
-  entrypoint: [""]
+image: nv323/scalacli-dafny:latest
 
 stages:
   - build
