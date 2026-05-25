@@ -1,0 +1,8 @@
+{
+  "file": "unfoldingSorted.dfy",
+  "model": "unfoldingSortedM",
+  "candidates": [
+    "unfoldingSorted3",
+    "unfoldingSorted4"
+  ]
+}

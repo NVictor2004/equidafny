@@ -1,0 +1,9 @@
+{
+  "file": "dup.dfy",
+  "model": "dupM",
+  "norm": "norm",
+  "candidates": [
+    "dup2",
+    "dup4"
+  ]
+}

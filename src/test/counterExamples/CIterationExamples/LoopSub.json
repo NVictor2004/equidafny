@@ -1,0 +1,7 @@
+{
+  "file": "LoopSub.dfy",
+  "model": "FooM",
+  "candidates": [
+    "Foo1"
+  ]
+}

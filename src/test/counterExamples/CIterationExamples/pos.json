@@ -1,0 +1,7 @@
+{
+  "file": "pos.dfy",
+  "model": "ClientM",
+  "candidates": [
+    "Client1"
+  ]
+}
