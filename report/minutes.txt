@@ -1,0 +1,47 @@
+minutes from meeting on 26th May
+
+more type transformation examples, more complex, put examples in report, maybe some that fail?
+classification tables for the other datasets
+also classify where limitations occur
+
+problem: we dont know how well ED addresses each challenge
+describe how complex the examples are, lines of code, number of auxiliary lemmas needed
+can use evaluation metric code for this
+
+use formulas sent by Dragana to measure how different each pair of functions is
+get scala versions of eqbench tests from Dragana
+
+summary of limitations before describing them, like in audit section
+argue representative, from each benchmark, the measure transfer, each folder is a different benchmark, so 4 benchmarks covered
+clever and reve benchmarks, maybe do remaining tests, that may be easier to explain than not doing them
+
+make sub expression assumption more clear, its an important new challenge
+copying from candidate is not like the other implementation details
+
+describe what tests are in each dataset
+add the first year tests, add more tests
+
+implementation, how to install section
+
+need to compare with Stainless, this is the main thing to compare with
+
+introduction, achievements, what am I most proud of, move bullet points to end, move justification up to where Dafny is first mentioned
+less lower level details, focus on how dafny cant do this despite stainless existing, then say ED can do it
+
+change implementation and evaluation section to structure of report, move bullet points to this section
+merge literature review and audit in bulletpoints, LR is tiny
+focus on challenges and then say I addressed it, this is the main impressive bit
+
+conclusions, remove bullet list, often read at the start
+remove sections just start text
+more detail, little summary of what is in the report and what most proud, can refer to stuff in report
+compare with stainless runtimes vs ED runtimes
+
+in code, address TODOs
+add comments, add readmes in directories
+
+edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
+
+
+
+
