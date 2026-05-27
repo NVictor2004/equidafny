@@ -1,0 +1,8 @@
+{
+  "file": "sumTypeTransform.dfy",
+  "model": "sumM",
+  "transform": "transform",
+  "candidates": [
+    "sum1"
+  ]
+}

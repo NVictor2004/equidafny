@@ -61,7 +61,7 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
 private val StainlessConfig = Config(
   os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp",
   os.pwd / "src" / "test" / "stainlessOutput",
-  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction"),
+  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction", "typesInductionAuxiliaryLemma"),
   true
 )
 
