@@ -1,6 +1,5 @@
 minutes from meeting on 26th May
 
-more type transformation examples, more complex, put examples in report, maybe some that fail?
 classification tables for the other datasets
 also classify where limitations occur
 

@@ -465,3 +465,50 @@ lemma equivalence(l: seq<int>)
 }
 \end{dafny}
 % 
+Thus, EquiDafny can prove some functions equivalent even when they operate on different types, however, EquiDafny cannot achieve this in every case. For example, here are redefinitions of the functions \dafnyinline{sumM} and \dafnyinline{sum1}. Both functions calculate the sum of the values in a list recursively. However, the \dafnyinline{sum1} function is tail-recursive while the \dafnyinline{sumM} function is not. Both functions have only a single parameter. However, the \dafnyinline{sumM} function's parameter is a list, while the \dafnyinline{sum1} function's parameter is a 2-tuple containing a list and an integer (used as an accumulator):
+\begin{dafny}
+function sumM(l: List<int>): int {
+  match l {
+    case Nil => 0
+    case Cons(h, t) => h + sumM(t)
+  }
+}
+
+function sum1(data: (List<int>, int)): int
+  decreases data.0
+{
+  match data {
+    case (Nil, acc) => acc
+    case (Cons(h, t), acc) => sum1((t, h + acc))
+  }
+}
+\end{dafny}
+%
+The \dafnyinline{sumM} function's parameter can be transformed into the \dafnyinline{sum1} function's parameter through the following type transformation function:
+\begin{dafny}
+function transform(l: List<int>): (List<int>, int) {
+  (l, 0)
+}
+\end{dafny}
+%
+Thus, through this type transformation function, the functions \dafnyinline{sumM} and \dafnyinline{sum1} are equivalent. However, EquiDafny is unable to prove this, since the Dafny verifier requires the following auxiliary lemma:
+\begin{dafny}
+lemma equivalenceHelper(l: List<int>, acc: int)
+  ensures acc + sumM(l) == sum1((l, acc))
+{
+  match l {
+    case Nil => {}
+    case Cons(h, t) => equivalenceHelper(t, acc + h);
+  }
+}
+\end{dafny}
+%
+Using this, the Dafny verifier can prove equivalence:
+\begin{dafny}
+lemma equivalence(l: List<int>)
+  ensures sumM(l) == sum1(transform(l))
+{
+  equivalenceHelper(l, 0);
+}
+\end{dafny}
+%
