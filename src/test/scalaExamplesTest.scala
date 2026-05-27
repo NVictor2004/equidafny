@@ -61,7 +61,7 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
 private val StainlessConfig = Config(
   os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp",
   os.pwd / "src" / "test" / "stainlessOutput",
-  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction", "typesInductionAuxiliaryLemma"),
+  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction"),
   true
 )
 
@@ -115,6 +115,27 @@ class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
   CopyDecreasesJsonFiles.foreach(jsonPath =>
     jsonPath.last should "be parsed and formatted correctly" in {
       createTest(jsonPath, msg => fail(msg), CopyDecreasesConfig)
+    }
+  )
+}
+
+// Self-Written Tests
+
+private val SelfWrittenConfig = Config(
+  os.pwd / "examples" / "selfWritten" / "noHelp",
+  os.pwd / "src" / "test" / "selfWrittenOutput",
+  Set("terminationInduction", "typesInductionAuxiliaryLemma"),
+  true
+)
+
+private val SelfWrittenJsonPath =
+  os.pwd / "src" / "test" / "selfWritten"
+private val SelfWrittenJsonFiles = os.walk(SelfWrittenJsonPath).filter(os.isFile(_))
+
+class SelfWrittenExamplesTest extends AnyFlatSpec with ParallelTestExecution {
+  SelfWrittenJsonFiles.foreach(jsonPath =>
+    jsonPath.last should "be parsed and formatted correctly" in {
+      createTest(jsonPath, msg => fail(msg), SelfWrittenConfig)
     }
   )
 }
