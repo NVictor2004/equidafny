@@ -18,7 +18,7 @@ function sizeList(l: List<(BT, BT)>): nat {
 function checkPalin(bt: BT): bool {
     match bt {
         case Box => true
-        case Nd(t1, t2) => check((t2, t1))
+        case Nd(t1, t2) => check((t1, t2))
     }
 }
 
@@ -27,7 +27,7 @@ function check(bts: (BT, BT)): bool
 {
     match bts {
         case (Box, Box) => true
-        case (Nd(t1, t2), Nd(t3, t4)) => check((t1, t4)) && check((t3, t2))
+        case (Nd(t1, t2), Nd(t3, t4)) => check((t1, t4)) && check((t2, t3))
         case _ => false
     }
 }
@@ -49,16 +49,30 @@ function transform(bts: (BT, BT)): List<(BT, BT)> {
     Cons(bts, Nil)
 }
 
-lemma equivalenceHelper(bts: (BT, BT), t: List<(BT, BT)>)
-    ensures check2(Cons(bts, t)) == check(bts) && check2(t)
-    decreases sizeList(Cons(bts, t))
+lemma equivalenceHelper(l: List<(BT, BT)>)
+    ensures check2(l) == forall_check(l)
+    decreases sizeList(l)
 {
-    match (bts, t) {
-        case ((Box, Box), ts) =>
-        case ((Nd(t1, t2), Nd(t3, t4)), ts) => {
-            assert sizeList(Cons((t1, t4), Cons((t2, t3), ts))) < sizeList(Cons(bts, t));
-            equivalenceHelper((t1, t4), Cons((t2, t3), ts));
+    match l {
+        case Cons((Nd(t1, t2), Nd(t3, t4)), ts) => {
+            var nextList := Cons((t1, t4), Cons((t2, t3), ts));
+            assert sizeList(nextList) < sizeList(l);
+            equivalenceHelper(nextList);
         }
-        case _ =>
+        case _ => {}
+    }
+}
+
+lemma equivalence(bts: (BT, BT))
+    ensures check(bts) == check2(transform(bts))
+{
+    equivalenceHelper(transform(bts));
+}
+
+function forall_check(l: List<(BT, BT)>): bool
+{
+    match l {
+        case Nil => true
+        case Cons(b, ts) => check(b) && forall_check(ts)
     }
 }
