@@ -95,7 +95,6 @@ private lazy val basicHigher =
         | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
         | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
-    // TODO: These three cases all start with "(", the lambda case starting with an ident has already been covered
     | LambdaCall(atomic("(" ~> lambda) <~ ")", "(" ~> sepBy(basic, ",") <~ ")")
     | lambda
     | "(" ~> basic <**> (

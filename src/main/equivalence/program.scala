@@ -11,8 +11,13 @@ import scala.collection.mutable.Map as MutableMap
 import scala.annotation.tailrec
 
 def programEquivalence(program: Program): Program = {
-  given Program = program
+  val modelNumberOfArgs = program.modelFunction.params.size
 
+  program.candidateFunctions.find(_.params.size != modelNumberOfArgs).foreach(candFunc =>
+    throw IllegalArgumentException(s"Functions ${program.modelFunction.name} and ${candFunc.name} must have the same number of arguments")
+  )
+
+  given Program = program
   val data = program.candidateFunctions.map(candFunction => {
     val currentLemmas = MutableMap[String, Option[Lemma]]()
     val ((_, lemma), _) = mergeFunction(currentLemmas, program.modelFunction, candFunction)
@@ -27,7 +32,6 @@ def programEquivalence(program: Program): Program = {
 def generateLemmaName(modelName: String, candName: String): String = 
   s"${modelName}_${candName}_Equivalence"
 
-// TODO: Check if original pair of functions have the same number of arguments
 def mergeFunction(
     currentLemmas: MutableMap[String, Option[Lemma]],
     model: Function,
@@ -71,7 +75,6 @@ def mergeFunction(
   var candParamsLeft = candidate.params.removedAll(currentMappings.keys)
 
   // Generate remaining mappings
-  // TODO: Check for compatible types here
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
       val typeFunctionsList = program.typeFunctions.toList
 

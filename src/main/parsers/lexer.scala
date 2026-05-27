@@ -139,7 +139,6 @@ private val desc: LexicalDesc = LexicalDesc.plain.copy(
   textDesc = TextDesc.plain.copy(
     graphicCharacter = Unicode(c => !IllegalGraphicChars.contains(c)),
 
-    // TODO: Add support for Unicode characters
     escapeSequences = EscapeDesc.plain.copy(
       literals = LiteralEscapeChars,
       mapping = EscapeCharMapping

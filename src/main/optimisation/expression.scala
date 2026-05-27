@@ -36,9 +36,6 @@ private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
     case _ => expr
 }
 
-// TODO: If statements can sometimes provide preconditions for function calls
-// TODO: Lambdas are not optimised, since converting from if expressions to match expressions
-// does not work for lambda bodies
 // First, apply optimisations until no more can be applied
 // Then, break expression into its constituent parts
 // and continue optimisation on the individual parts

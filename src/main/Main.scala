@@ -5,53 +5,36 @@ import formatter.program.formatProgram
 import equivalence.program.programEquivalence
 
 import ujson.*
-private val jsonPath =
-  os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
-private val outputPath = os.pwd / "src" / "test" / "output"
-private val dafnyPath =
-  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp"
-private val scalaExamples = os.walk(jsonPath).filter(os.isFile(_))
 
-// TODO: Parse with Dafny parser first
 @main
-def main(): Unit = {
-  var totalParsing = 0.0
-  var totalTranslation = 0.0
-  var totalOptimisation = 0.0
-  var totalEquivalence = 0.0
-  var totalFormatting = 0.0
-  scalaExamples.foreach(jsonExample => {
-    val config = ujson.read(os.read(jsonExample))
-    val scalaFile = dafnyPath / config("file").str
-    val file = os.read(scalaFile)
+def main(jsonRelPath: String): Unit = {
+  // Get JSON configuration
+  val jsonPath = os.pwd / os.RelPath(jsonRelPath)
+  val config = ujson.read(os.read(jsonPath))
 
-    var before = System.nanoTime
-    val parsedOutput = program.parse(file).get
-    var elapsed = System.nanoTime - before
-    totalParsing += elapsed
+  // Get Dafny source
+  val dafnySourceFileName = config("file").str
+  val dafnySourceFilePath = os.pwd / dafnySourceFileName
+  val dafnySourceFile = os.read(dafnySourceFilePath)
 
-    before = System.nanoTime
-    val translatedOutput = translateProgram(parsedOutput, config)
-    elapsed = System.nanoTime - before
-    totalTranslation += elapsed
+  // Check that the provided Dafny source code compiles
+  val checkDafnySource = os.proc("dafny", "resolve", dafnySourceFilePath.toString).call(check = false)
+  if (checkDafnySource.exitCode != 0) {
+    throw IllegalArgumentException("Dafny source file does not compile")
+  }
 
-    before = System.nanoTime
-    val optimisedOutput = optimiseProgram(translatedOutput)
-    elapsed = System.nanoTime - before
-    totalOptimisation += elapsed
+  // Generate equivalence lemmas
+  val parsedOutput = program.parse(dafnySourceFile).get
+  val translatedOutput = translateProgram(parsedOutput, config)
+  val optimisedOutput = optimiseProgram(translatedOutput)
+  val equivalenceOutput = programEquivalence(optimisedOutput)
 
-    before = System.nanoTime
-    val equivalenceOutput = programEquivalence(optimisedOutput)
-    elapsed = System.nanoTime - before
-    totalEquivalence += elapsed
+  val outputFilePath = os.pwd / dafnySourceFileName
+  formatProgram(translatedOutput, equivalenceOutput, outputFilePath.toString)
 
-    val outputFilePath = (outputPath / scalaFile.last).toString
-
-    before = System.nanoTime
-    formatProgram(translatedOutput, equivalenceOutput, outputFilePath)
-    elapsed = System.nanoTime - before
-    totalFormatting += elapsed
-  })
-  val number = scalaExamples.length
-  print(totalParsing / number, totalTranslation / number, totalOptimisation / number, totalEquivalence / number, totalFormatting / number)
+  // Verify generated lemmas
+  val verifyOutput = os.proc("dafny", "verify", outputFilePath.toString).call(check = false)
+  if (verifyOutput.exitCode != 0) {
+    throw IllegalArgumentException("Functions cannot be proven equivalent")
+  }
 }
