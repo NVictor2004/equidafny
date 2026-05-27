@@ -9,27 +9,27 @@ import ujson.*
 @main
 def main(jsonRelPath: String): Unit = {
   // Get JSON configuration
-  val jsonPath = os.pwd / os.RelPath(jsonRelPath)
-  val config = ujson.read(os.read(jsonPath))
+  val pathPwdtoJson = os.pwd / os.RelPath(jsonRelPath)
+  val config = ujson.read(os.read(pathPwdtoJson))
 
-  // Get Dafny source
-  val dafnySourceFileName = config("file").str
-  val dafnySourceFilePath = os.pwd / dafnySourceFileName
-  val dafnySourceFile = os.read(dafnySourceFilePath)
+  // Get path to Dafny source
+  val pathJsonToDafnySource = os.RelPath(config("file").str)
+  val pathPwdtoDafnySource = pathPwdtoJson / os.up / pathJsonToDafnySource
 
   // Check that the provided Dafny source code compiles
-  val checkDafnySource = os.proc("dafny", "resolve", dafnySourceFilePath.toString).call(check = false)
+  val checkDafnySource = os.proc("dafny", "resolve", pathPwdtoDafnySource.toString).call(check = false)
   if (checkDafnySource.exitCode != 0) {
     throw IllegalArgumentException("Dafny source file does not compile")
   }
 
   // Generate equivalence lemmas
+  val dafnySourceFile = os.read(pathPwdtoDafnySource)
   val parsedOutput = program.parse(dafnySourceFile).get
   val translatedOutput = translateProgram(parsedOutput, config)
   val optimisedOutput = optimiseProgram(translatedOutput)
   val equivalenceOutput = programEquivalence(optimisedOutput)
 
-  val outputFilePath = os.pwd / dafnySourceFileName
+  val outputFilePath = pathPwdtoDafnySource / os.up / "output.dfy"
   formatProgram(translatedOutput, equivalenceOutput, outputFilePath.toString)
 
   // Verify generated lemmas
