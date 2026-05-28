@@ -6,9 +6,14 @@ import translation.structure.*
 import translation.structure.BinaryOperator.*
 import translation.structure.UnaryOperator.*
 
+// Apply optimisations to an expression block
+// Only the basic expression is optimised
 def optimiseExprBlock(block: ExprBlock): ExprBlock = 
     block.copy(basicExpr = optimiseBasicExpr(block.basicExpr))
 
+// Apply optimisations to a basic expression
+// Optimisations are applied in a tail-recursive loop
+// Since multiple optimisations can be applied in a row
 @tailrec
 private def applyOptimisations(expr: BasicExpr): BasicExpr = expr match {
     case Binary(BoolAnd, Unary(Not, l), r) => 
