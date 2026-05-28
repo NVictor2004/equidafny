@@ -24,8 +24,7 @@ implementation, how to install section
 
 need to compare with Stainless, this is the main thing to compare with
 
-conclusions, remove bullet list, often read at the start
-remove sections just start text
+conclusions, 
 more detail, little summary of what is in the report and what most proud, can refer to stuff in report
 compare with stainless runtimes vs ED runtimes
 

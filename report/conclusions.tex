@@ -1,18 +1,6 @@
 \chapter{Conclusions and Future Work}\label{chp:conclusions}
 
-\section{Achievements and Limitations}
-
-The aim of this project was to minimise the level of user assistance required to create program equivalence proofs. We achieved this by implementing EquiDafny, an equivalence checker on top of Dafny. In particular, here are the main contributions of the project:
-
-\footnote{Make sure this list is the same as the one in the introduction}
-\begin{itemize}
-    \item \nameref{sec:literature-review}: Described the current state-of-the-art tools for proving program equivalence
-    \item \nameref{sec:audit}: Explored Dafny's capabilities in proving program equivalence between Dafny functions
-    \item Dataset of Equivalence tests: Created a dataset of pairs of equivalent Dafny functions
-    \item \nameref{chp:design}: Development of the function merging algorithm to automatically generate equivalence lemmas and to address the challenges the Dafny verifier faces 
-    \item \nameref{chp:implementation}: Implemented EquiDafny: a command-line tool on top of the Dafny verifier
-    \item \nameref{chp:evaluation}: Evaluated EquiDafny against the Dafny verifier and the Stainless equivalence checker
-\end{itemize}
+The aim of this project was to minimise the level of user assistance required to create program equivalence proofs. We achieved this by implementing EquiDafny, an equivalence checker on top of Dafny.
 
 Out of the 91 tests in my dataset of equivalence tests, the base Dafny verifier can verify 25 tests while EquiDafny can verify 56 tests. Thus, EquiDafny presents a substantial improvement over the base Dafny verifier. The tool can verify these tests in only around 1.5 seconds on average. EquiDafny can also verify three tests that Stainless fails to verify. Therefore, EquiDafny has great potential to become a performant equivalence checker for Dafny functions. 
 
