@@ -9,6 +9,7 @@ import formatter.pattern.formatPattern
 import formatter.index.formatIndex
 import formatter.types.formatType
 
+// Formats a literal expression
 def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
   literal match {
     case BoolLiteral(value)   => writer.print(value.toString())
@@ -20,6 +21,8 @@ def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
     case Null                 => writer.format("null")
   }
 
+// Helper function to convert a binary operator from its data structure representation
+// to a string
 private def formatBinaryOperator(operator: BinaryOperator): String =
   operator match {
     case Iff          => "<==>"
@@ -40,18 +43,23 @@ private def formatBinaryOperator(operator: BinaryOperator): String =
     case Mod          => "%"
   }
 
+// Helper function to convert a unary operator from its data structure representation
+// to a string
 private def formatUnaryOperator(operator: UnaryOperator): String =
   operator match {
     case Neg => "-"
     case Not => "!"
   }
 
+// Helper function to convert a quantifier from its data structure representation
+// to a string
 private def formatQuantifier(quantifier: Quantifier): String =
   quantifier match {
     case Forall => "forall"
     case Exists => "exists"
   }
 
+// Formats a basic expression
 def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
   expr match {
     case expr: LiteralExpr             => formatLiteral(expr)
@@ -140,6 +148,7 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
   }
 
+// Formats an extended expression
 def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit =
   expr match {
     case Assert(expr) => {
@@ -172,6 +181,7 @@ def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit =
     }
   }
 
+// Formats an expression block
 def formatExpr(expr: ExprBlock)(using writer: Formatter): Unit = {
   val ExprBlock(extendedExprs, basicExpr) = expr
   extendedExprs.foreach(expr => {
@@ -181,6 +191,7 @@ def formatExpr(expr: ExprBlock)(using writer: Formatter): Unit = {
   formatBasicExpr(basicExpr)
 }
 
+// Helper function to format an identifier and its type if provided
 private def formatLValue(
     lvalue: (String, Option[Type])
 )(using writer: Formatter): Unit = {

@@ -10,6 +10,9 @@ import formatter.formatter.{Formatter, formatList}
 import java.io.{File, PrintWriter}
 import formatter.formatter.formatBrackets
 
+// Main function to format a Program
+// Outputs the original provided functions before optimisation changes
+// And the generated equivalence lemmas
 def formatProgram(
     originalProgram: Program,
     equivalenceProgram: Program,
@@ -46,6 +49,7 @@ def formatProgram(
   writer.close()
 }
 
+// Function to format a top-level constant declaration
 def formatTopLevelConstant(const: TopLevelConstant)(using writer: Formatter): Unit = {
   val TopLevelConstant(name, t, data) = const
   writer.format("const %s: ", name)
@@ -59,6 +63,7 @@ def formatTopLevelConstant(const: TopLevelConstant)(using writer: Formatter): Un
   writer.print("]\n\n")
 }
 
+// Function to format a top-level datatype declaration
 def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   val Datatype(name, generic, types) = datatype
 
@@ -71,6 +76,7 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   writer.print("\n\n")
 }
 
+// Helper function to format a pair of an identifier and its type
 private def formatNameTypePair(
   pair: (String, Type)
 )(using writer: Formatter): Unit = {
