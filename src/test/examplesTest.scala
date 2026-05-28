@@ -66,8 +66,7 @@ private val StainlessConfig = Config(
     "auxiliaryLemma",
     "terminationAuxiliaryLemma",
     "terminationHelperEquivalenceInduction",
-    "terminationInduction",
-    "higherOrderHelperEquivalenceInduction"
+    "terminationInduction"
   ),
   true
 )
