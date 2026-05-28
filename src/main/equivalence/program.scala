@@ -10,28 +10,41 @@ import scala.collection.immutable.ListMap
 import scala.collection.mutable.Map as MutableMap
 import scala.annotation.tailrec
 
+// Main function to generate equivalence lemmas
+// Takes in original Program and outputs a new Program
+// containing the equivalence lemmas
 def programEquivalence(program: Program): Program = {
   val modelNumberOfArgs = program.modelFunction.params.size
 
+  // The model and candidate functions must have the same number of parameters
+  // If any candidate function has a different number of parameters
+  // EquiDafny throws an error
   program.candidateFunctions.find(_.params.size != modelNumberOfArgs).foreach(candFunc =>
     throw IllegalArgumentException(s"Functions ${program.modelFunction.name} and ${candFunc.name} must have the same number of arguments")
   )
 
+  // Generate equivalence lemmas
   given Program = program
   val data = program.candidateFunctions.map(candFunction => {
     val currentLemmas = MutableMap[String, Option[Lemma]]()
     val ((_, lemma), _) = mergeFunction(currentLemmas, program.modelFunction, candFunction)
     (lemma, currentLemmas.values)
   })
+
+  // Output final Program
   program.copy(
     mainLemmas = program.mainLemmas ++ data.map(_._1.get),
     helperLemmas = program.helperLemmas ++ data.flatMap(_._2.map(_.get))
   )
 }
 
+// Helper function to generate equivalence lemma names
+// This ensures names are generated consistently
 def generateLemmaName(modelName: String, candName: String): String = 
   s"${modelName}_${candName}_Equivalence"
 
+// Function to merge two functions together
+// Returns the equivalence lemma and the mapping between the functions' parameters
 def mergeFunction(
     currentLemmas: MutableMap[String, Option[Lemma]],
     model: Function,
@@ -159,6 +172,9 @@ def mergeFunction(
   ((model.name, Some(equiv)), mapping)
 }
 
+// Helper function to deal with recursively defined lambda functions
+// Outputs an extended list of lemma parameters
+// and the arguments for the function calls in the lemma's postcondition
 @tailrec
 private def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[String, BasicExpr]], candMap: List[ListMap[String, BasicExpr]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
   case ArrowType(from, to) => {

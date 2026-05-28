@@ -2,6 +2,8 @@ package equivalence.pattern
 
 import translation.structure.* 
 
+// Function to merge patterns
+// Returns a boolean describing whether these patterns are compatible
 def mergePattern(modelPattern: Pattern, candPattern: Pattern): Boolean = (modelPattern, candPattern) match {
     case (_, UnNamed) => true
     case (UnNamed, _) => true
