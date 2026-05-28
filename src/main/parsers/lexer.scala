@@ -10,8 +10,10 @@ import parsley.syntax.character.stringLift
 
 import scala.language.implicitConversions
 
+// The lexer for the Dafny parser
 lazy val lexer = Lexer(desc)
 
+// Helper parsers for common tokens
 lazy val integer = lexer.lexeme.integer.number
 lazy val real = lexer.lexeme.real.number
 lazy val ident = lexer.lexeme.names.identifier
@@ -20,8 +22,10 @@ lazy val string = lexer.lexeme.string.fullUtf16
 lazy val bool = lexer.lexeme(("true" as true) | ("false" as false))
 lazy val implicits = lexer.lexeme.symbol.implicits
 
+// Helper function to ensure that the parser parsers all available input
 def fully[A](p: Parsley[A]): Parsley[A] = lexer.fully(p)
 
+// Constants to help configure the lexer
 private val IdentSpecialChars = Set('\'', '_', '?')
 private val LiteralEscapeChars = Set('\'', '\"', '\\')
 private val EscapeCharMapping: Map[String, Int] = Map(
@@ -32,17 +36,21 @@ private val EscapeCharMapping: Map[String, Int] = Map(
 )
 private val IllegalGraphicChars: Set[Int] = Set('\'', '\"', '\\', '\r', '\n')
 
+// Lexer configuration details
 private val desc: LexicalDesc = LexicalDesc.plain.copy(
+  // Defining what makes a valid identifier
   nameDesc = NameDesc.plain.copy(
     identifierStart = Basic(c => c.isLetter || IdentSpecialChars.contains(c)),
     identifierLetter =
       Basic(c => c.isLetterOrDigit || IdentSpecialChars.contains(c))
   ),
+  // Defining the strings that control where comments start and end
   spaceDesc = SpaceDesc.plain.copy(
     lineCommentStart = "//",
     multiLineCommentStart = "/*",
     multiLineCommentEnd = "*/"
   ),
+  // Defining the keywords of the Dafny language
   symbolDesc = SymbolDesc(
     caseSensitive = true,
     hardKeywords = Set(
@@ -136,6 +144,7 @@ private val desc: LexicalDesc = LexicalDesc.plain.copy(
     ),
     hardOperators = Set()
   ),
+  // Defining valid character and string literals
   textDesc = TextDesc.plain.copy(
     graphicCharacter = Unicode(c => !IllegalGraphicChars.contains(c)),
 
@@ -144,6 +153,7 @@ private val desc: LexicalDesc = LexicalDesc.plain.copy(
       mapping = EscapeCharMapping
     )
   ),
+  // Defining valid numbers
   numericDesc = NumericDesc.plain.copy(
     literalBreakChar =
       BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),

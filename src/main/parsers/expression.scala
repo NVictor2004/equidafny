@@ -14,6 +14,7 @@ import parsers.pattern.pattern
 import parsers.types.typeParser
 import parsers.index.index
 
+// Parser for a basic expression
 lazy val basic: Parsley[BasicExpr] =
   precedence(
     basicHigher <**> (
@@ -58,6 +59,7 @@ lazy val basic: Parsley[BasicExpr] =
     )
   )
 
+// Parser for a literal expression
 val literal: Parsley[LiteralExpr] =
   BoolLiteral(bool)
     | ("null" as Null)
@@ -66,8 +68,10 @@ val literal: Parsley[LiteralExpr] =
     | CharLiteral(char)
     | StringLiteral(string)
 
+// Helper parser to parse a lambda function
 private lazy val lambda = Lambda(atomic(lvalue <~ "=>"), expr)
 
+// Helper parser to parse complex basic expressions
 private lazy val basicHigher =
   Cond("if" ~> basic, "then" ~> expr, "else" ~> expr)
     | Match(
@@ -102,8 +106,10 @@ private lazy val basicHigher =
       </> identity[BasicExpr]
     ) <~ ")"
 
+// Parser for an expression block
 lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 
+// Helper parser for an extended expression
 private val extendedHigher: Parsley[ExtendedExpr] =
   atomic(
       MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
@@ -120,6 +126,9 @@ private val extendedHigher: Parsley[ExtendedExpr] =
       )
     | Assert("assert" ~> basic)
 
+// Helper parser for an lvalue
+// This is either a single identifier
+// Or a tuple of identifiers with optional type declarations
 private val lvalue =
   "(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")"
     | ident.map(i => List((i, None)))
