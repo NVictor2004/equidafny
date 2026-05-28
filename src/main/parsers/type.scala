@@ -25,5 +25,5 @@ private lazy val domainType: Parsley[DomainType] =
 // Parser to parse any type
 lazy val typeParser: Parsley[Type] = domainType <**> (
   "->" ~> typeParser.map(rightType => ((leftType: DomainType) => ArrowType(leftType, rightType)))
-  </> identity[Type]
+    </> identity[Type]
 )

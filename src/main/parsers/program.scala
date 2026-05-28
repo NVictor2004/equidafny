@@ -48,7 +48,7 @@ private val lemma =
   Lemma("lemma" ~> ident, generics, parameters, spec, option(block))
 private val datatype =
   Datatype("datatype" ~> ident, generics, "=" ~> sepBy(declaredType, "|"))
-private val topLevelConstant = 
+private val topLevelConstant =
   TopLevelConstant("const" ~> ident, ":" ~> typeParser, ":=" ~> listIntegers)
 
 // Main parser to parse an entire program

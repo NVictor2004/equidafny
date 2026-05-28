@@ -61,19 +61,19 @@ class ParsersTest extends AnyFlatSpec {
           TypeInt,
           List(
             Requires(
-                GTE(
-                  Ident("i", Nil),
-                  IntLiteral(0)
-                )
+              GTE(
+                Ident("i", Nil),
+                IntLiteral(0)
+              )
             )
           ),
           ExprBlock(
             Nil,
             Cond(
-                Eq(
-                  Ident("i", Nil),
-                  IntLiteral(0)
-                ),
+              Eq(
+                Ident("i", Nil),
+                IntLiteral(0)
+              ),
               ExprBlock(Nil, Ident("j", Nil)),
               ExprBlock(
                 Nil,
@@ -111,10 +111,10 @@ class ParsersTest extends AnyFlatSpec {
           TypeInt,
           List(
             Requires(
-                GTE(
-                  Ident("i", Nil),
-                  IntLiteral(0)
-                )
+              GTE(
+                Ident("i", Nil),
+                IntLiteral(0)
+              )
             )
           ),
           ExprBlock(

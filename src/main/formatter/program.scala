@@ -81,7 +81,7 @@ def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
 
 // Helper function to format a pair of an identifier and its type
 private def formatNameTypePair(
-  pair: (String, Type)
+    pair: (String, Type)
 )(using writer: Formatter): Unit = {
   writer.format("%s: ", pair._1)
   formatType(pair._2)

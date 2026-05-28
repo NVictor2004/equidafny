@@ -32,8 +32,7 @@ enum Quantifier {
 }
 
 // Operator Expressions
-case class Binary(operator: BinaryOperator, left: BasicExpr, right: BasicExpr)
-    extends BasicExpr
+case class Binary(operator: BinaryOperator, left: BasicExpr, right: BasicExpr) extends BasicExpr
 case class Unary(operator: UnaryOperator, expr: BasicExpr) extends BasicExpr
 case class Quantified(
     quantifier: Quantifier,
@@ -48,25 +47,18 @@ case class TupleExtraction(ident: String, index: BigInt) extends BasicExpr
 case class TypeCast(expr: BasicExpr, t: Type) extends BasicExpr
 case class Cardinality(expr: BasicExpr) extends BasicExpr
 case class Tuple(elements: List[BasicExpr]) extends BasicExpr
-case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock)
-    extends BasicExpr
-case class TrueFunctionCall(name: String, args: List[ListMap[String, BasicExpr]])
-    extends BasicExpr
-case class OtherFunctionCall(name: String, args: List[List[BasicExpr]])
-    extends BasicExpr
+case class Cond(cond: BasicExpr, thenBranch: ExprBlock, elseBranch: ExprBlock) extends BasicExpr
+case class TrueFunctionCall(name: String, args: List[ListMap[String, BasicExpr]]) extends BasicExpr
+case class OtherFunctionCall(name: String, args: List[List[BasicExpr]]) extends BasicExpr
 case class LambdaCall(lambda: Lambda, args: List[BasicExpr]) extends BasicExpr
-case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)])
-    extends BasicExpr
+case class Match(expr: BasicExpr, cases: List[(Pattern, ExprBlock)]) extends BasicExpr
 case class Set(elements: List[BasicExpr]) extends BasicExpr
 case class Seq(elements: List[BasicExpr]) extends BasicExpr
-case class Lambda(lvalues: List[(String, Option[Type])], body: ExprBlock)
-    extends BasicExpr
+case class Lambda(lvalues: List[(String, Option[Type])], body: ExprBlock) extends BasicExpr
 case class SeqIndex(name: String, indexes: List[Index]) extends BasicExpr
 
 // Extended Higher-level Expressions
 case class MethodCall(name: String, args: List[BasicExpr]) extends ExtendedExpr
-case class Let(left: List[(String, Option[Type])], right: BasicExpr)
-    extends ExtendedExpr
-case class LetOrFail(left: String, leftType: Option[Type], right: BasicExpr)
-    extends ExtendedExpr
+case class Let(left: List[(String, Option[Type])], right: BasicExpr) extends ExtendedExpr
+case class LetOrFail(left: String, leftType: Option[Type], right: BasicExpr) extends ExtendedExpr
 case class Assert(expr: BasicExpr) extends ExtendedExpr

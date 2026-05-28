@@ -6,16 +6,16 @@ import translation.expression.translateLiteralExpr
 import translation.translation.Context
 
 def translatePattern(pattern: Parsers.Pattern)(using context: Context): Pattern = pattern match {
-  case Parsers.UnNamed             => UnNamed
-  case Parsers.Constant(value)     => Constant(translateLiteralExpr(value))
-  
+  case Parsers.UnNamed         => UnNamed
+  case Parsers.Constant(value) => Constant(translateLiteralExpr(value))
+
   // Datatype constants in patterns will be parsed as identifiers
   // Here, datatype constants are translated into their own structure
-  case Parsers.Basic(name, None) => 
-    if context.datatypeData.contains(name) 
-      then Constant(DatatypeConstant(name))
-      else PatternIdent(name)
-  case Parsers.Basic(name, Some(Nil)) => Constant(DatatypeConstant(name))
+  case Parsers.Basic(name, None) =>
+    if context.datatypeData.contains(name)
+    then Constant(DatatypeConstant(name))
+    else PatternIdent(name)
+  case Parsers.Basic(name, Some(Nil))    => Constant(DatatypeConstant(name))
   case Parsers.Basic(name, Some(values)) =>
     Basic(name, values.map(translatePattern))
   case Parsers.PatternTuple(elements) =>

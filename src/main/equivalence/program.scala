@@ -19,9 +19,13 @@ def programEquivalence(program: Program): Program = {
   // The model and candidate functions must have the same number of parameters
   // If any candidate function has a different number of parameters
   // EquiDafny throws an error
-  program.candFunctions.find(_.params.size != modelNumberOfArgs).foreach(candFunc =>
-    throw IllegalArgumentException(s"Functions ${program.modelFunction.name} and ${candFunc.name} must have the same number of arguments")
-  )
+  program.candFunctions
+    .find(_.params.size != modelNumberOfArgs)
+    .foreach(candFunc =>
+      throw IllegalArgumentException(
+        s"Functions ${program.modelFunction.name} and ${candFunc.name} must have the same number of arguments"
+      )
+    )
 
   // Generate equivalence lemmas
   given Program = program
@@ -40,7 +44,7 @@ def programEquivalence(program: Program): Program = {
 
 // Helper function to generate equivalence lemma names
 // This ensures names are generated consistently
-def generateLemmaName(modelName: String, candName: String): String = 
+def generateLemmaName(modelName: String, candName: String): String =
   s"${modelName}_${candName}_Equivalence"
 
 // Function to merge two functions together
@@ -59,22 +63,23 @@ def mergeFunction(
 
   // Generate type mappings
   val typeMappings = model.params.foldLeft(List[(String, String)]()) {
-      case (accMappings, (modelName, modelType)) => {
-        val typeFunctionsList = program.typeFunctions.toList
-        val compatibleParams = candLeft.filter((_, candType) => compatibleTypes(modelType, candType, typeFunctionsList)).toList
-        if (compatibleParams.isEmpty) {
-          throw IllegalArgumentException(
-            s"Parameter types of functions ${model.name} and ${cand.name} can't be matched"
-          )
-        }
-        if (compatibleParams.length == 1) {
-          val candName = compatibleParams(0)._1
-          candLeft = candLeft.removed(candName)
-          (candName, modelName) :: accMappings
-        } else {
-          accMappings
-        }
+    case (accMappings, (modelName, modelType)) => {
+      val typeFunctionsList = program.typeFunctions.toList
+      val compatibleParams =
+        candLeft.filter((_, candType) => compatibleTypes(modelType, candType, typeFunctionsList)).toList
+      if (compatibleParams.isEmpty) {
+        throw IllegalArgumentException(
+          s"Parameter types of functions ${model.name} and ${cand.name} can't be matched"
+        )
       }
+      if (compatibleParams.length == 1) {
+        val candName = compatibleParams(0)._1
+        candLeft = candLeft.removed(candName)
+        (candName, modelName) :: accMappings
+      } else {
+        accMappings
+      }
+    }
   }
 
   val currentMappings = MutableMap(typeMappings*)
@@ -89,19 +94,23 @@ def mergeFunction(
 
   // Generate remaining mappings
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
-      val typeFunctionsList = program.typeFunctions.toList
+    val typeFunctionsList = program.typeFunctions.toList
 
-      // Find a candidate parameter with a compatible type
-      // Prioritise parameters with the same name as the model parameter
-      // As these are more likely to be the correct parameter to map to 
-      val candName = candParamsLeft.foldLeft(Option.empty[String]) {
-        case (_, (candName, candType)) if modelName == candName && compatibleTypes(modelType, candType, typeFunctionsList) => Some(candName)
+    // Find a candidate parameter with a compatible type
+    // Prioritise parameters with the same name as the model parameter
+    // As these are more likely to be the correct parameter to map to
+    val candName = candParamsLeft
+      .foldLeft(Option.empty[String]) {
+        case (_, (candName, candType))
+            if modelName == candName && compatibleTypes(modelType, candType, typeFunctionsList) =>
+          Some(candName)
         case (None, (candName, candType)) if compatibleTypes(modelType, candType, typeFunctionsList) => Some(candName)
-        case (currentName, _) => currentName
-      }.get
-      
-      candParamsLeft = candParamsLeft.removed(candName)
-      (candName, modelName)
+        case (currentName, _)                                                                        => currentName
+      }
+      .get
+
+    candParamsLeft = candParamsLeft.removed(candName)
+    (candName, modelName)
   })
 
   // Append remaining mappings and convert to immutable Map
@@ -111,26 +120,31 @@ def mergeFunction(
   // Create mappings from parameter names to arguments
   // These will be used to create the function calls in the lemma's postcondition
   val modelMap = ListMap(model.params.map((name, _) => (name, Ident(name, Nil))).toList*)
-  val candMap = ListMap(cand.params.map((candName, candType) => {
-    // The argument can either be an identifier or a function call if a type transformation is needed
-    val modelName = mapping(candName)
-    val modelType = model.params(modelName)
-    val ident = Ident(modelName, Nil)
-    // If a type transformation is needed, construct the corresponding function call
-    // Otherwise, return an identifier
-    val finalArg = program.typeFunctions.get(modelType) match {
-      case Some(typeFunc) if typeFunc.returnType == candType => {
-        val paramName = typeFunc.params.keys.head
-        TrueFunctionCall(typeFunc.name, List(ListMap(paramName -> ident)))
-      }
-      case _ => ident
-    }
-    (candName, finalArg)
-  }).toList*)
+  val candMap = ListMap(
+    cand.params
+      .map((candName, candType) => {
+        // The argument can either be an identifier or a function call if a type transformation is needed
+        val modelName = mapping(candName)
+        val modelType = model.params(modelName)
+        val ident = Ident(modelName, Nil)
+        // If a type transformation is needed, construct the corresponding function call
+        // Otherwise, return an identifier
+        val finalArg = program.typeFunctions.get(modelType) match {
+          case Some(typeFunc) if typeFunc.returnType == candType => {
+            val paramName = typeFunc.params.keys.head
+            TrueFunctionCall(typeFunc.name, List(ListMap(paramName -> ident)))
+          }
+          case _ => ident
+        }
+        (candName, finalArg)
+      })
+      .toList*
+  )
 
   // Create further lemma parameters and function call arguments when the model and candidate functions
   // output lambda functions
-  val (params, modelArgs, candArgs) = getArgData(model.params, List(modelMap), List(candMap), model.returnType, model.body.basicExpr)
+  val (params, modelArgs, candArgs) =
+    getArgData(model.params, List(modelMap), List(candMap), model.returnType, model.body.basicExpr)
 
   // Create the function calls to be used in the lemma's postcondition
   val modelFunctionCall = TrueFunctionCall(model.name, modelArgs)
@@ -142,8 +156,10 @@ def mergeFunction(
     case Some(normFunction) if model.name == program.modelFunction.name => {
       val functionName = normFunction.name
       val lastParamName = normFunction.params.last._1
-      (TrueFunctionCall(functionName, List(modelMap + (lastParamName -> modelFunctionCall))), 
-      TrueFunctionCall(functionName, List(modelMap + (lastParamName -> candFunctionCall))))
+      (
+        TrueFunctionCall(functionName, List(modelMap + (lastParamName -> modelFunctionCall))),
+        TrueFunctionCall(functionName, List(modelMap + (lastParamName -> candFunctionCall)))
+      )
     }
     case _ => (modelFunctionCall, candFunctionCall)
   }
@@ -176,14 +192,20 @@ def mergeFunction(
 // Outputs an extended list of lemma parameters
 // and the arguments for the function calls in the lemma's postcondition
 @tailrec
-private def getArgData(params: ListMap[String, Type], modelMap: List[ListMap[String, BasicExpr]], candMap: List[ListMap[String, BasicExpr]], t: Type, expr: BasicExpr): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
+private def getArgData(
+    params: ListMap[String, Type],
+    modelMap: List[ListMap[String, BasicExpr]],
+    candMap: List[ListMap[String, BasicExpr]],
+    t: Type,
+    expr: BasicExpr
+): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
   case ArrowType(from, to) => {
-      val types = getListOfTypes(from)
-      val Lambda(lvalues, body) = expr
-      val idents = lvalues.map(_._1)
-      val paramData = idents.zip(types)
-      val argData = ListMap(idents.map(ident => (ident, Ident(ident, Nil)))*)
-      getArgData(params ++ paramData, modelMap :+ argData, candMap :+ argData, to, body.basicExpr)
-    }
-    case _ => (params, modelMap, candMap)
+    val types = getListOfTypes(from)
+    val Lambda(lvalues, body) = expr
+    val idents = lvalues.map(_._1)
+    val paramData = idents.zip(types)
+    val argData = ListMap(idents.map(ident => (ident, Ident(ident, Nil)))*)
+    getArgData(params ++ paramData, modelMap :+ argData, candMap :+ argData, to, body.basicExpr)
+  }
+  case _ => (params, modelMap, candMap)
 }

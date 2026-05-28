@@ -33,10 +33,10 @@ private lazy val stmt: Parsley[Stmt] =
     | AssertStmt("assert" ~> basic <~ ";")
     | "var" ~> (
       (("(" ~> sepBy(ident, ",") <~ ")" <~ ":=") <~> (basic <~ ";")).map((lvalues, right) => LetStmt(lvalues, right))
-      | ident <**> (
-        (":=" ~> basic <~ ";").map(right => ((lvalue: String) => LetStmt(List(lvalue), right)))
-        | (":|" ~> basic <~ ";").map(right => ((lvalue: String) => LetOrFailStmt(lvalue, right)))
-      )
+        | ident <**> (
+          (":=" ~> basic <~ ";").map(right => ((lvalue: String) => LetStmt(List(lvalue), right)))
+            | (":|" ~> basic <~ ";").map(right => ((lvalue: String) => LetOrFailStmt(lvalue, right)))
+        )
     )
     | condStmt
     | block

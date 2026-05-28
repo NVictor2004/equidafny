@@ -17,10 +17,10 @@ import ujson.*
 
 // Helper data structure to set test configurations
 private case class Config(
-  dafny: Path,
-  output: Path,
-  NotVerified: Set[String],
-  shouldSucceed: Boolean
+    dafny: Path,
+    output: Path,
+    NotVerified: Set[String],
+    shouldSucceed: Boolean
 )
 
 // Helper function to create a single test
@@ -50,9 +50,10 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
     proc("dafny", action, "--allow-warnings", outputFilePath.toString)
       .call(check = false)
   result.exitCode match {
-    case 0 if !testConfig.shouldSucceed => fail(s"Dafny verification succeeded but should have failed")
-    case code if code != 0 && testConfig.shouldSucceed => fail(s"Dafny verification failed with exitcode $code, but should have succeeded")
-    case _ => 
+    case 0 if !testConfig.shouldSucceed                => fail(s"Dafny verification succeeded but should have failed")
+    case code if code != 0 && testConfig.shouldSucceed =>
+      fail(s"Dafny verification failed with exitcode $code, but should have succeeded")
+    case _ =>
   }
 }
 
@@ -61,7 +62,13 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
 private val StainlessConfig = Config(
   os.pwd / "examples" / "stainless" / "noHelp",
   os.pwd / "src" / "test" / "output" / "stainless",
-  Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction"),
+  Set(
+    "auxiliaryLemma",
+    "terminationAuxiliaryLemma",
+    "terminationHelperEquivalenceInduction",
+    "terminationInduction",
+    "higherOrderHelperEquivalenceInduction"
+  ),
   true
 )
 

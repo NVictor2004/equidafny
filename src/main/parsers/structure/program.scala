@@ -1,11 +1,6 @@
 package parsers.structure
 
-import parsley.templates.{
-  PureParserBridge2,
-  PureParserBridge3,
-  PureParserBridge5,
-  PureParserBridge6
-}
+import parsley.templates.{PureParserBridge2, PureParserBridge3, PureParserBridge5, PureParserBridge6}
 
 sealed trait TopLevel
 
@@ -65,8 +60,7 @@ object Lemma
 case class Parameter(name: String, paramType: Type)
 object Parameter extends PureParserBridge2[String, Type, Parameter]
 case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
-object DeclaredType
-    extends PureParserBridge2[String, Option[List[Parameter]], DeclaredType]
+object DeclaredType extends PureParserBridge2[String, Option[List[Parameter]], DeclaredType]
 
 sealed trait GOption
 case object Equals extends GOption

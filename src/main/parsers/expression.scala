@@ -19,7 +19,7 @@ lazy val basic: Parsley[BasicExpr] =
   precedence(
     basicHigher <**> (
       "as" ~> typeParser.map(t => ((expr: BasicExpr) => TypeCast(expr, t)))
-      </> identity[BasicExpr]
+        </> identity[BasicExpr]
     ),
     literal
   )(
@@ -81,21 +81,23 @@ private lazy val basicHigher =
     )
     | "forall" ~> ident <**> (
       "::" ~> basic.map(expr => ((varName: String) => Forall(varName, None, expr)))
-      | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) => ((varName: String) => Forall(varName, Some(t), expr)))
+        | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) =>
+          ((varName: String) => Forall(varName, Some(t), expr))
+        )
     )
     | "exists" ~> ident <**> (
       "::" ~> basic.map(expr => ((varName: String) => Exists(varName, None, expr)))
-      | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) => ((varName: String) => Exists(varName, Some(t), expr)))
+        | ((":" ~> typeParser <~ "::") <~> basic).map((t, expr) =>
+          ((varName: String) => Exists(varName, Some(t), expr))
+        )
     )
     | Set("{" ~> sepBy(basic, ",") <~ "}")
     | Seq("[" ~> sepBy(basic, ",") <~ "]")
     | Cardinality("|" ~> basic <~ "|")
     | ident <**> (
       "=>" ~> expr.map(exprBlock => ((ident: String) => Lambda(List((ident, None)), exprBlock)))
-      | atomic("." ~> integer).map(index => ((ident: String) => TupleExtraction(ident, index)))
-      | some("(" ~> sepBy(basic, ",") <~ ")").map(args =>
-          FunctionCall(_: String, args)
-        )
+        | atomic("." ~> integer).map(index => ((ident: String) => TupleExtraction(ident, index)))
+        | some("(" ~> sepBy(basic, ",") <~ ")").map(args => FunctionCall(_: String, args))
         | some("[" ~> index <~ "]").map(idxs => SeqIndex(_: String, idxs))
         | many("." ~> ident).map(suffixes => Ident(_: String, suffixes))
     )
@@ -103,7 +105,7 @@ private lazy val basicHigher =
     | lambda
     | "(" ~> basic <**> (
       "," ~> sepBy(basic, ",").map(basics => ((basic: BasicExpr) => Tuple(basic :: basics)))
-      </> identity[BasicExpr]
+        </> identity[BasicExpr]
     ) <~ ")"
 
 // Parser for an expression block
@@ -112,18 +114,22 @@ lazy val expr = ExprBlock(endBy(extendedHigher, ";"), basic)
 // Helper parser for an extended expression
 private val extendedHigher: Parsley[ExtendedExpr] =
   atomic(
-      MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
-        ";"
-      )
+    MethodCall(ident, "(" ~> sepBy(basic, ",") <~ ")") <~ lookAhead(
+      ";"
     )
+  )
     | "var" ~> (
-      (("(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")" <~ ":=") <~> basic).map((lvalues, right) => Let(lvalues, right))
-      | ident <**> (
-        ":=" ~> basic.map(expr => ((varName: String) => Let(List((varName, None)), expr)))
-        | ":|" ~> basic.map(expr => ((varName: String) => LetOrFail(varName, None, expr)))
-        | ((":" ~> typeParser <~ ":|") <~> basic).map((t, expr) => ((varName: String) => LetOrFail(varName, Some(t), expr)))
-        )
+      (("(" ~> sepBy(ident <~> option(":" ~> typeParser), ",") <~ ")" <~ ":=") <~> basic).map((lvalues, right) =>
+        Let(lvalues, right)
       )
+        | ident <**> (
+          ":=" ~> basic.map(expr => ((varName: String) => Let(List((varName, None)), expr)))
+            | ":|" ~> basic.map(expr => ((varName: String) => LetOrFail(varName, None, expr)))
+            | ((":" ~> typeParser <~ ":|") <~> basic).map((t, expr) =>
+              ((varName: String) => LetOrFail(varName, Some(t), expr))
+            )
+        )
+    )
     | Assert("assert" ~> basic)
 
 // Helper parser for an lvalue

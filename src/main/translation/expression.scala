@@ -49,19 +49,19 @@ def translateLiteralExpr(literal: Parsers.LiteralExpr): LiteralExpr =
   }
 
 def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicExpr = expr match {
-  case literal: Parsers.LiteralExpr  => translateLiteralExpr(literal)
-  
+  case literal: Parsers.LiteralExpr => translateLiteralExpr(literal)
+
   // Datatype constants would have been parsed as identifiers
   // Here, datatype constants are translated into their own data structure
-  case Parsers.Ident(name, suffixes) => 
+  case Parsers.Ident(name, suffixes) =>
     if context.datatypeData.contains(name) then DatatypeConstant(name)
     else Ident(name, suffixes)
 
   case Parsers.TupleExtraction(ident, index) => TupleExtraction(ident, index)
-  case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
-  case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
-  case Parsers.TypeCast(expr, t) => TypeCast(translateBasicExpr(expr), translateType(t))
-  case Parsers.Iff(l, r)             =>
+  case Parsers.Cardinality(e)                => Cardinality(translateBasicExpr(e))
+  case Parsers.Tuple(elements)               => Tuple(elements.map(translateBasicExpr))
+  case Parsers.TypeCast(expr, t)             => TypeCast(translateBasicExpr(expr), translateType(t))
+  case Parsers.Iff(l, r)                     =>
     Binary(Iff, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.LeftImplies(l, r) =>
     Binary(LeftImplies, translateBasicExpr(l), translateBasicExpr(r))
@@ -93,8 +93,8 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
     Binary(Div, translateBasicExpr(l), translateBasicExpr(r))
   case Parsers.Mod(l, r) =>
     Binary(Mod, translateBasicExpr(l), translateBasicExpr(r))
-  case Parsers.Neg(e) => Unary(Neg, translateBasicExpr(e))
-  case Parsers.Not(e) => Unary(Not, translateBasicExpr(e))
+  case Parsers.Neg(e)                          => Unary(Neg, translateBasicExpr(e))
+  case Parsers.Not(e)                          => Unary(Not, translateBasicExpr(e))
   case Parsers.Forall(variable, varType, body) =>
     Quantified(
       Forall,
@@ -120,7 +120,7 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
   // Here, calls to defined Dafny functions are separated from the other calls
   case Parsers.FunctionCall(name, args) => {
     context.functionData.get(name) match {
-      case None => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
+      case None             => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
       case Some(parameters) => {
         // The arguments to function calls are stored as mappings from parameter names to
         // the corresponding arguments

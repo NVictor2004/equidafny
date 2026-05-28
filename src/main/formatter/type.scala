@@ -24,13 +24,13 @@ def formatDomainType(t: DomainType)(using writer: Formatter): Unit = t match {
       formatBrackets("<", formatList(generics, formatType), ">")
     }
   }
-  case GenericType(name) => writer.print(name)
+  case GenericType(name)   => writer.print(name)
   case TupleType(elements) =>
     formatBrackets("(", formatList(elements, formatType), ")")
 }
 
 def formatType(t: Type)(using writer: Formatter): Unit = t match {
-  case t: DomainType => formatDomainType(t)
+  case t: DomainType       => formatDomainType(t)
   case ArrowType(from, to) => {
     formatDomainType(from)
     writer.print(" -> ")

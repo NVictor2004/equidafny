@@ -23,8 +23,8 @@ def formatBrackets(open: String, middle: => Unit, close: String)(using
 // Helper function to format a list of elements
 // Requires a function that formats a single element
 @tailrec
-def formatList[A](list: List[A], formatElement: A => Unit, sep: String = ", ")(
-    using writer: Formatter
+def formatList[A](list: List[A], formatElement: A => Unit, sep: String = ", ")(using
+    writer: Formatter
 ): Unit = {
   list match {
     case Nil          => {}

@@ -3,7 +3,7 @@ package translation.translation
 // Definition of the Context class
 // Used to provide neccessary context during translation
 case class Context(
-    // A map from the names of defined functions to a list of the 
+    // A map from the names of defined functions to a list of the
     // names of their parameters
     functionData: Map[String, List[String]],
 

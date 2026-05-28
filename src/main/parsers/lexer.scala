@@ -41,8 +41,7 @@ private val desc: LexicalDesc = LexicalDesc.plain.copy(
   // Defining what makes a valid identifier
   nameDesc = NameDesc.plain.copy(
     identifierStart = Basic(c => c.isLetter || IdentSpecialChars.contains(c)),
-    identifierLetter =
-      Basic(c => c.isLetterOrDigit || IdentSpecialChars.contains(c))
+    identifierLetter = Basic(c => c.isLetterOrDigit || IdentSpecialChars.contains(c))
   ),
   // Defining the strings that control where comments start and end
   spaceDesc = SpaceDesc.plain.copy(
@@ -155,13 +154,11 @@ private val desc: LexicalDesc = LexicalDesc.plain.copy(
   ),
   // Defining valid numbers
   numericDesc = NumericDesc.plain.copy(
-    literalBreakChar =
-      BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),
+    literalBreakChar = BreakCharDesc.Supported('_', allowedAfterNonDecimalPrefix = false),
     leadingDotAllowed = true,
     trailingDotAllowed = true,
     integerNumbersCanBeOctal = false,
     hexadecimalLeads = Set('x'),
-    decimalExponentDesc =
-      ExponentDesc.Supported(false, Set('e'), 10, Optional, true)
+    decimalExponentDesc = ExponentDesc.Supported(false, Set('e'), 10, Optional, true)
   )
 )
