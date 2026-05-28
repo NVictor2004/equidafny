@@ -36,8 +36,8 @@ remove sections just start text
 more detail, little summary of what is in the report and what most proud, can refer to stuff in report
 compare with stainless runtimes vs ED runtimes
 
-in code, address TODOs
-add comments, add readmes in directories, add detail on evaluation directory to readmes
+address TODOs
+add readmes in directories, add detail on evaluation directory to readmes
 
 edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
 
