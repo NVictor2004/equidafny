@@ -14,8 +14,18 @@ import parsers.expression.expr
 import parsers.statement.block
 import parsers.lexer.{fully, integer}
 
-// Main parser to parse an entire program
-val program = fully(many(datatype | function | ghostFunction | lemma | topLevelConstant))
+// Helper parsers
+private val listIntegers = "[" ~> sepBy(integer, ",") <~ "]"
+private val gOption =
+  ("==" as Equals)
+    | ("!new" as NotNew)
+
+private val generics = option(
+  "<" ~> sepBy(ident <~> option("(" ~> gOption <~ ")"), ",") <~ ">"
+)
+private val parameter = Parameter(ident, ":" ~> typeParser)
+private val parameters = "(" ~> sepBy(parameter, ",") <~ ")"
+private val declaredType = DeclaredType(ident, option(parameters))
 
 // Helper parsers to parse each possible top level structure
 private val function = Function(
@@ -41,15 +51,5 @@ private val datatype =
 private val topLevelConstant = 
   TopLevelConstant("const" ~> ident, ":" ~> typeParser, ":=" ~> listIntegers)
 
-// Further helper parsers
-private val listIntegers = "[" ~> sepBy(integer, ",") <~ "]"
-private val gOption =
-  ("==" as Equals)
-    | ("!new" as NotNew)
-
-private val generics = option(
-  "<" ~> sepBy(ident <~> option("(" ~> gOption <~ ")"), ",") <~ ">"
-)
-private val parameter = Parameter(ident, ":" ~> typeParser)
-private val parameters = "(" ~> sepBy(parameter, ",") <~ ")"
-private val declaredType = DeclaredType(ident, option(parameters))
+// Main parser to parse an entire program
+val program = fully(many(datatype | function | ghostFunction | lemma | topLevelConstant))
