@@ -9,20 +9,11 @@ If this can be proven, then these programs are equivalent; one of these programs
 
 Therefore, Program Equivalence is a critical field in Computer Science. However, it is a very difficult task, especially since the problem is undecidable in general. To mitigate this problem, a variety of program verifiers are being developed to help developers write proofs of program equivalence, including Dafny~\cite{leinoDafnyAutomaticProgram2010} and KeY~\cite{ahrendtUsingKeYProver2016}. These verifiers automate much of the proof generation and can generate counterexamples when equivalence cannot be proven. However, in general, they still require a significant level of user assistance to complete proofs, often involving writing complicated specifications, loop invariants or auxiliary lemmas. Recently, many equivalence checkers are being developed to make proving equivalence even easier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012,milovancevicProvingDisprovingEquivalence2023,felsingAutomatingRegressionVerification2014,godlinRegressionVerificationProving2013}.
 
-Therefore, the aim of this project is to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. EquiDafny will focus on proving equivalence between Dafny functions only, as this provides enough complexity by itself. In particular, the main contributions of this project are as follows:
+Therefore, the aim of this project was to build EquiDafny, a new equivalence checker on top of Dafny, learning from the current state-of-the-art checkers. Dafny was chosen since it is a popular tool used by Amazon \parencite{leinoDafnyAutomaticProgram2010}. Therefore, building a tool on Dafny would be highly relevant to modern software engineering projects. This is especially true since Dafny can be compiled into a variety of popular languages, including C\#, Java and Python, allowing verified code to easily be integrated into existing codebases. 
 
-\begin{itemize}
-    \item \nameref{sec:literature-review}: Described the current state-of-the-art tools for proving program equivalence
-    \item \nameref{sec:audit}: Explored Dafny's capabilities in proving program equivalence between Dafny functions
-    \item Dataset of Equivalence tests: Created a dataset of pairs of equivalent Dafny functions
-    \item \nameref{chp:design}: Development of the Function Merging algorithm to automatically generate equivalence lemmas and to address the challenges the Dafny verifier faces 
-    \item \nameref{chp:implementation}: Implemented EquiDafny: a command-line tool on top of the Dafny verifier
-    \item \nameref{chp:evaluation}: Evaluated EquiDafny against the Dafny verifier and the Stainless equivalence checker
-\end{itemize}
+EquiDafny focuses on proving equivalence between Dafny functions only, as this provides enough complexity by itself.
 
-After describing the current state-of-the-art tools, this project focussed solely on the Dafny program verifier. Dafny is a popular tool used by Amazon \parencite{leinoDafnyAutomaticProgram2010}, therefore, building a tool on Dafny would be highly relevant to modern software engineering projects. This is especially true since Dafny can be compiled into a variety of popular languages, including C\#, Java and Python, allowing verified code to easily be integrated into existing codebases. 
-
-To find an understanding of Dafny's capabilities, I used the set of program equivalence tests for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks}. After converting them from Scala to Dafny I attempted to prove equivalence for each pair of functions. Using this I identified a number of challenges Dafny encounters. I will present an overview of EquiDafny with an example that demonstrates three of the challenges I identified. Below are two equivalent functions \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1}. Each function generates a specified number of random numbers, and inserts them into a sorted list while maintaining its order. In both functions, the parameter `seed' is the current random generation seed, `next' is the random generation function outputting the next seed and the generated number, `count' is the number of random numbers to generate and `xs' is the current sorted list.
+To find an understanding of Dafny's capabilities, I took the program equivalence tests for the Stainless Scala verification tool \parencite{StainlessFrontendsBenchmarks} and converted them to Dafny. After attempting to prove equivalence for each pair of functions, I identified a number of challenges Dafny encounters. I will present an overview of EquiDafny with an example that demonstrates three of the challenges I identified. Below are two equivalent functions \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1}. Each function generates a specified number of random numbers, and inserts them into a sorted list while maintaining its order. In both functions, the parameter `seed' is the current random generation seed, `next' is the random generation function outputting the next seed and the generated number, `count' is the number of random numbers to generate and `xs' is the current sorted list.
 
 The first function uses the helper function \dafnyinline{insertM} to insert a single number into the sorted list while maintaining its order:
 \begin{dafny}
@@ -75,13 +66,13 @@ lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 {}
 \end{dafny}
 %
-However, the Dafny verifier is unable to prove this lemma automatically due to three challenges. 
+The Stainless equivalence checker can prove these functions equivalent automatically. However, the Dafny verifier is unable to do this. This is due to three challenges. 
 
 \paragraph{First:} Generate and call helper lemmas for helper functions. The \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1} functions both use the helper functions \dafnyinline{insertM} and \dafnyinline{insert1} in the same way, therefore, the Dafny verifier requires an equivalence lemma between these functions. To resolve this, EquiDafny creates and calls a helper equivalence lemma \dafnyinline{eqInsert}, under the condition \dafnyinline{count > 0} and with the correct arguments.
 \paragraph{Second:} Provide a variant. EquiDafny provides a suitable variant for proving termination (\dafnyinline{count}), copied from the \dafnyinline{InsertSorted1} function.
 \paragraph{Third:} Explicitly stating the induction scheme. EquiDafny provides a recursive call to the \dafnyinline{eqInsertSorted} lemma to complete the proof. 
 
-Thus, EquiDafny generates the following:
+EquiDafny can resolve these challenges. Therefore, EquiDafny can prove equivalence by generating the following equivalence lemmas:
 \begin{dafny}
 lemma eqInsert(t: int, xs: List<int>)
   ensures (insert1(t, xs) == insertM(xs, t))
@@ -101,13 +92,18 @@ lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 }
 \end{dafny}
 %
+EquiDafny can generate these lemmas using an algorithm called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. The algorithm outputs the body of each equivalence lemma. It also outputs a mapping describing how the arguments of one function must be permuted to form the arguments of the other. 
 
-\section{Implementation and Evaluation}
+EquiDafny was implemented in Scala. I tested EquiDafny on a dataset of 91 test files. This dataset is publicly available at \\\url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. EquiDafny verified 56 of these tests while Dafny verified 25. Thus, EquiDafny improves the base Dafny verifier. In particular, EquiDafny is able to verify the equivalence of \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1} as shown above.
 
-The main algorithm EquiDafny uses is called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together.
-This algorithm has two outputs. The first is a set of mappings between the parameters of one function to the parameters of the other. This is used to describe how the arguments passed into one function in an equivalence lemma must be permuted to form the arguments to the second function.
-The second output is the body of each lemma. In the above example, this involved the call to the helper equivalence lemma \dafnyinline{eqInsert}. Additionally, the algorithm involves merging function call arguments correctly and merging mutually recursive functions (these technical details are described in \Cref{sec:technical-details}).
+\section{Report Structure}
 
-EquiDafny is implemented in Scala. The tool is called by passing in a single JSON configuration file. This file provides any important details EquiDafny needs to run, including the names of the functions to be compared and a path to a single Dafny file containing all necessary source code. EquiDafny is split into several components including parsing, translation and formatting. The parsing component parses the initial Dafny source file (implemented using the Parsley parser combinator library \parencite{willisJmie6Parsley2026}). The translation component converts the data structure outputted by the parser into a structure that is easier to work with. Finally, the formatting component outputs the final equivalence lemmas to a file so that they can be checked by the Dafny verifier.
+This report is structured as follows:
 
-After creating a few more tests myself, I tested EquiDafny on a dataset of 91 test files. This dataset is publicly available at \\\url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. EquiDafny verified 56 of these tests while Dafny verified 25. Thus, EquiDafny improves the base Dafny verifier. In particular, EquiDafny is able to verify the equivalence of \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1} as shown above.
+\begin{itemize}
+  \item \nameref{chp:background}: Described the current state-of-the-art tools for proving program equivalence and explored Dafny's capabilities in proving program equivalence between Dafny functions
+  \item \nameref{chp:design}: Development of the Function Merging algorithm to automatically generate equivalence lemmas and to address the challenges the Dafny verifier faces 
+  \item \nameref{chp:implementation}: Implemented EquiDafny: a command-line tool on top of the Dafny verifier
+  \item \nameref{chp:evaluation}: Evaluated EquiDafny against the Dafny verifier and the Stainless equivalence checker
+  \item \nameref{chp:conclusions}: Summarised this project's achievements and limitations. Provided a list of suggestions for how EquiDafny could be extended in the future
+\end{itemize}

@@ -24,13 +24,6 @@ implementation, how to install section
 
 need to compare with Stainless, this is the main thing to compare with
 
-introduction, achievements, what am I most proud of, move bullet points to end, move justification up to where Dafny is first mentioned
-less lower level details, focus on how dafny cant do this despite stainless existing, then say ED can do it
-
-change implementation and evaluation section to structure of report, move bullet points to this section
-merge literature review and audit in bulletpoints, LR is tiny
-focus on challenges and then say I addressed it, this is the main impressive bit
-
 conclusions, remove bullet list, often read at the start
 remove sections just start text
 more detail, little summary of what is in the report and what most proud, can refer to stuff in report
