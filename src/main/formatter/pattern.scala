@@ -4,7 +4,6 @@ import translation.structure.*
 import formatter.formatter.*
 import formatter.expression.formatLiteral
 
-// Function to format a match pattern
 def formatPattern(pattern: Pattern)(using writer: Formatter): Unit =
   pattern match {
     case UnNamed             => writer.format("_")

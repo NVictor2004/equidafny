@@ -9,7 +9,6 @@ import formatter.pattern.formatPattern
 import formatter.index.formatIndex
 import formatter.types.formatType
 
-// Formats a literal expression
 def formatLiteral(literal: LiteralExpr)(using writer: Formatter): Unit =
   literal match {
     case BoolLiteral(value)   => writer.print(value.toString())
@@ -59,7 +58,6 @@ private def formatQuantifier(quantifier: Quantifier): String =
     case Exists => "exists"
   }
 
-// Formats a basic expression
 def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
   expr match {
     case expr: LiteralExpr             => formatLiteral(expr)
@@ -148,7 +146,6 @@ def formatBasicExpr(expr: BasicExpr)(using writer: Formatter): Unit =
     }
   }
 
-// Formats an extended expression
 def formatExtendedExpr(expr: ExtendedExpr)(using writer: Formatter): Unit =
   expr match {
     case Assert(expr) => {

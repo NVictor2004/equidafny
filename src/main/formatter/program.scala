@@ -18,8 +18,12 @@ def formatProgram(
     equivalenceProgram: Program,
     outputFilename: String
 ): Unit = {
+  // Define a Formatter object
   given writer: Formatter = Formatter(new PrintWriter(new File(outputFilename)))
 
+  // Take the required structures from the Programs
+  // Lemmas are taken from the Program created after lemma generation
+  // All other structures are taken from the Program created after translation
   val Program(
     datatypes,
     constants,
@@ -35,6 +39,7 @@ def formatProgram(
 
   val Program(_, _, _, _, _, _, _, mainLemmas, helperLemmas, _) = equivalenceProgram
 
+  // Format every structure
   datatypes.foreach(formatDatatype)
   constants.foreach(formatTopLevelConstant)
   formatFunction(modelFunction)
@@ -49,7 +54,6 @@ def formatProgram(
   writer.close()
 }
 
-// Function to format a top-level constant declaration
 def formatTopLevelConstant(const: TopLevelConstant)(using writer: Formatter): Unit = {
   val TopLevelConstant(name, t, data) = const
   writer.format("const %s: ", name)
@@ -63,7 +67,6 @@ def formatTopLevelConstant(const: TopLevelConstant)(using writer: Formatter): Un
   writer.print("]\n\n")
 }
 
-// Function to format a top-level datatype declaration
 def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {
   val Datatype(name, generic, types) = datatype
 
