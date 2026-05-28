@@ -8,6 +8,9 @@ import translation.translation.Context
 def translatePattern(pattern: Parsers.Pattern)(using context: Context): Pattern = pattern match {
   case Parsers.UnNamed             => UnNamed
   case Parsers.Constant(value)     => Constant(translateLiteralExpr(value))
+  
+  // Datatype constants in patterns will be parsed as identifiers
+  // Here, datatype constants are translated into their own structure
   case Parsers.Basic(name, None) => 
     if context.datatypeData.contains(name) 
       then Constant(DatatypeConstant(name))

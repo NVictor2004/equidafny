@@ -12,8 +12,10 @@ import ujson.Value
 
 import scala.collection.immutable.ListMap
 
+// Main function to translate an entire program
 def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
 
+  // Create a mapping between the names of defined functions to the names of their parameters
   val functionData = prog.collect {
     case Parsers.Function(name, _, params, _, _, _) => 
       name -> params.map(_.name)
@@ -21,11 +23,13 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
       name -> params.map(_.name)
   }.toMap
 
+  // Get the names of the defined datatype constants
   val datatypeData = for {
     case Parsers.Datatype(_, _, types) <- prog
     case Parsers.DeclaredType(name, None | Some(Nil)) <- types
   } yield name
 
+  // Translate all top-level structures
   val (data, constants, functions, lemmas) =
     prog.foldLeft((Nil, Nil, Nil, Nil))((acc, toplevel) => translateTopLevel(acc, toplevel, functionData, datatypeData.toSet))
 
@@ -112,6 +116,11 @@ def translateGeneric(
     )
   })
 
+// Function to translate a single top-level structure
+// And add it to an accumulator of translated structures.
+// For each possible type of top level structure,
+// The generic type declarations are extracted and used during translation
+// along with the provided data on datatype constants and function declarations
 def translateTopLevel(
     acc: (
         data: List[Datatype],

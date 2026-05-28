@@ -14,9 +14,13 @@ def translateDomainType(t: Parsers.DomainType)(using context: Context): DomainTy
   case Parsers.TypeReal                  => TypeReal
   case Parsers.SeqType(elementType)      => SeqType(translateType(elementType))
   case Parsers.SetType(elementType)      => SetType(translateType(elementType))
+
+  // Datatype-defined types and generic types are parsed into the same data structure
+  // Here, these types are separated into their own data structures
   case Parsers.NamedType(name, generics) =>
     if context.genericTypeData.contains(name) then GenericType(name) 
     else CreatedType(name, generics.fold(Nil)(_.map(translateType)))
+
   case Parsers.TupleType(elements) => TupleType(elements.map(translateType))
 }
 

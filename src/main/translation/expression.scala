@@ -13,6 +13,7 @@ import translation.translation.Context
 
 import scala.collection.immutable.ListMap
 
+// Function to translate an expression block
 def translateExpr(expr: Parsers.ExprBlock)(using Context): ExprBlock = {
   val extendedExprs = expr.extendedExprs.map(translateExtendedExpr)
   val basicExpr = translateBasicExpr(expr.basicExpr)
@@ -49,9 +50,13 @@ def translateLiteralExpr(literal: Parsers.LiteralExpr): LiteralExpr =
 
 def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicExpr = expr match {
   case literal: Parsers.LiteralExpr  => translateLiteralExpr(literal)
+  
+  // Datatype constants would have been parsed as identifiers
+  // Here, datatype constants are translated into their own data structure
   case Parsers.Ident(name, suffixes) => 
     if context.datatypeData.contains(name) then DatatypeConstant(name)
     else Ident(name, suffixes)
+
   case Parsers.TupleExtraction(ident, index) => TupleExtraction(ident, index)
   case Parsers.Cardinality(e)        => Cardinality(translateBasicExpr(e))
   case Parsers.Tuple(elements)       => Tuple(elements.map(translateBasicExpr))
@@ -110,10 +115,15 @@ def translateBasicExpr(expr: Parsers.BasicExpr)(using context: Context): BasicEx
       translateExpr(thenBranch),
       translateExpr(elseBranch)
     )
+  // Function calls can be to defined Dafny functions
+  // Or they can be to lambda functions passed in as parameters, or to datatype constructors
+  // Here, calls to defined Dafny functions are separated from the other calls
   case Parsers.FunctionCall(name, args) => {
     context.functionData.get(name) match {
       case None => OtherFunctionCall(name, args.map(_.map(translateBasicExpr)))
       case Some(parameters) => {
+        // The arguments to function calls are stored as mappings from parameter names to
+        // the corresponding arguments
         val first = ListMap(parameters.zip(args(0).map(translateBasicExpr))*)
         val rest = args.tail.map(exprs => ListMap(exprs.map(expr => ("_", translateBasicExpr(expr)))*))
         TrueFunctionCall(name, first :: rest)
