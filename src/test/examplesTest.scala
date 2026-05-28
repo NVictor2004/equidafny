@@ -59,14 +59,14 @@ private def createTest(jsonPath: Path, fail: (String) => Nothing, testConfig: Co
 // Tests from Stainless
 
 private val StainlessConfig = Config(
-  os.pwd / "examples" / "scalaEquivalenceBenchmarkExamples" / "noHelp",
-  os.pwd / "src" / "test" / "stainlessOutput",
+  os.pwd / "examples" / "stainless" / "noHelp",
+  os.pwd / "src" / "test" / "output" / "stainless",
   Set("auxiliaryLemma", "terminationAuxiliaryLemma", "terminationHelperEquivalenceInduction", "terminationInduction", "higherOrderHelperEquivalenceInduction"),
   true
 )
 
 private val stainlessJsonPath =
-  os.pwd / "src" / "test" / "scalaEquivalenceBenchmarkExamples"
+  os.pwd / "src" / "test" / "json" / "stainless"
 private val stainlessJsonFiles = os.walk(stainlessJsonPath).filter(os.isFile(_))
 
 class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
@@ -80,14 +80,14 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 // Tests from EqBench
 
 private val EqBenchConfig = Config(
-  os.pwd / "examples" / "CIterationExamples" / "noHelp",
-  os.pwd / "src" / "test" / "eqBenchOutput",
+  os.pwd / "examples" / "eqBench" / "noHelp",
+  os.pwd / "src" / "test" / "output" / "eqBench",
   Set("auxiliaryLemmas", "terminationAuxiliaryLemmas", "terminationHelperEquivalenceAuxiliaryLemmas"),
   true
 )
 
 private val EqBenchJsonPath =
-  os.pwd / "src" / "test" / "CIterationExamples"
+  os.pwd / "src" / "test" / "json" / "eqBench"
 private val EqBenchJsonFiles = os.walk(EqBenchJsonPath).filter(os.isFile(_))
 
 class EqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
@@ -101,14 +101,14 @@ class EqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 // Tests from Copy Decreases
 
 private val CopyDecreasesConfig = Config(
-  os.pwd / "examples" / "copyDecreasesBenchmarks" / "noHelp",
-  os.pwd / "src" / "test" / "copyDecreasesOutput",
+  os.pwd / "examples" / "copyDecreases" / "noHelp",
+  os.pwd / "src" / "test" / "output" / "copyDecreases",
   Set("auxiliaryLemmas"),
   true
 )
 
 private val CopyDecreasesJsonPath =
-  os.pwd / "src" / "test" / "copyDecreasesBenchmarks"
+  os.pwd / "src" / "test" / "json" / "copyDecreases"
 private val CopyDecreasesJsonFiles = os.walk(CopyDecreasesJsonPath).filter(os.isFile(_))
 
 class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
@@ -123,13 +123,13 @@ class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 
 private val SelfWrittenConfig = Config(
   os.pwd / "examples" / "selfWritten" / "noHelp",
-  os.pwd / "src" / "test" / "selfWrittenOutput",
+  os.pwd / "src" / "test" / "output" / "selfWritten",
   Set("terminationInduction", "typesInductionAuxiliaryLemma"),
   true
 )
 
 private val SelfWrittenJsonPath =
-  os.pwd / "src" / "test" / "selfWritten"
+  os.pwd / "src" / "test" / "json" / "selfWritten"
 private val SelfWrittenJsonFiles = os.walk(SelfWrittenJsonPath).filter(os.isFile(_))
 
 class SelfWrittenExamplesTest extends AnyFlatSpec with ParallelTestExecution {
@@ -143,14 +143,14 @@ class SelfWrittenExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 // Not equivalent tests from EqBench
 
 private val NotEquivalentEqBenchConfig = Config(
-  os.pwd / "examples" / "counterExamples" / "CIterationExamples",
-  os.pwd / "src" / "test" / "counterExamplesOutput" / "CIterationExamples",
+  os.pwd / "examples" / "counterExamples" / "eqBench",
+  os.pwd / "src" / "test" / "output" / "counterExamples" / "eqBench",
   Set(),
   false
 )
 
 private val NotEquivalentEqBenchPath =
-  os.pwd / "src" / "test" / "counterExamples" / "CIterationExamples"
+  os.pwd / "src" / "test" / "json" / "counterExamples" / "eqBench"
 private val NotEquivalentEqBenchJsonFiles = os.walk(NotEquivalentEqBenchPath).filter(os.isFile(_))
 
 class NotEquivalentEqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
@@ -164,14 +164,14 @@ class NotEquivalentEqBenchExamplesTest extends AnyFlatSpec with ParallelTestExec
 // Not equivalent tests from Stainless
 
 private val NotEquivalentStainlessConfig = Config(
-  os.pwd / "examples" / "counterExamples" / "StainlessExamples",
-  os.pwd / "src" / "test" / "counterExamplesOutput" / "StainlessExamples",
+  os.pwd / "examples" / "counterExamples" / "stainless",
+  os.pwd / "src" / "test" / "output" / "counterExamples" / "stainless",
   Set(),
   false
 )
 
 private val NotEquivalentStainlessPath =
-  os.pwd / "src" / "test" / "counterExamples" / "StainlessExamples"
+  os.pwd / "src" / "test" / "json" / "counterExamples" / "stainless"
 private val NotEquivalentStainlessJsonFiles = os.walk(NotEquivalentStainlessPath).filter(os.isFile(_))
 
 class NotEquivalentStainlessExamplesTest extends AnyFlatSpec with ParallelTestExecution {
