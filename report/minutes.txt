@@ -14,7 +14,6 @@ summary of limitations before describing them, like in audit section
 argue representative, from each benchmark, the measure transfer, each folder is a different benchmark, so 4 benchmarks covered
 clever and reve benchmarks, maybe do remaining tests, that may be easier to explain than not doing them
 
-make sub expression assumption more clear, its an important new challenge
 copying from candidate is not like the other implementation details
 
 describe what tests are in each dataset
