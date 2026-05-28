@@ -2,7 +2,21 @@ package translation.structure
 
 import scala.collection.immutable.ListMap
 
-case class DeclaredType(name: String, typeParams: ListMap[String, Type])
+// The main data structure to store a Dafny program
+case class Program(
+    datatypes: List[Datatype],
+    constants: List[TopLevelConstant],
+    modelFunction: Function,
+    candidateFunctions: List[Function],
+    helperFunctions: Map[String, Function],
+    normFunction: Option[Function],
+    typeFunctions: Map[Type, Function],
+    mainLemmas: List[Lemma],
+    helperLemmas: List[Lemma],
+    auxiliaryLemmas: List[Lemma]
+)
+
+// Data structures to store each possible top-level structure
 case class Datatype(
     name: String,
     generic: List[(String, Option[GOption])],
@@ -30,18 +44,8 @@ case class Lemma(
     body: Option[BlockStmt]
 )
 
-case class Program(
-    datatypes: List[Datatype],
-    constants: List[TopLevelConstant],
-    modelFunction: Function,
-    candidateFunctions: List[Function],
-    helperFunctions: Map[String, Function],
-    normFunction: Option[Function],
-    typeFunctions: Map[Type, Function],
-    mainLemmas: List[Lemma],
-    helperLemmas: List[Lemma],
-    auxiliaryLemmas: List[Lemma]
-)
+// Helper data structures
+case class DeclaredType(name: String, typeParams: ListMap[String, Type])
 
 sealed trait GOption
 case object Equals extends GOption

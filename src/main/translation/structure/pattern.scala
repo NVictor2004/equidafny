@@ -1,5 +1,6 @@
 package translation.structure
 
+// The Pattern data structure is used for pattern matching in match expressions
 sealed trait Pattern
 object UnNamed extends Pattern
 case class Constant(value: LiteralExpr) extends Pattern

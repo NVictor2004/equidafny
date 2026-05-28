@@ -2,6 +2,7 @@ package translation.structure
 
 sealed trait Stmt
 
+// Structures for each possible type of statement
 case class CondStmt(
     cond: BasicExpr,
     thenBranch: BlockStmt,

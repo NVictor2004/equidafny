@@ -3,6 +3,7 @@ package translation.structure
 sealed trait Type
 sealed trait DomainType extends Type
 
+// Data structures representing each possible type of type
 case object TypeInt extends DomainType
 case object TypeBool extends DomainType
 case object TypeString extends DomainType

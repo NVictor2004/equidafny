@@ -9,11 +9,7 @@ import parsley.templates.{
 
 sealed trait TopLevel
 
-case class Parameter(name: String, paramType: Type)
-object Parameter extends PureParserBridge2[String, Type, Parameter]
-case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
-object DeclaredType
-    extends PureParserBridge2[String, Option[List[Parameter]], DeclaredType]
+// Data structures to store each possible top-level structure in a Dafny program
 case class Datatype(
     name: String,
     generic: Option[List[(String, Option[GOption])]],
@@ -64,6 +60,13 @@ object Lemma
     extends PureParserBridge5[String, Option[
       List[(String, Option[GOption])]
     ], List[Parameter], List[Spec], Option[BlockStmt], Lemma]
+
+// Helper data structures
+case class Parameter(name: String, paramType: Type)
+object Parameter extends PureParserBridge2[String, Type, Parameter]
+case class DeclaredType(name: String, typeParams: Option[List[Parameter]])
+object DeclaredType
+    extends PureParserBridge2[String, Option[List[Parameter]], DeclaredType]
 
 sealed trait GOption
 case object Equals extends GOption
