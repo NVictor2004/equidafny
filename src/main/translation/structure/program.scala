@@ -7,7 +7,7 @@ case class Program(
     datatypes: List[Datatype],
     constants: List[TopLevelConstant],
     modelFunction: Function,
-    candidateFunctions: List[Function],
+    candFunctions: List[Function],
     helperFunctions: Map[String, Function],
     normFunction: Option[Function],
     typeFunctions: Map[Type, Function],

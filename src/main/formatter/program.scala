@@ -28,7 +28,7 @@ def formatProgram(
     datatypes,
     constants,
     modelFunction,
-    candidateFunctions,
+    candFunctions,
     helperFunctions,
     normFunction,
     typeFunctions,
@@ -43,7 +43,7 @@ def formatProgram(
   datatypes.foreach(formatDatatype)
   constants.foreach(formatTopLevelConstant)
   formatFunction(modelFunction)
-  candidateFunctions.foreach(formatFunction)
+  candFunctions.foreach(formatFunction)
   helperFunctions.values.foreach(formatFunction)
   normFunction.foreach(formatFunction)
   typeFunctions.values.foreach(formatFunction)

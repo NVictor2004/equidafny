@@ -19,13 +19,13 @@ def programEquivalence(program: Program): Program = {
   // The model and candidate functions must have the same number of parameters
   // If any candidate function has a different number of parameters
   // EquiDafny throws an error
-  program.candidateFunctions.find(_.params.size != modelNumberOfArgs).foreach(candFunc =>
+  program.candFunctions.find(_.params.size != modelNumberOfArgs).foreach(candFunc =>
     throw IllegalArgumentException(s"Functions ${program.modelFunction.name} and ${candFunc.name} must have the same number of arguments")
   )
 
   // Generate equivalence lemmas
   given Program = program
-  val data = program.candidateFunctions.map(candFunction => {
+  val data = program.candFunctions.map(candFunction => {
     val currentLemmas = MutableMap[String, Option[Lemma]]()
     val ((_, lemma), _) = mergeFunction(currentLemmas, program.modelFunction, candFunction)
     (lemma, currentLemmas.values)
@@ -48,14 +48,14 @@ def generateLemmaName(modelName: String, candName: String): String =
 def mergeFunction(
     currentLemmas: MutableMap[String, Option[Lemma]],
     model: Function,
-    candidate: Function
+    cand: Function
 )(using program: Program): ((String, Option[Lemma]), Map[String, String]) = {
   // Create mapping for the equivalence lemma currently being generated
   currentLemmas += (model.name -> None)
 
   // Mappings are generated through merging the function bodies and through type matching
 
-  var candLeft = candidate.params
+  var candLeft = cand.params
 
   // Generate type mappings
   val typeMappings = model.params.foldLeft(List[(String, String)]()) {
@@ -64,7 +64,7 @@ def mergeFunction(
         val compatibleParams = candLeft.filter((_, candType) => compatibleTypes(modelType, candType, typeFunctionsList)).toList
         if (compatibleParams.isEmpty) {
           throw IllegalArgumentException(
-            s"Parameter types of functions ${model.name} and ${candidate.name} can't be matched"
+            s"Parameter types of functions ${model.name} and ${cand.name} can't be matched"
           )
         }
         if (compatibleParams.length == 1) {
@@ -81,11 +81,11 @@ def mergeFunction(
 
   // Merge the function bodies
   // This will append further mappings and create the body of the equivalence lemma
-  val stmts = mergeExprBlock(currentLemmas, currentMappings, model.body, model, candidate.body, candidate)
+  val stmts = mergeExprBlock(currentLemmas, currentMappings, model.body, model, cand.body, cand)
 
   // Find parameters not covered already
   val modelParamsLeft = model.params.removedAll(currentMappings.values)
-  var candParamsLeft = candidate.params.removedAll(currentMappings.keys)
+  var candParamsLeft = cand.params.removedAll(currentMappings.keys)
 
   // Generate remaining mappings
   val remainingMappings = modelParamsLeft.map((modelName, modelType) => {
@@ -111,7 +111,7 @@ def mergeFunction(
   // Create mappings from parameter names to arguments
   // These will be used to create the function calls in the lemma's postcondition
   val modelMap = ListMap(model.params.map((name, _) => (name, Ident(name, Nil))).toList*)
-  val candMap = ListMap(candidate.params.map((candName, candType) => {
+  val candMap = ListMap(cand.params.map((candName, candType) => {
     // The argument can either be an identifier or a function call if a type transformation is needed
     val modelName = mapping(candName)
     val modelType = model.params(modelName)
@@ -134,7 +134,7 @@ def mergeFunction(
 
   // Create the function calls to be used in the lemma's postcondition
   val modelFunctionCall = TrueFunctionCall(model.name, modelArgs)
-  val candFunctionCall = TrueFunctionCall(candidate.name, candArgs)
+  val candFunctionCall = TrueFunctionCall(cand.name, candArgs)
 
   // Use the normalisation function if provided
   // Only use it on the original model and candidate functions, not on any helper functions
@@ -150,7 +150,7 @@ def mergeFunction(
 
   // Create the equivalence lemma
   val equiv = Lemma(
-    generateLemmaName(model.name, candidate.name),
+    generateLemmaName(model.name, cand.name),
     model.generic,
     params,
     model.specs ++

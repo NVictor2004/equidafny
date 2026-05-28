@@ -42,14 +42,14 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     )
   
   // Find the candidate functions
-  val candidateFunctionNames = config("candidates").arr.map(_.str)
+  val candFunctionNames = config("candidates").arr.map(_.str)
 
-  val candidateFunctions =
-    functions.filter(function => candidateFunctionNames.contains(function.name))
+  val candFunctions =
+    functions.filter(function => candFunctionNames.contains(function.name))
 
-  if (candidateFunctions.length != candidateFunctionNames.length) {
-    val foundNames = candidateFunctions.map(_.name).toSet
-    val missingNames = candidateFunctionNames.filterNot(foundNames.contains)
+  if (candFunctions.length != candFunctionNames.length) {
+    val foundNames = candFunctions.map(_.name).toSet
+    val missingNames = candFunctionNames.filterNot(foundNames.contains)
     throw new Exception(
       s"Candidate functions not found: ${missingNames.mkString(", ")}"
     )
@@ -74,7 +74,7 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     function.name == modelFunctionName || 
     normFunctionName.fold(false)(name => function.name == name) || 
     typeFunctionName.fold(false)(name => function.name == name) || 
-    candidateFunctionNames.contains(
+    candFunctionNames.contains(
       function.name
     )
   )
@@ -85,7 +85,7 @@ def translateProgram(prog: List[Parsers.TopLevel], config: Value): Program = {
     data,
     constants,
     modelFunction,
-    candidateFunctions,
+    candFunctions,
     helperFunctionsMap,
     normFunction,
     typeFunctions,

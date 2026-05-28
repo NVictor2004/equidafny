@@ -8,12 +8,12 @@ import optimisation.expression.optimiseExprBlock
 // Only the model, candidate and helper functions are optimised
 def optimiseProgram(program: Program): Program = {
     val Program(
-        _, _, modelFunction, candidateFunctions, helperFunctions, _, _, _, _, _
+        _, _, modelFunction, candFunctions, helperFunctions, _, _, _, _, _
     ) = program
     
     program.copy(
         modelFunction = optimiseFunction(modelFunction),
-        candidateFunctions = candidateFunctions.map(optimiseFunction),
+        candFunctions = candFunctions.map(optimiseFunction),
         helperFunctions = helperFunctions.map((name, func) => (name, optimiseFunction(func))).toMap
     )
 }
