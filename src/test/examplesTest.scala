@@ -63,10 +63,10 @@ private val StainlessConfig = Config(
   os.pwd / "examples" / "stainless" / "noHelp",
   os.pwd / "src" / "test" / "output" / "stainless",
   Set(
-    "auxiliaryLemmaVarinlining",
-    "terminationAuxiliaryLemma",
+    "auxiliaryLemmasVarinlining",
+    "terminationAuxiliaryLemmas",
     "terminationAuxiliaryLemmasCandcopy",
-    "terminationCandcopy",
+    "terminationCandcopyMatchflattening",
     "terminationCandcopyInduction",
     "terminationHelperEquivalenceInductionCandcopyVarinlining",
     "terminationInductionAssumption"
@@ -91,7 +91,16 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val EqBenchConfig = Config(
   os.pwd / "examples" / "eqBench" / "noHelp",
   os.pwd / "src" / "test" / "output" / "eqBench",
-  Set("auxiliaryLemmas", "auxiliaryLemmasAssumption", "auxiliaryLemmasAssumptionTermination", "terminationAuxiliaryLemmas", "terminationAuxiliaryLemmasInduction", "terminationHelperEquivalenceAuxiliaryLemmas", "automaticAssumption", "helperEquivalenceVarinlining"),
+  Set(
+    "auxiliaryLemmas",
+    "auxiliaryLemmasAssumption",
+    "auxiliaryLemmasAssumptionTermination",
+    "terminationAuxiliaryLemmas",
+    "terminationAuxiliaryLemmasInduction",
+    "terminationHelperEquivalenceAuxiliaryLemmas",
+    "automaticAssumption",
+    "helperEquivalenceVarinlining"
+  ),
   true
 )
 
@@ -133,7 +142,14 @@ class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val SelfWrittenConfig = Config(
   os.pwd / "examples" / "selfWritten" / "noHelp",
   os.pwd / "src" / "test" / "output" / "selfWritten",
-  Set("helperEquivalenceTerminationVarinlining", "terminationInductionAssumption", "typesInductionAuxiliaryLemma", "helperEquivalenceTerminationVarinlining", "terminationAuxiliaryLemmasTypesInductionCandcopy", "terminationCandcopy"),
+  Set(
+    "helperEquivalenceTerminationVarinlining",
+    "terminationInductionAssumption",
+    "typesInductionAuxiliaryLemmas",
+    "helperEquivalenceTerminationVarinlining",
+    "terminationAuxiliaryLemmasTypesInductionCandcopy",
+    "terminationCandcopy"
+  ),
   true
 )
 
