@@ -14,7 +14,7 @@ There is great scope for extending EquiDafny in the future. Some suggestions are
 
 These suggestions involve increasing the effectiveness of the function merging algorithm. 
 
-\paragraph{Addressing Evaluation limitations} In \Cref{sec:eval-limitations}, I describe several limitations of the Function Merging algorithm. Many of these limitations can be addressed by adding features to EquiDafny's implementation, including match expression flattening and variable inlining. 
+\paragraph{Addressing functionality limitations} In \Cref{sec:functional-limitations}, I describe some limitations of the function merging algorithm that can be addressed by adding features to EquiDafny's implementation. These features are match expression flattening and variable inlining. 
 
 \paragraph{Automatic auxiliary lemma generation} The evaluation testsuite contains several tests which EquiDafny is unable to prove since they require auxiliary lemmas. These lemmas also need to be called with the correct arguments and under the correct conditions. These lemmas and corresponding calls could be automatically generated, removing the current necessity for users to write and provide their own auxiliary lemmas.
 

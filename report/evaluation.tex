@@ -4,7 +4,13 @@
 \footnote{evaluate tests against Stainless, mention result of comparison between ED and stainless, e.g. 'on par' with stainless}
 
 \section{Evaluation Testsuite Description}
-I created an evaluation testsuite containing 91 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. \Cref{tbl:testsuite-categorisation} categorises where these tests were taken from and what language they were converted from: 
+I created an evaluation testsuite containing 91 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. I wrote some of these test files myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
+
+\paragraph{EqBench dataset} The EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} contains hundreds of pairs of equivalent and non-equivalent programs. I converted several of the tests from the CLEVER and REVE benchmarks from C into Dafny. I chose these benchmarks as they provided several tests using iteration (this was converted into recursion since Dafny functions do not support iteration). In addition, these tests were at an acceptable level of complexity. They were complex enough to provide a challenge when proving equivalence while not being so complex as to make language translation too difficult. 
+
+\paragraph{Measure transfer artifact} When proving equivalence between two programs, variants must often be provided to ensure both program terminate. \textcite{milovancevicProvingTerminationMeasure2025} proved that, when one program has a variant but the other does not, this variant can often be copied to the other program to prove equivalence. They provided a large dataset of tests containing several benchmarks to evaluate this approach. I took some of these tests to form part of my evaluation testsuite. I took tests from every benchmark in this dataset to ensure my subset of tests is as representative of the whole as possible. 
+
+\Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source: 
 
 \begin{table}[ht]
   \centering
@@ -16,13 +22,44 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
     \hline
     EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 22 \\
     \hline
-    Measure Transfer Artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
+    Measure transfer artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
     \hline
     Self-Written & None & None & 9 \\
     \hline
   \end{tabular}
   \caption{Categorisation of evaluation testsuite tests}
   \label{tbl:testsuite-categorisation}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ |c|c|c|c|c| } 
+  \hline
+  Type of Challenge & Stainless & EqBench & Measure Transfer & Self-Written \\
+  \hline
+  None (Fully Automatic) \\
+  \hline
+  \nameref{sec:equivalence-lemmas}  \\
+  \hline 
+  \nameref{sec:auxiliary-lemmas} \\
+  \hline 
+  \nameref{sec:induction} \\
+  \hline
+  \nameref{sec:termination} \\
+  \hline
+  \nameref{sec:higher-order} \\
+  \hline
+  \nameref{sec:equiv-assumption} \\
+  \hline
+  \nameref{sec:candidate-copying} \\
+  \hline
+  \nameref{sec:match-flattening} \\
+  \hline
+  \nameref{sec:var-inlining} \\
+  \hline
+  \end{tabular}
+  \caption{Summary of the number of examples that demonstrate each type of challenge}
+  \label{tbl:challenges-summary}
 \end{table}
 
 \subsection{Non-Equivalent Tests}
@@ -40,7 +77,7 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
     EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
     \hline
   \end{tabular}
-  \caption{Categorisation of non-equivalent tests}
+  \caption{Categorisation oflabel non-equivalent tests}
   \label{tbl:non-equivalent-categorisation}
 \end{table}
 
@@ -104,7 +141,7 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
 \end{dafny}
 %
 
-\section{EquiDafny Sub-Expression equivalence assumption}
+\section{EquiDafny Sub-Expression equivalence assumption}\label{sec:equiv-assumption}
 
 After creating my evaluation testsuite, I identified an assumption in the function merging algorithm that limits its performance. The algorithm assumes that, when expressions are equivalent and have the same structure, their sub-expressions are also equivalent. This allows the algorithm to split up expressions into their constituent parts and recursively merge them together. However, this assumption does not always hold. 
 
@@ -182,7 +219,7 @@ lemma equivalenceMax3(lst: List<int>)
 }
 \end{dafny}
 
-\section{EquiDafny Functionality Limitations}\label{sec:eval-limitations}
+\section{EquiDafny Functionality Limitations}\label{sec:functional-limitations}
 
 There are several tests which EquiDafny fails to prove but Stainless succeeds. EquiDafny could verify these tests if additional functionality were implemented. I have identified two types of additional functionality and described them below. 
 
@@ -227,7 +264,7 @@ match l {
 %
 Now, the bodies of the two functions can be correctly merged together. I will provide the lemma that proves their equivalence in \Cref{sec:candidate-copying}. 
 
-\subsection{Variable Inlining}
+\subsection{Variable Inlining}\label{sec:var-inlining}
 
 Dafny functions can be defined using variables declarations. The bodies of these variables must sometimes be merged together. For example, here are two functions \dafnyinline{mapM} and \dafnyinline{map1}. Each function takes a list of tuples each containing two integers. Each function outputs a list containing the sums of the integers in each tuple. The functions \dafnyinline{mapM} and \dafnyinline{map1} use helper functions \dafnyinline{sumM} and \dafnyinline{sum1} respectively:
 \begin{dafny}[highlightlines={5,22}]

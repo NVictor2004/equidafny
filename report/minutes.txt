@@ -7,15 +7,11 @@ problem: we dont know how well ED addresses each challenge
 describe how complex the examples are, lines of code, number of auxiliary lemmas needed
 can use evaluation metric code for this
 
-use formulas sent by Dragana to measure how different each pair of functions is
 get scala versions of eqbench tests from Dragana
 
 summary of limitations before describing them, like in audit section
-argue representative, from each benchmark, the measure transfer, each folder is a different benchmark, so 4 benchmarks covered
-clever and reve benchmarks, maybe do remaining tests, that may be easier to explain than not doing them
 
-describe what tests are in each dataset
-add the first year tests, add more tests
+add the first year tests
 
 implementation, how to install section
 
@@ -32,6 +28,6 @@ edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
 
 fix constant parsing
 
-
+use formulas sent by Dragana to measure how different each pair of functions is
 
 
