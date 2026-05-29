@@ -21,7 +21,7 @@ function sigmaC(f: int -> int, a: int, b: int): int
 
 lemma equivalenceHelper3(f: int -> int, a: int, b: int, acc: int)
   ensures s(a, b, f, acc) == acc + sigmaC(f, a, b)
-  decreases b - a
+  decreases(if (b == a) then 2 else if (b > a) then 2 + b - a else a - b)
 {}
 
 lemma equivalence3(f: int -> int, a: int, b: int)

@@ -32,7 +32,7 @@ lemma equivalenceHelper2(f: int -> int, a: int, b: int)
 
 lemma equivalence2(f: int -> int, a: int, b: int)
   ensures solution_2(f, a, b) == sigmaC(f, a, b)
-  decreases b - a
+  decreases(if (b == a) then 2 else if (b > a) then 2 + b - a else a - b)
 {
   if (a < b) {
     equivalenceHelper2(f, a, b);

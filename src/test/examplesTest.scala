@@ -88,7 +88,7 @@ class ScalaExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val EqBenchConfig = Config(
   os.pwd / "examples" / "eqBench" / "noHelp",
   os.pwd / "src" / "test" / "output" / "eqBench",
-  Set("auxiliaryLemmas", "terminationAuxiliaryLemmas", "terminationHelperEquivalenceAuxiliaryLemmas"),
+  Set("auxiliaryLemmas", "auxiliaryLemmasAssumption", "auxiliaryLemmasAssumptionTermination", "terminationAuxiliaryLemmas", "terminationAuxiliaryLemmasInduction", "terminationHelperEquivalenceAuxiliaryLemmas", "automaticAssumption", "helperEquivalenceVarinlining"),
   true
 )
 
@@ -109,7 +109,7 @@ class EqBenchExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val CopyDecreasesConfig = Config(
   os.pwd / "examples" / "copyDecreases" / "noHelp",
   os.pwd / "src" / "test" / "output" / "copyDecreases",
-  Set("auxiliaryLemmas"),
+  Set("terminationAuxiliaryLemmas", "terminationAuxiliaryLemmasInduction", "terminationHelperEquivalenceCandcopy"),
   true
 )
 
