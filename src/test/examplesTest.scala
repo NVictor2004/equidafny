@@ -63,10 +63,13 @@ private val StainlessConfig = Config(
   os.pwd / "examples" / "stainless" / "noHelp",
   os.pwd / "src" / "test" / "output" / "stainless",
   Set(
-    "auxiliaryLemma",
+    "auxiliaryLemmaVarinlining",
     "terminationAuxiliaryLemma",
-    "terminationHelperEquivalenceInduction",
-    "terminationInduction"
+    "terminationAuxiliaryLemmasCandcopy",
+    "terminationCandcopy",
+    "terminationCandcopyInduction",
+    "terminationHelperEquivalenceInductionCandcopyVarinlining",
+    "terminationInductionAssumption"
   ),
   true
 )

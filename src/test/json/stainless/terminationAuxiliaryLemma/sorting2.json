@@ -1,0 +1,7 @@
+{
+  "file": "sorting2.dfy",
+  "model": "isSortedR",
+  "candidates": [
+    "isSortedC"
+  ]
+}

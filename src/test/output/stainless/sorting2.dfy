@@ -1,0 +1,35 @@
+datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+
+function isSortedR(l: List<int>): bool
+{match l {
+case Nil => true
+case Cons(x, xs) => loop(x, xs)
+}
+}
+
+function isSortedC(l: List<int>): bool
+{match l {
+case Nil => true
+case Cons(x, xs) => chk(Cons(x, xs), x, true)
+}
+}
+
+function chk(l: List<int>, p: int, a: bool): bool
+{match l {
+case Nil => a
+case Cons(x, xs) => ((x >= p) && chk(xs, x, a))
+}
+}
+
+function loop(p: int, l: List<int>): bool
+decreases (l)
+{match l {
+case Nil => true
+case Cons(x, xs) => ((p <= x) && loop(x, xs))
+}
+}
+
+lemma isSortedR_isSortedC_Equivalence(l: List<int>)
+ensures (isSortedR(l) == isSortedC(l))
+{{}}
+
