@@ -153,9 +153,38 @@ lemma equivalence(x: int)
 }
 \end{dafny}
 
+\section{Copying from candidate functions}\label{sec:candidate-copying}
+
+For the majority of the tests in the evaluation testsuite, it is sufficient to generate equivalence lemmas by copying structures from the model function alone. However, in some cases, structures must be copied from the candidate function as well, including termination lemma calls, preconditions and assertions. I will demonstrate this using the example described in \Cref{sec:match-flattening}. In this example, the Dafny verifier struggles to prove termination in the candidate function \dafnyinline{max3}. The user must provide the \dafnyinline{length} function and use it within the function's variant and within an assertion in the last match case. The \dafnyinline{length} function is provided below:
+\begin{dafny}
+function length<T>(l: List<T>): nat
+  decreases(l) {
+  match l {
+    case Nil        => 0
+    case Cons(_, t) => 1 + length(t)
+  }
+}
+\end{dafny}
+%
+Because of this, the corresponding equivalence lemma must use the termination structures from the \dafnyinline{max3} function rather than the \dafnyinline{maxM} function, as the Dafny verifier is unable to prove termination otherwise. Thus, the variant and assertion from the candidate function \dafnyinline{max3} must be copied into the equivalence lemma. However, these structures refer to variables defined within the candidate function. For example, both the variant and the assertion refer to the variable \dafnyinline{l}. The corresponding variable in the model function is called \dafnyinline{lst}. Therefore, since variables are all defined using structures from the model function, the \dafnyinline{l} variable will be undefined. One solution to this is to replace all candidate variables with their corresponding model variables. As described in \Cref{sec:parameter-mappings}, a mapping between corresponding parameters is maintained during the merging process, thus, this could be used to replace the variables. 
+
+Further problems with variables occur when merging match patterns (as described in \Cref{sec:merging-match-expressions}) since the patterns themselves can define variables. When merging the bodies of the \dafnyinline{maxM} and \dafnyinline{max3} functions, the pattern \dafnyinline{Cons(hd, tl)} will be merged with the pattern \dafnyinline{Cons(hd, Cons(hd1, tl1))} (after match expression flattening, as described in \Cref{sec:match-flattening}). This is necessary for the assertion to be found and copied into the correct place in the equivalence lemma. However, the candidate pattern defines the variable \dafnyinline{tl1}, which is used in the assertion. Thus, if the pattern from the model function (\dafnyinline{Cons(hd, tl)}) is used, the variable \dafnyinline{tl1} will be undefined. Therefore, the pattern from the candidate function (\dafnyinline{Cons(hd, Cons(hd1, tl1))}) must be used instead. This results in the following equivalence lemma:
+\begin{dafny}
+lemma equivalenceMax3(lst: List<int>)
+  ensures (max3(lst) == maxM(lst))
+  decreases(length(lst))
+{
+  match lst {
+    case Nil => {}
+    case Cons(hd, Nil) => {}
+    case Cons(hd, Cons(hd1, tl1)) => assert length(Cons(hd, tl1)) < length(lst);
+  }
+}
+\end{dafny}
+
 \section{EquiDafny Functionality Limitations}\label{sec:eval-limitations}
 
-There are several tests which EquiDafny fails to prove but Stainless succeeds. EquiDafny could verify these tests if additional functionality were implemented. I have identified three types of additional functionality and described them below. 
+There are several tests which EquiDafny fails to prove but Stainless succeeds. EquiDafny could verify these tests if additional functionality were implemented. I have identified two types of additional functionality and described them below. 
 
 \subsection{Flattening match expressions}\label{sec:match-flattening}
 
@@ -198,35 +227,6 @@ match l {
 %
 Now, the bodies of the two functions can be correctly merged together. I will provide the lemma that proves their equivalence in \Cref{sec:candidate-copying}. 
 
-\subsection{Copying from candidate functions}\label{sec:candidate-copying}
-
-For the majority of the tests in the evaluation testsuite, it is sufficient to generate equivalence lemmas by copying structures from the model function alone. However, in some cases, structures must be copied from the candidate function as well, including termination lemma calls, preconditions and assertions. I will demonstrate this using the example described in \Cref{sec:match-flattening}. In this example, the Dafny verifier struggles to prove termination in the candidate function \dafnyinline{max3}. The user must provide the \dafnyinline{length} function and use it within the function's variant and within an assertion in the last match case. The \dafnyinline{length} function is provided below:
-\begin{dafny}
-function length<T>(l: List<T>): nat
-  decreases(l) {
-  match l {
-    case Nil        => 0
-    case Cons(_, t) => 1 + length(t)
-  }
-}
-\end{dafny}
-%
-Because of this, the corresponding equivalence lemma must use the termination structures from the \dafnyinline{max3} function rather than the \dafnyinline{maxM} function, as the Dafny verifier is unable to prove termination otherwise. Thus, the variant and assertion from the candidate function \dafnyinline{max3} must be copied into the equivalence lemma. However, these structures refer to variables defined within the candidate function. For example, both the variant and the assertion refer to the variable \dafnyinline{l}. The corresponding variable in the model function is called \dafnyinline{lst}. Therefore, since variables are all defined using structures from the model function, the \dafnyinline{l} variable will be undefined. One solution to this is to replace all candidate variables with their corresponding model variables. As described in \Cref{sec:parameter-mappings}, a mapping between corresponding parameters is maintained during the merging process, thus, this could be used to replace the variables. 
-
-Further problems with variables occur when merging match patterns (as described in \Cref{sec:merging-match-expressions}) since the patterns themselves can define variables. When merging the bodies of the \dafnyinline{maxM} and \dafnyinline{max3} functions, the pattern \dafnyinline{Cons(hd, tl)} will be merged with the pattern \dafnyinline{Cons(hd, Cons(hd1, tl1))} (after match expression flattening, as described in \Cref{sec:match-flattening}). This is necessary for the assertion to be found and copied into the correct place in the equivalence lemma. However, the candidate pattern defines the variable \dafnyinline{tl1}, which is used in the assertion. Thus, if the pattern from the model function (\dafnyinline{Cons(hd, tl)}) is used, the variable \dafnyinline{tl1} will be undefined. Therefore, the pattern from the candidate function (\dafnyinline{Cons(hd, Cons(hd1, tl1))}) must be used instead. This results in the following equivalence lemma:
-\begin{dafny}
-lemma equivalenceMax3(lst: List<int>)
-  ensures (max3(lst) == maxM(lst))
-  decreases(length(lst))
-{
-  match lst {
-    case Nil => {}
-    case Cons(hd, Nil) => {}
-    case Cons(hd, Cons(hd1, tl1)) => assert length(Cons(hd, tl1)) < length(lst);
-  }
-}
-\end{dafny}
-%
 \subsection{Variable Inlining}
 
 Dafny functions can be defined using variables declarations. The bodies of these variables must sometimes be merged together. For example, here are two functions \dafnyinline{mapM} and \dafnyinline{map1}. Each function takes a list of tuples each containing two integers. Each function outputs a list containing the sums of the integers in each tuple. The functions \dafnyinline{mapM} and \dafnyinline{map1} use helper functions \dafnyinline{sumM} and \dafnyinline{sum1} respectively:
