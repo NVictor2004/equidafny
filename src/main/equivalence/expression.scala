@@ -53,6 +53,13 @@ def mergeBasicExpr(
       stmts :+ finalStmt
     }
     // If both expressions call the same function, merge the arguments together
+    case (TrueFunctionCall(calledInModel, calledInModelArgs), TrueFunctionCall(calledInCand, calledInCandArgs))
+        if calledInModel == calledInCand => {
+      val flattened = calledInModelArgs.zip(calledInCandArgs).flatMap((modelList, candList) => modelList.zip(candList))
+      flattened.flatMap((modelPair, candPair) =>
+        mergeBasicExpr(currentLemmas, currentMappings, modelPair._2, modelFunc, candPair._2, candFunc)
+      )
+    }
     case (OtherFunctionCall(calledInModel, calledInModelArgs), OtherFunctionCall(calledInCand, calledInCandArgs))
         if calledInModel == calledInCand => {
       val flattened = calledInModelArgs.zip(calledInCandArgs).flatMap((modelList, candList) => modelList.zip(candList))

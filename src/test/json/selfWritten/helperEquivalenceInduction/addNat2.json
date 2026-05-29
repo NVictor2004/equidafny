@@ -1,0 +1,7 @@
+{
+  "file": "addNat2.dfy",
+  "model": "addM",
+  "candidates": [
+    "add1"
+  ]
+}

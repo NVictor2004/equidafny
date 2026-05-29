@@ -130,7 +130,7 @@ class CopyDecreasesExamplesTest extends AnyFlatSpec with ParallelTestExecution {
 private val SelfWrittenConfig = Config(
   os.pwd / "examples" / "selfWritten" / "noHelp",
   os.pwd / "src" / "test" / "output" / "selfWritten",
-  Set("terminationInduction", "typesInductionAuxiliaryLemma"),
+  Set("helperEquivalenceTerminationVarinlining", "terminationInductionAssumption", "typesInductionAuxiliaryLemma", "helperEquivalenceTerminationVarinlining", "terminationAuxiliaryLemmasTypesInductionCandcopy", "terminationCandcopy"),
   true
 )
 
