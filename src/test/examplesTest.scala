@@ -146,7 +146,6 @@ private val SelfWrittenConfig = Config(
     "helperEquivalenceTerminationVarinlining",
     "terminationInductionAssumption",
     "typesInductionAuxiliaryLemmas",
-    "helperEquivalenceTerminationVarinlining",
     "terminationAuxiliaryLemmasTypesInductionCandcopy",
     "terminationCandcopy"
   ),
