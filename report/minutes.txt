@@ -1,8 +1,5 @@
 minutes from meeting on 26th May
 
-classification tables for the other datasets
-also classify where limitations occur
-
 problem: we dont know how well ED addresses each challenge
 describe how complex the examples are, lines of code, number of auxiliary lemmas needed
 can use evaluation metric code for this

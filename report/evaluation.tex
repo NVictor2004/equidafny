@@ -10,7 +10,7 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
 
 \paragraph{Measure transfer artifact} When proving equivalence between two programs, variants must often be provided to ensure both program terminate. \textcite{milovancevicProvingTerminationMeasure2025} proved that, when one program has a variant but the other does not, this variant can often be copied to the other program to prove equivalence. They provided a large dataset of tests containing several benchmarks to evaluate this approach. I took some of these tests to form part of my evaluation testsuite. I took tests from every benchmark in this dataset to ensure my subset of tests is as representative of the whole as possible. 
 
-\Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source: 
+\Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source:
 
 \begin{table}[ht]
   \centering
@@ -31,35 +31,41 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
   \label{tbl:testsuite-categorisation}
 \end{table}
 
+\Cref{tbl:alldatasets-challenges-summary} summarises the number of tests from each source that demonstrate each type of challenge. Some tests demonstrate multiple challenges; these tests are counted multiple times. 
+
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |c|c|c|c|c| } 
   \hline
-  Type of Challenge & Stainless & EqBench & Measure Transfer & Self-Written \\
+  \multirow{2}{*}{Type of Challenge} & \multicolumn{4}{|c|}{Number of tests} \\
+  \cline{2-5}
+  & Stainless & EqBench & Measure Transfer & Self-Written \\ 
   \hline
-  None (Fully Automatic) \\
+  None (Fully Automatic) & 21 & 6 & 0 & 2 \\
   \hline
-  \nameref{sec:equivalence-lemmas}  \\
+  \nameref{sec:equivalence-lemmas} & 15 & 6 & 1 & 6 \\
   \hline 
-  \nameref{sec:auxiliary-lemmas} \\
+  \nameref{sec:auxiliary-lemmas} & 5 & 12 & 2 & 2 \\
   \hline 
-  \nameref{sec:induction} \\
+  \nameref{sec:induction} & 5 & 1 & 1 & 5 \\
   \hline
-  \nameref{sec:termination} \\
+  \nameref{sec:termination} & 17 & 10 & 5 & 7 \\
   \hline
-  \nameref{sec:higher-order} \\
+  \nameref{sec:higher-order} & 7 & 0 & 0 & 0 \\
   \hline
-  \nameref{sec:equiv-assumption} \\
+  \nameref{sec:equiv-assumption} & 1 & 5 & 0 & 1 \\
   \hline
-  \nameref{sec:candidate-copying} \\
+  \nameref{sec:candidate-copying} & 4 & 0 & 1 & 2 \\
   \hline
-  \nameref{sec:match-flattening} \\
+  \nameref{sec:match-flattening} & 1 & 0 & 0 & 0 \\
   \hline
-  \nameref{sec:var-inlining} \\
+  \nameref{sec:var-inlining} & 3 & 2 & 0 & 1 \\
+  \hline
+  \nameref{sec:type-transformations} & 0 & 0 & 0 & 4 \\
   \hline
   \end{tabular}
-  \caption{Summary of the number of examples that demonstrate each type of challenge}
-  \label{tbl:challenges-summary}
+  \caption{Summary of the number of examples from each source that demonstrate each type of challenge}
+  \label{tbl:alldatasets-challenges-summary}
 \end{table}
 
 \subsection{Non-Equivalent Tests}
@@ -77,7 +83,7 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
     EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
     \hline
   \end{tabular}
-  \caption{Categorisation oflabel non-equivalent tests}
+  \caption{Categorisation of non-equivalent tests}
   \label{tbl:non-equivalent-categorisation}
 \end{table}
 
@@ -141,7 +147,7 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
 \end{dafny}
 %
 
-\section{EquiDafny Sub-Expression equivalence assumption}\label{sec:equiv-assumption}
+\section{Sub-Expression equivalence assumption}\label{sec:equiv-assumption}
 
 After creating my evaluation testsuite, I identified an assumption in the function merging algorithm that limits its performance. The algorithm assumes that, when expressions are equivalent and have the same structure, their sub-expressions are also equivalent. This allows the algorithm to split up expressions into their constituent parts and recursively merge them together. However, this assumption does not always hold. 
 
