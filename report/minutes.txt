@@ -6,8 +6,6 @@ can use evaluation metric code for this
 
 get scala versions of eqbench tests from Dragana
 
-summary of limitations before describing them, like in audit section
-
 add the first year tests
 
 implementation, how to install section
