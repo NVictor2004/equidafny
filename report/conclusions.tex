@@ -2,7 +2,7 @@
 
 The aim of this project was to minimise the level of user assistance required to create program equivalence proofs. We achieved this by implementing EquiDafny, an equivalence checker on top of Dafny.
 
-Out of the 91 tests in my dataset of equivalence tests, the base Dafny verifier can verify 25 tests while EquiDafny can verify 56 tests. Thus, EquiDafny presents a substantial improvement over the base Dafny verifier. The tool can verify these tests in only around 1.5 seconds on average. EquiDafny can also verify three tests that Stainless fails to verify. Therefore, EquiDafny has great potential to become a performant equivalence checker for Dafny functions. 
+Out of the 96 tests in my dataset of equivalence tests, the base Dafny verifier can verify 26 tests while EquiDafny can verify 59 tests. Thus, EquiDafny presents a substantial improvement over the base Dafny verifier. The tool can verify these tests in only around 1.5 seconds on average. EquiDafny can also verify three tests that Stainless fails to verify. Therefore, EquiDafny has great potential to become a performant equivalence checker for Dafny functions. 
 
 However, despite EquiDafny's achievements, the tool has many limitations. An important assumption that EquiDafny makes is that, when expressions are equivalent and have the same structure, their sub-expressions must also be equivalent. However, this is not true in general. EquiDafny also relies on a series of translation rules to convert expressions into the same structure so that they can be merged together. Some of my tests require complex translations that have not been implemented yet, restricting EquiDafny's effectiveness. 
 

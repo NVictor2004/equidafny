@@ -2,10 +2,9 @@
 
 \footnote{Update flamegraphs and times for each phase}
 \footnote{evaluate tests against Stainless, mention result of comparison between ED and stainless, e.g. 'on par' with stainless}
-\footnote{update test numbers}
 
 \section{Evaluation Testsuite Description}
-I created an evaluation testsuite containing 91 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. I wrote some of these test files myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
+I created an evaluation testsuite containing 96 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. I wrote some of these test files myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
 
 \paragraph{EqBench dataset} The EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} contains hundreds of pairs of equivalent and non-equivalent programs. I converted several of the tests from the CLEVER and REVE benchmarks from C into Dafny. I chose these benchmarks as they provided several tests using iteration (this was converted into recursion since Dafny functions do not support iteration). In addition, these tests were at an acceptable level of complexity. They were complex enough to provide a challenge when proving equivalence while not being so complex as to make language translation too difficult. 
 
@@ -25,7 +24,7 @@ I created an evaluation testsuite containing 91 test files. Each file contains a
     \hline
     Measure transfer artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
     \hline
-    Self-Written & None & None & 9 \\
+    Self-Written & None & None & 14 \\
     \hline
   \end{tabular}
   \caption{Categorisation of evaluation testsuite tests}
@@ -116,9 +115,9 @@ Neither the base Dafny verifier nor EquiDafny can verify any of these tests.
     \hline
     Measure Transfer Artifact & 7 & 0 & 2 & Unknown \\
     \hline
-    Self-Written & 9 & 1 & 6 & Unknown \\
+    Self-Written & 14 & 2 & 9 & Unknown \\
     \hline
-    Total & 91 & 25 & 56 & Unknown \\
+    Total & 96 & 26 & 59 & Unknown \\
     \hline
   \end{tabular}
   \caption{Evaluation results for Dafny, EquiDafny and Stainless}
