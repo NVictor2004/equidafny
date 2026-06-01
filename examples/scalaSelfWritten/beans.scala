@@ -1,5 +1,7 @@
 object beans {
-  datatype List<T> = Nil | Cons(head: T, tail: List<T>)
+  sealed trait List<T>
+  case object Nil extends List<T>
+  case class Cons(head: T, tail: List<T>) extends List<T>
   
   // We have a jar of green and red beans. We play the game as follows:
   // select two randomly.
@@ -14,7 +16,9 @@ object beans {
   
   // Solution 2: The jar is a sequence of beans, in each round select randomly two different beans in the sequence
   
-  datatype Bean = Red | Black
+  sealed trait Bean
+  case object Red extends Bean
+  case object Black extends Bean
   
   def count(jar: List<Bean>): (int, int) {
       jar match {
