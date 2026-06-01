@@ -2,7 +2,7 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function insertM(xs: List<int>, t: int): List<int>
+def insertM(xs: List<int>, t: int): List<int>
   decreases xs {
   match xs {
     case Nil => Cons(t, Nil)
@@ -12,7 +12,7 @@ function insertM(xs: List<int>, t: int): List<int>
   }
 }
 
-function insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, xs: List<int>): List<int>
+def insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, xs: List<int>): List<int>
   {
   if (count <= 0) then xs
   else
@@ -20,7 +20,7 @@ function insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, 
     insertSortedM(nxtS, next, count - 1, insertM(xs, t))
 }
 
-function insert1(t: int, xs: List<int>): List<int>
+def insert1(t: int, xs: List<int>): List<int>
   decreases xs {
   match xs {
     case Cons(hd, tl) =>
@@ -30,7 +30,7 @@ function insert1(t: int, xs: List<int>): List<int>
   }
 }
 
-function insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: List<int>, count: int): List<int>
+def insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: List<int>, count: int): List<int>
   decreases count {
   if (!(count <= 0)) then 
     var (nxtS, t) := next(seed);

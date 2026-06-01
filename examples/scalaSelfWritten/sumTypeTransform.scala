@@ -1,13 +1,13 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function sumM(l: List<int>): int {
+def sumM(l: List<int>): int {
   match l {
     case Nil => 0
     case Cons(h, t) => h + sumM(t)
   }
 }
 
-function sum1(data: (List<int>, int)): int
+def sum1(data: (List<int>, int)): int
   decreases data.0
 {
   match data {
@@ -16,6 +16,6 @@ function sum1(data: (List<int>, int)): int
   }
 }
 
-function transform(l: List<int>): (List<int>, int) {
+def transform(l: List<int>): (List<int>, int) {
   (l, 0)
 }

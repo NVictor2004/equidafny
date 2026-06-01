@@ -1,6 +1,6 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function sumM(x: int, y: int): int
+def sumM(x: int, y: int): int
     decreases if x > 0 then x else -x
 {
     if x == 0 then y
@@ -8,7 +8,7 @@ function sumM(x: int, y: int): int
     else sumM(x - 1, y + 1)
 }
 
-function mapM(l: List<(int, int)>): List<int> {
+def mapM(l: List<(int, int)>): List<int> {
     match l {
         case Nil => Nil
         case Cons((h1, h2), t) => 
@@ -17,11 +17,11 @@ function mapM(l: List<(int, int)>): List<int> {
     }
 }
 
-function sum1(x: int, y: int): int {
+def sum1(x: int, y: int): int {
     x + y
 }
 
-function map1(l: List<(int, int)>): List<int> {
+def map1(l: List<(int, int)>): List<int> {
     match l {
         case Nil => Nil
         case Cons((h1, h2), t) => 

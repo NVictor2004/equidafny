@@ -2,17 +2,17 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function length<T>(l: List<T>): nat
+def length<T>(l: List<T>): nat
   {
   match l
     case Nil => 0
     case Cons(_, t) => 1 + length(t)
   }
 
-// This tests the normalization function where the return type is changed
+// This tests the normalization def where the return type is changed
 
 
-function binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
+def binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
   decreases length(l1) + length(l2)
 {
   match (l1, l2)
@@ -29,7 +29,7 @@ function binSumM(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
 
 // CANDIDATE
 
-function binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
+def binSum1(l1: List<bool>, l2: List<bool>, c: bool): List<bool>
   decreases length(l1) + length(l2)
 {
   match (l1, l2, c)

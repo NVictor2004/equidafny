@@ -15,7 +15,7 @@ datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
 datatype Bean = Red | Black
 
-function count(jar: List<Bean>): (int, int) {
+def count(jar: List<Bean>): (int, int) {
     match jar {
         case Nil => (0, 0)
         case Cons(bean, tail) => 
@@ -28,18 +28,18 @@ function count(jar: List<Bean>): (int, int) {
 }
 
 // When jar is a pair
-function finalBeanPair(jar: (int, int)): Bean {
+def finalBeanPair(jar: (int, int)): Bean {
   var (red, _) := jar;
   if (red % 2 == 1) then Red else Black
 }
 
 // When jar is a List
-function finalBeanList(jar: List<Bean>): Bean {
+def finalBeanList(jar: List<Bean>): Bean {
   var (red, _) := count(jar);
   if (red % 2 == 1) then Red else Black
 }
 
 // Type transformations: this is what is currently missing from EquiDafny (and Stainless)
-function transform(xs: List<Bean>): (int, int) {
+def transform(xs: List<Bean>): (int, int) {
   count(xs)
 }

@@ -1,6 +1,6 @@
 datatype Term = Val(v: int) | UMinus(t: Term) | Mult(left: Term, right: Term)
 
-function eval(t: Term): int {
+def eval(t: Term): int {
     match t {
         case Val(v) => v
         case UMinus(t) => -eval(t)
@@ -8,7 +8,7 @@ function eval(t: Term): int {
     }
 }
 
-function rip(t: Term): Term {
+def rip(t: Term): Term {
     match t {
         case Val(v) => Val(v)
         case UMinus(t) => rip(t)
@@ -16,7 +16,7 @@ function rip(t: Term): Term {
     }
 }
 
-function pos(t: Term): bool {
+def pos(t: Term): bool {
     match t {
         case Val(v) => true
         case UMinus(t) => !pos(t)
@@ -24,15 +24,15 @@ function pos(t: Term): bool {
     }
 }
 
-function wSign(i: int, b: bool): int {
+def wSign(i: int, b: bool): int {
     if b then i else -i
 }
 
-function evalM(t: Term): int {
+def evalM(t: Term): int {
     eval(t)
 }
 
-function eval1(t: Term): int {
+def eval1(t: Term): int {
     wSign(eval(rip(t)), pos(t)) 
 }
 

@@ -1,28 +1,28 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 datatype BT = Box | Nd(t1: BT, t2: BT)
 
-function sizeBT(bt: BT): nat {
+def sizeBT(bt: BT): nat {
     match bt {
         case Box => 1
         case Nd(t1, t2) => 1 + sizeBT(t1) + sizeBT(t2)
     }
 }
 
-function sizeList(l: List<(BT, BT)>): nat {
+def sizeList(l: List<(BT, BT)>): nat {
     match l {
         case Nil => 0
         case Cons((left, right), t) => sizeBT(left) + sizeBT(right) + sizeList(t)
     }
 }
 
-function checkPalin(bt: BT): bool {
+def checkPalin(bt: BT): bool {
     match bt {
         case Box => true
         case Nd(t1, t2) => check((t1, t2))
     }
 }
 
-function check(bts: (BT, BT)): bool
+def check(bts: (BT, BT)): bool
     decreases sizeBT(bts.0) + sizeBT(bts.1)
 {
     match bts {
@@ -32,7 +32,7 @@ function check(bts: (BT, BT)): bool
     }
 }
 
-function check2(l: List<(BT, BT)>): bool
+def check2(l: List<(BT, BT)>): bool
     decreases sizeList(l)
 {
     match l {
@@ -45,6 +45,6 @@ function check2(l: List<(BT, BT)>): bool
     }
 }
 
-function transform(bts: (BT, BT)): List<(BT, BT)> {
+def transform(bts: (BT, BT)): List<(BT, BT)> {
     Cons(bts, Nil)
 }

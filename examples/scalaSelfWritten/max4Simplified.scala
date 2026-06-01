@@ -2,7 +2,7 @@
 
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function maxM(lst: List<int>): int
+def maxM(lst: List<int>): int
   decreases(lst) {
   match lst {
     case Nil             => -1
@@ -13,7 +13,7 @@ function maxM(lst: List<int>): int
 
 // CANDIDATE 3
 
-function length<T>(l: List<T>): nat
+def length<T>(l: List<T>): nat
   decreases(l) {
   match l {
     case Nil        => 0
@@ -21,7 +21,7 @@ function length<T>(l: List<T>): nat
   }
 }
 
-function max3(l: List<int>): int
+def max3(l: List<int>): int
   decreases(length(l)) {
   match l {
     case Nil => -1

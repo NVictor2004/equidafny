@@ -1,6 +1,6 @@
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 
-function lengthTailM<T>(acc: int, l: List<T>): int
+def lengthTailM<T>(acc: int, l: List<T>): int
     decreases l
 {
     match l {
@@ -9,7 +9,7 @@ function lengthTailM<T>(acc: int, l: List<T>): int
     }
 }
 
-function lengthTail1<T>(l: List<T>, acc: int): int
+def lengthTail1<T>(l: List<T>, acc: int): int
     decreases l
 {
     match l {
@@ -18,13 +18,13 @@ function lengthTail1<T>(l: List<T>, acc: int): int
     }
 }
 
-function lengthM<T>(l: List<T>): int {
+def lengthM<T>(l: List<T>): int {
     match l {
         case Nil => 0
         case Cons(_, t) => lengthTailM(1, t)
     }
 }
 
-function length1<T>(l: List<T>): int {
+def length1<T>(l: List<T>): int {
     if l == Nil then 0 else lengthTail1(l.tail, 1)
 }

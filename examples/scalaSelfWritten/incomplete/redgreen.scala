@@ -1,7 +1,7 @@
 datatype RedGreenL = Red | RedC(data: GreenRedL)
 datatype GreenRedL = Green | GreenC(data: RedGreenL)
 
-function countRedsV1(data: RedGreenL): nat {
+def countRedsV1(data: RedGreenL): nat {
     match data {
         case Red => 1
         case RedC(data) => 
