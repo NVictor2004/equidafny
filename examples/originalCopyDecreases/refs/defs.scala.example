@@ -18,7 +18,7 @@ object benchmarks_formula_defs {
   case class Imply(param0: Formula, param1: Formula) extends Formula {}
   case class Equal(param0: Exp, param1: Exp) extends Formula {}
   sealed abstract class Exp {}
-  case class Num(param0: Int) extends Exp {}
+  case class Num(param0: BigInt) extends Exp {}
   case class Plus(param0: Exp, param1: Exp) extends Exp {}
   case class Minus(param0: Exp, param1: Exp) extends Exp {}
 }

@@ -23,7 +23,7 @@ object ta_solutions_formula {
         lazy val p22 = evalM(p2)
         !(p11) || p22
       case Equal(p1, p2) =>
-        def exp_evalM(exp: Exp): Int = {
+        def exp_evalM(exp: Exp): BigInt = {
           exp match {
             case Num(n) => { n }
             case Plus(e1, e2) => { exp_evalM(e1) + exp_evalM(e2) }

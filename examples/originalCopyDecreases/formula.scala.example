@@ -4,7 +4,7 @@ import stainless.lang._
 object C_formula_sol359 {
    
   
-  def evall(e: Exp): Int = {
+  def evall(e: Exp): BigInt = {
     e match {
       case Num(a) => { a }
       case Plus(a, b) => { evall(a) + evall(b) }
