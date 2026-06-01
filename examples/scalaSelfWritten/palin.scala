@@ -3,21 +3,21 @@ object palin {
   datatype BT = Box | Nd(t1: BT, t2: BT)
   
   def sizeBT(bt: BT): nat {
-      match bt {
+      bt match {
           case Box => 1
           case Nd(t1, t2) => 1 + sizeBT(t1) + sizeBT(t2)
       }
   }
   
   def sizeList(l: List<(BT, BT)>): nat {
-      match l {
+      l match {
           case Nil => 0
           case Cons((left, right), t) => sizeBT(left) + sizeBT(right) + sizeList(t)
       }
   }
   
   def checkPalin(bt: BT): bool {
-      match bt {
+      bt match {
           case Box => true
           case Nd(t1, t2) => check((t1, t2))
       }
@@ -26,7 +26,7 @@ object palin {
   def check(bts: (BT, BT)): bool
       decreases sizeBT(bts.0) + sizeBT(bts.1)
   {
-      match bts {
+      bts match {
           case (Box, Box) => true
           case (Nd(t1, t2), Nd(t3, t4)) => check((t1, t4)) && check((t2, t3))
           case _ => false
@@ -36,7 +36,7 @@ object palin {
   def check2(l: List<(BT, BT)>): bool
       decreases sizeList(l)
   {
-      match l {
+      l match {
           case Nil => true
           case Cons((Box, Box), ts) => check2(ts)
           case Cons((Nd(t1, t2), Nd(t3, t4)), ts) =>

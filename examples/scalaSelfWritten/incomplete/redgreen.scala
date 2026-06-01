@@ -3,10 +3,10 @@ object redgreen {
   datatype GreenRedL = Green | GreenC(data: RedGreenL)
   
   def countRedsV1(data: RedGreenL): nat {
-      match data {
+      data match {
           case Red => 1
           case RedC(data) => 
-              var dataCount := match data {
+              var dataCount := data match {
                   case Green => 0
                   case GreenC(data) => countRedsV1(data)
               };

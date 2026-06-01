@@ -5,7 +5,7 @@ object max4Simplified {
   
   def maxM(lst: List<int>): int
     decreases(lst) {
-    match lst {
+    lst match {
       case Nil             => -1
       case Cons(hd, Nil)   => hd
       case Cons(hd, tl)    => if (hd > maxM(tl)) then hd else maxM(tl)
@@ -16,7 +16,7 @@ object max4Simplified {
   
   def length<T>(l: List<T>): nat
     decreases(l) {
-    match l {
+    l match {
       case Nil        => 0
       case Cons(_, t) => 1 + length(t)
     }
@@ -24,10 +24,10 @@ object max4Simplified {
   
   def max3(l: List<int>): int
     decreases(length(l)) {
-    match l {
+    l match {
       case Nil => -1
       case Cons(hd, tl) =>
-        match tl {
+        tl match {
           case Nil => hd
           case Cons(hd1, tl1) =>
             assert length(Cons(hd, tl1)) < length(l);

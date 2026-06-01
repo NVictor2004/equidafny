@@ -15,7 +15,7 @@ object sumListSeq {
   def sumAcc1(l: List<int>, acc: int): int
       decreases l
   {
-      match l {
+      l match {
           case Nil => acc
           case Cons(h, t) => sumAcc1(t, acc + h)
       }

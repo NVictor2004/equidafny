@@ -2,7 +2,7 @@ object length1 {
   datatype List<T> = Nil | Cons(head: T, tail: List<T>)
   
   def lengthM<T>(l: List<T>): int {
-      match l {
+      l match {
           case Nil => 0
           case Cons(_, t) => 1 + lengthM(t)
       }

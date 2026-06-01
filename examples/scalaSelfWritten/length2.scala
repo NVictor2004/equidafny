@@ -4,7 +4,7 @@ object length2 {
   def lengthTailM<T>(acc: int, l: List<T>): int
       decreases l
   {
-      match l {
+      l match {
           case Nil => acc
           case Cons(_, t) => lengthTailM(acc + 1, t)
       }
@@ -13,14 +13,14 @@ object length2 {
   def lengthTail1<T>(l: List<T>, acc: int): int
       decreases l
   {
-      match l {
+      l match {
           case Nil => acc
           case Cons(_, t) => lengthTail1(t, acc + 1)
       }
   }
   
   def lengthM<T>(l: List<T>): int {
-      match l {
+      l match {
           case Nil => 0
           case Cons(_, t) => lengthTailM(1, t)
       }

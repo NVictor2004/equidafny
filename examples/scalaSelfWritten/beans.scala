@@ -17,11 +17,11 @@ object beans {
   datatype Bean = Red | Black
   
   def count(jar: List<Bean>): (int, int) {
-      match jar {
+      jar match {
           case Nil => (0, 0)
           case Cons(bean, tail) => 
               var (tailRed, tailBlack) := count(tail);
-              match bean {
+              bean match {
                   case Red => (tailRed + 1, tailBlack)
                   case Black => (tailRed, tailBlack + 1)
               }  

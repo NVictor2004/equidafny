@@ -5,7 +5,7 @@ object mergeArguments {
   
   def insertM(xs: List<int>, t: int): List<int>
     decreases xs {
-    match xs {
+    xs match {
       case Nil => Cons(t, Nil)
       case Cons(hd, tl) =>
         if (t <= hd) then Cons(t, xs)
@@ -15,7 +15,7 @@ object mergeArguments {
   
   def insertSortedM(insert: List<int>, sorted: List<int>): List<int>
     {
-    match insert {
+    insert match {
       case Nil => sorted
       case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
     }
@@ -23,7 +23,7 @@ object mergeArguments {
   
   def insert1(t: int, xs: List<int>): List<int>
     decreases xs {
-    match xs {
+    xs match {
       case Nil => Cons(t, Nil)
       case Cons(hd, tl) =>
         if (t <= hd) then Cons(t, xs)
@@ -34,7 +34,7 @@ object mergeArguments {
   def insertSorted1(sorted: List<int>, insert: List<int>): List<int>
     decreases insert
    {
-    match insert {
+    insert match {
       case Nil => sorted
       case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
     }

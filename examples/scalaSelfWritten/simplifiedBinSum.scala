@@ -5,7 +5,7 @@ object simplifiedBinSum {
   
   def length<T>(l: List<T>): nat
     {
-    match l
+    l match
       case Nil => 0
       case Cons(_, t) => 1 + length(t)
     }

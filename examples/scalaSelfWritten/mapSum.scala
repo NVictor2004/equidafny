@@ -10,7 +10,7 @@ object mapSum {
   }
   
   def mapM(l: List<(int, int)>): List<int> {
-      match l {
+      l match {
           case Nil => Nil
           case Cons((h1, h2), t) => 
               var hM := sumM(h1, h2);
@@ -23,7 +23,7 @@ object mapSum {
   }
   
   def map1(l: List<(int, int)>): List<int> {
-      match l {
+      l match {
           case Nil => Nil
           case Cons((h1, h2), t) => 
               var h1 := sum1(h1, h2);

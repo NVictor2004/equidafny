@@ -2,7 +2,7 @@ object term {
   datatype Term = Val(v: int) | UMinus(t: Term) | Mult(left: Term, right: Term)
   
   def eval(t: Term): int {
-      match t {
+      t match {
           case Val(v) => v
           case UMinus(t) => -eval(t)
           case Mult(left, right) => eval(left) * eval(right)
@@ -10,7 +10,7 @@ object term {
   }
   
   def rip(t: Term): Term {
-      match t {
+      t match {
           case Val(v) => Val(v)
           case UMinus(t) => rip(t)
           case Mult(left, right) => Mult(rip(left), rip(right))
@@ -18,7 +18,7 @@ object term {
   }
   
   def pos(t: Term): bool {
-      match t {
+      t match {
           case Val(v) => true
           case UMinus(t) => !pos(t)
           case Mult(left, right) => pos(left) == pos(right)
@@ -40,7 +40,7 @@ object term {
   lemma equivalence(t: Term)
       ensures evalM(t) == eval1(t)
   {
-      match t {
+      t match {
           case Val(v) => {}
           case UMinus(expr) => equivalence(expr);
           case Mult(left, right) => {

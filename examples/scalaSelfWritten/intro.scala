@@ -5,7 +5,7 @@ object intro {
   
   def insertM(xs: List<int>, t: int): List<int>
     decreases xs {
-    match xs {
+    xs match {
       case Nil => Cons(t, Nil)
       case Cons(hd, tl) =>
         if (t <= hd) then Cons(t, xs)
@@ -23,7 +23,7 @@ object intro {
   
   def insert1(t: int, xs: List<int>): List<int>
     decreases xs {
-    match xs {
+    xs match {
       case Cons(hd, tl) =>
         if (!(t <= hd)) then Cons(hd, insert1(t, tl))
         else Cons(t, xs)
