@@ -1,18 +1,25 @@
+import stainless.lang._
+
 object redgreen {
-  datatype RedGreenL = Red | RedC(data: GreenRedL)
-  datatype GreenRedL = Green | GreenC(data: RedGreenL)
+  sealed trait RedGreenL
+  case object Red extends RedGreenL
+  case class RedC(data: GreenRedL) extends RedGreenL
+
+  sealed trait GreenRedL
+  case object Green extends GreenRedL
+  case class GreenC(data: RedGreenL) extends GreenRedL
   
-  def countRedsV1(data: RedGreenL): nat {
+  def countRedsV1(data: RedGreenL): Int = {
       data match {
           case Red => 1
           case RedC(data) => 
-              var dataCount := data match {
+              val dataCount = data match {
                   case Green => 0
                   case GreenC(data) => countRedsV1(data)
-              };
+              }
               1 + dataCount
       }
-  }
+  }.ensuring(_ >= 0)
   
   // datatype RedGreenT = Red | RedD(Green RedGreenT)
   

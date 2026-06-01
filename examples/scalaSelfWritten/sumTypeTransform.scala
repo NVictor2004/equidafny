@@ -1,23 +1,22 @@
-object sumTypeTransform {
-  datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-  
-  def sumM(l: List<int>): int {
+import stainless.lang._
+
+object sumTypeTransform {  
+  def sumM(l: List[Int]): Int = {
     l match {
       case Nil => 0
-      case Cons(h, t) => h + sumM(t)
+      case h :: t => h + sumM(t)
     }
   }
   
-  def sum1(data: (List<int>, int)): int
-    decreases data.0
-  {
+  def sum1(data: (List[Int], Int)): Int = {
+    decreases(data._1)
     data match {
       case (Nil, acc) => acc
-      case (Cons(h, t), acc) => sum1((t, h + acc))
+      case (h :: t, acc) => sum1((t, h + acc))
     }
   }
   
-  def transform(l: List<int>): (List<int>, int) {
+  def transform(l: List[Int]): (List[Int], Int) = {
     (l, 0)
   }
 }

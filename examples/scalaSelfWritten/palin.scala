@@ -1,31 +1,34 @@
+import stainless.lang._
+
 object palin {
-  datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-  datatype BT = Box | Nd(t1: BT, t2: BT)
+
+  sealed trait BT
+  case object Box extends BT
+  case class Nd(t1: BT, t2: BT) extends BT
   
-  def sizeBT(bt: BT): nat {
+  def sizeBT(bt: BT): Int = {
       bt match {
           case Box => 1
           case Nd(t1, t2) => 1 + sizeBT(t1) + sizeBT(t2)
       }
-  }
+  }.ensuring(_ >= 0)
   
-  def sizeList(l: List<(BT, BT)>): nat {
+  def sizeList(l: List[(BT, BT)]): Int = {
       l match {
           case Nil => 0
-          case Cons((left, right), t) => sizeBT(left) + sizeBT(right) + sizeList(t)
+          case (left, right) :: t => sizeBT(left) + sizeBT(right) + sizeList(t)
       }
-  }
+  }.ensuring(_ >= 0)
   
-  def checkPalin(bt: BT): bool {
+  def checkPalin(bt: BT): Boolean = {
       bt match {
           case Box => true
           case Nd(t1, t2) => check((t1, t2))
       }
   }
   
-  def check(bts: (BT, BT)): bool
-      decreases sizeBT(bts.0) + sizeBT(bts.1)
-  {
+  def check(bts: (BT, BT)): Boolean = {
+      decreases(sizeBT(bts._1) + sizeBT(bts._2))
       bts match {
           case (Box, Box) => true
           case (Nd(t1, t2), Nd(t3, t4)) => check((t1, t4)) && check((t2, t3))
@@ -33,20 +36,19 @@ object palin {
       }
   }
   
-  def check2(l: List<(BT, BT)>): bool
-      decreases sizeList(l)
-  {
+  def check2(l: List[(BT, BT)]): Boolean = {
+      decreases(sizeList(l))
       l match {
           case Nil => true
-          case Cons((Box, Box), ts) => check2(ts)
-          case Cons((Nd(t1, t2), Nd(t3, t4)), ts) =>
-              assert sizeList(Cons((t1, t4), Cons((t2, t3), ts))) < sizeList(l);
-              check2(Cons((t1, t4), Cons((t2, t3), ts)))
+          case (Box, Box) :: ts => check2(ts)
+          case (Nd(t1, t2), Nd(t3, t4)) :: ts =>
+              assert(sizeList((t1, t4) :: (t2, t3) :: ts) < sizeList(l))
+              check2((t1, t4) :: (t2, t3) :: ts)
           case _ => false
       }
   }
   
-  def transform(bts: (BT, BT)): List<(BT, BT)> {
-      Cons(bts, Nil)
+  def transform(bts: (BT, BT)): List[(BT, BT)] = {
+      bts :: Nil
   }
 }

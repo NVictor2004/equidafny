@@ -1,37 +1,37 @@
+import stainless.lang._
+
 object max4Simplified {
   // MODEL
-  
-  datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-  
-  def maxM(lst: List<int>): int
-    decreases(lst) {
+
+  def maxM(lst: List[Int]): Int = {
+    decreases(lst)
     lst match {
       case Nil             => -1
-      case Cons(hd, Nil)   => hd
-      case Cons(hd, tl)    => if (hd > maxM(tl)) then hd else maxM(tl)
+      case hd :: Nil   => hd
+      case hd :: tl    => if (hd > maxM(tl)) then hd else maxM(tl)
     }
   }
   
   // CANDIDATE 3
   
-  def length<T>(l: List<T>): nat
-    decreases(l) {
+  def length[T](l: List[T]): Int = {
+    decreases(l)
     l match {
       case Nil        => 0
-      case Cons(_, t) => 1 + length(t)
+      case _ :: t => 1 + length(t)
     }
-  }
+  }.ensuring(_ >= 0)
   
-  def max3(l: List<int>): int
-    decreases(length(l)) {
+  def max3(l: List[Int]): Int = {
+    decreases(length(l))
     l match {
       case Nil => -1
-      case Cons(hd, tl) =>
+      case hd :: tl =>
         tl match {
           case Nil => hd
-          case Cons(hd1, tl1) =>
-            assert length(Cons(hd, tl1)) < length(l);
-            if (hd > hd1) then max3(Cons(hd, tl1)) else max3(Cons(hd1, tl1))
+          case hd1 :: tl1 =>
+            assert(length(hd :: tl1) < length(l))
+            if (hd > hd1) then max3(hd :: tl1) else max3(hd1 :: tl1)
         }
     }
   }

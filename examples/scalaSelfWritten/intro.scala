@@ -1,40 +1,39 @@
-object intro {
+import stainless.lang._
+
+object Intro {
   // MODEL
   
-  datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-  
-  def insertM(xs: List<int>, t: int): List<int>
-    decreases xs {
+  def insertM(xs: List[Int], t: Int): List[Int] = {
+    decreases(xs)
     xs match {
-      case Nil => Cons(t, Nil)
-      case Cons(hd, tl) =>
-        if (t <= hd) then Cons(t, xs)
-        else Cons(hd, insertM(tl, t))
+      case Nil => t :: Nil
+      case hd :: tl =>
+        if (t <= hd) then t :: xs
+        else hd :: insertM(tl, t)
     }
   }
   
-  def insertSortedM<Seed>(seed: Seed, next: Seed -> (Seed, int), count: int, xs: List<int>): List<int>
-    {
+  def insertSortedM[Seed](seed: Seed, next: Seed => (Seed, Int), count: Int, xs: List[Int]): List[Int] = {
     if (count <= 0) then xs
     else
-      var (nxtS, t) := next(seed);
+      val (nxtS, t) = next(seed)
       insertSortedM(nxtS, next, count - 1, insertM(xs, t))
   }
   
-  def insert1(t: int, xs: List<int>): List<int>
-    decreases xs {
+  def insert1(t: Int, xs: List[Int]): List[Int] = {
+    decreases(xs)
     xs match {
-      case Cons(hd, tl) =>
-        if (!(t <= hd)) then Cons(hd, insert1(t, tl))
-        else Cons(t, xs)
-      case Nil => Cons(t, Nil)
+      case hd :: tl =>
+        if (!(t <= hd)) then hd :: insert1(t, tl)
+        else t :: xs
+      case Nil => t :: Nil
     }
   }
   
-  def insertSorted1<Seed>(seed: Seed, next: Seed -> (Seed, int), xs: List<int>, count: int): List<int>
-    decreases count {
+  def insertSorted1[Seed](seed: Seed, next: Seed => (Seed, Int), xs: List[Int], count: Int): List[Int] = {
+    decreases(count)
     if (!(count <= 0)) then 
-      var (nxtS, t) := next(seed);
+      val (nxtS, t) = next(seed)
       insertSorted1(nxtS, next, insert1(t, xs), count - 1)
     else xs
   }

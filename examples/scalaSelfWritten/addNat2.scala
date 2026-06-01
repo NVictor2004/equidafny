@@ -1,3 +1,5 @@
+import stainless.lang._
+
 object addNat2 {
   
   sealed trait Nat

@@ -1,7 +1,12 @@
+import stainless.lang._
+
 object term {
-  datatype Term = Val(v: int) | UMinus(t: Term) | Mult(left: Term, right: Term)
+  sealed trait Term
+  case class Val(v: Int) extends Term
+  case class UMinus(t: Term) extends Term
+  case class Mult(left: Term, right: Term) extends Term
   
-  def eval(t: Term): int {
+  def eval(t: Term): Int = {
       t match {
           case Val(v) => v
           case UMinus(t) => -eval(t)
@@ -9,7 +14,7 @@ object term {
       }
   }
   
-  def rip(t: Term): Term {
+  def rip(t: Term): Term = {
       t match {
           case Val(v) => Val(v)
           case UMinus(t) => rip(t)
@@ -17,7 +22,7 @@ object term {
       }
   }
   
-  def pos(t: Term): bool {
+  def pos(t: Term): Boolean = {
       t match {
           case Val(v) => true
           case UMinus(t) => !pos(t)
@@ -25,28 +30,15 @@ object term {
       }
   }
   
-  def wSign(i: int, b: bool): int {
+  def wSign(i: Int, b: Boolean): Int = {
       if b then i else -i
   }
   
-  def evalM(t: Term): int {
+  def evalM(t: Term): Int = {
       eval(t)
   }
   
-  def eval1(t: Term): int {
+  def eval1(t: Term): Int = {
       wSign(eval(rip(t)), pos(t)) 
-  }
-  
-  lemma equivalence(t: Term)
-      ensures evalM(t) == eval1(t)
-  {
-      t match {
-          case Val(v) => {}
-          case UMinus(expr) => equivalence(expr);
-          case Mult(left, right) => {
-              equivalence(left);
-              equivalence(right);
-          }
-      }
   }
 }

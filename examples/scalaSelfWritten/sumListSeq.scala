@@ -1,32 +1,30 @@
-object sumListSeq {
-  datatype List<T> = Nil | Cons(head: T, tail: List<T>)
-  
-  def sumAccM(acc: int, l: seq<int>): int
-      decreases l
-  {
-      if |l| == 0 then acc
-      else sumAccM(acc + l[0], l[1..])
+import stainless.lang._
+
+object sumListSeq {  
+  def sumAccM(acc: Int, l: Vector[Int]): Int = {
+      decreases(l)
+      if l.isEmpty then acc
+      else sumAccM(acc + l(0), l.tail)
   }
   
-  def sumM(l: seq<int>): int {
+  def sumM(l: Vector[Int]): Int = {
       sumAccM(0, l)
   }
   
-  def sumAcc1(l: List<int>, acc: int): int
-      decreases l
-  {
+  def sumAcc1(l: List[Int], acc: Int): Int = {
+      decreases(l)
       l match {
           case Nil => acc
-          case Cons(h, t) => sumAcc1(t, acc + h)
+          case h :: t => sumAcc1(t, acc + h)
       }
   }
   
-  def sum1(l: List<int>): int {
+  def sum1(l: List[Int]): Int = {
       sumAcc1(l, 0)
   }
   
-  def seqToList(l: seq<int>): List<int> {
-      if |l| == 0 then Nil
-      else Cons(l[0], seqToList(l[1..]))
+  def seqToList(l: Vector[Int]): List[Int] = {
+      if l.isEmpty then Nil
+      else l(0) :: seqToList(l.tail)
   }
 }

@@ -1,8 +1,6 @@
+import stainless.lang._
+
 object beans {
-  sealed trait List<T>
-  case object Nil extends List<T>
-  case class Cons(head: T, tail: List<T>) extends List<T>
-  
   // We have a jar of green and red beans. We play the game as follows:
   // select two randomly.
   // If they are both red, then throw them both away and replace by a black one
@@ -20,11 +18,11 @@ object beans {
   case object Red extends Bean
   case object Black extends Bean
   
-  def count(jar: List<Bean>): (int, int) {
+  def count(jar: List[Bean]): (Int, Int) = {
       jar match {
           case Nil => (0, 0)
-          case Cons(bean, tail) => 
-              var (tailRed, tailBlack) := count(tail);
+          case bean :: tail => 
+              val (tailRed, tailBlack) = count(tail)
               bean match {
                   case Red => (tailRed + 1, tailBlack)
                   case Black => (tailRed, tailBlack + 1)
@@ -33,19 +31,19 @@ object beans {
   }
   
   // When jar is a pair
-  def finalBeanPair(jar: (int, int)): Bean {
-    var (red, _) := jar;
+  def finalBeanPair(jar: (Int, Int)): Bean = {
+    val (red, _) = jar
     if (red % 2 == 1) then Red else Black
   }
   
   // When jar is a List
-  def finalBeanList(jar: List<Bean>): Bean {
-    var (red, _) := count(jar);
+  def finalBeanList(jar: List[Bean]): Bean = {
+    val (red, _) = count(jar)
     if (red % 2 == 1) then Red else Black
   }
   
   // Type transformations: this is what is currently missing from EquiDafny (and Stainless)
-  def transform(xs: List<Bean>): (int, int) {
+  def transform(xs: List[Bean]): (Int, Int) = {
     count(xs)
   }
 }
