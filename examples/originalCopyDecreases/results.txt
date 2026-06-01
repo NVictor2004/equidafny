@@ -1,0 +1,14 @@
+Stainless Results:
+
+Can prove equivalent:
+sigma, solution_1
+gcdM2
+
+Cannot prove equivalent:
+sigma, solution_2: Wrong CE
+sigma, solution_3: Wrong CE
+primeM1: Timeout
+primeM2: Timeout
+gcdM1: wrong CE
+formula: wrong CE
+
