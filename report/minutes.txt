@@ -10,9 +10,7 @@ add the first year tests
 
 implementation, how to install section
 
-conclusions, 
-more detail, little summary of what is in the report and what most proud, can refer to stuff in report
-compare with stainless runtimes vs ED runtimes
+conclusions, compare with stainless runtimes vs ED runtimes
 
 edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
 
