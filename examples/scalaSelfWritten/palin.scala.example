@@ -1,4 +1,5 @@
 import stainless.lang._
+import stainless.collection._
 
 object palin {
 
@@ -6,16 +7,16 @@ object palin {
   case object Box extends BT
   case class Nd(t1: BT, t2: BT) extends BT
   
-  def sizeBT(bt: BT): Int = {
+  def sizeBT(bt: BT): BigInt = {
       bt match {
           case Box => 1
           case Nd(t1, t2) => 1 + sizeBT(t1) + sizeBT(t2)
       }
   }.ensuring(_ >= 0)
   
-  def sizeList(l: List[(BT, BT)]): Int = {
+  def sizeList(l: List[(BT, BT)]): BigInt = {
       l match {
-          case Nil => 0
+          case Nil() => 0
           case (left, right) :: t => sizeBT(left) + sizeBT(right) + sizeList(t)
       }
   }.ensuring(_ >= 0)
@@ -39,7 +40,7 @@ object palin {
   def check2(l: List[(BT, BT)]): Boolean = {
       decreases(sizeList(l))
       l match {
-          case Nil => true
+          case Nil() => true
           case (Box, Box) :: ts => check2(ts)
           case (Nd(t1, t2), Nd(t3, t4)) :: ts =>
               assert(sizeList((t1, t4) :: (t2, t3) :: ts) < sizeList(l))
@@ -49,6 +50,6 @@ object palin {
   }
   
   def transform(bts: (BT, BT)): List[(BT, BT)] = {
-      bts :: Nil
+      bts :: Nil()
   }
 }

@@ -1,30 +1,31 @@
 import stainless.lang._
+import stainless.collection._
 
 object sumListSeq {  
-  def sumAccM(acc: Int, l: Vector[Int]): Int = {
+  def sumAccM(acc: BigInt, l: Vector[BigInt]): BigInt = {
       decreases(l)
       if l.isEmpty then acc
       else sumAccM(acc + l(0), l.tail)
   }
   
-  def sumM(l: Vector[Int]): Int = {
+  def sumM(l: Vector[BigInt]): BigInt = {
       sumAccM(0, l)
   }
   
-  def sumAcc1(l: List[Int], acc: Int): Int = {
+  def sumAcc1(l: List[BigInt], acc: BigInt): BigInt = {
       decreases(l)
       l match {
-          case Nil => acc
-          case h :: t => sumAcc1(t, acc + h)
+          case Nil() => acc
+          case Cons(h, t) => sumAcc1(t, acc + h)
       }
   }
   
-  def sum1(l: List[Int]): Int = {
+  def sum1(l: List[BigInt]): BigInt = {
       sumAcc1(l, 0)
   }
   
-  def seqToList(l: Vector[Int]): List[Int] = {
-      if l.isEmpty then Nil
+  def seqToList(l: Vector[BigInt]): List[BigInt] = {
+      if l.isEmpty then Nil()
       else l(0) :: seqToList(l.tail)
   }
 }

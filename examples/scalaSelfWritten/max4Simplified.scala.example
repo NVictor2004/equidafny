@@ -1,36 +1,29 @@
 import stainless.lang._
+import stainless.collection._
 
 object max4Simplified {
   // MODEL
 
-  def maxM(lst: List[Int]): Int = {
+  def maxM(lst: List[BigInt]): BigInt = {
     decreases(lst)
     lst match {
-      case Nil             => -1
-      case hd :: Nil   => hd
-      case hd :: tl    => if (hd > maxM(tl)) then hd else maxM(tl)
+      case Nil()             => -1
+      case Cons(hd, Nil())   => hd
+      case Cons(hd, tl)    => if (hd > maxM(tl)) then hd else maxM(tl)
     }
   }
   
   // CANDIDATE 3
   
-  def length[T](l: List[T]): Int = {
-    decreases(l)
+  def max3(l: List[BigInt]): BigInt = {
+    decreases(l.size)
     l match {
-      case Nil        => 0
-      case _ :: t => 1 + length(t)
-    }
-  }.ensuring(_ >= 0)
-  
-  def max3(l: List[Int]): Int = {
-    decreases(length(l))
-    l match {
-      case Nil => -1
-      case hd :: tl =>
+      case Nil() => -1
+      case Cons(hd, tl) =>
         tl match {
-          case Nil => hd
-          case hd1 :: tl1 =>
-            assert(length(hd :: tl1) < length(l))
+          case Nil() => hd
+          case Cons(hd1, tl1) =>
+            assert((hd :: tl1).size < l.size)
             if (hd > hd1) then max3(hd :: tl1) else max3(hd1 :: tl1)
         }
     }

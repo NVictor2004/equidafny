@@ -9,7 +9,7 @@ object redgreen {
   case object Green extends GreenRedL
   case class GreenC(data: RedGreenL) extends GreenRedL
   
-  def countRedsV1(data: RedGreenL): Int = {
+  def countRedsV1(data: RedGreenL): BigInt = {
       data match {
           case Red => 1
           case RedC(data) => 

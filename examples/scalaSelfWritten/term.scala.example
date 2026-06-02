@@ -1,12 +1,13 @@
 import stainless.lang._
+import stainless.collection._
 
 object term {
   sealed trait Term
-  case class Val(v: Int) extends Term
+  case class Val(v: BigInt) extends Term
   case class UMinus(t: Term) extends Term
   case class Mult(left: Term, right: Term) extends Term
   
-  def eval(t: Term): Int = {
+  def eval(t: Term): BigInt = {
       t match {
           case Val(v) => v
           case UMinus(t) => -eval(t)
@@ -30,15 +31,15 @@ object term {
       }
   }
   
-  def wSign(i: Int, b: Boolean): Int = {
+  def wSign(i: BigInt, b: Boolean): BigInt = {
       if b then i else -i
   }
   
-  def evalM(t: Term): Int = {
+  def evalM(t: Term): BigInt = {
       eval(t)
   }
   
-  def eval1(t: Term): Int = {
+  def eval1(t: Term): BigInt = {
       wSign(eval(rip(t)), pos(t)) 
   }
 }

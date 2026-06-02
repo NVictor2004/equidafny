@@ -1,22 +1,23 @@
 import stainless.lang._
+import stainless.collection._
 
 object sumTypeTransform {  
-  def sumM(l: List[Int]): Int = {
+  def sumM(l: List[BigInt]): BigInt = {
     l match {
-      case Nil => 0
-      case h :: t => h + sumM(t)
+      case Nil() => 0
+      case Cons(h, t) => h + sumM(t)
     }
   }
   
-  def sum1(data: (List[Int], Int)): Int = {
+  def sum1(data: (List[BigInt], BigInt)): BigInt = {
     decreases(data._1)
     data match {
-      case (Nil, acc) => acc
+      case (Nil(), acc) => acc
       case (h :: t, acc) => sum1((t, h + acc))
     }
   }
   
-  def transform(l: List[Int]): (List[Int], Int) = {
+  def transform(l: List[BigInt]): (List[BigInt], BigInt) = {
     (l, 0)
   }
 }

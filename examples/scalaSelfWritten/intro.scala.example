@@ -1,36 +1,37 @@
 import stainless.lang._
+import stainless.collection._
 
 object Intro {
   // MODEL
   
-  def insertM(xs: List[Int], t: Int): List[Int] = {
+  def insertM(xs: List[BigInt], t: BigInt): List[BigInt] = {
     decreases(xs)
     xs match {
-      case Nil => t :: Nil
-      case hd :: tl =>
+      case Nil() => t :: Nil()
+      case Cons(hd, tl) =>
         if (t <= hd) then t :: xs
         else hd :: insertM(tl, t)
     }
   }
   
-  def insertSortedM[Seed](seed: Seed, next: Seed => (Seed, Int), count: Int, xs: List[Int]): List[Int] = {
+  def insertSortedM[Seed](seed: Seed, next: Seed => (Seed, BigInt), count: BigInt, xs: List[BigInt]): List[BigInt] = {
     if (count <= 0) then xs
     else
       val (nxtS, t) = next(seed)
       insertSortedM(nxtS, next, count - 1, insertM(xs, t))
   }
   
-  def insert1(t: Int, xs: List[Int]): List[Int] = {
+  def insert1(t: BigInt, xs: List[BigInt]): List[BigInt] = {
     decreases(xs)
     xs match {
-      case hd :: tl =>
+      case Cons(hd, tl) =>
         if (!(t <= hd)) then hd :: insert1(t, tl)
         else t :: xs
-      case Nil => t :: Nil
+      case Nil() => t :: Nil()
     }
   }
   
-  def insertSorted1[Seed](seed: Seed, next: Seed => (Seed, Int), xs: List[Int], count: Int): List[Int] = {
+  def insertSorted1[Seed](seed: Seed, next: Seed => (Seed, BigInt), xs: List[BigInt], count: BigInt): List[BigInt] = {
     decreases(count)
     if (!(count <= 0)) then 
       val (nxtS, t) = next(seed)

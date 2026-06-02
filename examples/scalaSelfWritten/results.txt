@@ -1,0 +1,19 @@
+Stainless Results:
+
+Can prove equivalent:
+length1
+length2
+mapSum
+max4Simplified
+simplifiedBinSum
+
+Cannot prove equivalent:
+addNat1: timeout
+addNat2: timeout
+beans: types
+intro: non-negative measure for count parameter, signature mismatch
+mergeArguments: does not match arguments correctly, wrong CE
+palin: types
+sumListSeq: types
+sumTypeTransform: types
+term: timeout

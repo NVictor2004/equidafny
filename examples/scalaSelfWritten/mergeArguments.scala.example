@@ -1,40 +1,41 @@
 import stainless.lang._
+import stainless.collection._
 
 object mergeArguments {
   // MODEL
   
-  def insertM(xs: List[Int], t: Int): List[Int] = {
+  def insertM(xs: List[BigInt], t: BigInt): List[BigInt] = {
     decreases(xs)
     xs match {
-      case Nil => t :: Nil
-      case hd :: tl =>
+      case Nil() => t :: Nil()
+      case Cons(hd, tl) =>
         if (t <= hd) then t :: xs
         else hd :: insertM(tl, t)
     }
   }
   
-  def insertSortedM(insert: List[Int], sorted: List[Int]): List[Int] = {
+  def insertSortedM(insert: List[BigInt], sorted: List[BigInt]): List[BigInt] = {
     insert match {
-      case Nil => sorted
-      case x :: xs => insertSortedM(xs, insertM(sorted, x))
+      case Nil() => sorted
+      case Cons(x, xs) => insertSortedM(xs, insertM(sorted, x))
     }
   }
   
-  def insert1(t: Int, xs: List[Int]): List[Int] = {
+  def insert1(t: BigInt, xs: List[BigInt]): List[BigInt] = {
     decreases(xs)
     xs match {
-      case Nil => t :: Nil
-      case hd :: tl =>
+      case Nil() => t :: Nil()
+      case Cons(hd, tl) =>
         if (t <= hd) then t :: xs
         else hd :: insert1(t, tl)
     }
   }
   
-  def insertSorted1(sorted: List[Int], insert: List[Int]): List[Int] = {
+  def insertSorted1(sorted: List[BigInt], insert: List[BigInt]): List[BigInt] = {
     decreases(insert)
     insert match {
-      case Nil => sorted
-      case x :: xs => insertSorted1(insert1(x, sorted), xs)
+      case Nil() => sorted
+      case Cons(x, xs) => insertSorted1(insert1(x, sorted), xs)
     }
   }
 }
