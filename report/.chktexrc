@@ -1,0 +1,10 @@
+VerbEnvir
+{
+    dafny
+    boogie
+}
+
+WipeArg
+{
+    \dafnyinline:{}
+}
