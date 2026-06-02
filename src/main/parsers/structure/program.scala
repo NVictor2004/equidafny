@@ -17,9 +17,9 @@ object Datatype
 case class TopLevelConstant(
     name: String,
     t: Type,
-    data: List[BigInt]
+    data: BasicExpr
 ) extends TopLevel
-object TopLevelConstant extends PureParserBridge3[String, Type, List[BigInt], TopLevelConstant]
+object TopLevelConstant extends PureParserBridge3[String, Type, BasicExpr, TopLevelConstant]
 case class Function(
     name: String,
     generic: Option[List[(String, Option[GOption])]],

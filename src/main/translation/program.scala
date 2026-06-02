@@ -2,7 +2,7 @@ package translation.program
 
 import parsers.structure as Parsers
 import translation.structure.*
-import translation.expression.translateExpr
+import translation.expression.{translateExpr, translateBasicExpr}
 import translation.types.translateType
 import translation.specification.translateSpec
 import translation.statement.translateBlockStmt
@@ -159,7 +159,7 @@ def translateTopLevel(
     case Parsers.TopLevelConstant(name, t, data) => {
       val genericTypeData = scala.collection.immutable.Set.empty[String]
       given context: Context = Context(functionData, datatypeData, genericTypeData)
-      val item = TopLevelConstant(name, translateType(t), data)
+      val item = TopLevelConstant(name, translateType(t), translateBasicExpr(data))
       (acc.data, item :: acc.constants, acc.functions, acc.lemmas)
     }
     case Parsers.Function(name, generic, params, returnType, specs, body) => {

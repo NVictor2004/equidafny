@@ -14,8 +14,6 @@ conclusions, compare with stainless runtimes vs ED runtimes
 
 edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
 
-fix constant parsing
-
 use formulas sent by Dragana to measure how different each pair of functions is
 
 

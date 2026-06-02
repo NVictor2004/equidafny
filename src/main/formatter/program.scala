@@ -3,7 +3,7 @@ package formatter.program
 import translation.structure.*
 import formatter.types.formatType
 import formatter.specification.formatSpec
-import formatter.expression.formatExpr
+import formatter.expression.{formatExpr, formatBasicExpr}
 import formatter.statement.formatStmt
 import formatter.formatter.{Formatter, formatList}
 
@@ -58,13 +58,9 @@ def formatTopLevelConstant(const: TopLevelConstant)(using writer: Formatter): Un
   val TopLevelConstant(name, t, data) = const
   writer.format("const %s: ", name)
   formatType(t)
-  writer.print(" := [")
-  data.init.foreach(num => {
-    writer.print(num.toString())
-    writer.print(", ")
-  })
-  writer.print(data.last.toString())
-  writer.print("]\n\n")
+  writer.print(" := ")
+  formatBasicExpr(data)
+  writer.print("\n\n")
 }
 
 def formatDatatype(datatype: Datatype)(using writer: Formatter): Unit = {

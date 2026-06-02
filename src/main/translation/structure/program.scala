@@ -25,7 +25,7 @@ case class Datatype(
 case class TopLevelConstant(
     name: String,
     t: Type,
-    data: List[BigInt]
+    data: BasicExpr
 )
 case class Function(
     ghost: Boolean,

@@ -10,12 +10,11 @@ import parsers.lexer.ident
 import parsers.lexer.implicits.implicitSymbol
 import parsers.types.typeParser
 import parsers.specification.spec
-import parsers.expression.expr
+import parsers.expression.{expr, basic}
 import parsers.statement.block
-import parsers.lexer.{fully, integer}
+import parsers.lexer.fully
 
 // Helper parsers
-private val listIntegers = "[" ~> sepBy(integer, ",") <~ "]"
 private val gOption =
   ("==" as Equals)
     | ("!new" as NotNew)
@@ -49,7 +48,7 @@ private val lemma =
 private val datatype =
   Datatype("datatype" ~> ident, generics, "=" ~> sepBy(declaredType, "|"))
 private val topLevelConstant =
-  TopLevelConstant("const" ~> ident, ":" ~> typeParser, ":=" ~> listIntegers)
+  TopLevelConstant("const" ~> ident, ":" ~> typeParser, ":=" ~> basic)
 
 // Main parser to parse an entire program
 val program = fully(many(datatype | function | ghostFunction | lemma | topLevelConstant))
