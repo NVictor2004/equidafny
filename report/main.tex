@@ -39,6 +39,8 @@
 }
 \newminted[dafny]{lexer.py:CustomLexer}{}
 \newmintinline[dafnyinline]{lexer.py:CustomLexer}{}
+\newminted[boogie]{boogieLexer.py:CustomLexer}{}
+\newmintinline[boogieinline]{boogieLexer.py:CustomLexer}{}
 
 % Disable minted temporarily
 \usepackage{verbatim}
@@ -46,6 +48,8 @@
 \DeclareRobustCommand{\mintinline}[2]{{\ttfamily #2}}
 \renewenvironment{dafny}[1][]{\verbatim}{\endverbatim}
 \DeclareRobustCommand{\dafnyinline}[2][]{{\ttfamily #2}}
+\renewenvironment{boogie}[1][]{\verbatim}{\endverbatim}
+\DeclareRobustCommand{\boogieinline}[2][]{{\ttfamily #2}}
 
 % Table settings
 \usepackage{multirow}

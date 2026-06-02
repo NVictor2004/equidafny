@@ -1,2 +1,3 @@
 [custom_lexers]
 "lexer.py" = "0b2140d812828cc7d2e9f4a913a504b952c26fff423f03a07a7bfcc07c08b952"
+"boogieLexer.py" = "64afe8f8af4781b62aacfec4fbf29477e86b171f8c111d3fccd77d62d9f11938"

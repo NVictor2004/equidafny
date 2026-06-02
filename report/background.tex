@@ -54,8 +54,8 @@ For this example, the Boogie translation resulted in a file almost 3350 lines lo
 
 SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}. The system works by combining the two programs being compared into a single program called a `product program'. This product program contains the bodies of the individual programs to simulate both of their executions. Symdiff attempts to prove postconditions on this product program to verify the relationship between the individual functions. These postconditions are called `mutual summaries'. The postconditions can be proven by passing the product program to the Boogie program verifier.
 
-An example of this process is demonstrated below~\parencite{lahiriAutomatedDifferentialProgramb}. Here is a method \lstinline{F1} which adds to the global variable \lstinline{g1} every integer from the initial value passed into the \lstinline{F1} method to 100. \lstinline{F1} is called from the \lstinline{Main1} method with the initial value 0:
-\begin{lstlisting}
+An example of this process is demonstrated below~\parencite{lahiriAutomatedDifferentialProgramb}. Here is a method \boogieinline{F1} which adds to the global variable \boogieinline{g1} every integer from the initial value passed into the \boogieinline{F1} method to 100. \boogieinline{F1} is called from the \boogieinline{Main1} method with the initial value 0:
+\begin{boogie}
 var g1: int;
 procedure F1(x1: int)
   modifies g1;
@@ -71,10 +71,10 @@ procedure Main1()
 {
   call F1(0);
 }
-\end{lstlisting}
+\end{boogie}
 %
-Here is the method \lstinline{F2} which instead adds double of every integer from the initial value to 100. It is called from the \lstinline{Main2} method in the same way as above:
-\begin{lstlisting}
+Here is the method \boogieinline{F2} which instead adds double of every integer from the initial value to 100. It is called from the \boogieinline{Main2} method in the same way as above:
+\begin{boogie}
 var g2: int;
 procedure F2(x2: int)
   modifies g2;
@@ -90,10 +90,11 @@ procedure Main2()
 {
   call F2(0);
 }
-\end{lstlisting}
+\end{boogie}
 %
-If \lstinline{g1} and \lstinline{g2} have the same initial value, after running \lstinline{Main1} and \lstinline{Main2}, then \lstinline{g1} \(\leq\) \lstinline{g2}. Thus, Symdiff can create the following product program:
-\begin{lstlisting}
+If \boogieinline{g1} and \boogieinline{g2} have the same initial value, after running \boogieinline{Main1} and \boogieinline{Main2}, then \boogieinline{g1} \(\leq\) \boogieinline{g2}. Thus, Symdiff can create the following product program:
+
+\begin{boogie}
 procedure MS_Main1_Main2()
   modifies g1, g2;
   requires g1 == g2;
@@ -101,7 +102,7 @@ procedure MS_Main1_Main2()
 {
 ...
 }
-\end{lstlisting}
+\end{boogie}
 %
 Since this process is very general, it is not limited to program equivalence. For example, SymDiff can be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption.
 
