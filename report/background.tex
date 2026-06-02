@@ -199,26 +199,19 @@ Using these tests, I have attempted to characterise the cases where Dafny requir
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c|c| } 
-  \hline
+  \begin{tabular}{ lcc } 
+  \toprule
   Type of Challenge & Number of Examples & Source \\
-  \hline
+  \midrule
   None (Fully Automatic) & 21 & \parencite{StainlessFrontendsBenchmarks} \\
-  \hline
   \nameref{sec:counterexamples} & 1 & \parencite{StainlessFrontendsBenchmarks} \\ 
-  \hline
-  \nameref{sec:equivalence-lemmas} & 15 & \parencite{StainlessFrontendsBenchmarks} \\
-  \hline 
-  \nameref{sec:auxiliary-lemmas} & 5 & \parencite{StainlessFrontendsBenchmarks} \\
-  \hline 
+  \nameref{sec:equivalence-lemmas} & 15 & \parencite{StainlessFrontendsBenchmarks} \\ 
+  \nameref{sec:auxiliary-lemmas} & 5 & \parencite{StainlessFrontendsBenchmarks} \\ 
   \nameref{sec:induction} & 5 & \parencite{StainlessFrontendsBenchmarks} \\
-  \hline
   \nameref{sec:termination} & 17 & \parencite{StainlessFrontendsBenchmarks} \\
-  \hline
   \nameref{sec:imperative-equivalence} & 7 & New \\
-  \hline
   \nameref{sec:higher-order} & 7 & \parencite{StainlessFrontendsBenchmarks} \\
-  \hline
+  \bottomrule
   \end{tabular}
   \caption{Summary of the number of examples that demonstrate each type of challenge}
   \label{tbl:challenges-summary}

@@ -176,24 +176,18 @@ In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of chall
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c|c| } 
-  \hline
+  \begin{tabular}{ lcc } 
+  \toprule
   Type of Challenge & Addressed? & Section Identifier \\
-  \hline
+  \midrule
   \nameref{sec:counterexamples} & No & None \\
-  \hline
-  \nameref{sec:equivalence-lemmas} & Yes & \Cref{sec:worked-example} \\
-  \hline 
-  \nameref{sec:auxiliary-lemmas} & Partially & \Cref{sec:addressing-auxiliary-lemmas} \\
-  \hline 
+  \nameref{sec:equivalence-lemmas} & Yes & \Cref{sec:worked-example} \\ 
+  \nameref{sec:auxiliary-lemmas} & Partially & \Cref{sec:addressing-auxiliary-lemmas} \\ 
   \nameref{sec:induction} & Yes & \Cref{sec:addressing-induction} \\
-  \hline
   \nameref{sec:termination} & Yes & \Cref{sec:addressing-termination} \\
-  \hline
   \nameref{sec:imperative-equivalence} & No & None \\
-  \hline
   \nameref{sec:higher-order} & Yes & \Cref{sec:addressing-higher-order} \\
-  \hline
+  \bottomrule
   \end{tabular}
   \caption{Description of how each challenge is addressed}
   \label{tbl:challenge-addressing-mapping}
