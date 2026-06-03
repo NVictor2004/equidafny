@@ -14,18 +14,15 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|c|c|}
-    \hline
+  \begin{tabular}{ lccc }
+    \toprule
     Original Source & Reference & Original language & Number of tests \\
-    \hline
+    \midrule
     Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 53 \\
-    \hline
     EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 22 \\
-    \hline
     Measure transfer artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
-    \hline
     Self-Written & None & None & 14 \\
-    \hline
+    \bottomrule
   \end{tabular}
   \caption{Categorisation of evaluation testsuite tests}
   \label{tbl:testsuite-categorisation}
@@ -82,14 +79,13 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|c|c|}
-    \hline
+  \begin{tabular}{ lccc }
+    \toprule
     Original Source & Reference & Original language & Number of tests \\
-    \hline
+    \midrule
     Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 5 \\
-    \hline
     EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
-    \hline
+    \bottomrule
   \end{tabular}
   \caption{Categorisation of non-equivalent tests}
   \label{tbl:non-equivalent-categorisation}
