@@ -1,4 +1,3 @@
-add to table ED proves number of tests under each limitation
 describe how complex the examples are, lines of code, number of auxiliary lemmas needed
 write number of lines of code, functions etc. per benchmark (on average, max, min)
 
