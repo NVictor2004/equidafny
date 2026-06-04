@@ -4,13 +4,11 @@
 \footnote{evaluate tests against Stainless, mention result of comparison between ED and stainless, e.g. 'on par' with stainless}
 
 \section{Evaluation Testsuite Description}
-I created an evaluation testsuite containing 96 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. I wrote some of these test files myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
+I created an evaluation testsuite containing 96 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. These tests came from 4 different sources. \Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source. I wrote some tests myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
 
 \paragraph{EqBench dataset} The EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} contains hundreds of pairs of equivalent and non-equivalent programs. I converted several of the tests from the CLEVER and REVE benchmarks from C into Dafny. I chose these benchmarks as they provided several tests using iteration (this was converted into recursion since Dafny functions do not support iteration). In addition, these tests were at an acceptable level of complexity. They were complex enough to provide a challenge when proving equivalence while not being so complex as to make language translation too difficult. 
 
-\paragraph{Measure transfer artifact} When proving equivalence between two programs, variants must often be provided to ensure both program terminate. \textcite{milovancevicProvingTerminationMeasure2025} proved that, when one program has a variant but the other does not, this variant can often be copied to the other program to prove equivalence. They provided a large dataset of tests containing several benchmarks to evaluate this approach. I took some of these tests to form part of my evaluation testsuite. I took tests from every benchmark in this dataset to ensure my subset of tests is as representative of the whole as possible. 
-
-\Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source:
+\paragraph{Measure transfer artifact} When proving equivalence between two programs, variants must often be provided to ensure both program terminate. \textcite{milovancevicProvingTerminationMeasure2025} proved that, when one program has a variant but the other does not, this variant can often be copied to the other program to prove equivalence. They provided a large dataset of tests containing several benchmarks to evaluate this approach. I took tests from every benchmark in this dataset to add to my evaluation testsuite.
 
 \begin{table}[ht]
   \centering
@@ -40,25 +38,25 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
   \hline
   None (Fully Automatic) & 21 & 6 & 0 & 2 \\
   \hline
-  \nameref{sec:equivalence-lemmas} & 15 & 6 & 1 & 6 \\
+  \nameref*{sec:equivalence-lemmas} (\ref{sec:equivalence-lemmas}) & 15 & 6 & 1 & 6 \\
   \hline 
-  \nameref{sec:auxiliary-lemmas} & 5 & 12 & 2 & 2 \\
+  \nameref*{sec:auxiliary-lemmas} (\ref{sec:auxiliary-lemmas}) & 5 & 12 & 2 & 2 \\
   \hline 
-  \nameref{sec:induction} & 5 & 1 & 1 & 5 \\
+  \nameref*{sec:induction} (\ref{sec:induction}) & 5 & 1 & 1 & 5 \\
   \hline
-  \nameref{sec:termination} & 17 & 10 & 5 & 7 \\
+  \nameref*{sec:termination} (\ref{sec:termination}) & 17 & 10 & 5 & 7 \\
   \hline
-  \nameref{sec:higher-order} & 7 & 0 & 0 & 0 \\
+  \nameref*{sec:higher-order} (\ref{sec:higher-order}) & 7 & 0 & 0 & 0 \\
   \hline
-  \nameref{sec:type-transformations} & 0 & 0 & 0 & 4 \\
+  \nameref*{sec:type-transformations} (\ref{sec:type-transformations}) & 0 & 0 & 0 & 4 \\
   \hline
-  \nameref{sec:equiv-assumption} & 1 & 5 & 0 & 1 \\
+  \nameref*{sec:equiv-assumption} (\ref{sec:equiv-assumption}) & 1 & 5 & 0 & 1 \\
   \hline
-  \nameref{sec:candidate-copying} & 4 & 0 & 1 & 2 \\
+  \nameref*{sec:candidate-copying} (\ref{sec:candidate-copying}) & 4 & 0 & 1 & 2 \\
   \hline
-  \nameref{sec:match-flattening} & 1 & 0 & 0 & 0 \\
+  \nameref*{sec:match-flattening} (\ref{sec:match-flattening}) & 1 & 0 & 0 & 0 \\
   \hline
-  \nameref{sec:var-inlining} & 3 & 2 & 0 & 1 \\
+  \nameref*{sec:var-inlining} (\ref{sec:var-inlining}) & 3 & 2 & 0 & 1 \\
   \hline
   \end{tabular}
   \caption{Summary of the number of examples from each source that demonstrate each type of challenge}
@@ -91,7 +89,7 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
   \label{tbl:non-equivalent-categorisation}
 \end{table}
 
-Neither the base Dafny verifier nor EquiDafny can verify any of these tests.
+Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
 
 \section{Evaluation Results}
 

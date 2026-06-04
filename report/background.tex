@@ -462,7 +462,7 @@ lemma equivalence(n: int, flag: bool)
 }
 \end{dafny}
 
-\subsection{Explicitly enforcing induction to prove lemmas}\label{sec:induction}
+\subsection{Explicitly enforcing induction}\label{sec:induction}
 
 Dafny often proves lemmas through induction. However, sometimes, it requires the user to explicitly state how to perform this induction by calling the lemma the user is trying to prove recursively with `smaller' arguments. For example, consider the two functions \dafnyinline{binSumM} and \dafnyinline{binSum1}. These functions compute the sum of two binary numbers and a carry bit, where the bits are represented as booleans, and the binary numbers are represented as lists of bits, in order of least significant to most significant. The \dafnyinline{binSum1} function computes the sum by listing every possible form of input, while the \dafnyinline{binSumM} function simplifies this by using the carry bit in a more complicated way. The functions are as follows: 
 
@@ -519,7 +519,7 @@ lemma equivalenceBinSum(l1: List<bool>, l2: List<bool>, c: bool)
 }
 \end{dafny}
 
-\subsection{Providing Variants to prove termination}\label{sec:termination}
+\subsection{Proving termination}\label{sec:termination}
 
 Here, I will use the same example I used in \Cref{sec:dafny}. I have copied the equivalence lemma below:
 \begin{dafny}[highlightlines=3]

@@ -18,9 +18,5 @@ also compare runtimes, use timeout of 1 second for stainless
 Evaluation.
 Evaluation section is missing an opening, two short sentences before the first section
 get all the CLEVER and REVE benchmark tests
-In Measure transfer artifact: "some of these tests" and then "from every benchmark in this dataset" this is not very clear 
-Table 5.1 could be pointed to earlier (in the first paragraph of Section 5.1), dont move the table just make a reference
-In Table 5.2, change links to section ids
-"Neither the base Dafny verifier nor EquiDafny can verify any of these tests." after this, explicitly state that this is a good thing
 
 address comments from workshop
