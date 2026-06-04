@@ -20,5 +20,3 @@ Evaluation section is missing an opening, two short sentences before the first s
 get all the CLEVER and REVE benchmark tests
 
 address comments from workshop
-
-fix automatic numbers

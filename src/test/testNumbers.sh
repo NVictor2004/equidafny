@@ -2,7 +2,7 @@ classNames=("automatic" "helperequivalence" "auxiliarylemmas" "induction" "termi
 nClasses=${#classNames[@]}
 
 copyDecreasesExclude=("terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasInduction" "terminationHelperEquivalenceCandcopy")
-eqBenchExclude=("auxiliaryLemmas" "auxiliaryLemmasAssumption" "auxiliaryLemmasAssumptionTermination" "terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasInduction" "terminationHelperEquivalenceAuxiliaryLemmas" "automaticAssumption" "helperEquivalenceVarinlining")
+eqBenchExclude=("auxiliaryLemmas" "auxiliaryLemmasAssumption" "auxiliaryLemmasAssumptionTermination" "terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasInduction" "terminationHelperEquivalenceAuxiliaryLemmas" "assumption" "helperEquivalenceVarinlining")
 selfWrittenExclude=("helperEquivalenceTerminationVarinlining" "terminationInductionAssumption" "typesInductionAuxiliaryLemmas" "terminationAuxiliaryLemmasTypesInductionCandcopy" "terminationCandcopy")
 stainlessExclude=("auxiliaryLemmasVarinlining" "terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasCandcopy" "terminationCandcopyMatchflattening" "terminationCandcopyInduction" "terminationHelperEquivalenceInductionCandcopyVarinlining" "terminationInductionAssumption")
 

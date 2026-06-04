@@ -98,7 +98,7 @@ private val EqBenchConfig = Config(
     "terminationAuxiliaryLemmas",
     "terminationAuxiliaryLemmasInduction",
     "terminationHelperEquivalenceAuxiliaryLemmas",
-    "automaticAssumption",
+    "assumption",
     "helperEquivalenceVarinlining"
   ),
   true
