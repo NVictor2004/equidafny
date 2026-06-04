@@ -26,37 +26,41 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
   \label{tbl:testsuite-categorisation}
 \end{table}
 
-\Cref{tbl:alldatasets-challenges-summary} summarises the number of tests from each source that demonstrate each type of challenge. Some tests demonstrate multiple challenges; these tests are counted multiple times. The Type of Challenge column contains links to the corresponding sections that describe each challenge. After evaluating EquiDafny on this larger testsuite, I identified 4 new challenges. These are described in the last four rows of \Cref{tbl:alldatasets-challenges-summary}. They are also summarised in the following paragraphs. 
+\Cref{tbl:alldatasets-challenges-summary} summarises the number of tests from each source that demonstrate each type of challenge. Some tests demonstrate multiple challenges; these tests are counted multiple times. The Type of Challenge column contains links to the corresponding sections that describe each challenge. After evaluating EquiDafny on this larger testsuite, I identified 4 new challenges. These are described in the last four rows of \Cref{tbl:alldatasets-challenges-summary}. They are also summarised in the following paragraphs.
+
+% Mention measure and written shortening
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |c|c|c|c|c| } 
+  \begin{tabular}{ |l| *{8}{w{c}{1.2em}|} }
   \hline
-  \multirow{2}{*}{Type of Challenge} & \multicolumn{4}{|c|}{Number of tests} \\
-  \cline{2-5}
-  & Stainless & EqBench & Measure Transfer & Self-Written \\ 
+  \multirow{3}{*}{Type of Challenge} & \multicolumn{8}{c|}{Number of tests} \\
+  \cline{2-9}
+  & \multicolumn{2}{c|}{Stainless} & \multicolumn{2}{c|}{EqBench} & \multicolumn{2}{c|}{Measure} & \multicolumn{2}{c|}{Written} \\ 
+  \cline{2-9}
+  & T & V & T & V & T & V & T & V \\
   \hline
-  None (Fully Automatic) & 21 & 6 & 0 & 2 \\
+  None (Fully Automatic) & 21 & 21 & 6 & 3 & 0 & 0 & 2 & 2 \\
   \hline
-  \nameref*{sec:equivalence-lemmas} (\ref{sec:equivalence-lemmas}) & 15 & 6 & 1 & 6 \\
+  \nameref*{sec:equivalence-lemmas} (\ref{sec:equivalence-lemmas}) & 15 & 14 & 6 & 2 & 1 & 0 & 6 & 5 \\
   \hline 
-  \nameref*{sec:auxiliary-lemmas} (\ref{sec:auxiliary-lemmas}) & 5 & 12 & 2 & 2 \\
+  \nameref*{sec:auxiliary-lemmas} (\ref{sec:auxiliary-lemmas}) & 5 & 0 & 12 & 0 & 2 & 0 & 2 & 0 \\
   \hline 
-  \nameref*{sec:induction} (\ref{sec:induction}) & 5 & 1 & 1 & 5 \\
+  \nameref*{sec:induction} (\ref{sec:induction}) & 5 & 2 & 1 & 0 & 1 & 0 & 5 & 2 \\
   \hline
-  \nameref*{sec:termination} (\ref{sec:termination}) & 17 & 10 & 5 & 7 \\
+  \nameref*{sec:termination} (\ref{sec:termination}) & 17 & 10 & 10 & 2 & 5 & 2 & 7 & 3 \\
   \hline
-  \nameref*{sec:higher-order} (\ref{sec:higher-order}) & 7 & 0 & 0 & 0 \\
+  \nameref*{sec:higher-order} (\ref{sec:higher-order}) & 7 & 7 & 0 & 0 & 0 & 0 & 0 & 0 \\
   \hline
-  \nameref*{sec:type-transformations} (\ref{sec:type-transformations}) & 0 & 0 & 0 & 4 \\
+  \nameref*{sec:type-transformations} (\ref{sec:type-transformations}) & 0 & 0 & 0 & 0 & 0 & 0 & 4 & 2 \\
   \hline
-  \nameref*{sec:equiv-assumption} (\ref{sec:equiv-assumption}) & 1 & 5 & 0 & 1 \\
+  \nameref*{sec:equiv-assumption} (\ref{sec:equiv-assumption}) & 1 & 0 & 5 & 0 & 0 & 0 & 1 & 0 \\
   \hline
-  \nameref*{sec:candidate-copying} (\ref{sec:candidate-copying}) & 4 & 0 & 1 & 2 \\
+  \nameref*{sec:candidate-copying} (\ref{sec:candidate-copying}) & 4 & 0 & 0 & 0 & 1 & 0 & 2 & 0 \\
   \hline
-  \nameref*{sec:match-flattening} (\ref{sec:match-flattening}) & 1 & 0 & 0 & 0 \\
+  \nameref*{sec:match-flattening} (\ref{sec:match-flattening}) & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
   \hline
-  \nameref*{sec:var-inlining} (\ref{sec:var-inlining}) & 3 & 2 & 0 & 1 \\
+  \nameref*{sec:var-inlining} (\ref{sec:var-inlining}) & 3 & 0 & 2 & 0 & 0 & 0 & 1 & 0 \\
   \hline
   \end{tabular}
   \caption{Summary of the number of examples from each source that demonstrate each type of challenge}
