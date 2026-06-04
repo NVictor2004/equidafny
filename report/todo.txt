@@ -26,6 +26,4 @@ join assumption and candcopy into algorithm limitation section
 make it clear that these are limitations that have not been addressed yet
 also make this clear with functional limitations
 
-Conclusion, move the limitations paragraph into an opening paragraph of 6.1
-
 address comments from workshop
