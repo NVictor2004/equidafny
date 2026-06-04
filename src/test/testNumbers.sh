@@ -1,10 +1,16 @@
-
-types=$(find ./json/ -mindepth 1 -maxdepth 1 -type d ! -name "counterExamples")
-
-classNames=("automatic" "helperequivalence" "auxiliarylemmas" "induction" "termination" "higherorder" "assumption" "candcopy" "matchflattening" "varinlining" "types")
+classNames=("automatic" "helperequivalence" "auxiliarylemmas" "induction" "termination" "higherorder" "types" "assumption" "candcopy" "matchflattening" "varinlining")
 nClasses=${#classNames[@]}
 
-for type in $types; do
+copyDecreasesExclude=("terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasInduction" "terminationHelperEquivalenceCandcopy")
+eqBenchExclude=("auxiliaryLemmas" "auxiliaryLemmasAssumption" "auxiliaryLemmasAssumptionTermination" "terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasInduction" "terminationHelperEquivalenceAuxiliaryLemmas" "automaticAssumption" "helperEquivalenceVarinlining")
+selfWrittenExclude=("helperEquivalenceTerminationVarinlining" "terminationInductionAssumption" "typesInductionAuxiliaryLemmas" "terminationAuxiliaryLemmasTypesInductionCandcopy" "terminationCandcopy")
+stainlessExclude=("auxiliaryLemmasVarinlining" "terminationAuxiliaryLemmas" "terminationAuxiliaryLemmasCandcopy" "terminationCandcopyMatchflattening" "terminationCandcopyInduction" "terminationHelperEquivalenceInductionCandcopyVarinlining" "terminationInductionAssumption")
+
+countType() {
+    local type="$1"
+    shift
+    local -a excludeDirs=("$@")
+
     echo "$type"
     counts=()
     for ((i=0; i<nClasses; i++)); do
@@ -13,6 +19,12 @@ for type in $types; do
     dirs=$(find $type -mindepth 1 -maxdepth 1 -type d)
     for dir in $dirs; do
         dirname=$(basename "$dir")
+        for excludeDir in "${excludeDirs[@]}"; do
+            if [[ "$dirname" == "$excludeDir" ]]; then
+                continue 2
+            fi
+        done
+
         dirname="${dirname,,}"
         nfiles=$(find $dir -type f | wc -l)
         while [[ "$dirname" != "" ]]; do
@@ -29,4 +41,9 @@ for type in $types; do
         done
     done
     echo "${counts[@]}"
-done
+}
+
+countType "./json/copyDecreases" "${copyDecreasesExclude[@]}"
+countType "./json/eqBench" "${eqBenchExclude[@]}"
+countType "./json/selfWritten" "${selfWrittenExclude[@]}"
+countType "./json/stainless" "${stainlessExclude[@]}"
