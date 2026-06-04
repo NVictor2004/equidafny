@@ -3,7 +3,8 @@
 \footnote{Update flamegraphs and times for each phase}
 \footnote{evaluate tests against Stainless, mention result of comparison between ED and stainless, e.g. 'on par' with stainless}
 
-\section{Evaluation Testsuite Description}
+\section{Testsuite Description}
+
 I created an evaluation testsuite containing 96 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. These tests came from 4 different sources. \Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source. I wrote some tests myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
 
 \paragraph{EqBench dataset} The EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} contains hundreds of pairs of equivalent and non-equivalent programs. I converted several of the tests from the CLEVER and REVE benchmarks from C into Dafny. I chose these benchmarks as they provided several tests using iteration (this was converted into recursion since Dafny functions do not support iteration). In addition, these tests were at an acceptable level of complexity. They were complex enough to provide a challenge when proving equivalence while not being so complex as to make language translation too difficult. 
@@ -25,6 +26,26 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
   \caption{Categorisation of evaluation testsuite tests}
   \label{tbl:testsuite-categorisation}
 \end{table}
+
+\subsection{Non-Equivalent Tests}
+
+I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from. Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ lccc }
+    \toprule
+    Original Source & Reference & Original language & Number of tests \\
+    \midrule
+    Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 5 \\
+    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Categorisation of non-equivalent tests}
+  \label{tbl:non-equivalent-categorisation}
+\end{table}
+
+\section{Verification Results}
 
 \Cref{tbl:alldatasets-challenges-summary} summarises the number of tests from each source that demonstrate each type of challenge. It also states the number of these tests that EquiDafny can verify. Some tests demonstrate multiple challenges; these tests are counted multiple times. The Type of Challenge column contains links to the corresponding sections that describe each challenge. The columns for each source are labelled T and V, for the total number of tests and the number EquiDafny can verify respectively. I have shortened the names of the sources to Stainless, EqBench, Measure and Written respectively to allow the table to fit on the page.
 
@@ -63,7 +84,7 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
   \nameref*{sec:var-inlining} (\ref{sec:var-inlining}) & 3 & 0 & 2 & 0 & 0 & 0 & 1 & 0 \\
   \hline
   \end{tabular}
-  \caption{Summary of the number of examples from each source that demonstrate each type of challenge}
+  \caption{Summary of verification results for each source and each type of challenge}
   \label{tbl:alldatasets-challenges-summary}
 \end{table}
 
@@ -75,29 +96,7 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 
 \paragraph{\nameref{sec:candidate-copying}} For the majority of the tests in the evaluation testsuite, it is sufficient to generate equivalence lemmas by copying structures from the model function alone. However, in some cases, structures must be copied from the candidate function as well, including termination lemma calls, preconditions and assertions.
 
-\subsection{Non-Equivalent Tests}
-
-I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from:
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{ lccc }
-    \toprule
-    Original Source & Reference & Original language & Number of tests \\
-    \midrule
-    Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 5 \\
-    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
-    \bottomrule
-  \end{tabular}
-  \caption{Categorisation of non-equivalent tests}
-  \label{tbl:non-equivalent-categorisation}
-\end{table}
-
-Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
-
-\section{Evaluation Results}
-
-\Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify:
+\Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify. Thus, EquiDafny improves the base Dafny verifier.
 
 \begin{table}[ht]
   \centering
@@ -121,8 +120,10 @@ Neither the base Dafny verifier nor EquiDafny can verify any of these tests (thi
   \caption{Evaluation results for Dafny, EquiDafny and Stainless}
   \label{tbl:evaluation-results}
 \end{table}
-% 
-Thus, EquiDafny improves the base Dafny verifier. Stainless is unable to prove some of these 91 tests. However, EquiDafny can prove three of the tests that Stainless fails to verify. Two of these three tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+
+\section{Comparison to Stainless}
+
+Stainless is unable to prove some of these 96 tests. However, EquiDafny can prove three of the tests that Stainless fails to verify. Two of these three tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
