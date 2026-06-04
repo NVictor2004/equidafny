@@ -122,8 +122,9 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 \end{table}
 
 \section{Comparison to Stainless}
+\footnote{Improve this section when final stainless results are known}
 
-Stainless is unable to prove some of these 96 tests. However, EquiDafny can prove three of the tests that Stainless fails to verify. Two of these three tests require type transformation which, as described in \Cref{sec:type-transformations}, Stainless is unable to do. The third test is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+However, EquiDafny can verify several tests that Stainless cannot. For example, Stainless cannot verify tests that require type transformation (as described in \Cref{sec:type-transformations}), as this is not implemented in Stainless. Another example is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
@@ -141,7 +142,7 @@ function repeat2<A>(n: int, f: A -> A): A -> A
 }
 \end{dafny}
 %
-EquiDafny can prove these functions equivalent through the following equivalence lemma:
+Stainless cannot prove these functions equivalent. However, EquiDafny can prove this by generating the following equivalence lemma:
 \begin{dafny}
 lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
   requires n >= 0
@@ -151,6 +152,40 @@ lemma equivalenceRepeat12<A>(n: int, f: A -> A, a: A)
     equivalenceRepeat12(n - 1, f, f(a));
   }
 }
+\end{dafny}
+%
+
+Another example is as follows. This example will use the following datatype to represent natural numbers:
+\begin{dafny}
+datatype Nat = Zero | Succ(n: Nat)
+\end{dafny}
+%
+Here is the function \dafnyinline{addHelper} that takes two natural numbers (defined using the above datatype) and outputs their sum (using the same datatype):
+\begin{dafny}
+function addHelper(n: Nat, m: Nat): Nat {
+    match n {
+        case Zero => m
+        case Succ(n') => Succ(addHelper(n', m))
+    }
+}
+\end{dafny}
+%
+I can now define two functions \dafnyinline{addM} and \dafnyinline{add1}. These functions both output the sum of two natural numbers by calling the \dafnyinline{addHelper} function. However, the \dafnyinline{add1} function calls the \dafnyinline{addHelper} function with the arguments swapped:
+\begin{dafny}
+function addM(n: Nat, m: Nat): Nat {
+    addHelper(n, m)
+}
+
+function add1(n: Nat, m: Nat): Nat {
+    addHelper(m, n)
+}
+\end{dafny}
+%
+Stainless cannot prove these functions equivalent. However, EquiDafny can prove this by generating the following equivalence lemma. In particular, the order of the arguments when calling the \dafnyinline{add1} function are swapped:
+\begin{dafny}
+lemma equivalence(n: Nat, m: Nat)
+    ensures addM(n, m) == add1(m, n)
+{}
 \end{dafny}
 %
 
