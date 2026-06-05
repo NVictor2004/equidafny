@@ -30,7 +30,7 @@ private val examples4 = os.walk(jpath4).filter(os.isFile(_)).map(jpath => (jpath
 private val examples5 = os.walk(jpath5).filter(os.isFile(_)).map(jpath => (jpath, dpath5))
 private val examples6 = os.walk(jpath6).filter(os.isFile(_)).map(jpath => (jpath, dpath6))
 
-private val shuffledExamples = 
+private val shuffledExamples =
   shuffle(examples1 ++ examples2 ++ examples3 ++ examples4 ++ examples5 ++ examples6)
 
 // Function to time how long EquiDafny's 5 internal phases take
@@ -66,7 +66,14 @@ def profile(): Unit = {
     formatProgram(translatedOutput, equivalenceOutput, outputFilePath)
     val formattingTime = System.nanoTime - formattingBefore
 
-    writer.format("%d, %d, %d, %d, %d\n", parsingTime, translationTime, optimisationTime, equivalenceTime, formattingTime)
+    writer.format(
+      "%d, %d, %d, %d, %d\n",
+      parsingTime,
+      translationTime,
+      optimisationTime,
+      equivalenceTime,
+      formattingTime
+    )
   })
 
   writer.close()
