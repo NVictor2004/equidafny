@@ -1,5 +1,4 @@
-describe how complex the examples are, lines of code, number of auxiliary lemmas needed
-write number of lines of code, functions etc. per benchmark (on average, max, min)
+describe how complex the examples are: number of functions
 
 get scala versions of eqbench tests from Dragana
 need to compare with Stainless, this is the main thing to compare with
@@ -10,12 +9,11 @@ conclusions, quote runtime comparison with stainless
 
 edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
 
-new section in evaluation
-compare with stainless, some tests ED can solve that stainless cannot
-also compare runtimes, use timeout of 1 second for stainless
-
 Evaluation.
 Evaluation section is missing an opening, two short sentences before the first section
 get all the CLEVER and REVE benchmark tests
+compare runtimes with stainless, use timeout of 1 second for stainless
 
-address comments from workshop
+update benchmark example repo, make sure counts are correct
+description of the function merging algorithm
+How structurally different can two programs be before this process fails?
