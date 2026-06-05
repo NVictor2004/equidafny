@@ -27,15 +27,28 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
   \label{tbl:testsuite-categorisation}
 \end{table}
 
-% Stainless LOC: 2, 34.4151, 91
-% self written LOC: 12, 34.5, 54
-% eqbench LOC: 26, 40.4545, 85
-% measure transfer LOC: 18, 41.4286, 86
+\Cref{tbl:testsuite-loc-lemmacount} provides metrics describing how complex these tests are. These metrics are the number of lines of code in each test file and the number of lemmas needed to verify each test. 
 
-% Stainless Lemma count: 1, 1.81132, 6
-% self written Lemma count: 1, 1.64286, 2
-% eqbench Lemma count: 1, 1.95455, 4
-% measure transfer Lemma count: 1, 1.6, 2
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ |l|c|c|c|c|c|c| }
+    \hline
+    \multirow{2}{*}{Original Source} & \multicolumn{3}{c|}{Lines of Code} & \multicolumn{3}{c|}{Number of Lemmas} \\
+    \cline{2-7}
+    & Min & Mean & Max & Min & Mean & Max \\
+    \hline
+    Stainless equivalence tests & 2 & 34.42 & 91 & 1 & 1.81 & 6 \\
+    \hline
+    EqBench dataset & 26 & 40.45 & 85 & 1 & 1.95 & 4 \\
+    \hline
+    Measure transfer artifact & 18 & 41.43 & 86 & 1 & 1.60 & 2 \\
+    \hline
+    Self-Written & 12 & 34.50 & 54 & 1 & 1.64 & 2 \\
+    \hline
+  \end{tabular}
+  \caption{Metrics describing the complexity of the tests from each source}
+  \label{tbl:testsuite-loc-lemmacount}
+\end{table}
 
 \subsection{Non-Equivalent Tests}
 
