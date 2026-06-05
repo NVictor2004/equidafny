@@ -52,7 +52,7 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
 
 \subsection{Non-Equivalent Tests}
 
-I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from. Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
+I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from. \Cref{tbl:nonequivalent-tests-loc} describes how complex these tests are by providing the minimum, mean and maximum number of lines of code in the tests from each source. Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
 
 \begin{table}[ht]
   \centering
@@ -66,6 +66,23 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
   \end{tabular}
   \caption{Categorisation of non-equivalent tests}
   \label{tbl:non-equivalent-categorisation}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{ |l|c|c|c| }
+    \hline
+    \multirow{2}{*}{Original Source} & \multicolumn{3}{c|}{Lines of Code} \\
+    \cline{2-4}
+    & Min & Mean & Max \\
+    \hline
+    Stainless equivalence tests & 32 & 50.60 & 95 \\
+    \hline
+    EqBench dataset & 28 & 39.75 & 61 \\
+    \hline
+  \end{tabular}
+  \caption{Number of lines of code in the non-equivalent tests from each source}
+  \label{tbl:nonequivalent-tests-loc}
 \end{table}
 
 \section{Verification Results}
