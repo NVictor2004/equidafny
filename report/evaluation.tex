@@ -27,6 +27,16 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
   \label{tbl:testsuite-categorisation}
 \end{table}
 
+% Stainless LOC: 2, 34.4151, 91
+% self written LOC: 12, 34.5, 54
+% eqbench LOC: 26, 40.4545, 85
+% measure transfer LOC: 18, 41.4286, 86
+
+% Stainless Lemma count: 1, 1.81132, 6
+% self written Lemma count: 1, 1.64286, 2
+% eqbench Lemma count: 1, 1.95455, 4
+% measure transfer Lemma count: 1, 1.6, 2
+
 \subsection{Non-Equivalent Tests}
 
 I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from. Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
