@@ -5,6 +5,9 @@ import formatter.program.formatProgram
 import equivalence.program.programEquivalence
 
 import ujson.*
+import java.io.PrintWriter
+import java.io.File
+import scala.util.Random.shuffle
 
 private val jpath1 = os.pwd / "src" / "test" / "json" / "copyDecreases"
 private val jpath2 = os.pwd / "src" / "test" / "json" / "eqBench"
@@ -27,50 +30,44 @@ private val examples4 = os.walk(jpath4).filter(os.isFile(_)).map(jpath => (jpath
 private val examples5 = os.walk(jpath5).filter(os.isFile(_)).map(jpath => (jpath, dpath5))
 private val examples6 = os.walk(jpath6).filter(os.isFile(_)).map(jpath => (jpath, dpath6))
 
-private val allExamples = examples1 ++ examples2 ++ examples3 ++ examples4 ++ examples5 ++ examples6
+private val shuffledExamples = 
+  shuffle(examples1 ++ examples2 ++ examples3 ++ examples4 ++ examples5 ++ examples6)
 
 // Function to time how long EquiDafny's 5 internal phases take
-// Parsing, Translation, Optimisation, Lemma Generation, Formatting
+// The phases are Parsing, Translation, Optimisation, Lemma Generation and Formatting
+// For each test, the time taken for each of the 5 phases is outputted to a file
 def profile(): Unit = {
-  var totalParsing = 0.0
-  var totalTranslation = 0.0
-  var totalOptimisation = 0.0
-  var totalEquivalence = 0.0
-  var totalFormatting = 0.0
+  val writer = new PrintWriter(new File("output.txt"))
 
-  allExamples.foreach((jsonExample, dpath) => {
+  shuffledExamples.foreach((jsonExample, dpath) => {
     val config = ujson.read(os.read(jsonExample))
     val scalaFile = dpath / config("file").str
     val file = os.read(scalaFile)
 
-    var before = System.nanoTime
+    val parsingBefore = System.nanoTime
     val parsedOutput = program.parse(file).get
-    var elapsed = System.nanoTime - before
-    totalParsing += elapsed
+    val parsingTime = System.nanoTime - parsingBefore
 
-    before = System.nanoTime
+    val translationBefore = System.nanoTime
     val translatedOutput = translateProgram(parsedOutput, config)
-    elapsed = System.nanoTime - before
-    totalTranslation += elapsed
+    val translationTime = System.nanoTime - translationBefore
 
-    before = System.nanoTime
+    val optimisationBefore = System.nanoTime
     val optimisedOutput = optimiseProgram(translatedOutput)
-    elapsed = System.nanoTime - before
-    totalOptimisation += elapsed
+    val optimisationTime = System.nanoTime - optimisationBefore
 
-    before = System.nanoTime
+    val equivalenceBefore = System.nanoTime
     val equivalenceOutput = programEquivalence(optimisedOutput)
-    elapsed = System.nanoTime - before
-    totalEquivalence += elapsed
+    val equivalenceTime = System.nanoTime - equivalenceBefore
 
     val outputFilePath = (os.pwd / config("file").str).toString
 
-    before = System.nanoTime
+    val formattingBefore = System.nanoTime
     formatProgram(translatedOutput, equivalenceOutput, outputFilePath)
-    elapsed = System.nanoTime - before
-    totalFormatting += elapsed
+    val formattingTime = System.nanoTime - formattingBefore
+
+    writer.format("%d, %d, %d, %d, %d\n", parsingTime, translationTime, optimisationTime, equivalenceTime, formattingTime)
   })
 
-  val number = allExamples.length
-  print(totalParsing / number, totalTranslation / number, totalOptimisation / number, totalEquivalence / number, totalFormatting / number)
+  writer.close()
 }
