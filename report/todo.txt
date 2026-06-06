@@ -3,17 +3,29 @@ describe how complex the examples are: number of functions
 get scala versions of eqbench tests from Dragana
 need to compare with Stainless, this is the main thing to compare with
 
-implementation, how to install section
-
 conclusions, quote runtime comparison with stainless
 
 edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
 
 Evaluation.
 Evaluation section is missing an opening, two short sentences before the first section
-get all the CLEVER and REVE benchmark tests
 compare runtimes with stainless, use timeout of 1 second for stainless
 
 update benchmark example repo, make sure counts are correct
-description of the function merging algorithm
-How structurally different can two programs be before this process fails?
+
+Abstract
+remove references
+say what does "this" point to? (same question for the rest of the report)
+say more about how the tool works
+
+Introduction
+"program verifiers are being developed to help developers write proofs of program equivalence, including Danfy and KeY."
+Dafny and KeY are general-purpose verifiers, they were not developed for proving program equivalence
+"Dafny was chosen" who chose Dafny? avoid passive
+
+Background
+2.1 Literature Review is missing an opening paragraph
+"under active development by Amazon" we said to tune this down
+"An example of this process is demonstrated below [4]" does this citation mean that this example is taken from [4]? why don't you say that explicitly?
+2.1.4 KLEE explain how is this related to your project
+I would consider splitting subsections 2.1 and 2.2 into two top-level chapters
