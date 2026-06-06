@@ -1,7 +1,7 @@
 // MODEL
 
 function fooM(a: int, b: int): int {
-	var c: int := a+b;
+	var c := a+b;
 	c+3
 }
 function mainM(): int {
@@ -11,8 +11,8 @@ function mainM(): int {
 // CANDIDATE
 
 function foo1(a: int, b: int): int {
-	var d: int := 3;
-	var c: int := b+a;
+	var d := 3;
+	var c := b+a;
 	c+d
 }
 function main1(): int {

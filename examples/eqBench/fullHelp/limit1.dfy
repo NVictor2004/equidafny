@@ -1,7 +1,6 @@
 // MODEL
 
 function fM(n: int): int {
-  var r: int := 0;
   if (n <= 1) then
     n
   else
@@ -12,7 +11,6 @@ function fM(n: int): int {
 // CANDIDATE
 
 function f1(n: int): int {
-  var r: int := 0;
   if (n <= 1) then
     n
   else
