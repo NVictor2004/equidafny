@@ -1,0 +1,7 @@
+{
+  "file": "LoopUnreach15.dfy",
+  "model": "mainM",
+  "candidates": [
+    "main1"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "file": "triangular.dfy",
+  "model": "triangleM",
+  "candidates": [
+    "triangle1"
+  ]
+}

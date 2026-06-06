@@ -1,0 +1,7 @@
+{
+  "file": "multiple.dfy",
+  "model": "clientM",
+  "candidates": [
+    "client1"
+  ]
+}
