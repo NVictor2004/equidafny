@@ -1,0 +1,7 @@
+{
+  "file": "divide.dfy",
+  "model": "clientM",
+  "candidates": [
+    "client1"
+  ]
+}

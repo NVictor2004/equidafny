@@ -1,0 +1,7 @@
+{
+  "file": "fib2.dfy",
+  "model": "fibM",
+  "candidates": [
+    "fib1"
+  ]
+}
