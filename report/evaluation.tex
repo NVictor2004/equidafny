@@ -130,7 +130,7 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 
 \paragraph{\nameref{sec:equiv-assumption}} I identified an assumption in the function merging algorithm that limits its performance. The algorithm assumes that, when expressions are equivalent and have the same structure, their sub-expressions are also equivalent. This allows the algorithm to split up expressions into their constituent parts and recursively merge them together. However, this assumption does not always hold. I demonstrate this with match expressions and helper functions. 
 
-\paragraph{\nameref{sec:match-flattening}} Nested match expressions should be flattened into a single match expression so that they can be merged effectively. Nested if expressions should also be flattened, however, since all if expressions are converted into match expressions (as described in \Cref{sec:benefits-drawbacks}), a separate process for if expressions is not necessary.
+\paragraph{\nameref{sec:match-flattening}} Nested match expressions should be flattened into a single match expression so that they can be merged effectively. Nested if expressions should also be flattened, however, since all if expressions are converted into match expressions (as described in \Cref{sec:structural-similarity-limitation}), a separate process for if expressions is not necessary.
 
 \paragraph{\nameref{sec:var-inlining}} Dafny functions can be defined using variables declarations. The bodies of these variables must sometimes be merged together. Variable inlining is needed to ensure this is done correctly. 
 

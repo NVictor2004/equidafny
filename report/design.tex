@@ -1,14 +1,12 @@
 \chapter{Design}\label{chp:design}
 
+I built EquiDafny to address the challenges that the Dafny verifier faces when attempting to prove equivalence (these challenges were identified in \Cref{sec:audit}). EquiDafny achieves this through an approach called `Function Merging'. In this algorithm, the bodies of the model and candidate functions are processed simultaneously. This is used to create a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. This chapter describes how this algorithm works in detail.  
+
 \paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that EquiDafny is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. EquiDafny can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
-\section{Function Merging}\label{sec:function-merging}
+\section{Worked Example}\label{sec:worked-example}
 
-This tool will use an approach that I have called `Function Merging'. This is where the bodies of the model and candidate functions are processed simultaneously, creating a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. 
-
-\subsection{Worked Example}\label{sec:worked-example}
-
-To demonstrate how this process works, I will use the two functions \dafnyinline{unique} and \dafnyinline{distinct} (this example was also used in \Cref{sec:equivalence-lemmas}). These functions each take two lists as input, and compute the unique elements of their union:
+To demonstrate how function merging works, I will use the two functions \dafnyinline{unique} and \dafnyinline{distinct} (this example was also used in \Cref{sec:equivalence-lemmas}). These functions each take two lists as input, and compute the unique elements of their union:
 
 \begin{dafny}
 function unique(l: List<int>, r: List<int>): List<int>
@@ -60,11 +58,9 @@ lemma uniqueEquivalence(l: List<int>, r: List<int>)
 }
 \end{dafny}
 
-\subsection{Benefits and Drawbacks}\label{sec:benefits-drawbacks}
+\section{Mitigating the structural similarity limitation}\label{sec:structural-similarity-limitation}
 
-As described in \Cref{sec:equivalence-lemmas}, to prove the equivalence of two functions that both use helper functions, EquiDafny must generate equivalence lemmas between the helper functions and call these lemmas within the main equivalence lemma under the correct conditions and with the correct arguments. As demonstrated in \Cref{sec:worked-example}, the Function Merging process is capable of this. 
-
-However, one major drawback with this approach is that it requires the bodies of the functions to have the same structure. For example, here are two functions \dafnyinline{lengthM} and \dafnyinline{length1}, which each calculate the length of a list:
+One major limitation of the function merging algorithm is that it requires the bodies of the functions to have the same structure. When the bodies have different structures, the algorithm will fail. For example, here are two functions \dafnyinline{lengthM} and \dafnyinline{length1}, which each calculate the length of a list:
 \begin{dafny}
 function lengthM<T>(l: List<T>): int {
     match l {
@@ -79,9 +75,11 @@ function length1<T>(l: List<T>): int {
 \end{dafny}
 %
 
-The bodies of these two functions have different structures, therefore, the Function Merging process will fail. EquiDafny uses two methods to attempt to mitigate this issue.
+The bodies of these two functions have different structures, therefore, the Function Merging process will fail. EquiDafny uses two methods to attempt to mitigate this limitation: failure recovery and expression optimisation. 
 
-First, EquiDafny will still attempt to generate an equivalence lemma even when the Merging process fails. In this case, such an equivalence lemma will have an empty body, since the Merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
+\subsection{Failure recovery}\label{sec:failure-recovery}
+
+EquiDafny still attempts to generate an equivalence lemma even when the merging process fails. In the above example (in \Cref{sec:structural-similarity-limitation}), such an equivalence lemma will have an empty body, since the merging process failed immediately. Its parameter mappings can be generated without using the function bodies since there is only a single parameter in each function. Thus, in this case, the following lemma can be generated:
 
 \begin{dafny}
 lemma lengthEquivalence<T>(l: List<T>)
@@ -89,7 +87,7 @@ lemma lengthEquivalence<T>(l: List<T>)
 {}
 \end{dafny}
 %
-In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, EquiDafny can still prove equivalence in some cases despite the Merging process failing. However, this method is not sufficient for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
+In this case, this lemma is sufficient for the Dafny verifier to prove equivalence. Therefore, EquiDafny can still prove equivalence in some cases despite the merging process failing. However, this method is not sufficient for every case. For example, here are two equivalent functions to calculate the length of a list in a tail-recursive manner:
 \begin{dafny}
 function lengthTailM<T>(acc: int, l: List<T>): int
     decreases l
@@ -125,10 +123,16 @@ function length1<T>(l: List<T>): int {
 }
 \end{dafny}
 %
-% TODO: Wrap A && B in inline code
-In this case, EquiDafny will still generate the empty equivalence lemma shown above, however, this is no longer sufficient to prove equivalence. The second method of mitigating the problem of the Merging process failing is by translating both function bodies into the same equivalent structure. For example, for arbitrary Boolean formulae \dafnyinline{A} and \dafnyinline{B}, the expressions A \&\& B and \dafnyinline{if A then B else false} are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+In this case, EquiDafny will still generate the empty equivalence lemma shown above, however, this is no longer sufficient to prove equivalence. This example can be proven equivalent using the second method, which is described below. 
 
-This example requires two translations on the \dafnyinline{length1} function's body before it has the same structure as the \dafnyinline{lengthM} function's body. First, the if expression that forms the \dafnyinline{length1} function's body can be translated into a match expression. In general, for arbitrary expressions \dafnyinline{A}, \dafnyinline{B} and \dafnyinline{C}, the expression \dafnyinline{if A then B else C} is equivalent to the following match expression:
+\subsection{Expression optimisation}
+
+% TODO: Wrap A && B in inline code
+In certain cases, the bodies of both the model and candidate functions can be translated into the same equivalent structure. For example, for arbitrary Boolean formulae \dafnyinline{A} and \dafnyinline{B}, the expressions A \&\& B and \dafnyinline{if A then B else false} are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+
+It is important to note that these translations only occur internally to assist with lemma generation. The Dafny verifier verifies the generated equivalence lemmas on the original functions instead of the translated functions. This is important to ensure that EquiDafny is sound, as the translated functions have not been formally proven equivalent to the original versions.
+
+The above example (in \Cref{sec:failure-recovery}) requires two translations on the \dafnyinline{length1} function's body before it has the same structure as the \dafnyinline{lengthM} function's body. First, the if expression that forms the \dafnyinline{length1} function's body can be translated into a match expression. In general, for arbitrary expressions \dafnyinline{A}, \dafnyinline{B} and \dafnyinline{C}, the expression \dafnyinline{if A then B else C} is equivalent to the following match expression:
 \begin{dafny}
 match A {
     case true => B
@@ -152,7 +156,7 @@ match l {
 }
 \end{dafny}
 %
-This final match expression has the same structure as the body of the \dafnyinline{lengthM} function. This allows Function Merging to proceed, leading EquiDafny to produce the following equivalence lemmas:
+This final match expression has the same structure as the body of the \dafnyinline{lengthM} function. This allows Function Merging to proceed. EquiDafny can now produce the following equivalence lemmas which the Dafny verifier can verify:
 \begin{dafny}
 lemma lengthTailEquivalence<T>(acc: int, l: List<T>)
     decreases l
@@ -172,7 +176,7 @@ lemma lengthEquivalence<T>(l: List<T>)
 
 \section{Technical Audit Challenges}
 
-In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges. \Cref{tbl:challenge-addressing-mapping} describes which challenges have been addressed. For each challenge that EquiDafny addresses, the table provides a link to a section describing how EquiDafny addresses that challenge.
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges through the function merging algorithm. \Cref{tbl:challenge-addressing-mapping} describes which challenges have been addressed. For each challenge that EquiDafny addresses, the table provides a link to a section describing how EquiDafny addresses that challenge.
 
 \begin{table}[ht]
   \centering
@@ -233,7 +237,7 @@ function curry2<A, B, C>(f: (A, B) -> C): A -> B -> C {
 \end{dafny}
 %
 
-EquiDafny will produce the following equivalence lemma:
+EquiDafny will produce the following equivalence lemma, which the Dafny verifier can verify:
 \begin{dafny}
 lemma curry1_curry2_Equivalence<A, B, C>(f: (A, B) -> C, a: A, b: B)
 ensures (curry1(f)(a)(b) == curry2(f)(a)(b))
