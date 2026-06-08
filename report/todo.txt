@@ -12,11 +12,9 @@ compare runtimes with stainless, use timeout of 1 second for stainless
 Introduction
 "program verifiers are being developed to help developers write proofs of program equivalence, including Danfy and KeY."
 Dafny and KeY are general-purpose verifiers, they were not developed for proving program equivalence
-"Dafny was chosen" who chose Dafny? avoid passive
 
 Background
 2.1 Literature Review is missing an opening paragraph
-"under active development by Amazon" we said to tune this down
 "An example of this process is demonstrated below [4]" does this citation mean that this example is taken from [4]? why don't you say that explicitly?
 2.1.4 KLEE explain how is this related to your project
 I would consider splitting subsections 2.1 and 2.2 into two top-level chapters
