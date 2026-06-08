@@ -11,4 +11,3 @@ This repository is split into several directories. Their purposes are described 
 - `report`: Contains the LaTeX source for my final project report
 - `src/main`: Contains EquiDafny's source code. Further details can be found within this directory
 - `src/test`: Contains EquiDafny's tests. Further details can be found within this directory
-- `submission`: Contains the LaTeX source for our submission to the Workshop on Program Equivalence and Relational Reasoning (PERR)

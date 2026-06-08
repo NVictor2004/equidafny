@@ -11,7 +11,6 @@ metals.sbt
 
 # Ignore Latex build files
 report/out/
-submission/out/
 
 # Ignore Scala build files
 .scala-build/
