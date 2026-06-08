@@ -5,7 +5,7 @@
 
 \section{Testsuite Description}
 
-I created an evaluation testsuite containing 96 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. These tests came from 4 different sources. \Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source. I wrote some tests myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
+I created an evaluation testsuite containing 126 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. These tests came from 4 different sources. \Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source. I wrote some tests myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.
 
 \paragraph{EqBench dataset} The EqBench dataset~\parencite{badihiEqBenchDatasetEquivalent2021} contains hundreds of pairs of equivalent and non-equivalent programs. I converted several of the tests from the CLEVER and REVE benchmarks from C into Dafny. I chose these benchmarks as they provided several tests using iteration (this was converted into recursion since Dafny functions do not support iteration). In addition, these tests were at an acceptable level of complexity. They were complex enough to provide a challenge when proving equivalence while not being so complex as to make language translation too difficult. 
 
@@ -18,7 +18,7 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
     Original Source & Reference & Original language & Number of tests \\
     \midrule
     Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 53 \\
-    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 22 \\
+    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 52 \\
     Measure transfer artifact & \parencite{milovancevicProvingTerminationMeasure2025} & Scala & 7 \\
     Self-Written & None & None & 14 \\
     \bottomrule
@@ -29,6 +29,7 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
 
 \Cref{tbl:testsuite-loc-lemmacount} provides metrics describing how complex these tests are. These metrics are the number of lines of code in each test file and the number of lemmas needed to verify each test. 
 
+\footnote{update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |l|c|c|c|c|c|c| }
@@ -52,7 +53,7 @@ I created an evaluation testsuite containing 96 test files. Each file contains a
 
 \subsection{Non-Equivalent Tests}
 
-I created a further 13 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from. \Cref{tbl:nonequivalent-tests-loc} describes how complex these tests are by providing the minimum, mean and maximum number of lines of code in the tests from each source. Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
+I created a further 35 test files containing pairs of non-equivalent Dafny functions. To ensure that EquiDafny is sound, the tool must fail to prove these functions equivalent. \Cref{tbl:non-equivalent-categorisation} categorises where these tests were taken from. \Cref{tbl:nonequivalent-tests-loc} describes how complex these tests are by providing the minimum, mean and maximum number of lines of code in the tests from each source. Neither the base Dafny verifier nor EquiDafny can verify any of these tests (this is the correct outcome for these non-equivalent tests). 
 
 \begin{table}[ht]
   \centering
@@ -61,13 +62,15 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
     Original Source & Reference & Original language & Number of tests \\
     \midrule
     Stainless equivalence tests & \parencite{StainlessFrontendsBenchmarks} & Scala & 5 \\
-    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 8 \\
+    EqBench dataset & \parencite{badihiEqBenchDatasetEquivalent2021} & C & 30 \\
     \bottomrule
   \end{tabular}
   \caption{Categorisation of non-equivalent tests}
   \label{tbl:non-equivalent-categorisation}
 \end{table}
 
+
+\footnote{Update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |l|c|c|c| }
@@ -91,6 +94,7 @@ I created a further 13 test files containing pairs of non-equivalent Dafny funct
 
 After evaluating EquiDafny on this larger testsuite, I identified 4 new challenges. These are described in the last four rows of \Cref{tbl:alldatasets-challenges-summary}. They are also summarised in the following paragraphs.
 
+\footnote{Update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |l| *{8}{w{c}{1.2em}|} }
@@ -138,6 +142,7 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 
 \Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify. Thus, EquiDafny improves the base Dafny verifier.
 
+\footnote{Update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{|c|c|c|c|c|}

@@ -94,7 +94,8 @@ lemma eqInsertSorted<Seed>(seed: Seed, next: Seed -> (Seed, int),
 %
 EquiDafny can generate these lemmas using an algorithm called `Function Merging'. By exploiting similarities between the structures of function bodies, these structures can been split into their constituent parts and recursively `merged' together. The algorithm outputs the body of each equivalence lemma. It also outputs a mapping describing how the arguments of one function must be permuted to form the arguments of the other. 
 
-EquiDafny was implemented in Scala. I tested EquiDafny on a dataset of 91 test files. This dataset is publicly available at \\\url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. EquiDafny verified 56 of these tests while Dafny verified 25. Thus, EquiDafny improves the base Dafny verifier. In particular, EquiDafny is able to verify the equivalence of \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1} as shown above.
+\footnote{Update test numbers}
+EquiDafny was implemented in Scala. I tested EquiDafny on a dataset of 126 test files. This dataset is publicly available at \\\url{https://github.com/NVictor2004/dafny-equivalence-benchmarks}. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. EquiDafny verified 56 of these tests while Dafny verified 25. Thus, EquiDafny improves the base Dafny verifier. In particular, EquiDafny is able to verify the equivalence of \dafnyinline{insertSortedM} and \dafnyinline{insertSorted1} as shown above.
 
 \section{Report Structure}
 
