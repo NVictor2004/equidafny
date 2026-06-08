@@ -29,7 +29,6 @@ I created an evaluation testsuite containing 126 test files. Each file contains 
 
 \Cref{tbl:testsuite-loc-lemmacount} provides metrics describing how complex these tests are. These metrics are the number of lines of code in each test file and the number of lemmas needed to verify each test. 
 
-\footnote{update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |l|c|c|c|c|c|c| }
@@ -40,7 +39,7 @@ I created an evaluation testsuite containing 126 test files. Each file contains 
     \hline
     Stainless equivalence tests & 2 & 34.42 & 91 & 1 & 1.81 & 6 \\
     \hline
-    EqBench dataset & 26 & 40.45 & 85 & 1 & 1.95 & 4 \\
+    EqBench dataset & 18 & 34.04 & 84 & 1 & 1.46 & 4 \\
     \hline
     Measure transfer artifact & 18 & 41.43 & 86 & 1 & 1.60 & 2 \\
     \hline
@@ -69,8 +68,6 @@ I created a further 35 test files containing pairs of non-equivalent Dafny funct
   \label{tbl:non-equivalent-categorisation}
 \end{table}
 
-
-\footnote{Update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |l|c|c|c| }
@@ -81,7 +78,7 @@ I created a further 35 test files containing pairs of non-equivalent Dafny funct
     \hline
     Stainless equivalence tests & 32 & 50.60 & 95 \\
     \hline
-    EqBench dataset & 28 & 39.75 & 61 \\
+    EqBench dataset & 18 & 32.97 & 60 \\
     \hline
   \end{tabular}
   \caption{Number of lines of code in the non-equivalent tests from each source}
@@ -94,7 +91,6 @@ I created a further 35 test files containing pairs of non-equivalent Dafny funct
 
 After evaluating EquiDafny on this larger testsuite, I identified 4 new challenges. These are described in the last four rows of \Cref{tbl:alldatasets-challenges-summary}. They are also summarised in the following paragraphs.
 
-\footnote{Update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{ |l| *{8}{w{c}{1.2em}|} }
@@ -105,11 +101,11 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
   \cline{2-9}
   & T & V & T & V & T & V & T & V \\
   \hline
-  None (Fully Automatic) & 21 & 21 & 3 & 3 & 0 & 0 & 2 & 2 \\
+  None (Fully Automatic) & 21 & 21 & 14 & 14 & 0 & 0 & 2 & 2 \\
   \hline
   \nameref*{sec:equivalence-lemmas} (\ref{sec:equivalence-lemmas}) & 15 & 14 & 6 & 2 & 1 & 0 & 6 & 5 \\
   \hline 
-  \nameref*{sec:auxiliary-lemmas} (\ref{sec:auxiliary-lemmas}) & 5 & 0 & 12 & 0 & 2 & 0 & 2 & 0 \\
+  \nameref*{sec:auxiliary-lemmas} (\ref{sec:auxiliary-lemmas}) & 5 & 0 & 22 & 0 & 2 & 0 & 2 & 0 \\
   \hline 
   \nameref*{sec:induction} (\ref{sec:induction}) & 5 & 2 & 1 & 0 & 1 & 0 & 5 & 2 \\
   \hline
@@ -119,13 +115,13 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
   \hline
   \nameref*{sec:type-transformations} (\ref{sec:type-transformations}) & 0 & 0 & 0 & 0 & 0 & 0 & 4 & 2 \\
   \hline
-  \nameref*{sec:equiv-assumption} (\ref{sec:equiv-assumption}) & 1 & 0 & 5 & 0 & 0 & 0 & 1 & 0 \\
+  \nameref*{sec:equiv-assumption} (\ref{sec:equiv-assumption}) & 1 & 0 & 10 & 0 & 0 & 0 & 1 & 0 \\
   \hline
   \nameref*{sec:candidate-copying} (\ref{sec:candidate-copying}) & 4 & 0 & 0 & 0 & 1 & 0 & 2 & 0 \\
   \hline
-  \nameref*{sec:match-flattening} (\ref{sec:match-flattening}) & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+  \nameref*{sec:match-flattening} (\ref{sec:match-flattening}) & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
   \hline
-  \nameref*{sec:var-inlining} (\ref{sec:var-inlining}) & 3 & 0 & 2 & 0 & 0 & 0 & 1 & 0 \\
+  \nameref*{sec:var-inlining} (\ref{sec:var-inlining}) & 3 & 0 & 3 & 0 & 0 & 0 & 1 & 0 \\
   \hline
   \end{tabular}
   \caption{Summary of verification results for each source and each type of challenge}
@@ -142,7 +138,6 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 
 \Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify. Thus, EquiDafny improves the base Dafny verifier.
 
-\footnote{Update these numbers}
 \begin{table}[ht]
   \centering
   \begin{tabular}{|c|c|c|c|c|}
@@ -153,13 +148,13 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
     \hline
     Stainless equivalence tests & 53 & 21 & 43 & 52 \\
     \hline
-    EqBench dataset & 22 & 3 & 5 & Unknown \\
+    EqBench dataset & 52 & 14 & 16 & Unknown \\
     \hline
     Measure Transfer Artifact & 7 & 0 & 2 & 2 \\
     \hline
     Self-Written & 14 & 2 & 9 & 5 \\
     \hline
-    Total & 96 & 26 & 59 & Unknown \\
+    Total & 126 & 37 & 70 & Unknown \\
     \hline
   \end{tabular}
   \caption{Evaluation results for Dafny, EquiDafny and Stainless}
