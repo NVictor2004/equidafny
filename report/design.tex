@@ -1,6 +1,14 @@
 \chapter{Design}\label{chp:design}
 
-I built EquiDafny to address the challenges that the Dafny verifier faces when attempting to prove equivalence (these challenges were identified in \Cref{sec:audit}). EquiDafny achieves this through an approach called `Function Merging'. In this algorithm, the bodies of the model and candidate functions are processed simultaneously. This is used to create a set of mappings between the parameters of the two functions and a list of statements. These two outputs are used to create the equivalence lemma for that pair of functions. This chapter describes how this algorithm works in detail.  
+I built EquiDafny to address the challenges that the Dafny verifier faces when attempting to prove equivalence (these challenges were identified in \Cref{sec:audit}). EquiDafny achieves this through an approach called `Function Merging'. In this algorithm, the bodies of the model and candidate functions are processed simultaneously. This is used to create a set of mappings between the parameters of the two functions and a list of statements. These two outputs, along with other generated information, are then used to create the equivalence lemma for that pair of functions. This chapter describes how this algorithm works in detail. The following list describes what each section of this chapter contains.
+
+\begin{description}
+   \item[\Cref{sec:worked-example}] Provides a worked example demonstrating the main structure of the function merging algorithm 
+   \item[\Cref{sec:structural-similarity-limitation}] Describes the main limitation of this algorithm and two methods EquiDafny uses to mitigate it
+   \item[\Cref{sec:addressing-challenges}] Describes specific details of the algorithm that allow it to address most of the challenges identified in \Cref{sec:audit}
+   \item[\Cref{sec:technical-details}] Describes further details of the algorithm that increase its verification performance
+   \item[\Cref{sec:type-transformations}] Describes how EquiDafny can prove functions equivalent even when they operate on different types
+\end{description}
 
 \paragraph{Terminology} I will use the terms `model function' and `candidate function' to describe the functions that EquiDafny is attempting to create an equivalence proof for. These terms were inspired by \textcite{milovancevicProvingDisprovingEquivalence2023}, where the `model function' described the correct implementation of a function within a functional programming assignment, while the `candidate function' described a student's attempt at implementing the same function for themselves. EquiDafny can be used for tasks far beyond functional programming assignments, but I will use these terms as a convenient method of referring to the functions being processed. 
 
@@ -174,7 +182,7 @@ lemma lengthEquivalence<T>(l: List<T>)
 \end{dafny}
 %
 
-\section{Technical Audit Challenges}
+\section{Technical Audit Challenges}\label{sec:addressing-challenges}
 
 In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges through the function merging algorithm. \Cref{tbl:challenge-addressing-mapping} describes which challenges have been addressed. For each challenge that EquiDafny addresses, the table provides a link to a section describing how EquiDafny addresses that challenge.
 

@@ -28,8 +28,6 @@ is 2.2.1 also a type of challenge? if yes why is it not in the table
 -2.2 is missing a concluding paragraph, point the reader to how and where you will address the challenges
 
 Design.
-opening paragraph to introduce structure of chapter
-
 3.2 say that the 2 challenges that you do not address are out of scope
 say how did you select what to address and what not?
 "I will describe how EquiDafny attempts to remove most of these challenges." you mean EquiDafny that you presented so far (that is, Function Merging), or are you now presenting some more design (I think more design?)
