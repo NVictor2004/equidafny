@@ -35,9 +35,5 @@ say how did you select what to address and what not?
 "I will describe how EquiDafny attempts to remove most of these challenges." you mean EquiDafny that you presented so far (that is, Function Merging), or are you now presenting some more design (I think more design?)
 Technical Details this section comes as a surprise out of nowhere, I need more context
 
-Declarations
-
-"Dafny program verifier, which is also designed to be sound" is this true?
-
 check design worked example "->" is formatted correctly
 
