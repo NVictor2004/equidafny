@@ -5,8 +5,6 @@ need to compare with Stainless, this is the main thing to compare with
 
 conclusions, quote runtime comparison with stainless
 
-edstem, is there a way to keep gitlab repos on gitlab beyond my end of year?
-
 Evaluation.
 Evaluation section is missing an opening, two short sentences before the first section
 compare runtimes with stainless, use timeout of 1 second for stainless
@@ -29,3 +27,38 @@ Background
 "An example of this process is demonstrated below [4]" does this citation mean that this example is taken from [4]? why don't you say that explicitly?
 2.1.4 KLEE explain how is this related to your project
 I would consider splitting subsections 2.1 and 2.2 into two top-level chapters
+
+I think the Design section will need a bit more work. The structure is a bit chaotic, please see my feedback below. The evaluation looks much better now. I did not re-read the early sections because it looks like you still haven't addressed that part?
+
+Do you think you will have time to process the entire report before we meet tomorrow? If not, we could also move the meeting to Wednesday again, let me know.
+
+Dragana
+
+--------------------------
+
+Technical Audit.
+
+- in Table 2.1, could you add pointers to subsections?
+- is 2.2.1 also a type of challenge? if yes why is it not in the table
+- 2.2.3 "To prove their equivalence, the user must write the following equivalence lemma:" -> In Dafny, to prove their equivalence, ... (because in Stainless or EquiDafny this is generated automatically)
+- 2.2.7 it might be better to move Proving Equivalence of Imperative Methods using Product Programs and Equivalence of Methods and Functions elsewhere, since you do not address this in EquiDafny, and currently 2.2.7 is taking more space than other challenges that you do address
+- 2.2.8 "Dafny is able to prove the equivalence of some higher-order functions, but not all." this is true in general, not specific to higher-order functions
+-2.2 is missing a concluding paragraph, point the reader to how and where you will address the challenges
+
+
+Design.
+
+You need an opening paragraph to introduce me to the structure of this chapter. Otherwise it is really hard to follow (see some concrete points below). In the opening paragraph, you also need to remind the reader what EquiDafny is (you do introduce the tool name in the introduction, but since then there was this long Background chapter).
+
+- 3.1 Function Merging "This tool" -> EquiDafny?
+- 3.1.2 Benefits and Drawbacks this title is confusing, it should be called "Two Improvements" or something like that (if this is still considered part of Function Merging?); also those two improvements should be named and ideally enumerated into subsubsections; you should also say that 3.2 will then present even more improvements over this base Function Merging
+- "Therefore, the body of the length1 function will be translated into the following:" this is misleading, I thought we said that length1 remains unchanged, and those transformations are for the purpose of lemma generation only?
+- 3.2 maybe say that the 2 challenges that you do not address are out of scope of this project or something like that (it is weird to just ignore them); maybe also say how did you select what to address and what not?
+- "I will describe how EquiDafny attempts to remove most of these challenges." you mean EquiDafny that you presented so far (that is, Function Merging), or are you now presenting some more design (I think more design?)
+-3.2.3 "EquiDafny will produce the following equivalence lemma:" which can then be proven automatically right?
+- 3.3 Technical Details this section comes as a surprise out of nowhere, I need more context
+
+Declarations
+
+- "Dafny program verifier, which is also designed to be sound" is this true?
+
