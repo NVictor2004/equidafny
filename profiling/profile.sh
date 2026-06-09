@@ -5,7 +5,4 @@ PROJECT_DIR="$HOME/Documents/proving-program-equivalence"
 
 clear
 
-rm -rf "$PROJECT_DIR/src/test/output"
-mkdir "$PROJECT_DIR/src/test/output"
-
-scala run "$PROJECT_DIR" --java-opt="-agentpath:$PROFILER_DIR=start,file=$PROJECT_DIR/profiling/profile.html"
+scala run "$PROJECT_DIR" --java-opt="-agentpath:$PROFILER_DIR=start,event=cpu,file=$PROJECT_DIR/profiling/cpu.html"
