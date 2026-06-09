@@ -9,29 +9,20 @@ import java.io.PrintWriter
 import java.io.File
 import scala.util.Random.shuffle
 
-private val jpath1 = os.pwd / "src" / "test" / "json" / "copyDecreases"
-private val jpath2 = os.pwd / "src" / "test" / "json" / "eqBench"
-private val jpath3 = os.pwd / "src" / "test" / "json" / "selfWritten"
-private val jpath4 = os.pwd / "src" / "test" / "json" / "stainless"
-private val jpath5 = os.pwd / "src" / "test" / "json" / "counterExamples" / "stainless"
-private val jpath6 = os.pwd / "src" / "test" / "json" / "counterExamples" / "eqBench"
+private val jsonDafnyPaths = List(
+  ("copyDecreases", "copyDecreases/noHelp"),
+  ("eqBench", "eqBench/noHelp"),
+  ("selfWritten", "selfWritten/noHelp"),
+  ("stainless", "stainless/noHelp"),
+  ("counterExamples/stainless", "counterExamples/stainless"),
+  ("counterExamples/eqBench", "counterExamples/eqBench")
+)
 
-private val dpath1 = os.pwd / "examples" / "copyDecreases" / "noHelp"
-private val dpath2 = os.pwd / "examples" / "eqBench" / "noHelp"
-private val dpath3 = os.pwd / "examples" / "selfWritten" / "noHelp"
-private val dpath4 = os.pwd / "examples" / "stainless" / "noHelp"
-private val dpath5 = os.pwd / "examples" / "counterExamples" / "stainless"
-private val dpath6 = os.pwd / "examples" / "counterExamples" / "eqBench"
-
-private val examples1 = os.walk(jpath1).filter(os.isFile(_)).map(jpath => (jpath, dpath1))
-private val examples2 = os.walk(jpath2).filter(os.isFile(_)).map(jpath => (jpath, dpath2))
-private val examples3 = os.walk(jpath3).filter(os.isFile(_)).map(jpath => (jpath, dpath3))
-private val examples4 = os.walk(jpath4).filter(os.isFile(_)).map(jpath => (jpath, dpath4))
-private val examples5 = os.walk(jpath5).filter(os.isFile(_)).map(jpath => (jpath, dpath5))
-private val examples6 = os.walk(jpath6).filter(os.isFile(_)).map(jpath => (jpath, dpath6))
-
-private val shuffledExamples =
-  shuffle(examples1 ++ examples2 ++ examples3 ++ examples4 ++ examples5 ++ examples6)
+private val shuffledExamples = shuffle(jsonDafnyPaths.flatMap((json, dafny) => {
+  val jsonPath = os.pwd / "src" / "test" / "json" / os.RelPath(json)
+  val dafnyPath = os.pwd / "examples" / os.RelPath(dafny)
+  os.walk(jsonPath).filter(os.isFile(_)).map((_, dafnyPath))
+}))
 
 // Function to time how long EquiDafny's 5 internal phases take
 // The phases are Parsing, Translation, Optimisation, Lemma Generation and Formatting
