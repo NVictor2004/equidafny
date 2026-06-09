@@ -148,13 +148,13 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
     \hline
     Stainless equivalence tests & 53 & 21 & 43 & 52 \\
     \hline
-    EqBench dataset & 52 & 14 & 16 & Unknown \\
+    EqBench dataset & 52 & 14 & 16 & 34 \\
     \hline
     Measure Transfer Artifact & 7 & 0 & 2 & 2 \\
     \hline
     Self-Written & 14 & 2 & 9 & 5 \\
     \hline
-    Total & 126 & 37 & 70 & Unknown \\
+    Total & 126 & 37 & 70 & 93 \\
     \hline
   \end{tabular}
   \caption{Evaluation results for Dafny, EquiDafny and Stainless}
@@ -162,9 +162,8 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 \end{table}
 
 \section{Comparison to Stainless}
-\footnote{Improve this section when final stainless results are known}
 
-However, EquiDafny can verify several tests that Stainless cannot. For example, Stainless cannot verify tests that require type transformation (as described in \Cref{sec:type-transformations}), as this is not implemented in Stainless. Another example is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
+Stainless can verify significantly more tests than EquiDafny can, however, EquiDafny can verify several tests that Stainless cannot. For example, Stainless cannot verify tests that require type transformation (as described in \Cref{sec:type-transformations}), as this is not implemented in Stainless. Another example is described below. The functions \dafnyinline{repeat1} and \dafnyinline{repeat2} each output a lambda function that applies a given function a given number of times:
 \begin{dafny}
 function repeat1<A>(n: int, f: A -> A): A -> A
   requires (n >= 0)
