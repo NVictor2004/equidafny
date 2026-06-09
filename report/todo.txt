@@ -20,3 +20,6 @@ Design.
 
 check design worked example "->" is formatted correctly
 
+Wrap A && B in inline code in design chapter
+maybe change project title
+change we/our to I, remove future tense will do ... do, fix capitalisation Function Merging etc
