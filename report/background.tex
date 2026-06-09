@@ -204,24 +204,20 @@ Using these tests, I have attempted to characterise the cases where Dafny requir
   Type of Challenge & Number of Examples & Source \\
   \midrule
   None (Fully Automatic) & 21 & \parencite{StainlessFrontendsBenchmarks} \\
-  \nameref{sec:counterexamples} & 1 & \parencite{StainlessFrontendsBenchmarks} \\ 
-  \nameref{sec:equivalence-lemmas} & 15 & \parencite{StainlessFrontendsBenchmarks} \\ 
-  \nameref{sec:auxiliary-lemmas} & 5 & \parencite{StainlessFrontendsBenchmarks} \\ 
-  \nameref{sec:induction} & 5 & \parencite{StainlessFrontendsBenchmarks} \\
-  \nameref{sec:termination} & 17 & \parencite{StainlessFrontendsBenchmarks} \\
-  \nameref{sec:imperative-equivalence} & 7 & New \\
-  \nameref{sec:higher-order} & 7 & \parencite{StainlessFrontendsBenchmarks} \\
+  \nameref*{sec:counterexamples} (\Cref{sec:counterexamples}) & 1 & \parencite{StainlessFrontendsBenchmarks} \\ 
+  \nameref*{sec:equivalence-lemmas} (\Cref{sec:equivalence-lemmas}) & 15 & \parencite{StainlessFrontendsBenchmarks} \\ 
+  \nameref*{sec:auxiliary-lemmas} (\Cref{sec:auxiliary-lemmas}) & 5 & \parencite{StainlessFrontendsBenchmarks} \\ 
+  \nameref*{sec:induction} (\Cref{sec:induction}) & 5 & \parencite{StainlessFrontendsBenchmarks} \\
+  \nameref*{sec:termination} (\Cref{sec:termination}) & 17 & \parencite{StainlessFrontendsBenchmarks} \\
+  \nameref*{sec:imperative-equivalence} (\Cref{sec:imperative-equivalence}) & 7 & New \\
+  \nameref*{sec:higher-order} (\Cref{sec:higher-order}) & 7 & \parencite{StainlessFrontendsBenchmarks} \\
   \bottomrule
   \end{tabular}
   \caption{Summary of the number of examples that demonstrate each type of challenge}
   \label{tbl:challenges-summary}
 \end{table}
 
-The following sections describe each type of challenge in detail. Each section contains at least one example to clearly demonstrate the challenge being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. 
-
-\subsection{Necessary Datastructures}\label{sec:list-structure}
-
-I will require the following definition of a list data structure:
+The following sections describe each type of challenge in detail. Each section contains at least one example to clearly demonstrate the challenge being discussed. I have tried to pick the simplest, minimal examples that I have access to, to remove any unnecessary difficulty. Some examples will use the following definition of a list data structure:
 \begin{dafny}
 datatype List<T> = Nil | Cons(head: T, tail: List<T>)
 \end{dafny}
@@ -351,7 +347,7 @@ function distinct(a: List<int>, b: List<int>): List<int>
 \end{dafny}
 %
 
-To prove their equivalence, the user must write the following equivalence lemma:
+In Dafny, to prove their equivalence, the user must write the following equivalence lemma:
 \begin{dafny}[highlightlines=6]
 lemma uniqEquivalenceHelper(l: List<int>, r: List<int>)
   ensures unique(l, r) == distinct(r, l)
@@ -756,20 +752,7 @@ method isSortedBI(l: seq<int>) returns (res: bool)
 
 \subsection{Equivalence of Higher-Order Functions}\label{sec:higher-order}
 
-Dafny is able to prove the equivalence of some higher-order functions, but not all. For example, here are two functions \dafnyinline{andThen1} and \dafnyinline{andThen2}, which compute function composition:
-\begin{dafny}
-function andThen1<A, B, C>(f: A -> B, g: B -> C): A -> C { a => g(f(a)) }
-function andThen2<A, B, C>(ff: A -> B, gg: B -> C): A -> C { aa => gg(ff(aa)) }
-\end{dafny}
-%
-Dafny is able to prove their equivalence without any help:
-\begin{dafny}
-lemma equivalenceAndThen<A, B, C>(f: A -> B, g: B -> C)
-  ensures andThen1(f, g) == andThen2(f, g)
-{}
-\end{dafny}
-%
-Here are two more such functions \dafnyinline{flip1} and \dafnyinline{flip2}, which each take a binary function as input, and output a function that computes the same output, but with the arguments flipped:
+Sometimes, Dafny cannot prove equivalence between higher-order functions despite being able to prove that they give the same output for the same inputs. For example, here are two functions \dafnyinline{flip1} and \dafnyinline{flip2}, which each take a binary function as input, and output a function that computes the same output, but with the arguments flipped:
 \begin{dafny}
 function flip1<A, B, C>(f: (A, B) -> C): (B, A) -> C {
   (b, a) => f(a, b)

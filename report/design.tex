@@ -184,7 +184,7 @@ lemma lengthEquivalence<T>(l: List<T>)
 
 \section{Technical Audit Challenges}\label{sec:addressing-challenges}
 
-In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges through the function merging algorithm. \Cref{tbl:challenge-addressing-mapping} describes which challenges have been addressed. For each challenge that EquiDafny addresses, the table provides a link to a section describing how EquiDafny addresses that challenge.
+In \Cref{sec:audit}, I demonstrated that Dafny encounters several types of challenges when attempting to prove program equivalence. In this section, I will describe how EquiDafny attempts to remove most of these challenges through the function merging algorithm. \Cref{tbl:challenge-addressing-mapping} describes which challenges have been addressed. For each challenge that EquiDafny addresses, the table provides a link to a section describing how EquiDafny addresses that challenge. The remaining challenges are out of scope for this project.
 
 \begin{table}[ht]
   \centering
@@ -259,6 +259,8 @@ It is difficult for EquiDafny to automatically generate auxiliary lemmas. Theref
 Thus, the lemmas themselves can be provided, however, they must still be called within the generated equivalence lemmas, with the correct arguments and under the correct conditions. These conditions and arguments cannot be easily generated, since this requires an understanding of what each auxiliary lemma proves and how it would be useful when proving an equivalence lemma. Thus, this is a difficult problem that EquiDafny does not currently solve. 
 
 \section{Technical Details}\label{sec:technical-details}
+
+There are several important details of the function merging algorithm that have not yet been described. These are described in this section. 
 
 \subsection{Generating Parameter Mappings}\label{sec:parameter-mappings}
 
@@ -422,7 +424,7 @@ lemma equivalenceIsEven(un: UnaryNat)
 
 \section{Type Transformations}\label{sec:type-transformations}
 
-Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. Such functions cannot be proven equivalent by the Stainless equivalence checker, however, this is possible in EquiDafny. For example, here are the functions \dafnyinline{sumM} and \dafnyinline{sum1}. \dafnyinline{sumM} calculates the sum of a sequence of integers using the inbuilt Dafny sequence type (|seq|). However, \dafnyinline{sum1} calculates the sum of a list of integers using the user-defined data structure provided in \Cref{sec:list-structure}. EquiDafny can prove these functions equivalent if the user provides another function that transforms a Dafny \dafnyinline{seq} into the user-defined \dafnyinline{List}. The following function \dafnyinline{seqToList} is one possible such function:
+Two functions can have the same purpose even when they operate on different types. These functions are equivalent if the types of one function can be transformed into the types of the other. Such functions cannot be proven equivalent by the Stainless equivalence checker, however, this is possible in EquiDafny. For example, here are the functions \dafnyinline{sumM} and \dafnyinline{sum1}. \dafnyinline{sumM} calculates the sum of a sequence of integers using the inbuilt Dafny sequence type (\dafnyinline{seq}). However, \dafnyinline{sum1} calculates the sum of a list of integers using the user-defined \dafnyinline{List} data structure provided in \Cref{sec:audit}. EquiDafny can prove these functions equivalent if the user provides another function that transforms a Dafny \dafnyinline{seq} into the user-defined \dafnyinline{List}. The following function \dafnyinline{seqToList} is one possible such function:
 \begin{dafny}
 function seqToList(l: seq<int>): List<int> {
     if |l| == 0 then Nil
