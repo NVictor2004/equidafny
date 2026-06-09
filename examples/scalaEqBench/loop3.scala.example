@@ -1,0 +1,35 @@
+import stainless.lang._
+
+object loop3 {
+  // MODEL
+  
+  def fM(n: BigInt): BigInt = {
+    val actualN = if n < 1 then BigInt(1) else n
+    
+    f_loopM(actualN, 1, 0)
+  }
+  
+  def f_loopM(n: BigInt, i: BigInt, j: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then
+      f_loopM(n, i + 1, j + 2)
+    else
+      j
+  }
+  
+  // CANDIDATE
+  
+  def f1(n: BigInt): BigInt = {
+    val actualN = if n < 1 then BigInt(1) else n
+    
+    f_loop1(actualN, 1, 2)
+  }
+  
+  def f_loop1(n: BigInt, i: BigInt, j: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i < n then
+      f_loop1(n, i + 1, j + 2)
+    else
+      j
+  }
+}

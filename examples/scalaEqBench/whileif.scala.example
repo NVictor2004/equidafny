@@ -1,0 +1,38 @@
+import stainless.lang._
+
+object whileif {
+  // MODEL
+  
+  def fM(t: BigInt, c: BigInt): BigInt = {
+    require(t > 0)
+    if 0 < t then
+      f_loopM(c, 0)
+    else
+      0
+  }
+  
+  def f_loopM(c: BigInt, x: BigInt): BigInt = {
+    if 0 < c then
+      f_loopM(c - 1, x + 1)
+    else
+      x
+  }
+  
+  // CANDIDATE
+  
+  def f1(t: BigInt, c: BigInt): BigInt = {
+    require(t > 0)
+    f_loop1(t, c, 0)
+  }
+  
+  def f_loop1(t: BigInt, c: BigInt, x: BigInt): BigInt = {
+    require(t > 0)
+    if 0 < c then
+      if 0 < t then
+        f_loop1(t, c - 1, x + 1)
+      else
+        f_loop1(t, c, x)
+    else
+      x
+  }
+}

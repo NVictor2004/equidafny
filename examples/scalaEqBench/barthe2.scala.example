@@ -1,0 +1,31 @@
+import stainless.lang._
+
+object barthe2 {
+  // MODEL
+  
+  def fM(n: BigInt): BigInt = {
+    f_loopM(n, 0, 0)
+  }
+  
+  def f_loopM(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then
+      f_loopM(n, i + 1, x + i)
+    else
+      x
+  }
+  
+  // CANDIDATE
+  
+  def f1(n: BigInt): BigInt = {
+    f_loop1(n, 1, 0)
+  }
+  
+  def f_loop1(n: BigInt, j: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - j < 0) BigInt(0) else n - j)
+    if j <= n then 
+      f_loop1(n, j + 1, x + j)
+    else 
+      x
+  }
+}

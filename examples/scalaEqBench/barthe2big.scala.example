@@ -1,0 +1,51 @@
+import stainless.lang._
+
+object barthe2big {
+  // MODEL
+  
+  def fM(n: BigInt): BigInt = {
+    val x_after_first_loop = f_loop1M(n, 1, 1)
+    
+    f_loop2M(n, 0, x_after_first_loop)
+  }
+  
+  def f_loop1M(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then
+      f_loop1M(n, i + 1, x * 5)
+    else
+      x
+  }
+  
+  def f_loop2M(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then
+      f_loop2M(n, i + 1, x + i)
+    else
+      x
+  }
+  
+  // CANDIDATE
+  
+  def f1(n: BigInt): BigInt = {
+    val x1 = PowerLoop1(n, 1, 1)
+    
+    SumLoop1(n, 1, x1)
+  }
+  
+  def PowerLoop1(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then 
+      PowerLoop1(n, i + 1, x * 5)
+    else 
+      x
+  }
+  
+  def SumLoop1(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then 
+      SumLoop1(n, i + 1, x + i)
+    else 
+      x
+  }
+}

@@ -1,0 +1,31 @@
+import stainless.lang._
+
+object simpleloop {
+  // MODEL
+  
+  def fM(z: BigInt): BigInt = {
+    f_loopM(0)
+  }
+  
+  def f_loopM(i: BigInt): BigInt = {
+    decreases(if (11 - i < 0) BigInt(0) else 11 - i)
+    if i <= 10 then 
+      f_loopM(i + 1)
+    else 
+      i
+  }
+  
+  // CANDIDATE
+  
+  def f1(z: BigInt): BigInt = {
+    f_loop1(1)
+  }
+  
+  def f_loop1(i: BigInt): BigInt = {
+    decreases(if (11 - i < 0) BigInt(0) else 11 - i)
+    if i <= 10 then 
+      f_loop1(i + 1)
+    else 
+      i
+  }
+}

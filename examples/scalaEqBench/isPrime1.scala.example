@@ -1,0 +1,62 @@
+import stainless.lang._
+import stainless.collection._
+
+object isPrime1 {
+  // MODEL
+  
+  val PRIMESM: List[BigInt] = List(2, 3, 5, 7, 11, 13, 17, 19)
+  
+  def LibM(x: BigInt, b: BigInt): BigInt = {
+    if b == 0 then 
+      0 
+    else 
+      LibLoopM(x, 0)
+  }
+  
+  def LibLoopM(x: BigInt, i: BigInt): BigInt = {
+    require(0 <= i)
+    require(i <= PRIMESM.size)
+    decreases(if (PRIMESM.size - i < 0) BigInt(0) else PRIMESM.size - i)
+    if i == PRIMESM.size then 
+      1
+    else
+      val p = PRIMESM(i)
+      if x % p == 0 then
+        0
+      else
+        LibLoopM(x, i + 1)
+  }
+  
+  def ClientM(x: BigInt): BigInt = {
+    LibM(x, 0)
+  }
+  
+  // CANDIDATE
+  
+  val PRIMES1: List[BigInt] = List(2, 3, 5, 7, 11, 13, 17, 19)
+  
+  def Lib1(x: BigInt, b: BigInt): BigInt = {
+    if b == 0 then 
+      0 
+    else 
+      LibLoop1(x, 0)
+  }
+  
+  def LibLoop1(x: BigInt, i: BigInt): BigInt = {
+    require(0 <= i)
+    require(i <= PRIMES1.size)
+    decreases(if (PRIMES1.size - i < 0) BigInt(0) else PRIMES1.size - i)
+    if i == PRIMES1.size then 
+      1
+    else
+      val p = PRIMES1(i)
+      if x % p == 0 then
+        if x == p then 1 else 0
+      else
+        LibLoop1(x, i + 1)
+  }
+  
+  def Client1(x: BigInt): BigInt = {
+    Lib1(x, 0)
+  }
+}

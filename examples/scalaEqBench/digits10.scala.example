@@ -1,0 +1,53 @@
+import stainless.lang._
+
+object digits10 {
+  // MODEL
+  
+  def fM(n: BigInt): BigInt = {
+    f_loopM(n, 1)
+  }
+  
+  def f_loopM(n: BigInt, result: BigInt): BigInt = {
+    if n < 10 then 
+      result
+    else if n < 100 then 
+      result + 1
+    else if n < 1000 then 
+      result + 2
+    else if n < 10000 then 
+      result + 3
+    else 
+      f_loopM(n / 10000, result + 4)
+  }
+  
+  // CANDIDATE
+  
+  def f1(n: BigInt): BigInt = {
+    f_loop1(n / 10, 1)
+  }
+  
+  def f_loop1(n: BigInt, result: BigInt): BigInt = {
+    if n <= 0 then
+      result
+    else
+      val n1 = n / 10
+      val r1 = result + 1
+      
+      if n1 <= 0 then 
+        f_loop1(n1, r1)
+      else
+        val n2 = n1 / 10
+        val r2 = r1 + 1
+        
+        if n2 <= 0 then 
+          f_loop1(n2, r2)
+        else
+          val n3 = n2 / 10
+          val r3 = r2 + 1
+          
+          if n3 <= 0 then 
+            f_loop1(n3, r3)
+          else
+            f_loop1(n3 / 10, r3 + 1)
+  }
+}

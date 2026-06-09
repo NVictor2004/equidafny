@@ -1,0 +1,48 @@
+import stainless.lang._
+
+object triangularMod {
+  // MODEL
+  
+  def TrM(n: BigInt): BigInt = {
+    TrLoopM(n, 0, 0)
+  }
+  
+  def TrLoopM(n: BigInt, i: BigInt, result: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i < n then
+      TrLoopM(n, i + 1, result + i)
+    else
+      result
+  }
+  
+  def FM(m: BigInt): BigInt = {
+    if m > 0 then
+      val res = TrM(m - 1)
+      if res >= 0 then res + m
+      else res
+    else
+      0
+  }
+  
+  // CANDIDATE
+  
+  def Tr1(n: BigInt): BigInt = {
+    TrLoop1(n, 0, 0)
+  }
+  
+  def TrLoop1(n: BigInt, i: BigInt, result: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i < n then
+      TrLoop1(n, i + 1, result + i)
+    else
+      result
+  }
+  
+  def F1(m: BigInt): BigInt = {
+    if m > 0 then
+      val res = Tr1(m - 1)
+      res + m 
+    else
+      0
+  }
+}

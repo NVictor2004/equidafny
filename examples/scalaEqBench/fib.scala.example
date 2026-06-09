@@ -1,0 +1,39 @@
+import stainless.lang._
+
+object fib {
+  // MODEL
+  
+  def libM(n: BigInt): BigInt = {
+      if(n == 1) then
+          1
+      else if(n < 1) then
+          0
+      else
+          libM(n - 1) + libM(n - 2)
+  }
+  def fibM(x: BigInt): BigInt = {
+      if(x < 5) then
+          libM(x)
+      else
+          0
+  }
+  
+  // CANDIDATE
+  
+  def lib1(n: BigInt): BigInt = {
+      lib1Helper(n, 0, 1, 0)
+  }
+  
+  def lib1Helper(n: BigInt, a: BigInt, b: BigInt, i: BigInt): BigInt = {
+      decreases(if (n - i < 0) BigInt(0) else n - i)
+      if i < n then lib1Helper(n, b, a + b, i + 1)
+      else a
+  }
+  
+  def fib1(x: BigInt): BigInt = {
+      if(x < 5) then
+          lib1(x)
+      else
+          0
+  }
+}

@@ -1,0 +1,59 @@
+import stainless.lang._
+
+object nestedwhile {
+  // MODEL
+  
+  def fM(x: BigInt, g: BigInt): BigInt = {
+    f_outerM(x, g, 0)
+  }
+  
+  def f_outerM(x: BigInt, g: BigInt, i: BigInt): BigInt = {
+    decreases(if (x - i < 0) BigInt(0) else x - i)
+    if i < x then
+      val next_i = i + 1
+      val next_g = g - 1
+      
+      val inner_res = f_innerM(x, next_g, next_i)
+      
+      f_outerM(inner_res._1, inner_res._2, next_i)
+    else
+      g
+  }
+  
+  def f_innerM(x: BigInt, g: BigInt, i: BigInt): (BigInt, BigInt) = {
+    decreases(if (i - x < 0) BigInt(0) else i - x)
+    if x < i then
+      val next_x = x + 2
+      val next_next_x = next_x - 1
+      f_innerM(next_next_x, g + 1, i)
+    else
+      (x, g)
+  }
+  
+  // CANDIDATE
+  
+  def f1(x: BigInt, g: BigInt): BigInt = {
+    f_outer1(x, g, 0)
+  }
+  
+  def f_outer1(x: BigInt, g: BigInt, i: BigInt): BigInt = {
+    decreases(if (x - i < 0) BigInt(0) else x - i)
+    if i < x then
+      val i_next = i + 1
+      val g_next = g - 1
+      
+      val inner_res = f_inner1(x, g_next, i_next)
+      
+      f_outer1(inner_res._1, inner_res._2, i_next)
+    else
+      g
+  }
+  
+  def f_inner1(x: BigInt, g: BigInt, i: BigInt): (BigInt, BigInt) = {
+    decreases(if (i - x < 0) BigInt(0) else i - x)
+    if x < i then
+      f_inner1(x + 1, g + 1, i)
+    else
+      (x, g)
+  }
+}

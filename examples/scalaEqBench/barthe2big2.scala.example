@@ -1,0 +1,53 @@
+import stainless.lang._
+
+object barthe2big2 {
+  // MODEL
+  
+  def fM(n: BigInt): BigInt = {
+    val x1 = MultiplicationLoop1M(n, 1, 1)
+    
+    val x2 = AdditionLoopM(n, 0, x1)
+    
+    MultiplicationLoop2M(n, 1, x2)
+  }
+  
+  def MultiplicationLoop1M(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then MultiplicationLoop1M(n, i + 1, x * 1) else x
+  }
+  
+  def AdditionLoopM(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then AdditionLoopM(n, i + 1, x + i) else x
+  }
+  
+  def MultiplicationLoop2M(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then MultiplicationLoop2M(n, i + 1, x * 2) else x
+  }
+  
+  // CANDIDATE
+  
+  def f1(n: BigInt): BigInt = {
+    val x1 = MultiplicationLoop11(n, 1, 1)
+    
+    val x2 = AdditionLoop1(n, 1, x1)
+    
+    MultiplicationLoop21(n, 1, x2)
+  }
+  
+  def MultiplicationLoop11(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then MultiplicationLoop11(n, i + 1, x * 1) else x
+  }
+  
+  def AdditionLoop1(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then AdditionLoop1(n, i + 1, x + i) else x
+  }
+  
+  def MultiplicationLoop21(n: BigInt, i: BigInt, x: BigInt): BigInt = {
+    decreases(if (n - i < 0) BigInt(0) else n - i)
+    if i <= n then MultiplicationLoop21(n, i + 1, x * 2) else x
+  }
+}

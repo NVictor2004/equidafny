@@ -1,0 +1,29 @@
+import stainless.lang._
+import stainless.collection._
+
+object average {
+  // MODEL
+  
+  def AverageM(a: List[Int]): Double = {
+    if a.size <= 0 then 0.0
+    else (SumRecursiveM(a) / (a.size))
+  }
+  
+  def SumRecursiveM(s: List[Int]): Int = {
+    if s.size == 0 then 0 
+    else s(0) + SumRecursiveM(s.tail)
+  }
+  
+  // CANDIDATE
+  
+  def Average1(a: List[Int]): Double = {
+    if a.size <= 0 then 0.0
+    else AverageRecursive1(a, a.size)
+  }
+  
+  def AverageRecursive1(s: List[Int], n: BigInt): Double = {
+    require(n > 0)
+    if s.size == 0 then 0.0 
+    else ((s(0)) / (n)) + AverageRecursive1(s.tail, n)
+  }
+}
