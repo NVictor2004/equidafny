@@ -1,6 +1,6 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
-\footnote{Update flamegraphs and times for each phase}
+\footnote{Update flamegraphs}
 
 \section{Testsuite Description}
 
@@ -432,14 +432,14 @@ After running EquiDafny on every test file, I measured the average time the tool
     \hline
     Phase & Parsing & Translation & Optimisation & Lemma generation & Formatting & Dafny \newline verification & Total \\
     \hline
-    Average Time (ms) & 13.099 & 1.545 & 0.214 & 1.169 & 1.459 & 1517.340 & 1534.826 \\
+    Average Time (ms) & 5.504 & 0.697 & 0.139 & 0.659 & 0.862 & 1517.340 & 1525.201 \\
     \hline
   \end{tabular}
   \caption{Average time spent in each phase}
   \label{tbl:profiling-results}
 \end{table}
 
-Dafny verification takes significantly more time on average than any other component. The vast majority of this time is likely spent by the Z3 solver. This is expected, since proving program equivalence is a difficult problem in general. However, the parsing component also takes a significant amount of time. Before I implemented the optimisations I described in \Cref{sec:parsing-optimisation}, on average parsing would take 17.796ms. Thus, these optimisations had a significant effect, however, this could still be improved. I used async-profiler~\parencite{AsyncprofilerAsyncprofiler2026} to generate CPU and Memory Allocation flame graphs to attempt to improve the parsing component's performance. All references to Parsley are highlighted in purple. A description of what the other colours mean can be found in async-profiler's GitHub repository.
+Dafny verification takes significantly more time on average than any other component. The vast majority of this time is likely spent by the Z3 solver. This is expected, since proving program equivalence is a difficult problem in general. However, the parsing component also takes a significant amount of time. I used async-profiler~\parencite{AsyncprofilerAsyncprofiler2026} to generate CPU and Memory Allocation flame graphs to attempt to improve the parsing component's performance. All references to Parsley are highlighted in purple. A description of what the other colours mean can be found in async-profiler's GitHub repository.
 
 \begin{figure}[ht]
      \centering
