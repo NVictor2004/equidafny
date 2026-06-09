@@ -1,7 +1,6 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
 \footnote{Update flamegraphs and times for each phase}
-\footnote{evaluate tests against Stainless, mention result of comparison between ED and stainless, e.g. 'on par' with stainless}
 
 \section{Testsuite Description}
 
@@ -136,7 +135,7 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 
 \paragraph{\nameref{sec:candidate-copying}} For the majority of the tests in the evaluation testsuite, it is sufficient to generate equivalence lemmas by copying structures from the model function alone. However, in some cases, structures must be copied from the candidate function as well, including termination lemma calls, preconditions and assertions.
 
-\Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify. Thus, EquiDafny improves the base Dafny verifier.
+\Cref{tbl:evaluation-results} describes the number of tests from each source that EquiDafny, the base Dafny verifier and the Stainless equivalence checker are each able to verify. Thus, EquiDafny significantly improves on the base Dafny verifier. However, the Stainless checker is still significantly more effective.
 
 \begin{table}[ht]
   \centering

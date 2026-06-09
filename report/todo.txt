@@ -1,8 +1,5 @@
 describe how complex the examples are: number of functions
 
-get scala versions of eqbench tests from Dragana
-need to compare with Stainless, this is the main thing to compare with
-
 conclusions, quote runtime comparison with stainless
 
 Evaluation.
