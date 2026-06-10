@@ -1,5 +1,7 @@
 \chapter{Evaluation}\label{chp:evaluation}
 
+In this chapter, I evaluated EquiDafny against the base Dafny verifier and the Stainless equivalence checker. I identified and described some limitations of EquiDafny that reduce its effectiveness. Finally, I profiled EquiDafny to analyse its performance.
+
 \section{Testsuite Description}
 
 I created an evaluation testsuite containing 126 test files. Each file contains at least one pair (often multiple pairs) of equivalent Dafny functions. These tests came from 4 different sources. \Cref{tbl:testsuite-categorisation} categorises how many tests were taken from each source. I wrote some tests myself. Further tests were taken from the equivalence tests for the Scala Stainless verification tool~\parencite{StainlessFrontendsBenchmarks} (as described in \Cref{sec:audit}). The remaining tests came from two different sources. These are described below.

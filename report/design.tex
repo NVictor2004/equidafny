@@ -135,8 +135,7 @@ In this case, EquiDafny will still generate the empty equivalence lemma shown ab
 
 \subsection{Expression optimisation}
 
-% TODO: Wrap A && B in inline code
-In certain cases, the bodies of both the model and candidate functions can be translated into the same equivalent structure. For example, for arbitrary Boolean formulae \dafnyinline{A} and \dafnyinline{B}, the expressions A \&\& B and \dafnyinline{if A then B else false} are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
+In certain cases, the bodies of both the model and candidate functions can be translated into the same equivalent structure. For example, for arbitrary Boolean formulae \dafnyinline{A} and \dafnyinline{B}, the expressions \dafnyinline{A && B} and \dafnyinline{if A then B else false} are equivalent. Thus, one type of expression can be translated into the other so that they have the same structure. 
 
 It is important to note that these translations only occur internally to assist with lemma generation. The Dafny verifier verifies the generated equivalence lemmas on the original functions instead of the translated functions. This is important to ensure that EquiDafny is sound, as the translated functions have not been formally proven equivalent to the original versions.
 

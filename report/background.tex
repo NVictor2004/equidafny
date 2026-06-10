@@ -1,9 +1,10 @@
 \chapter{Background}\label{chp:background}
+% NOTE: Need to expand on any technical terminology that you will use, or build on, later!
 
 \section{Literature Review}\label{sec:literature-review}
 
-% NOTE: Need to expand on any technical terminology that you will use, or build on, later!
- 
+In this section I described several of the current state-of-the-art tools for verifying programs and proving program equivalence.
+
 \subsection{Dafny}\label{sec:dafny}
 
 Dafny is a popular program verifier used at Amazon~\cite{leinoDafnyAutomaticProgram2010}. It is primarily a programming language, containing many of the classic language features and constructs we expect from a modern programming language. However, in addition to this, it includes specification constructs, such as preconditions, postconditions and loop invariants. This allows Dafny's verifier to automatically prove theorems and that programs match their specifications. Dafny programs can also be compiled into a variety of other languages, including C\#, Java and Python, but only after Dafny has verified them. This allows verified programs to be integrated easily into existing codebases, without breaking any functionality.
@@ -54,7 +55,7 @@ For this example, the Boogie translation resulted in a file almost 3350 lines lo
 
 SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}. The system works by combining the two programs being compared into a single program called a `product program'. This product program contains the bodies of the individual programs to simulate both of their executions. Symdiff attempts to prove postconditions on this product program to verify the relationship between the individual functions. These postconditions are called `mutual summaries'. The postconditions can be proven by passing the product program to the Boogie program verifier.
 
-An example of this process is demonstrated below~\parencite{lahiriAutomatedDifferentialProgramb}. Here is a method \boogieinline{F1} which adds to the global variable \boogieinline{g1} every integer from the initial value passed into the \boogieinline{F1} method to 100. \boogieinline{F1} is called from the \boogieinline{Main1} method with the initial value 0:
+An example of this process is demonstrated below (this example was taken from \textcite{lahiriAutomatedDifferentialProgramb}). Here is a method \boogieinline{F1} which adds to the global variable \boogieinline{g1} every integer from the initial value passed into the \boogieinline{F1} method to 100. \boogieinline{F1} is called from the \boogieinline{Main1} method with the initial value 0:
 \begin{boogie}
 var g1: int;
 procedure F1(x1: int)
