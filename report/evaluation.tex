@@ -192,7 +192,7 @@ Here is the function \dafnyinline{addHelper} that takes two natural numbers (def
 function addHelper(n: Nat, m: Nat): Nat {
     match n {
         case Zero => m
-        case Succ(n') => Succ(addHelper(n', m))
+        case Succ(prev) => Succ(addHelper(prev, m))
     }
 }
 \end{dafny}
