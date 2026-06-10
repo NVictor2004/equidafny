@@ -441,7 +441,7 @@ function m2(n: int, mode: bool): int {
 }
 \end{dafny}
 %
-The first function does not use the boolean argument at all. The second function uses it in the \dafnyinline{else} branch (this is highlighted above). Here, the second function either computes the standard fibonacci expression \dafnyinline{m2(n-1, !mode) + m2(n-2, !mode)}, or the expression with the \dafnyinline{m2(n-1, !mode)} call unrolled once (\dafnyinline{m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)}). Dafny only requires assistance in proving that the unrolled function call in \dafnyinline{m2} is equivalent to the standard fibonacci expression. Therefore, the user must provide the following auxiliary lemma:
+The first function does not use the boolean argument at all. The second function uses it in the \dafnyinline{else} branch (this is highlighted above). Here, the second function either computes the standard fibonacci expression \dafnyinline{m2(n-1, !mode) + m2(n-2, !mode)}, or the expression with the \dafnyinline{m2(n-1, !mode)} call unrolled once \\(\dafnyinline{m2(n-2, !mode) + m2(n-2, !mode) + m2(n-3, !mode)}). Dafny only requires assistance in proving that the unrolled function call in \dafnyinline{m2} is equivalent to the standard fibonacci expression. Therefore, the user must provide the following auxiliary lemma:
 
 \begin{dafny}
 lemma m2_equivalence_fib(n: int)

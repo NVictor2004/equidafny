@@ -201,7 +201,7 @@ private def getArgData(
 ): (ListMap[String, Type], List[ListMap[String, BasicExpr]], List[ListMap[String, BasicExpr]]) = t match {
   case ArrowType(from, to) => {
     val types = getListOfTypes(from)
-    val Lambda(lvalues, body) = expr
+    val Lambda(lvalues, body) = expr.runtimeChecked
     val idents = lvalues.map(_._1)
     val paramData = idents.zip(types)
     val argData = ListMap(idents.map(ident => (ident, Ident(ident, Nil)))*)

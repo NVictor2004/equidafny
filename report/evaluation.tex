@@ -30,20 +30,16 @@ I created an evaluation testsuite containing 126 test files. Each file contains 
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |l|c|c|c|c|c|c| }
-    \hline
-    \multirow{2}{*}{Original Source} & \multicolumn{3}{c|}{Lines of Code} & \multicolumn{3}{c|}{Number of Lemmas} \\
-    \cline{2-7}
+  \begin{tabular}{ lcccccc }
+    \toprule
+    \multirow{2}{*}{Original Source} & \multicolumn{3}{c}{Lines of Code} & \multicolumn{3}{c}{Number of Lemmas} \\
     & Min & Mean & Max & Min & Mean & Max \\
-    \hline
+    \midrule
     Stainless equivalence tests & 2 & 34.42 & 91 & 1 & 1.81 & 6 \\
-    \hline
     EqBench dataset & 18 & 34.04 & 84 & 1 & 1.46 & 4 \\
-    \hline
     Measure transfer artifact & 18 & 41.43 & 86 & 1 & 1.60 & 2 \\
-    \hline
     Self-Written & 12 & 34.50 & 54 & 1 & 1.64 & 2 \\
-    \hline
+    \bottomrule
   \end{tabular}
   \caption{Metrics describing the complexity of the tests from each source}
   \label{tbl:testsuite-loc-lemmacount}
@@ -69,16 +65,14 @@ I created a further 35 test files containing pairs of non-equivalent Dafny funct
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{ |l|c|c|c| }
-    \hline
-    \multirow{2}{*}{Original Source} & \multicolumn{3}{c|}{Lines of Code} \\
-    \cline{2-4}
+  \begin{tabular}{ lccc }
+    \toprule
+    \multirow{2}{*}{Original Source} & \multicolumn{3}{c}{Lines of Code} \\
     & Min & Mean & Max \\
-    \hline
+    \midrule
     Stainless equivalence tests & 32 & 50.60 & 95 \\
-    \hline
     EqBench dataset & 18 & 32.97 & 60 \\
-    \hline
+    \bottomrule
   \end{tabular}
   \caption{Number of lines of code in the non-equivalent tests from each source}
   \label{tbl:nonequivalent-tests-loc}
@@ -139,22 +133,17 @@ After evaluating EquiDafny on this larger testsuite, I identified 4 new challeng
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|c|c|c|c|c|}
-    \hline
-    \multirow{2}{*}{Original Source} & \multirow{2}{*}{Number of Tests} & \multicolumn{3}{|c|}{Tools} \\
-    \cline{3-5}
+  \begin{tabular}{lcccc}
+    \toprule
+    \multirow{2}{*}{Original Source} & \multirow{2}{*}{Number of Tests} & \multicolumn{3}{c}{Tools} \\
     & & Dafny & EquiDafny & Stainless \\
-    \hline
+    \midrule
     Stainless equivalence tests & 53 & 21 & 43 & 52 \\
-    \hline
     EqBench dataset & 52 & 14 & 16 & 34 \\
-    \hline
     Measure Transfer Artifact & 7 & 0 & 2 & 2 \\
-    \hline
     Self-Written & 14 & 2 & 9 & 5 \\
-    \hline
     Total & 126 & 37 & 70 & 93 \\
-    \hline
+    \bottomrule
   \end{tabular}
   \caption{Evaluation results for Dafny, EquiDafny and Stainless}
   \label{tbl:evaluation-results}
@@ -428,12 +417,12 @@ After running EquiDafny on every test file, I measured the average time the tool
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{|p{0.09\linewidth}|c|c|c|p{0.1\linewidth}|c|p{0.10\linewidth}|c|}
-    \hline
+  \begin{tabular}{p{0.09\linewidth}cccp{0.1\linewidth}cp{0.10\linewidth}c}
+    \toprule
     Phase & Parsing & Translation & Optimisation & Lemma generation & Formatting & Dafny \newline verification & Total \\
-    \hline
+    \midrule
     Average Time (ms) & 5.504 & 0.697 & 0.139 & 0.659 & 0.862 & 1517.340 & 1525.201 \\
-    \hline
+    \bottomrule
   \end{tabular}
   \caption{Average time spent in each phase}
   \label{tbl:profiling-results}
