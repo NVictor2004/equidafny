@@ -88,12 +88,17 @@
   file = {/home/nathan/Zotero/storage/XNAMUPJX/Badihi et al. - 2021 - EqBench A Dataset of Equivalent and Non-equivalent Program Pairs.pdf}
 }
 
-@article{cadarKLEEUnassistedAutomatic,
-  title = {{{KLEE}}: {{Unassisted}} and {{Automatic Generation}} of {{High-Coverage Tests}} for {{Complex Systems Programs}}},
+@inproceedings{cadarKLEEUnassistedAutomatic2008,
+  title = {{{KLEE}}: Unassisted and Automatic Generation of High-Coverage Tests for Complex Systems Programs},
+  shorttitle = {{{KLEE}}},
+  booktitle = {Proceedings of the 8th {{USENIX}} Conference on {{Operating}} Systems Design and Implementation},
   author = {Cadar, Cristian and Dunbar, Daniel and Engler, Dawson},
-  abstract = {We present a new symbolic execution tool, KLEE, capable of automatically generating tests that achieve high coverage on a diverse set of complex and environmentally-intensive programs. We used KLEE to thoroughly check all 89 stand-alone programs in the GNU COREUTILS utility suite, which form the core user-level environment installed on millions of Unix systems, and arguably are the single most heavily tested set of open-source programs in existence. KLEE-generated tests achieve high line coverage — on average over 90\% per tool (median: over 94\%) — and significantly beat the coverage of the developers’ own hand-written test suites. When we did the same for 75 equivalent tools in the BUSYBOX embedded system suite, results were even better, including 100\% coverage on 31 of them.},
-  langid = {english},
-  file = {/home/nathan/Zotero/storage/R5ZHHQRC/Cadar et al. - KLEE Unassisted and Automatic Generation of High-Coverage Tests for Complex Systems Programs.pdf}
+  date = {2008-12-08},
+  series = {{{OSDI}}'08},
+  pages = {209--224},
+  publisher = {USENIX Association},
+  location = {USA},
+  abstract = {We present a new symbolic execution tool, KLEE, capable of automatically generating tests that achieve high coverage on a diverse set of complex and environmentally-intensive programs. We used KLEE to thoroughly check all 89 stand-alone programs in the GNU COREUTILS utility suite, which form the core user-level environment installed on millions of Unix systems, and arguably are the single most heavily tested set of open-source programs in existence. KLEE-generated tests achieve high line coverage -- on average over 90\% per tool (median: over 94\%) -- and significantly beat the coverage of the developers' own hand-written test suite. When we did the same for 75 equivalent tools in the BUSYBOX embedded system suite, results were even better, including 100\% coverage on 31 of them.We also used KLEE as a bug finding tool, applying it to 452 applications (over 430K total lines of code), where it found 56 serious bugs, including three in COREUTILS that had been missed for over 15 years. Finally, we used KLEE to crosscheck purportedly identical BUSYBOX and COREUTILS utilities, finding functional correctness errors and a myriad of inconsistencies.}
 }
 
 @online{DefinitiveANTLR4,
@@ -162,6 +167,14 @@
   file = {/home/nathan/Zotero/storage/3G9RPFNQ/Godlin and Strichman - 2013 - Regression verification proving the equivalence of similar programs.pdf;/home/nathan/Zotero/storage/2ZT44PZ3/stvr.html}
 }
 
+@inproceedings{haran2015automated,
+  title = {Automated Differential Program Verification for Approximate Computing},
+  author = {Haran, Arvind and He, Shaobo and {Zvonimir} and Lahiri, Shuvendu},
+  date = {2015-05},
+  url = {https://www.microsoft.com/en-us/research/publication/automated-differential-program-verification-for-approximate-computing/},
+  abstract = {Approximate computing is an emerging area for trading off the accuracy of an application for improved performance, lower energy costs, and tolerance to unreliable hardware. However, care has to be taken to ensure that the approximations do not cause significant divergence from the reference implementation. Previous research has proposed various metrics to guarantee several relaxed notions of safety for the design and verification of such approximate applications. However, current approximation verification approaches often lack in either precision or automation. On one end of the spectrum, type-based approaches lack precision, while on the other, proofs in interactive theorem provers require significant manual effort. In this work, we apply automated differential program verification (as implemented in SymDiff) for reasoning about approximations. We show that mutual summaries naturally express many relaxed specifications for approximations, and SMT-based checking and invariant inference can substantially automate the verification of such specifications. We demonstrate that the framework significantly improves automation compared to previous work on using Coq, and improves precision when compared to path-insensitive analysis. Our results indicate the feasibility of applying automated verification to the domain of approximate computing in a cost-effective manner.}
+}
+
 @online{hoIncrementalProofDevelopment2024,
   title = {Incremental {{Proof Development}} in {{Dafny}} with {{Module-Based Induction}}},
   author = {Ho, Son and Pit-Claudel, Clément},
@@ -184,14 +197,6 @@
   url = {https://epfl-lara.github.io/stainless/intro.html},
   urldate = {2026-01-20},
   file = {/home/nathan/Zotero/storage/DS4ZJM86/intro.html}
-}
-
-@article{lahiriAutomatedDifferentialProgramb,
-  title = {Automated {{Differential Program Veriﬁcation}} for {{Approximate Computing}}},
-  author = {Lahiri, Shuvendu K and Haran, Arvind and He, Shaobo and Rakamaric, Zvonimir},
-  abstract = {Approximate computing is an emerging area for trading off the accuracy of an application for improved performance, lower energy costs, and tolerance to unreliable hardware. However, care has to be taken to ensure that the approximations do not cause significant divergence from the reference implementation. Previous research has proposed various metrics to guarantee several relaxed notions of safety for the design and verification of such approximate applications. However, current approximation verification approaches often lack in either precision or automation. On one end of the spectrum, type-based approaches lack precision, while on the other, proofs in interactive theorem provers require significant manual effort. In this work, we apply automated differential program verification (as implemented in SymDiff) for reasoning about approximations. We show that mutual summaries naturally express many relaxed specifications for approximations, and SMT-based checking and invariant inference can substantially automate the verification of such specifications. We demonstrate that the framework significantly improves automation compared to previous work on using Coq, and improves precision when compared to path-insensitive analysis. Our results indicate the feasibility of applying automated verification to the domain of approximate computing in a cost-effective manner.},
-  langid = {english},
-  file = {/home/nathan/Zotero/storage/W5GRRN6L/Lahiri et al. - Automated Differential Program Veriﬁcation for Approximate Computing.pdf}
 }
 
 @inproceedings{lahiriDifferentialAssertionChecking2013,

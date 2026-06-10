@@ -55,7 +55,7 @@ For this example, the Boogie translation resulted in a file almost 3350 lines lo
 
 SymDiff is a differential program verifier \parencite{lahiriSYMDIFFLanguageAgnosticSemantic2012}. The system works by combining the two programs being compared into a single program called a `product program'. This product program contains the bodies of the individual programs to simulate both of their executions. Symdiff attempts to prove postconditions on this product program to verify the relationship between the individual functions. These postconditions are called `mutual summaries'. The postconditions can be proven by passing the product program to the Boogie program verifier.
 
-An example of this process is demonstrated below (this example was taken from \textcite{lahiriAutomatedDifferentialProgramb}). Here is a method \boogieinline{F1} which adds to the global variable \boogieinline{g1} every integer from the initial value passed into the \boogieinline{F1} method to 100. \boogieinline{F1} is called from the \boogieinline{Main1} method with the initial value 0:
+An example of this process is demonstrated below (this example was taken from \textcite{haran2015automated}). Here is a method \boogieinline{F1} which adds to the global variable \boogieinline{g1} every integer from the initial value passed into the \boogieinline{F1} method to 100. \boogieinline{F1} is called from the \boogieinline{Main1} method with the initial value 0:
 \begin{boogie}
 var g1: int;
 procedure F1(x1: int)
@@ -105,7 +105,7 @@ procedure MS_Main1_Main2()
 }
 \end{boogie}
 %
-Since this process is very general, it is not limited to program equivalence. For example, SymDiff can be used in Approximate Computing, as described in \textcite{lahiriAutomatedDifferentialProgramb}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption.
+Since this process is very general, it is not limited to program equivalence. For example, SymDiff can be used in Approximate Computing, as described in \textcite{haran2015automated}. This is where you trade off the accuracy of a program (in an acceptable manner) for improvements in performance or energy consumption.
 
 \subsection{Stainless}
 
@@ -151,7 +151,7 @@ Stainless is able to prove the equivalence of these functions fully automaticall
 
 \subsection{KLEE}
 
-KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For example, here is an implementation of the \dafnyinline{sign} function. This example was taken from the KLEE tutorial \parencite{TutorialOneKLEE}:
+KLEE is a symbolic execution engine that automatically generates high coverage test sets \parencite{cadarKLEEUnassistedAutomatic2008,ozkanKLEESmarterTest2025}. KLEE achieves this generation by simulating program execution with symbolic inputs, to explore every possible execution path a program can take. For example, here is an implementation of the \dafnyinline{sign} function. This example was taken from the KLEE tutorial \parencite{TutorialOneKLEE}:
 \begin{minted}{c}
 int sign(int x) {
   if (x == 0)
