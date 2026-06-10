@@ -109,7 +109,7 @@ Since this process is very general, it is not limited to program equivalence. Fo
 
 \subsection{Stainless}
 
-Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. For example, here is an implementation of a function to return the maximum of two integers~\parencite{piskacProceedings21stConference2021}. This property is enforced by the function's postcondition:
+Stainless is a verification framework that verifies that Scala programs obey their specifications \parencite{IntroductionStainless091}; when these specifications are violated, Stainless is able to provide counterexamples. For example, here is an implementation of a function to return the maximum of two integers (this example was taken from \textcite{piskacProceedings21stConference2021}). This property is enforced by the function's postcondition:
 \begin{minted}{scala}
 def max(x: Int, y: Int): Int = {
     val d = x - y
