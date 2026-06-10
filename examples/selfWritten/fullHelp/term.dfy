@@ -35,16 +35,3 @@ function evalM(t: Term): int {
 function eval1(t: Term): int {
     wSign(eval(rip(t)), pos(t)) 
 }
-
-lemma equivalence(t: Term)
-    ensures evalM(t) == eval1(t)
-{
-    match t {
-        case Val(v) => {}
-        case UMinus(expr) => equivalence(expr);
-        case Mult(left, right) => {
-            equivalence(left);
-            equivalence(right);
-        }
-    }
-}

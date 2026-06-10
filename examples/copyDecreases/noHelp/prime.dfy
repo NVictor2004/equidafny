@@ -1,5 +1,3 @@
-// Can't figure out proof, but it should require auxiliary lemmas
-
 // MODEL
 
 /* Copyright 2022 EPFL, Lausanne */

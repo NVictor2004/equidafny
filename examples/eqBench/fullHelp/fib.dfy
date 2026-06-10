@@ -34,7 +34,3 @@ function fib1(x: int): int {
     else
         0
 }
-
-lemma equivalence(x: int)
-    ensures fibM(x) == fib1(x)
-{}

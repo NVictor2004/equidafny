@@ -1,5 +1,3 @@
-// gcdM1 and gcdC cannot be proven equivalent due to timeout after 20 seconds
-
 // MODEL
 
 /* Copyright 2022 EPFL, Lausanne */
